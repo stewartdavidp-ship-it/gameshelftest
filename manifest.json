@@ -1,0 +1,151 @@
+{
+  "name": "Game Shelf - Daily Puzzle Tracker",
+  "short_name": "Game Shelf",
+  "description": "Track your daily puzzle games, build streaks, compete with friends, and never miss a Wordle again!",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#0a0a0f",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["games", "entertainment", "lifestyle"],
+  "iarc_rating_id": "",
+  
+  "icons": [
+    {
+      "src": "icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Log Game",
+      "short_name": "Log",
+      "description": "Quickly log today's game results",
+      "url": "/?action=log&source=shortcut",
+      "icons": [{ "src": "icons/shortcut-log.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "My Battles",
+      "short_name": "Battles",
+      "description": "View active battles and tournaments",
+      "url": "/?tab=social&view=battles&source=shortcut",
+      "icons": [{ "src": "icons/shortcut-battle.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Friends",
+      "short_name": "Friends",
+      "description": "See what friends played today",
+      "url": "/?tab=social&view=friends&source=shortcut",
+      "icons": [{ "src": "icons/shortcut-friends.png", "sizes": "96x96" }]
+    }
+  ],
+  
+  "share_target": {
+    "action": "/?share-target=true",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  
+  "screenshots": [
+    {
+      "src": "screenshots/home.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Home screen with today's progress"
+    },
+    {
+      "src": "screenshots/battles.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Battle with friends"
+    }
+  ],
+  
+  "related_applications": [],
+  "prefer_related_applications": false,
+  
+  "protocol_handlers": [
+    {
+      "protocol": "web+gameshelf",
+      "url": "/?protocol=%s"
+    }
+  ],
+  
+  "handle_links": "preferred",
+  
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  },
+  
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}
