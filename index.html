@@ -6740,7 +6740,7 @@
         <div class="logo">
             <span>🎮</span>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v2.0.3</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v2.0.4</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -6954,7 +6954,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v2.0.3</div>
+            <div class="settings-version">Game Shelf PWA v2.0.4</div>
         </div>
     </div>
     
@@ -12996,6 +12996,12 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             const today = getTodayString();
             const gameInfo = GAMES[result.gameId];
             
+            // Clear lastLaunchedGame if this was the game being tracked
+            if (typeof lastLaunchedGame !== 'undefined' && lastLaunchedGame === result.gameId) {
+                lastLaunchedGame = null;
+                lastLaunchTime = null;
+            }
+            
             // Update history
             if (!appData.history[today]) {
                 appData.history[today] = {};
@@ -13271,6 +13277,12 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             console.log('[AUTH] onAuthStateChanged:', user ? user.email : 'null');
             currentUser = user;
             updateAuthUI();
+            
+            // Clear return prompt state on auth changes to prevent spurious prompts
+            if (typeof lastLaunchedGame !== 'undefined') {
+                lastLaunchedGame = null;
+                lastLaunchTime = null;
+            }
             
             if (user) {
                 // Only show toast for actual sign-ins, not page load restoration
@@ -14470,7 +14482,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '2.0.3';
+            const version = '2.0.4';
             const aboutText = `🎮 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17447,17 +17459,27 @@ Made with ❤️ for puzzle enthusiasts`;
             // Don't show if no game was launched
             if (!lastLaunchedGame || !lastLaunchTime) return;
             
+            // Don't show if launch was more than 30 minutes ago (stale)
+            const elapsed = Date.now() - lastLaunchTime;
+            if (elapsed > 30 * 60 * 1000) {
+                console.log('🎮 Clearing stale lastLaunchedGame (>30min old)');
+                lastLaunchedGame = null;
+                lastLaunchTime = null;
+                return;
+            }
+            
             // Don't show if prompt was dismissed for this game
             if (returnPromptDismissedFor === lastLaunchedGame) return;
             
             // Don't show if it's been less than 30 seconds (they didn't really play)
-            const elapsed = Date.now() - lastLaunchTime;
             if (elapsed < 30000) return;
             
-            // Don't show if game was already logged
-            const todayHistory = getTodayHistory();
+            // Don't show if game was already logged (use fresh data from appData)
+            const todayHistory = appData.history[getTodayString()] || {};
             if (todayHistory[lastLaunchedGame]) {
+                console.log(`🎮 Game ${lastLaunchedGame} already logged, skipping return prompt`);
                 lastLaunchedGame = null;
+                lastLaunchTime = null;
                 return;
             }
             
@@ -21674,7 +21696,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🎮 Game Shelf PWA v2.0.3 initialized - Test helpers enabled');
+            console.log('🎮 Game Shelf PWA v2.0.4 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
