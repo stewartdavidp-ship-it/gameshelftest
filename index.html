@@ -625,6 +625,28 @@
             font-weight: 600;
         }
         
+        .share-today-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .share-today-btn:active {
+            opacity: 0.9;
+            transform: scale(0.98);
+        }
+        
         /* Widget Cards */
         .widget {
             margin: 0 16px 12px;
@@ -3566,16 +3588,26 @@
         }
         
         .instant-share-preview {
+            margin-bottom: 16px;
+        }
+        
+        .instant-share-textarea {
+            width: 100%;
             background: var(--bg-primary);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 14px;
-            margin-bottom: 16px;
             font-family: -apple-system, BlinkMacSystemFont, monospace;
             font-size: 0.9rem;
             line-height: 1.5;
-            white-space: pre-wrap;
             color: var(--text-primary);
+            resize: none;
+            box-sizing: border-box;
+        }
+        
+        .instant-share-textarea:focus {
+            outline: none;
+            border-color: var(--accent-purple);
         }
         
         .instant-share-platforms {
@@ -3670,6 +3702,38 @@
             max-width: 100%;
             height: auto;
             border-radius: 8px;
+        }
+        
+        .image-format-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .image-format-btn {
+            flex: 1;
+            padding: 10px 14px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .image-format-btn.active {
+            border-color: var(--accent-purple);
+            background: rgba(102, 126, 234, 0.15);
+        }
+        
+        .image-card-preview.story-mode {
+            max-width: 200px;
+            margin: 0 auto;
         }
         
         .image-card-styles {
@@ -6740,7 +6804,7 @@
         <div class="logo">
             <span>🎮</span>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v2.0.4</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v2.0.5</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -6954,7 +7018,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v2.0.4</div>
+            <div class="settings-version">Game Shelf PWA v2.0.5</div>
         </div>
     </div>
     
@@ -7046,6 +7110,10 @@
                     <span id="games-today-text">Play your first game!</span>
                     <span class="streak-badge" id="streak-badge">🔥 0</span>
                 </div>
+                <button class="share-today-btn" id="share-today-btn" onclick="quickShareRecap()" style="display: none;">
+                    <span>📤</span>
+                    <span>Share Today's Recap</span>
+                </button>
             </div>
             
             <div class="widget" id="friends-widget">
@@ -8347,8 +8415,8 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             <button class="instant-share-close" onclick="closeInstantShare()">✕</button>
         </div>
         
-        <div class="instant-share-preview" id="instant-share-preview">
-            <!-- Generated share message appears here -->
+        <div class="instant-share-preview">
+            <textarea class="instant-share-textarea" id="instant-share-preview" rows="5" placeholder="Your share message..."></textarea>
         </div>
         
         <div class="instant-share-platforms">
@@ -8384,13 +8452,24 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         <!-- Image Card Section -->
         <div class="image-card-section">
             <h4>🖼️ Share as Image</h4>
+            
+            <!-- Format Toggle -->
+            <div class="image-format-toggle">
+                <button class="image-format-btn active" onclick="setImageFormat('landscape')" data-format="landscape">
+                    <span>🖼️</span> Post
+                </button>
+                <button class="image-format-btn" onclick="setImageFormat('story')" data-format="story">
+                    <span>📱</span> Story
+                </button>
+            </div>
+            
             <div class="image-card-styles">
                 <button class="image-style-btn active" onclick="setImageStyle('default')" data-style="default">Classic</button>
                 <button class="image-style-btn" onclick="setImageStyle('dark')" data-style="dark">Dark</button>
                 <button class="image-style-btn" onclick="setImageStyle('gradient')" data-style="gradient">Gradient</button>
                 <button class="image-style-btn" onclick="setImageStyle('minimal')" data-style="minimal">Minimal</button>
             </div>
-            <div class="image-card-preview">
+            <div class="image-card-preview" id="image-card-preview-container">
                 <canvas id="share-card-canvas" width="600" height="400"></canvas>
             </div>
             <div class="image-card-actions">
@@ -14482,7 +14561,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '2.0.4';
+            const version = '2.0.5';
             const aboutText = `🎮 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -16636,6 +16715,12 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('goal-display').textContent = `${played}/${goal} games`;
             document.getElementById('streak-badge').textContent = `🔥 ${maxStreak}`;
             
+            // Show/hide share button based on games played
+            const shareBtn = document.getElementById('share-today-btn');
+            if (shareBtn) {
+                shareBtn.style.display = played > 0 ? 'flex' : 'none';
+            }
+            
             if (played === 0) {
                 document.getElementById('games-today-text').textContent = 'Play your first game!';
             } else if (played >= goal) {
@@ -18490,7 +18575,7 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Generate enhanced share message
             const message = generateEnhancedShareMessage(lastLoggedGame, lastLoggedResult);
-            document.getElementById('instant-share-preview').textContent = message;
+            document.getElementById('instant-share-preview').value = message;
             
             // Generate image card
             generateShareCard();
@@ -18561,32 +18646,57 @@ Made with ❤️ for puzzle enthusiasts`;
             }
             
             let lines = [];
-            lines.push('🎮 Daily Puzzle Recap');
+            
+            // Header with game count
+            const gameCount = gameIds.length;
+            lines.push(`🎮 Daily Puzzle Recap • ${gameCount} game${gameCount !== 1 ? 's' : ''}`);
             lines.push('');
             
-            // List games
+            // List games with scores
+            let totalPoints = 0;
+            let perfectCount = 0;
             for (const gameId of gameIds) {
                 const game = GAMES[gameId];
                 const entry = todayHistory[gameId];
                 if (game) {
-                    lines.push(`${game.icon} ${game.name}: ${entry.score || '✓'}`);
+                    const score = entry.score || '✓';
+                    lines.push(`${game.icon} ${game.name}: ${score}`);
+                    totalPoints += entry.numericScore || 0;
+                    
+                    // Check for perfects
+                    if (score.includes('1/') || score.includes('Perfect') || score.includes('🎯')) {
+                        perfectCount++;
+                    }
                 }
             }
             
             lines.push('');
             
+            // Cross-game insights
+            let insights = [];
+            
+            // Perfect count
+            if (perfectCount > 0) {
+                insights.push(`⭐ ${perfectCount} perfect${perfectCount !== 1 ? 's' : ''}`);
+            }
+            
+            // Total points
+            if (totalPoints > 0) {
+                insights.push(`💎 ${totalPoints} pts`);
+            }
+            
             // Friend comparison
             const friendComparison = getFriendComparisonStats(gameIds);
-            if (friendComparison.total > 0) {
-                if (friendComparison.beat > 0) {
-                    lines.push(`👑 Beat ${friendComparison.beat}/${friendComparison.total} friend${friendComparison.total !== 1 ? 's' : ''} today!`);
-                } else if (friendComparison.tied > 0) {
-                    lines.push(`🤝 Tied with ${friendComparison.tied} friend${friendComparison.tied !== 1 ? 's' : ''}`);
-                }
+            if (friendComparison.total > 0 && friendComparison.beat > 0) {
+                insights.push(`👑 Beat ${friendComparison.beat}/${friendComparison.total} friend${friendComparison.total !== 1 ? 's' : ''}`);
+            }
+            
+            if (insights.length > 0) {
+                lines.push(insights.join(' • '));
                 lines.push('');
             }
             
-            // Stats
+            // Best streak across all games
             const maxStreak = getMaxStreak(appData);
             if (maxStreak > 1) {
                 lines.push(`🔥 Best streak: ${maxStreak} days`);
@@ -18689,7 +18799,7 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function instantShareTo(platform) {
-            const message = document.getElementById('instant-share-preview').textContent;
+            const message = document.getElementById('instant-share-preview').value;
             const encoded = encodeURIComponent(message);
             
             let url;
@@ -18720,7 +18830,7 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function copyInstantShare() {
-            const message = document.getElementById('instant-share-preview').textContent;
+            const message = document.getElementById('instant-share-preview').value;
             navigator.clipboard.writeText(message).then(() => {
                 showToast('📋 Copied to clipboard!');
                 closeInstantShare();
@@ -18738,7 +18848,7 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function nativeInstantShare() {
-            const message = document.getElementById('instant-share-preview').textContent;
+            const message = document.getElementById('instant-share-preview').value;
             
             if (navigator.share) {
                 navigator.share({
@@ -18760,7 +18870,7 @@ Made with ❤️ for puzzle enthusiasts`;
         function quickShareRecap() {
             // Generate recap message and open instant share
             const message = generateTodayRecapMessage();
-            document.getElementById('instant-share-preview').textContent = message;
+            document.getElementById('instant-share-preview').value = message;
             
             // Generate image card
             generateShareCard();
@@ -18772,6 +18882,7 @@ Made with ❤️ for puzzle enthusiasts`;
         
         // ============ PHASE 2: IMAGE CARD GENERATOR ============
         let currentImageStyle = 'default';
+        let currentImageFormat = 'landscape'; // 'landscape' or 'story'
         let currentCardData = null;
         
         const IMAGE_STYLES = {
@@ -18817,6 +18928,24 @@ Made with ❤️ for puzzle enthusiasts`;
             generateShareCard();
         }
         
+        function setImageFormat(format) {
+            currentImageFormat = format;
+            
+            // Update button states
+            document.querySelectorAll('.image-format-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.format === format);
+            });
+            
+            // Update preview container class
+            const container = document.getElementById('image-card-preview-container');
+            if (container) {
+                container.classList.toggle('story-mode', format === 'story');
+            }
+            
+            // Regenerate card
+            generateShareCard();
+        }
+        
         function generateShareCard() {
             const canvas = document.getElementById('share-card-canvas');
             if (!canvas) return;
@@ -18824,13 +18953,15 @@ Made with ❤️ for puzzle enthusiasts`;
             const ctx = canvas.getContext('2d');
             const style = IMAGE_STYLES[currentImageStyle];
             
-            // Set canvas size (2x for retina)
-            const width = 600;
-            const height = 400;
+            // Set canvas size based on format (2x for retina)
+            const isStory = currentImageFormat === 'story';
+            const width = isStory ? 540 : 600;  // Story: 9:16 aspect
+            const height = isStory ? 960 : 400;
+            
             canvas.width = width * 2;
             canvas.height = height * 2;
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
+            canvas.style.width = (isStory ? 180 : 300) + 'px';  // Preview size
+            canvas.style.height = (isStory ? 320 : 200) + 'px';
             ctx.scale(2, 2);
             
             // Draw background gradient
@@ -18845,17 +18976,97 @@ Made with ❤️ for puzzle enthusiasts`;
             const gameIds = Object.keys(todayHistory);
             const isRecap = !lastLoggedGame || gameIds.length > 1;
             
-            if (isRecap) {
+            if (isStory) {
+                drawStoryCard(ctx, width, height, style, todayHistory, gameIds);
+            } else if (isRecap) {
                 drawRecapCard(ctx, width, height, style, todayHistory, gameIds);
             } else {
                 drawSingleGameCard(ctx, width, height, style);
             }
             
             // Draw branding
-            ctx.font = '600 14px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.font = `600 ${isStory ? 18 : 14}px -apple-system, BlinkMacSystemFont, sans-serif`;
             ctx.fillStyle = style.secondary;
             ctx.textAlign = 'center';
-            ctx.fillText('via Game Shelf 🎮', width / 2, height - 20);
+            ctx.fillText('via Game Shelf 🎮', width / 2, height - (isStory ? 40 : 20));
+        }
+        
+        function drawStoryCard(ctx, width, height, style, todayHistory, gameIds) {
+            const gameCount = gameIds.length;
+            
+            // Title at top
+            ctx.font = '700 36px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = style.text;
+            ctx.textAlign = 'center';
+            ctx.fillText('🎮 Daily Recap', width / 2, 80);
+            
+            // Date
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            ctx.font = '500 20px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = style.secondary;
+            ctx.fillText(dateStr, width / 2, 120);
+            
+            // Game count badge
+            ctx.font = '700 24px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = style.accent;
+            ctx.fillText(`${gameCount} game${gameCount !== 1 ? 's' : ''} played`, width / 2, 170);
+            
+            // Games list (centered, stacked vertically)
+            const displayGames = gameIds.slice(0, 8);
+            const startY = 230;
+            const rowHeight = 60;
+            
+            ctx.textAlign = 'center';
+            let totalPoints = 0;
+            let perfectCount = 0;
+            
+            displayGames.forEach((gameId, i) => {
+                const game = GAMES[gameId];
+                const entry = todayHistory[gameId];
+                const y = startY + (i * rowHeight);
+                const score = entry?.score || '✓';
+                
+                totalPoints += entry?.numericScore || 0;
+                if (score.includes('1/') || score.includes('Perfect') || score.includes('🎯')) {
+                    perfectCount++;
+                }
+                
+                // Icon and name
+                ctx.font = '32px serif';
+                ctx.fillStyle = style.text;
+                ctx.fillText(`${game?.icon || '🎮'}`, width / 2, y);
+                
+                // Score below
+                ctx.font = '600 20px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = style.accent;
+                ctx.fillText(score, width / 2, y + 28);
+            });
+            
+            // Stats at bottom
+            const statsY = height - 120;
+            let statsLine = [];
+            
+            if (perfectCount > 0) {
+                statsLine.push(`⭐ ${perfectCount} perfect`);
+            }
+            if (totalPoints > 0) {
+                statsLine.push(`💎 ${totalPoints} pts`);
+            }
+            
+            if (statsLine.length > 0) {
+                ctx.font = '600 22px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = style.accent;
+                ctx.fillText(statsLine.join('  •  '), width / 2, statsY);
+            }
+            
+            // Friend comparison
+            const friendComparison = getFriendComparisonStats(gameIds);
+            if (friendComparison.total > 0 && friendComparison.beat > 0) {
+                ctx.font = '700 24px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = style.accent;
+                ctx.fillText(`👑 Beat ${friendComparison.beat}/${friendComparison.total} friends!`, width / 2, statsY + 40);
+            }
         }
         
         function drawSingleGameCard(ctx, width, height, style) {
@@ -19124,7 +19335,7 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Generate special battle win message
             const message = generateBattleWinMessage(battle, finalScore, opponentScore);
-            document.getElementById('instant-share-preview').textContent = message;
+            document.getElementById('instant-share-preview').value = message;
             
             // Generate image card
             generateBattleWinCard(battle, finalScore, opponentScore);
@@ -21696,7 +21907,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🎮 Game Shelf PWA v2.0.4 initialized - Test helpers enabled');
+            console.log('🎮 Game Shelf PWA v2.0.5 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
