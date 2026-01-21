@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.0.0">
+    <meta name="version" content="1.1.0">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -646,6 +646,74 @@
         .share-today-btn:active {
             opacity: 0.9;
             transform: scale(0.98);
+        }
+        
+        /* Floating Action Button for Share */
+        .share-fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .share-fab.visible {
+            display: flex;
+        }
+        
+        .share-fab:active {
+            transform: scale(0.95);
+        }
+        
+        .share-fab-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--accent-green);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        
+        /* Weekly Recap Card */
+        .weekly-recap-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 10px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .weekly-recap-btn:active {
+            background: var(--bg-secondary);
         }
         
         /* Widget Cards */
@@ -6805,7 +6873,7 @@
         <div class="logo">
             <span>🎮</span>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.0.0</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.1.0</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7019,7 +7087,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.0.0</div>
+            <div class="settings-version">Game Shelf PWA v1.1.0</div>
         </div>
     </div>
     
@@ -7377,6 +7445,10 @@
                     <span>📤</span>
                     <span>Quick Share All Results</span>
                 </button>
+                <button class="weekly-recap-btn" onclick="openWeeklyRecap()">
+                    <span>📊</span>
+                    <span>Share Weekly Recap</span>
+                </button>
             </div>
             
             <!-- Message Composer -->
@@ -7483,6 +7555,12 @@
             </div>
         </div>
     </main>
+    
+    <!-- Floating Share Button -->
+    <button class="share-fab" id="share-fab" onclick="quickShareRecap()" title="Share Today's Results">
+        📤
+        <span class="share-fab-badge" id="share-fab-badge">0</span>
+    </button>
     
     <!-- Bottom Navigation -->
     <nav class="nav-bar">
@@ -14562,7 +14640,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.0.0';
+            const version = '1.1.0';
             const aboutText = `🎮 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -16722,6 +16800,14 @@ Made with ❤️ for puzzle enthusiasts`;
                 shareBtn.style.display = played > 0 ? 'flex' : 'none';
             }
             
+            // Show/hide floating share button (FAB)
+            const fab = document.getElementById('share-fab');
+            const fabBadge = document.getElementById('share-fab-badge');
+            if (fab) {
+                fab.classList.toggle('visible', played > 0);
+                if (fabBadge) fabBadge.textContent = played;
+            }
+            
             if (played === 0) {
                 document.getElementById('games-today-text').textContent = 'Play your first game!';
             } else if (played >= goal) {
@@ -18709,6 +18795,157 @@ Made with ❤️ for puzzle enthusiasts`;
             return lines.join('\n');
         }
         
+        // Generate weekly recap message
+        function generateWeeklyRecapMessage() {
+            const weekData = getWeeklyStats();
+            
+            if (weekData.totalGames === 0) {
+                return 'No games played this week yet!\n\nvia Game Shelf 🎮';
+            }
+            
+            let lines = [];
+            
+            // Header
+            lines.push('📊 Weekly Puzzle Recap');
+            lines.push(`${weekData.startDate} - ${weekData.endDate}`);
+            lines.push('');
+            
+            // Key stats
+            lines.push(`🎮 ${weekData.totalGames} games played`);
+            lines.push(`📅 ${weekData.daysActive}/7 days active`);
+            
+            if (weekData.winRate > 0) {
+                lines.push(`🏆 ${weekData.winRate}% win rate`);
+            }
+            
+            if (weekData.perfectCount > 0) {
+                lines.push(`⭐ ${weekData.perfectCount} perfect${weekData.perfectCount !== 1 ? 's' : ''}`);
+            }
+            
+            lines.push('');
+            
+            // Top games
+            if (weekData.topGames.length > 0) {
+                lines.push('Top games:');
+                weekData.topGames.slice(0, 3).forEach((g, i) => {
+                    const medal = ['🥇', '🥈', '🥉'][i];
+                    lines.push(`${medal} ${g.icon} ${g.name} (${g.count}x)`);
+                });
+                lines.push('');
+            }
+            
+            // Friend comparison
+            if (weekData.friendsBeaten > 0) {
+                lines.push(`👑 Beat ${weekData.friendsBeaten} friend${weekData.friendsBeaten !== 1 ? 's' : ''} this week!`);
+                lines.push('');
+            }
+            
+            // Best streak
+            if (weekData.bestStreak > 1) {
+                lines.push(`🔥 Best streak: ${weekData.bestStreak} days`);
+                lines.push('');
+            }
+            
+            lines.push('via Game Shelf 🎮');
+            
+            return lines.join('\n');
+        }
+        
+        // Get weekly statistics
+        function getWeeklyStats() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 = Sunday
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - dayOfWeek);
+            
+            const stats = {
+                totalGames: 0,
+                daysActive: 0,
+                perfectCount: 0,
+                wins: 0,
+                losses: 0,
+                winRate: 0,
+                topGames: [],
+                bestStreak: 0,
+                friendsBeaten: 0,
+                startDate: startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                endDate: today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+            };
+            
+            const gameCounts = {};
+            const activeDays = new Set();
+            
+            // Iterate through each day of the week
+            for (let i = 0; i <= dayOfWeek; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayHistory = appData.history?.[dateStr] || {};
+                
+                const dayGames = Object.keys(dayHistory);
+                if (dayGames.length > 0) {
+                    activeDays.add(dateStr);
+                }
+                
+                for (const gameId of dayGames) {
+                    const entry = dayHistory[gameId];
+                    const game = GAMES[gameId];
+                    
+                    stats.totalGames++;
+                    
+                    // Count by game
+                    if (!gameCounts[gameId]) {
+                        gameCounts[gameId] = { count: 0, icon: game?.icon || '🎮', name: game?.name || gameId };
+                    }
+                    gameCounts[gameId].count++;
+                    
+                    // Win/loss
+                    if (entry.won === true) stats.wins++;
+                    else if (entry.won === false) stats.losses++;
+                    
+                    // Perfects
+                    const score = entry.score || '';
+                    if (score.includes('1/') || score.includes('Perfect') || score.includes('🎯')) {
+                        stats.perfectCount++;
+                    }
+                }
+            }
+            
+            stats.daysActive = activeDays.size;
+            stats.winRate = stats.totalGames > 0 ? Math.round((stats.wins / stats.totalGames) * 100) : 0;
+            stats.bestStreak = getMaxStreak(appData);
+            
+            // Sort games by count
+            stats.topGames = Object.values(gameCounts)
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 5);
+            
+            // Count friends beaten (simplified - just count friends with less activity)
+            if (friendsData && friendsData.length > 0) {
+                for (const friend of friendsData) {
+                    const shelfData = friend.shelfData || friendsShelfData[friend.odataId] || {};
+                    const friendWeekGames = shelfData.weekCount || 0;
+                    if (stats.totalGames > friendWeekGames) {
+                        stats.friendsBeaten++;
+                    }
+                }
+            }
+            
+            return stats;
+        }
+        
+        // Open weekly recap share
+        function openWeeklyRecap() {
+            const message = generateWeeklyRecapMessage();
+            document.getElementById('instant-share-preview').value = message;
+            
+            // Generate weekly card
+            generateWeeklyShareCard();
+            
+            document.getElementById('instant-share-backdrop').classList.add('active');
+            document.getElementById('instant-share-sheet').classList.add('active');
+        }
+        
         // Get friend comparison stats for sharing
         function getFriendComparisonStats(gameIds) {
             const result = { beat: 0, tied: 0, lost: 0, total: 0 };
@@ -19177,6 +19414,112 @@ Made with ❤️ for puzzle enthusiasts`;
                 ctx.fillStyle = style.accent;
                 ctx.fillText(`🔥 Best streak: ${maxStreak} days`, width / 2, height - 60);
             }
+        }
+        
+        // Generate weekly recap image card
+        function generateWeeklyShareCard() {
+            const canvas = document.getElementById('share-card-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const style = IMAGE_STYLES[currentImageStyle];
+            const weekData = getWeeklyStats();
+            
+            // Use landscape format for weekly
+            const width = 600;
+            const height = 400;
+            canvas.width = width * 2;
+            canvas.height = height * 2;
+            canvas.style.width = '300px';
+            canvas.style.height = '200px';
+            ctx.scale(2, 2);
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, style.bgGradient[0]);
+            gradient.addColorStop(1, style.bgGradient[1]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Title
+            ctx.font = '700 28px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = style.text;
+            ctx.textAlign = 'center';
+            ctx.fillText('📊 Weekly Recap', width / 2, 45);
+            
+            // Date range
+            ctx.font = '500 14px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = style.secondary;
+            ctx.fillText(`${weekData.startDate} - ${weekData.endDate}`, width / 2, 70);
+            
+            // Stats grid (2x2)
+            const statsData = [
+                { label: 'Games', value: weekData.totalGames, icon: '🎮' },
+                { label: 'Days Active', value: `${weekData.daysActive}/7`, icon: '📅' },
+                { label: 'Win Rate', value: `${weekData.winRate}%`, icon: '🏆' },
+                { label: 'Perfects', value: weekData.perfectCount, icon: '⭐' }
+            ];
+            
+            const gridStartY = 100;
+            const cellWidth = width / 2;
+            const cellHeight = 70;
+            
+            statsData.forEach((stat, i) => {
+                const col = i % 2;
+                const row = Math.floor(i / 2);
+                const x = col * cellWidth + cellWidth / 2;
+                const y = gridStartY + row * cellHeight;
+                
+                // Icon
+                ctx.font = '24px serif';
+                ctx.fillStyle = style.text;
+                ctx.fillText(stat.icon, x, y);
+                
+                // Value
+                ctx.font = '700 28px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = style.accent;
+                ctx.fillText(String(stat.value), x, y + 35);
+                
+                // Label
+                ctx.font = '500 12px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = style.secondary;
+                ctx.fillText(stat.label, x, y + 52);
+            });
+            
+            // Top games row
+            if (weekData.topGames.length > 0) {
+                ctx.font = '600 14px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = style.secondary;
+                ctx.fillText('Top Games', width / 2, 265);
+                
+                const topGamesStr = weekData.topGames.slice(0, 3)
+                    .map(g => `${g.icon} ${g.name}`)
+                    .join('  •  ');
+                
+                ctx.font = '500 16px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = style.text;
+                ctx.fillText(topGamesStr, width / 2, 290);
+            }
+            
+            // Bottom stats
+            let bottomY = 330;
+            
+            if (weekData.friendsBeaten > 0) {
+                ctx.font = '600 18px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = style.accent;
+                ctx.fillText(`👑 Beat ${weekData.friendsBeaten} friend${weekData.friendsBeaten !== 1 ? 's' : ''} this week!`, width / 2, bottomY);
+                bottomY += 30;
+            } else if (weekData.bestStreak > 1) {
+                ctx.font = '600 18px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = style.accent;
+                ctx.fillText(`🔥 ${weekData.bestStreak}-day streak`, width / 2, bottomY);
+                bottomY += 30;
+            }
+            
+            // Branding
+            ctx.font = '600 14px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = style.secondary;
+            ctx.fillText('via Game Shelf 🎮', width / 2, height - 20);
         }
         
         function downloadShareCard() {
@@ -21908,7 +22251,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🎮 Game Shelf PWA v1.0.0 initialized - Test helpers enabled');
+            console.log('🎮 Game Shelf PWA v1.1.0 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
