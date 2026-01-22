@@ -1,25 +1,36 @@
-Game Shelf v1.2.0.19 Release Notes
+Game Shelf v1.2.0.20 Release Notes
 ==================================
 
 Release Date: 2025-01-22
 
-Changes in v1.2.0.19:
+Changes in v1.2.0.20:
 ---------------------
-- Added gs-app-id meta tag for reliable app detection
-- Google Analytics 4 tracking (G-XRL2SVN0YF)
-- Fixed all version strings for consistency
+- Fixed TestHelpers to use correct field names
+  - getState() now returns: games, history, stats, wallet (not selectedGames, results, streaks)
+  - seedTestData() now properly seeds: games, history, stats, wallet, friends, dailyGoal
+- Enables proper automated testing with window.GameShelfTest
 
-Version Locations (all now 1.2.0.19):
-------------------------------------
-- Meta tag
-- Service Worker cache
-- Header badge
-- Settings page
-- const version
-- Console.log
+TestHelpers Methods:
+-------------------
+- isTestMode() - Check if test mode active
+- getState() - Get sanitized app state
+- seedTestData(data) - Seed test data with deep merge
+- resetToFresh() - Clear all data
+- simulatePaste(text) - Simulate paste
+- click(selector) - Click helper
+- waitFor(selector) - Wait for element
+- isVisible(selector) - Check visibility
+- getText(selector) - Get text
+- getAppData() - Direct data access
+
+URL Parameters:
+--------------
+- ?fresh=1 - Clear all data and start fresh
+- ?testMode=1 - Enable test mode with helpers
+- ?seedData=base64json - Seed with test data
 
 Files Included:
 ---------------
 - index.html (main app)
-- sw.js (service worker)
+- sw.js (service worker v1.2.0.20)
 - manifest.json (PWA manifest)

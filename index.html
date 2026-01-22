@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.19">
+    <meta name="version" content="1.2.0.20">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -6897,7 +6897,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.19</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.20</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7126,7 +7126,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.19</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.20</div>
         </div>
     </div>
     
@@ -10675,12 +10675,13 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
                 return params.has('testMode') || params.has('debugConsole');
             },
             
-            // Get app state for assertions
+            // Get app state for assertions (uses actual field names)
             getState: () => ({
                 user: currentUser ? { uid: currentUser.uid, email: currentUser.email } : null,
-                games: appData.selectedGames || [],
-                results: appData.results || {},
-                streaks: appData.streaks || {},
+                games: appData.games || [],
+                history: appData.history || {},
+                stats: appData.stats || {},
+                wallet: appData.wallet || { tokens: 0, coins: 0 },
                 friends: appData.friends || [],
                 achievements: appData.achievements || {},
                 settings: appData.settings || {},
@@ -10688,13 +10689,16 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
                 currentTab: document.querySelector('.nav-tab.active')?.dataset?.tab || 'home'
             }),
             
-            // Seed test data
+            // Seed test data (uses actual field names, deep merges)
             seedTestData: (data) => {
-                if (data.games) appData.selectedGames = data.games;
-                if (data.results) appData.results = { ...appData.results, ...data.results };
-                if (data.streaks) appData.streaks = { ...appData.streaks, ...data.streaks };
+                if (data.games !== undefined) appData.games = data.games;
+                if (data.history) appData.history = { ...appData.history, ...data.history };
+                if (data.stats) appData.stats = { ...appData.stats, ...data.stats };
+                if (data.wallet) appData.wallet = { ...appData.wallet, ...data.wallet };
                 if (data.achievements) appData.achievements = { ...appData.achievements, ...data.achievements };
                 if (data.settings) appData.settings = { ...appData.settings, ...data.settings };
+                if (data.friends) appData.friends = data.friends;
+                if (data.dailyGoal !== undefined) appData.dailyGoal = data.dailyGoal;
                 saveData();
                 renderAll();
                 console.log('🧪 Test data seeded:', data);
@@ -14750,7 +14754,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.19';
+            const version = '1.2.0.20';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -22804,7 +22808,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.19 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.20 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
