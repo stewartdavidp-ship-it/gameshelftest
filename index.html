@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.3">
+    <meta name="version" content="1.2.0.4">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6877,7 +6877,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.3</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.4</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7106,7 +7106,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.3</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.4</div>
         </div>
     </div>
     
@@ -13207,11 +13207,14 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             const today = getTodayString();
             const gameInfo = GAMES[result.gameId];
             
-            // Clear lastLaunchedGame if this was the game being tracked
+            // Clear active game state if this was the game being tracked
+            // This clears both memory and localStorage
             if (typeof lastLaunchedGame !== 'undefined' && lastLaunchedGame === result.gameId) {
-                lastLaunchedGame = null;
-                lastLaunchTime = null;
+                clearActiveGame();
             }
+            
+            // Also dismiss return prompt if visible for this game
+            dismissReturnPromptIfShowing(result.gameId);
             
             // Update history
             if (!appData.history[today]) {
@@ -13490,9 +13493,8 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             updateAuthUI();
             
             // Clear return prompt state on auth changes to prevent spurious prompts
-            if (typeof lastLaunchedGame !== 'undefined') {
-                lastLaunchedGame = null;
-                lastLaunchTime = null;
+            if (typeof lastLaunchedGame !== 'undefined' && lastLaunchedGame) {
+                clearActiveGame();
             }
             
             if (user) {
@@ -14705,7 +14707,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.3';
+            const version = '1.2.0.4';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17480,6 +17482,9 @@ Made with ❤️ for puzzle enthusiasts`;
             lastLaunchTime = Date.now();
             returnPromptDismissedFor = null;
             
+            // PERSIST to localStorage so we can detect on app restart
+            persistActiveGame(gameId);
+            
             // Track if this is first launch after setting preference (needs verification)
             const isFirstLaunch = !appData.launchVerified?.[gameId];
             if (game.hasApp && isFirstLaunch) {
@@ -17526,6 +17531,56 @@ Made with ❤️ for puzzle enthusiasts`;
         
         // ============ LAUNCH VERIFICATION ============
         let pendingVerifyGame = null;
+        
+        // ============ PERSISTENT GAME STATE ============
+        // Persists active game to localStorage so we can detect on app restart
+        function persistActiveGame(gameId) {
+            const state = {
+                gameId: gameId,
+                launchTime: Date.now()
+            };
+            localStorage.setItem('gameshelf_active_game', JSON.stringify(state));
+            console.log(`🎮 Persisted active game: ${gameId}`);
+        }
+        
+        function clearActiveGame() {
+            localStorage.removeItem('gameshelf_active_game');
+            lastLaunchedGame = null;
+            lastLaunchTime = null;
+            console.log('🎮 Cleared active game state');
+        }
+        
+        function getActiveGame() {
+            try {
+                const stored = localStorage.getItem('gameshelf_active_game');
+                if (!stored) return null;
+                const state = JSON.parse(stored);
+                
+                // Validate state has required fields
+                if (!state.gameId || !state.launchTime) return null;
+                
+                // Check if stale (more than 30 minutes old)
+                if (Date.now() - state.launchTime > 30 * 60 * 1000) {
+                    console.log('🎮 Active game state is stale, clearing');
+                    localStorage.removeItem('gameshelf_active_game');
+                    return null;
+                }
+                
+                return state;
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        // Restore state from localStorage on init
+        function restoreActiveGameState() {
+            const state = getActiveGame();
+            if (state) {
+                lastLaunchedGame = state.gameId;
+                lastLaunchTime = state.launchTime;
+                console.log(`🎮 Restored active game from localStorage: ${state.gameId}`);
+            }
+        }
         
         function checkLaunchVerification() {
             // Called when user returns to app
@@ -17702,15 +17757,23 @@ Made with ❤️ for puzzle enthusiasts`;
         
         // Return-from-game detection
         function checkReturnFromGame() {
-            // Don't show if no game was launched
-            if (!lastLaunchedGame || !lastLaunchTime) return;
+            // Restore from localStorage if memory state is empty (e.g., after app restart)
+            if (!lastLaunchedGame || !lastLaunchTime) {
+                const activeGame = getActiveGame();
+                if (activeGame) {
+                    lastLaunchedGame = activeGame.gameId;
+                    lastLaunchTime = activeGame.launchTime;
+                    console.log(`🎮 Restored active game from localStorage: ${activeGame.gameId}`);
+                } else {
+                    return; // No game was launched
+                }
+            }
             
             // Don't show if launch was more than 30 minutes ago (stale)
             const elapsed = Date.now() - lastLaunchTime;
             if (elapsed > 30 * 60 * 1000) {
-                console.log('🎮 Clearing stale lastLaunchedGame (>30min old)');
-                lastLaunchedGame = null;
-                lastLaunchTime = null;
+                console.log('🎮 Clearing stale active game (>30min old)');
+                clearActiveGame();
                 return;
             }
             
@@ -17724,13 +17787,19 @@ Made with ❤️ for puzzle enthusiasts`;
             const todayHistory = appData.history[getTodayString()] || {};
             if (todayHistory[lastLaunchedGame]) {
                 console.log(`🎮 Game ${lastLaunchedGame} already logged, skipping return prompt`);
-                lastLaunchedGame = null;
-                lastLaunchTime = null;
+                clearActiveGame();
                 return;
             }
             
             // Don't show if clipboard already detected this game
             if (detectedClipboard?.result?.gameId === lastLaunchedGame) return;
+            
+            // Don't show if return prompt is already visible
+            const prompt = document.getElementById('return-prompt');
+            if (prompt && prompt.classList.contains('visible')) {
+                console.log('🎮 Return prompt already visible, skipping');
+                return;
+            }
             
             const game = GAMES[lastLaunchedGame];
             if (!game) return;
@@ -17770,6 +17839,16 @@ Made with ❤️ for puzzle enthusiasts`;
             }
             // Remember we dismissed for this game
             returnPromptDismissedFor = lastLaunchedGame;
+        }
+        
+        // Dismiss return prompt if it's currently showing for a specific game
+        // Called when a game is logged to prevent stale prompts
+        function dismissReturnPromptIfShowing(gameId) {
+            const prompt = document.getElementById('return-prompt');
+            if (prompt && prompt.classList.contains('visible') && lastLaunchedGame === gameId) {
+                console.log(`🎮 Auto-dismissing return prompt for ${gameId} (game was logged)`);
+                dismissReturnPrompt();
+            }
         }
         
         function returnPromptNotYet() {
@@ -17987,7 +18066,7 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Don't show if the launched game is already logged
             if (todayHistory[lastLaunchedGame]) {
-                lastLaunchedGame = null;
+                clearActiveGame();
                 return;
             }
             
@@ -18039,7 +18118,7 @@ Made with ❤️ for puzzle enthusiasts`;
                         }
                         
                         // Clear the launch tracking since we detected via clipboard
-                        lastLaunchedGame = null;
+                        clearActiveGame();
                     }
                 } catch (e) {
                     // Clipboard access denied - that's fine
@@ -22147,6 +22226,9 @@ Made with ❤️ for puzzle enthusiasts`;
         function init() {
             loadData();
             
+            // Restore active game state from localStorage (survives app restarts)
+            restoreActiveGameState();
+            
             // Check if setup is complete - if not, show setup flow for new users
             if (!isSetupComplete()) {
                 console.log('🎮 First time user - showing setup flow');
@@ -22284,7 +22366,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.3 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.4 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
