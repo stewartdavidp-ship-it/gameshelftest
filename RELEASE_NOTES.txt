@@ -1,17 +1,33 @@
-Game Shelf v1.2.0.12 Release Notes
+Game Shelf v1.2.0.14 Release Notes
 ===================================
 Released: January 22, 2026
 
-CHANGES FROM v1.2.0.11:
+CHANGES FROM v1.2.0.13:
 -----------------------
-- Added 30-second minimum time check for tap-to-log prompt
-  - If user was away < 30 seconds, no prompt (just browsed menu)
+- Added Quick Share Button (FAB) to tutorial
+  - New step showing the floating 📤 button
+  - Explains the badge showing logged games count
+  - Forces FAB visible during tutorial demo
   
-- Added "already processed" clipboard tracking
-  - After logging a game, remember that clipboard content
-  - If same content is still there on next return, skip prompt
-  - Prevents false prompts when visiting another game after logging
+- Improved tutorial content:
+  - Better descriptions for Friends & Battles section
+  - Updated Share Hub description to mention weekly recaps
+  - Refined wording throughout
 
-PREVIOUS (v1.2.0.11):
+- Tutorial now has 11 steps:
+  1. Your Games (home grid)
+  2. Daily Progress (progress section)
+  3. Log Your Results (log button)
+  4. Quick Share Button (floating FAB) ← NEW
+  5. Games Tab (nav)
+  6. Browse Games (categories)
+  7. Battles Tab (nav)
+  8. Friends & Battles (social tabs)
+  9. Share Tab (nav)
+  10. Share Hub (header)
+  11. Menu & Settings (menu)
+
+PREVIOUS (v1.2.0.13):
 ---------------------
-- Games tab icon → 🧩, Social tab → "Battles" with ⚔️ icon
+- Tutorial dark mode fix (purple border/glow)
+- Tutorial selector fixes

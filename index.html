@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.12">
+    <meta name="version" content="1.2.0.14">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6632,6 +6632,9 @@
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85);
             transition: all 0.4s ease;
             pointer-events: none;
+            /* Add visible border for dark mode */
+            border: 3px solid var(--accent-purple);
+            outline: 2px solid rgba(102, 126, 234, 0.5);
         }
         
         .tutorial-spotlight.pulse {
@@ -6639,8 +6642,14 @@
         }
         
         @keyframes tutorialPulse {
-            0%, 100% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85), 0 0 0 0 rgba(102, 126, 234, 0.4); }
-            50% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85), 0 0 0 8px rgba(102, 126, 234, 0.4); }
+            0%, 100% { 
+                box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85), 0 0 15px 5px rgba(102, 126, 234, 0.6); 
+                border-color: var(--accent-purple);
+            }
+            50% { 
+                box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85), 0 0 25px 10px rgba(102, 126, 234, 0.8); 
+                border-color: #8b9cf4;
+            }
         }
         
         .tutorial-card {
@@ -6877,7 +6886,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.12</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.14</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7106,7 +7115,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.12</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.14</div>
         </div>
     </div>
     
@@ -7302,7 +7311,7 @@
         <!-- Social Screen -->
         <div class="screen" id="screen-social">
             <!-- Social Tabs -->
-            <div style="display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px;">
+            <div id="social-tabs-container" style="display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px;">
                 <button class="social-tab active" data-social-tab="friends" onclick="switchSocialTab('friends')" style="flex: 1; padding: 12px; border: none; background: none; font-weight: 600; color: var(--text-primary); border-bottom: 2px solid var(--accent-purple);">
                     👥 Friends
                 </button>
@@ -14721,7 +14730,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.12';
+            const version = '1.2.0.14';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -22292,25 +22301,39 @@ Made with ❤️ for puzzle enthusiasts`;
                 tip: '💡 Games you haven\'t played yet show a play button'
             },
             {
-                id: 'log-button',
-                title: '📋 Log Your Results',
-                content: 'After playing a game, tap this button to <strong>log your result</strong>. You can paste share text or use quick log.',
-                target: '.big-log-button',
-                position: 'top',
-                tip: '💡 Pro tip: Copy your share text before opening Game Shelf - we\'ll detect it automatically!'
-            },
-            {
                 id: 'progress',
                 title: '📊 Daily Progress',
                 content: 'Track your <strong>daily goal</strong> and current <strong>streak</strong>. The progress bar fills as you complete games.',
                 target: '.progress-section',
-                position: 'top',
+                position: 'bottom',
                 tip: '🔥 Keep your streak alive by playing at least one game each day'
             },
             {
+                id: 'log-button',
+                title: '📋 Log Your Results',
+                content: 'After playing a game, tap this button to <strong>log your result</strong>. You can paste share text or enter scores manually.',
+                target: '.big-log-button',
+                position: 'top',
+                tip: '💡 Pro tip: Copy your share text before returning - we\'ll detect it automatically!'
+            },
+            {
+                id: 'share-fab',
+                title: '📤 Quick Share Button',
+                content: 'This floating button shows how many games you\'ve <strong>logged today</strong>. Tap it to instantly share all your results!',
+                target: '#share-fab',
+                position: 'left',
+                action: () => {
+                    switchTab('home');
+                    // Ensure FAB is visible for tutorial
+                    const fab = document.getElementById('share-fab');
+                    if (fab) fab.classList.add('visible');
+                },
+                tip: '💡 The badge shows your logged game count'
+            },
+            {
                 id: 'nav-games',
-                title: '🎮 Games Tab',
-                content: 'The <strong>Games tab</strong> shows your full game shelf. You can browse all 36+ supported games and add new ones.',
+                title: '🧩 Games Tab',
+                content: 'The <strong>Games tab</strong> shows your full game shelf. Browse all 36+ supported games and add new ones to track.',
                 target: '[data-tab="games"]',
                 position: 'top',
                 action: () => switchTab('games')
@@ -22320,13 +22343,13 @@ Made with ❤️ for puzzle enthusiasts`;
                 title: '📚 Browse Games',
                 content: 'Explore games by category: <strong>NYT Games, LinkedIn Games, Word Games</strong>, and more. Tap a category to expand it.',
                 target: '#browse-categories',
-                position: 'top',
+                position: 'bottom',
                 tip: '💡 Tap "+ Add" to add a game to your shelf'
             },
             {
                 id: 'nav-social',
-                title: '👥 Social Tab',
-                content: 'Connect with <strong>friends</strong>, see what they\'re playing, and compete in <strong>battles</strong>!',
+                title: '⚔️ Battles Tab',
+                content: 'Connect with <strong>friends</strong> and compete in <strong>battles</strong>! See who can rack up the highest scores.',
                 target: '[data-tab="social"]',
                 position: 'top',
                 action: () => switchTab('social')
@@ -22334,33 +22357,34 @@ Made with ❤️ for puzzle enthusiasts`;
             {
                 id: 'social-overview',
                 title: '🏆 Friends & Battles',
-                content: 'The Social tab has three sections: <strong>Friends</strong> (your connections), <strong>Activity</strong> (what friends are playing), and <strong>Battles</strong> (competitions).',
-                target: '.social-tab',
+                content: 'Add friends, see their <strong>activity</strong>, and create <strong>battles</strong> to compete over multiple days!',
+                target: '#social-tabs-container',
                 position: 'bottom',
-                tip: '⚔️ Create a battle to compete with friends over multiple days'
+                tip: '⚔️ Battles track scores across days - challenge your friends!'
             },
             {
                 id: 'nav-share',
-                title: '📤 Share Tab',
-                content: 'Share your daily results with friends! Create <strong>image cards</strong> or copy text for social media.',
+                title: '📢 Share Tab',
+                content: 'Share your daily results with friends! Create <strong>custom messages</strong> or <strong>image cards</strong> for social media.',
                 target: '[data-tab="share"]',
                 position: 'top',
                 action: () => switchTab('share')
             },
             {
-                id: 'share-overview',
-                title: '🎨 Share Your Wins',
-                content: 'Choose a platform, customize your message, and share! You can create <strong>visual cards</strong> to post on Instagram or Twitter.',
-                target: '.share-results-section',
-                position: 'top',
-                tip: '📸 Download image cards to share on social media'
+                id: 'share-hub',
+                title: '🎨 Share Hub',
+                content: 'Compose messages, pick platforms, and share! You can also create <strong>weekly recaps</strong> to show your progress.',
+                target: '.share-hub-header',
+                position: 'bottom',
+                tip: '📸 Download image cards to post on Instagram or Twitter'
             },
             {
                 id: 'menu-button',
                 title: '☰ Menu & Settings',
-                content: 'Access your <strong>account</strong>, <strong>achievements</strong>, <strong>rewards shop</strong>, and settings from the menu.',
+                content: 'Access your <strong>account</strong>, <strong>achievements</strong>, <strong>rewards shop</strong>, and settings here.',
                 target: '.menu-btn',
                 position: 'bottom',
+                action: () => switchTab('home'),
                 tip: '🎁 Invite friends to earn bonus tokens!'
             }
         ];
@@ -22703,7 +22727,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.12 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.14 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
