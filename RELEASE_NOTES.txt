@@ -1,24 +1,23 @@
-Game Shelf v1.2.0.9 Release Notes
-==================================
+Game Shelf v1.2.0.10 Release Notes
+===================================
 Released: January 22, 2026
 
-CHANGES FROM v1.2.0.8:
+CHANGES FROM v1.2.0.9:
 ----------------------
-- Fixed clipboard prompt showing for GS Originals (Quotle/Slate/Rungs/Word Boxing)
-  - showTapToLogCardForClipboardCheck() now skips GS Originals
-  - checkClipboardOnReturn() now skips GS Originals
-  - tapToLogClipboardWithDiff() now skips GS Originals
-  
-- Fixed false prompts when clipboard couldn't be captured on leave
-  - CLIPBOARD_UNKNOWN state now requires matching lastLaunchedGame
-  - More conservative: only prompt if result matches the game we launched
-  
-- Added detailed console logging for debugging clipboard flow:
-  - Logs clipboard state on leave and return
-  - Logs decision points for troubleshooting
+- REMOVED GS Original skip from clipboard detection
+  - localStorage sync was disabled in v1.2.0.2
+  - GS Originals (Quotle/Slate/Rungs/Word Boxing) now use clipboard like all other games
+  - Removed isGSOriginal() checks from:
+    - checkClipboardOnReturn()
+    - tapToLogClipboardWithDiff()
+    - showTapToLogCardForClipboardCheck()
+    - checkReturnFromGame()
 
-PREVIOUS (v1.2.0.8):
+- All games now use the same clipboard diff detection:
+  1. Capture clipboard when leaving app
+  2. Compare clipboard on return
+  3. If changed + valid result → auto-log or prompt
+
+PREVIOUS (v1.2.0.9):
 --------------------
-- Redesigned clipboard detection with "diff" approach
-- Captures clipboard state when leaving the app
-- Compares on return to detect new content
+- Added GS Original skip (broken - localStorage sync was disabled)
