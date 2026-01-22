@@ -1,28 +1,43 @@
-Game Shelf v1.2.0.21 Release Notes
-==================================
+Game Shelf v1.2.0.22
+====================
+Release Date: January 22, 2025
 
-Release Date: 2025-01-22
+UAT MODE & FEEDBACK SYSTEM
+--------------------------
+This release adds a comprehensive User Acceptance Testing (UAT) mode 
+designed for collecting feedback during beta testing.
 
-Changes in v1.2.0.21:
----------------------
-- Fixed GS Originals URLs to use lowercase repo names
-- Test Mode now uses correct URLs: quotletest, slatetest, rungstest, wordboxingtest
-- Production URLs now use: quotle, slate, rungs, wordboxing
+New Features:
 
-URL Mapping (Test Mode OFF - Production):
------------------------------------------
-- Quotle:      https://stewartdavidp-ship-it.github.io/quotle/
-- Slate:       https://stewartdavidp-ship-it.github.io/slate/
-- Rungs:       https://stewartdavidp-ship-it.github.io/rungs/
-- Word Boxing: https://stewartdavidp-ship-it.github.io/wordboxing/
+1. UAT Mode Toggle (Settings > Developer)
+   - Enables floating feedback button
+   - Shows "UAT Mode" badge in top-left corner
+   - Captures debug log of user actions
 
-URL Mapping (Test Mode ON):
----------------------------
-- Quotle:      https://stewartdavidp-ship-it.github.io/quotletest/
-- Slate:       https://stewartdavidp-ship-it.github.io/slatetest/
-- Rungs:       https://stewartdavidp-ship-it.github.io/rungstest/
-- Word Boxing: https://stewartdavidp-ship-it.github.io/wordboxingtest/
+2. Floating Feedback Button
+   - Always-visible purple button (bottom-left)
+   - One-tap access to report issues/enhancements
+   - Only visible when UAT Mode is enabled
 
-Previous v1.2.0.20 Changes:
----------------------------
-- Fixed TestHelpers to use correct field names (games, history, stats, wallet)
+3. Auto-Captured Debug Context
+   - Current tab and app version
+   - Wallet balance, game count, streak
+   - Device/platform info
+   - Last 5 activity log entries
+   - Console errors captured during session
+   - Recent user actions (tab switches, game logs, launches)
+
+4. Enhanced Issue Reports
+   - Debug context automatically attached when UAT mode is on
+   - "Include debug log" checkbox (default: ON)
+   - Source marked as "pwa-uat" for UAT submissions
+   - App version now pulled from meta tag (not hardcoded)
+
+Technical Details:
+- UAT debug log stores up to 50 recent actions
+- Console.error intercepted and logged
+- Context captured on feedback form open
+- Firebase structure: reported-issues/{id}/debugContext
+
+Previous (v1.2.0.21):
+- Fixed GS Originals test/prod URL capitalization

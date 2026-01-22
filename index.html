@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.21">
+    <meta name="version" content="1.2.0.22">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -6885,9 +6885,95 @@
             font-size: 0.85rem;
             margin-bottom: 16px;
         }
+        /* Floating Feedback Button - UAT Mode */
+        .uat-feedback-btn {
+            position: fixed;
+            bottom: 80px;
+            left: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .uat-feedback-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+        .uat-feedback-btn:active {
+            transform: scale(0.95);
+        }
+        .uat-feedback-btn.hidden {
+            display: none;
+        }
+        
+        /* UAT Mode Indicator */
+        .uat-mode-badge {
+            position: fixed;
+            top: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            z-index: 1001;
+            display: none;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+        .uat-mode-badge.active {
+            display: block;
+        }
+        
+        /* Debug Log Panel */
+        .debug-log-preview {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .debug-log-preview .log-entry {
+            padding: 2px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .debug-log-preview .log-entry:last-child {
+            border-bottom: none;
+        }
+        .debug-log-preview .log-time {
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+        .debug-log-preview .log-action {
+            color: var(--text-primary);
+        }
+
     </style>
 </head>
 <body>
+    <!-- UAT Mode Badge -->
+    <div class="uat-mode-badge" id="uat-mode-badge">🧪 UAT Mode</div>
+    
+    <!-- Floating Feedback Button (UAT) -->
+    <button class="uat-feedback-btn hidden" id="uat-feedback-btn" onclick="openUATFeedback()" title="Send Feedback">
+        💬
+    </button>
+    
     <!-- Header -->
     <header class="header">
         <div class="logo">
@@ -6897,7 +6983,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.21</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.22</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7045,6 +7131,17 @@
                         <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 36px;">
                             Use test repos for GS Originals (Quotle, Slate, Rungs, Word Boxing)
                         </p>
+                        
+                        <div class="settings-toggle-row" style="margin-top: 12px;">
+                            <label>
+                                <span class="icon">🎯</span>
+                                <span>UAT Mode</span>
+                            </label>
+                            <input type="checkbox" id="uat-mode-toggle" onchange="toggleUATMode(this.checked)">
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 36px;">
+                            Show feedback button & capture debug info for testing
+                        </p>
                     </div>
                 </div>
             </div>
@@ -7126,7 +7223,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.21</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.22</div>
         </div>
     </div>
     
@@ -8203,6 +8300,20 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
                     <div style="margin-bottom: 14px;">
                         <label style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; display: block;">Details (optional)</label>
                         <textarea id="issue-description" rows="3" placeholder="More info about what went wrong..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); font-size: 0.9rem; resize: none;"></textarea>
+                    </div>
+                    
+                    <!-- UAT Debug Context (visible when UAT mode is on) -->
+                    <div id="uat-debug-section" style="margin-bottom: 14px; display: none;">
+                        <label style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; display: block;">🔍 Debug Context (auto-captured)</label>
+                        <div class="debug-log-preview" id="debug-log-preview">
+                            Loading context...
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-secondary);">
+                                <input type="checkbox" id="include-debug-log" checked>
+                                Include debug log with report
+                            </label>
+                        </div>
                     </div>
                     
                     <div style="margin-bottom: 14px;">
@@ -13251,6 +13362,8 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         function logGame(result) {
             if (!result || !result.gameId) return false;
             
+            uatLog('Log game: ' + result.gameId + (result.score ? ' score:' + result.score : ''));
+            
             const today = getTodayString();
             const gameInfo = GAMES[result.gameId];
             
@@ -13772,6 +13885,179 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             if (toggle) {
                 toggle.checked = isTestModeEnabled();
             }
+        }
+        
+        // ============ UAT MODE SYSTEM ============
+        let uatDebugLog = []; // Stores recent actions for debug reports
+        const UAT_LOG_MAX = 50; // Max entries to keep
+        
+        function isUATModeEnabled() {
+            return localStorage.getItem('gameshelf_uat_mode') === 'true';
+        }
+        
+        function toggleUATMode(enabled) {
+            localStorage.setItem('gameshelf_uat_mode', enabled ? 'true' : 'false');
+            
+            // Update UI elements
+            const feedbackBtn = document.getElementById('uat-feedback-btn');
+            const uatBadge = document.getElementById('uat-mode-badge');
+            
+            if (feedbackBtn) {
+                feedbackBtn.classList.toggle('hidden', !enabled);
+            }
+            if (uatBadge) {
+                uatBadge.classList.toggle('active', enabled);
+            }
+            
+            showToast(enabled ? '🎯 UAT Mode ON - feedback button visible' : '🎯 UAT Mode OFF');
+            
+            if (enabled) {
+                uatLog('UAT Mode enabled');
+            }
+        }
+        
+        function initUATMode() {
+            const toggle = document.getElementById('uat-mode-toggle');
+            const feedbackBtn = document.getElementById('uat-feedback-btn');
+            const uatBadge = document.getElementById('uat-mode-badge');
+            const isEnabled = isUATModeEnabled();
+            
+            if (toggle) {
+                toggle.checked = isEnabled;
+            }
+            if (feedbackBtn) {
+                feedbackBtn.classList.toggle('hidden', !isEnabled);
+            }
+            if (uatBadge) {
+                uatBadge.classList.toggle('active', isEnabled);
+            }
+            
+            // Start capturing console errors
+            const originalError = console.error;
+            console.error = function(...args) {
+                uatLog('ERROR: ' + args.join(' '));
+                originalError.apply(console, args);
+            };
+        }
+        
+        function uatLog(action) {
+            if (!isUATModeEnabled()) return;
+            
+            uatDebugLog.unshift({
+                time: new Date().toISOString(),
+                action: action,
+                tab: document.querySelector('.nav-tab.active')?.dataset?.tab || 'unknown'
+            });
+            
+            if (uatDebugLog.length > UAT_LOG_MAX) {
+                uatDebugLog = uatDebugLog.slice(0, UAT_LOG_MAX);
+            }
+        }
+        
+        function captureDebugContext() {
+            const now = new Date();
+            const recentActivity = (appData.activityLog || []).slice(0, 5);
+            
+            const context = {
+                // App state
+                appVersion: document.querySelector('meta[name="version"]')?.content || 'unknown',
+                currentTab: document.querySelector('.nav-tab.active')?.dataset?.tab || 'unknown',
+                
+                // User state
+                gamesCount: (appData.games || []).length,
+                walletTokens: appData.wallet?.tokens ?? 0,
+                walletCoins: appData.wallet?.coins ?? 0,
+                currentStreak: calculateStreak(),
+                
+                // Session info
+                timestamp: now.toISOString(),
+                sessionDuration: Math.round((now - new Date(appData.lastVisit || now)) / 1000 / 60) + ' mins',
+                
+                // Device info
+                platform: getPlatformInfo(),
+                screenSize: `${window.innerWidth}x${window.innerHeight}`,
+                userAgent: navigator.userAgent.substring(0, 100),
+                
+                // Recent activity (last 5 items from app's activity log)
+                recentActivity: recentActivity.map(a => ({
+                    action: a.action,
+                    time: new Date(a.ts).toLocaleTimeString()
+                })),
+                
+                // UAT debug log (actions captured this session)
+                debugLog: uatDebugLog.slice(0, 10),
+                
+                // Console errors captured
+                consoleErrors: uatDebugLog.filter(l => l.action.startsWith('ERROR:')).slice(0, 5)
+            };
+            
+            return context;
+        }
+        
+        function getPlatformInfo() {
+            const ua = navigator.userAgent;
+            if (/iPhone/.test(ua)) return 'iPhone';
+            if (/iPad/.test(ua)) return 'iPad';
+            if (/Android/.test(ua)) return /Mobile/.test(ua) ? 'Android' : 'Android Tablet';
+            if (/Mac/.test(ua)) return 'Mac';
+            if (/Windows/.test(ua)) return 'Windows';
+            return 'Unknown';
+        }
+        
+        function calculateStreak() {
+            let streak = 0;
+            let checkDate = new Date();
+            while (true) {
+                const dateStr = checkDate.toISOString().split('T')[0];
+                const dayHistory = appData.history?.[dateStr];
+                if (dayHistory && Object.keys(dayHistory).length > 0) {
+                    streak++;
+                    checkDate.setDate(checkDate.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+            return streak;
+        }
+        
+        function openUATFeedback() {
+            // Log the feedback open action
+            uatLog('Opened feedback form');
+            
+            // Show/populate the debug section
+            const debugSection = document.getElementById('uat-debug-section');
+            const debugPreview = document.getElementById('debug-log-preview');
+            
+            if (isUATModeEnabled() && debugSection && debugPreview) {
+                debugSection.style.display = 'block';
+                
+                const context = captureDebugContext();
+                let html = `
+                    <div class="log-entry"><span class="log-time">📱</span><span class="log-action">Tab: ${context.currentTab} | v${context.appVersion}</span></div>
+                    <div class="log-entry"><span class="log-time">💎</span><span class="log-action">${context.walletTokens} tokens | 🪙 ${context.walletCoins} coins | 🔥 ${context.currentStreak} streak</span></div>
+                    <div class="log-entry"><span class="log-time">🎮</span><span class="log-action">${context.gamesCount} games tracked</span></div>
+                    <div class="log-entry"><span class="log-time">📱</span><span class="log-action">${context.platform} | ${context.screenSize}</span></div>
+                `;
+                
+                if (context.recentActivity.length > 0) {
+                    html += '<div class="log-entry" style="margin-top: 8px; font-weight: bold;">Recent Activity:</div>';
+                    context.recentActivity.forEach(a => {
+                        html += `<div class="log-entry"><span class="log-time">${a.time}</span><span class="log-action">${a.action}</span></div>`;
+                    });
+                }
+                
+                if (context.consoleErrors.length > 0) {
+                    html += '<div class="log-entry" style="margin-top: 8px; font-weight: bold; color: #ef4444;">Console Errors:</div>';
+                    context.consoleErrors.forEach(e => {
+                        html += `<div class="log-entry" style="color: #ef4444;"><span class="log-action">${e.action}</span></div>`;
+                    });
+                }
+                
+                debugPreview.innerHTML = html;
+            }
+            
+            // Open the issue sheet
+            reportIssue();
         }
         
         // ============ REFERRAL SYSTEM ============
@@ -14895,9 +15181,19 @@ Made with ❤️ for puzzle enthusiasts`;
                 reporterName: appData.displayName || 'Anonymous',
                 status: 'open',
                 timestamp: Date.now(),
-                appVersion: '2.0.0',
+                appVersion: document.querySelector('meta[name="version"]')?.content || 'unknown',
                 source: 'pwa'
             };
+            
+            // Include debug context if UAT mode is enabled and checkbox is checked
+            const includeDebugLog = document.getElementById('include-debug-log')?.checked;
+            if (isUATModeEnabled() && includeDebugLog) {
+                issue.debugContext = captureDebugContext();
+                issue.source = 'pwa-uat';
+            }
+            
+            // Log the submission
+            uatLog('Submitted feedback: ' + issue.type + ' - ' + issue.title);
             
             // Try Firebase, but always acknowledge regardless of result
             try {
@@ -14915,6 +15211,11 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('issue-report-form').reset();
             clearIssueScreenshot();
             issueScreenshotData = null;
+            
+            // Hide debug section
+            const debugSection = document.getElementById('uat-debug-section');
+            if (debugSection) debugSection.style.display = 'none';
+            
             closeIssueSheet();
             btn.disabled = false;
             btn.textContent = '📤 Submit';
@@ -17591,6 +17892,8 @@ Made with ❤️ for puzzle enthusiasts`;
             const game = GAMES[gameId];
             if (!game) return;
             
+            uatLog('Launch game: ' + gameId);
+            
             // Track this launch for return detection
             lastLaunchedGame = gameId;
             lastLaunchTime = Date.now();
@@ -18787,6 +19090,8 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function switchTab(tab) {
+            uatLog('Switch tab: ' + tab);
+            
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.nav-tab[data-tab="${tab}"]`).classList.add('active');
             
@@ -22714,6 +23019,9 @@ Made with ❤️ for puzzle enthusiasts`;
             // Load test mode setting
             initTestModeToggle();
             
+            // Load UAT mode setting
+            initUATMode();
+            
             // Check for referral code in URL
             checkReferralParam();
             
@@ -22808,7 +23116,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.21 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.22 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
