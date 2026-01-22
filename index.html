@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.5">
+    <meta name="version" content="1.2.0.6">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6877,7 +6877,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.5</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.6</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7106,7 +7106,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.5</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.6</div>
         </div>
     </div>
     
@@ -14721,7 +14721,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.5';
+            const version = '1.2.0.6';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17807,6 +17807,14 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Don't show if clipboard already detected this game
             if (detectedClipboard?.result?.gameId === lastLaunchedGame) return;
+            
+            // For GS Originals, don't show return prompt - use localStorage sync instead
+            // These games write to localStorage on completion, which syncs automatically
+            if (isGSOriginal(lastLaunchedGame)) {
+                console.log(`🎮 ${lastLaunchedGame} is a GS Original - using localStorage sync instead of return prompt`);
+                clearActiveGame();
+                return;
+            }
             
             // Don't show if return prompt is already visible
             const prompt = document.getElementById('return-prompt');
@@ -22380,7 +22388,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.5 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.6 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
