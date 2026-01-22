@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.4">
+    <meta name="version" content="1.2.0.5">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6877,7 +6877,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.4</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.5</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7106,7 +7106,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.4</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.5</div>
         </div>
     </div>
     
@@ -7114,7 +7114,14 @@
     <div class="tutorial-overlay" id="tutorial-overlay">
         <!-- Welcome Screen (shown first) -->
         <div class="tutorial-welcome" id="tutorial-welcome">
-            <div class="tutorial-welcome-icon">📖</div>
+            <div class="tutorial-welcome-icon">
+                <svg viewBox="0 0 100 100" width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+                    <defs><linearGradient id="gsTutBadge" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#667eea"/><stop offset="100%" style="stop-color:#764ba2"/></linearGradient></defs>
+                    <rect x="5" y="5" width="90" height="90" rx="20" fill="url(#gsTutBadge)"/>
+                    <g transform="rotate(-12, 35, 50)"><rect x="15" y="28" width="28" height="36" rx="4" fill="white"/><circle cx="43" cy="46" r="6" fill="white"/><text x="29" y="54" font-family="Arial" font-size="20" font-weight="bold" fill="#667eea" text-anchor="middle">G</text></g>
+                    <g transform="rotate(12, 65, 50)"><rect x="57" y="28" width="28" height="36" rx="4" fill="rgba(255,255,255,0.9)"/><circle cx="57" cy="46" r="6" fill="url(#gsTutBadge)"/><text x="71" y="54" font-family="Arial" font-size="20" font-weight="bold" fill="#764ba2" text-anchor="middle">S</text></g>
+                </svg>
+            </div>
             <h2>Welcome to Game Shelf!</h2>
             <p>Let's take a quick tour of the app so you can get the most out of it.</p>
             
@@ -7613,7 +7620,14 @@
             </div>
             
             <div class="setup-header">
-                <div class="setup-header-icon">🎮</div>
+                <div class="setup-header-icon">
+                    <svg viewBox="0 0 100 100" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+                        <defs><linearGradient id="gsBadgeGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#667eea"/><stop offset="100%" style="stop-color:#764ba2"/></linearGradient></defs>
+                        <rect x="5" y="5" width="90" height="90" rx="20" fill="url(#gsBadgeGrad)"/>
+                        <g transform="rotate(-12, 35, 50)"><rect x="15" y="28" width="28" height="36" rx="4" fill="white"/><circle cx="43" cy="46" r="6" fill="white"/><text x="29" y="54" font-family="Arial" font-size="20" font-weight="bold" fill="#667eea" text-anchor="middle">G</text></g>
+                        <g transform="rotate(12, 65, 50)"><rect x="57" y="28" width="28" height="36" rx="4" fill="rgba(255,255,255,0.9)"/><circle cx="57" cy="46" r="6" fill="url(#gsBadgeGrad)"/><text x="71" y="54" font-family="Arial" font-size="20" font-weight="bold" fill="#764ba2" text-anchor="middle">S</text></g>
+                    </svg>
+                </div>
                 <h1>Welcome to Game Shelf</h1>
                 <p>Track all your daily puzzles in one place</p>
             </div>
@@ -14707,7 +14721,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.4';
+            const version = '1.2.0.5';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -22366,7 +22380,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.4 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.5 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
