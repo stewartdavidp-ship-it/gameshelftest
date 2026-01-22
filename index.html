@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0">
+    <meta name="version" content="1.2.0.3">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6877,7 +6877,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.3</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7011,6 +7011,21 @@
                             Reset All Data
                         </a>
                     </div>
+                    
+                    <!-- Developer -->
+                    <div class="settings-section">
+                        <div class="settings-section-title">🧪 Developer</div>
+                        <div class="settings-toggle-row">
+                            <label>
+                                <span class="icon">🔬</span>
+                                <span>Test Mode</span>
+                            </label>
+                            <input type="checkbox" id="test-mode-toggle" onchange="toggleTestMode(this.checked)">
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 36px;">
+                            Use test repos for GS Originals (Quotle, Slate, Rungs, Word Boxing)
+                        </p>
+                    </div>
                 </div>
             </div>
             
@@ -7091,7 +7106,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.3</div>
         </div>
     </div>
     
@@ -10877,6 +10892,40 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             wordboxing: { id: 'wordboxing', name: 'Word Boxing', icon: '🥊', url: 'https://stewartdavidp-ship-it.github.io/WordBoxing/', hasApp: false }
         };
         
+        // Test URLs for GS Originals (used when Test Mode is enabled)
+        const GS_ORIGINALS_TEST_URLS = {
+            quotle: 'https://stewartdavidp-ship-it.github.io/Quotle-test/',
+            slate: 'https://stewartdavidp-ship-it.github.io/Slate-test/',
+            rungs: 'https://stewartdavidp-ship-it.github.io/Rungs-test/',
+            wordboxing: 'https://stewartdavidp-ship-it.github.io/WordBoxing-test/'
+        };
+        
+        // Production URLs for GS Originals (default)
+        const GS_ORIGINALS_PROD_URLS = {
+            quotle: 'https://stewartdavidp-ship-it.github.io/Quotle/',
+            slate: 'https://stewartdavidp-ship-it.github.io/Slate/',
+            rungs: 'https://stewartdavidp-ship-it.github.io/Rungstest/',
+            wordboxing: 'https://stewartdavidp-ship-it.github.io/WordBoxing/'
+        };
+        
+        // Check if game is a GS Original
+        function isGSOriginal(gameId) {
+            return ['quotle', 'slate', 'rungs', 'wordboxing'].includes(gameId);
+        }
+        
+        // Get URL for game (respects test mode for GS Originals)
+        function getGameUrl(gameId) {
+            if (isGSOriginal(gameId) && isTestModeEnabled()) {
+                return GS_ORIGINALS_TEST_URLS[gameId];
+            }
+            return GAMES[gameId]?.url;
+        }
+        
+        // Check if test mode is enabled
+        function isTestModeEnabled() {
+            return localStorage.getItem('gameshelf_test_mode') === 'true';
+        }
+        
         // App info for publishers that have apps
         const APP_INFO = {
             nyt: {
@@ -13664,6 +13713,18 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             showToast(enabled ? '⚡ Auto-log enabled - results logged automatically' : '📋 Manual mode - confirm each log');
         }
         
+        function toggleTestMode(enabled) {
+            localStorage.setItem('gameshelf_test_mode', enabled ? 'true' : 'false');
+            showToast(enabled ? '🧪 Test Mode ON - using test repos for GS Originals' : '🚀 Test Mode OFF - using production repos');
+        }
+        
+        function initTestModeToggle() {
+            const toggle = document.getElementById('test-mode-toggle');
+            if (toggle) {
+                toggle.checked = isTestModeEnabled();
+            }
+        }
+        
         // ============ REFERRAL SYSTEM ============
         const REFERRAL_REWARDS = {
             invite: 10,      // Tier 1: Send invite
@@ -14644,7 +14705,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0';
+            const version = '1.2.0.3';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17428,7 +17489,13 @@ Made with ❤️ for puzzle enthusiasts`;
             console.log(`🎮 Launching ${game.name}...`);
             
             // Determine which URL to use
-            let launchUrl = game.url; // Default: browser URL
+            // For GS Originals, check test mode; otherwise use game.url
+            let launchUrl = getGameUrl(gameId) || game.url;
+            
+            // Log test mode status for GS Originals
+            if (isGSOriginal(gameId) && isTestModeEnabled()) {
+                console.log(`🧪 Test Mode: Using test URL for ${game.name}`);
+            }
             
             // Check for custom URL first
             const customUrl = appData.customUrls?.[gameId];
@@ -17439,7 +17506,10 @@ Made with ❤️ for puzzle enthusiasts`;
                 const pref = appData.launchPrefs?.[gameId];
                 if (pref === 'app' && game.hasApp) {
                     // They prefer the app - use the same URL, iOS/Android will intercept via Universal Links
-                    launchUrl = game.url;
+                    // Note: keep original URL for universal links, not test URL
+                    if (!isGSOriginal(gameId)) {
+                        launchUrl = game.url;
+                    }
                     console.log(`📱 Launching via app (Universal Link): ${launchUrl}`);
                 } else {
                     console.log(`🌐 Launching in browser: ${launchUrl}`);
@@ -17661,30 +17731,6 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Don't show if clipboard already detected this game
             if (detectedClipboard?.result?.gameId === lastLaunchedGame) return;
-            
-            // For Game Shelf games, check if there's actually a result in localStorage
-            // These games use localStorage sync, so only prompt if we found a result
-            if (GAMESHELF_GAME_IDS.includes(lastLaunchedGame)) {
-                const latestKey = `gameshelf_${lastLaunchedGame}_latest`;
-                const stored = localStorage.getItem(latestKey);
-                if (stored) {
-                    try {
-                        const payload = JSON.parse(stored);
-                        const today = getTodayString();
-                        // Only prompt if the result is from today
-                        if (payload.date === today || payload.puzzleId === today) {
-                            // There's a valid result - sync will pick it up, no need for prompt
-                            syncGameShelfGames();
-                            lastLaunchedGame = null;
-                            return;
-                        }
-                    } catch (e) {
-                        console.error('Error checking Game Shelf result:', e);
-                    }
-                }
-                // No result found for Game Shelf game - don't prompt, they didn't complete it
-                return;
-            }
             
             const game = GAMES[lastLaunchedGame];
             if (!game) return;
@@ -17933,43 +17979,23 @@ Made with ❤️ for puzzle enthusiasts`;
             // Don't show during onboarding
             if (document.getElementById('setup-container')?.classList.contains('active')) return;
             
-            // Check if there's a pending game we launched
-            if (lastLaunchedGame) {
-                const todayHistory = getTodayHistory();
-                if (!todayHistory[lastLaunchedGame]) {
-                    // For Game Shelf games, check if there's actually a result
-                    if (GAMESHELF_GAME_IDS.includes(lastLaunchedGame)) {
-                        const latestKey = `gameshelf_${lastLaunchedGame}_latest`;
-                        const stored = localStorage.getItem(latestKey);
-                        if (stored) {
-                            try {
-                                const payload = JSON.parse(stored);
-                                const today = getTodayString();
-                                if (payload.date === today || payload.puzzleId === today) {
-                                    // Result exists - sync it automatically
-                                    syncGameShelfGames();
-                                    lastLaunchedGame = null;
-                                    return;
-                                }
-                            } catch (e) {
-                                console.error('Error checking Game Shelf result:', e);
-                            }
-                        }
-                        // No result for Game Shelf game - don't show tap-to-log
-                        return;
-                    }
-                    
-                    // Non-Game Shelf game - show tap-to-log
-                    const game = GAMES[lastLaunchedGame];
-                    if (game) {
-                        showTapToLogCard(game);
-                        return;
-                    }
-                }
+            // Don't show if no game was launched from Game Shelf
+            // This prevents the prompt from appearing when user switches to other apps
+            if (!lastLaunchedGame) return;
+            
+            const todayHistory = getTodayHistory();
+            
+            // Don't show if the launched game is already logged
+            if (todayHistory[lastLaunchedGame]) {
+                lastLaunchedGame = null;
+                return;
             }
             
-            // Otherwise show generic prompt
-            showTapToLogCard();
+            // Show tap-to-log for the specific game that was launched
+            const game = GAMES[lastLaunchedGame];
+            if (game) {
+                showTapToLogCard(game);
+            }
         }
         
         // Clipboard++ Mode - Continuous monitoring
@@ -22170,6 +22196,9 @@ Made with ❤️ for puzzle enthusiasts`;
                 autoLogToggle.checked = appData.settings?.autoLog !== false;
             }
             
+            // Load test mode setting
+            initTestModeToggle();
+            
             // Check for referral code in URL
             checkReferralParam();
             
@@ -22255,7 +22284,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.3 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
