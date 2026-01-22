@@ -1,33 +1,41 @@
-Game Shelf v1.2.0.14 Release Notes
+Game Shelf v1.2.0.15 Release Notes
 ===================================
 Released: January 22, 2026
 
-CHANGES FROM v1.2.0.13:
+CHANGES FROM v1.2.0.14:
 -----------------------
-- Added Quick Share Button (FAB) to tutorial
-  - New step showing the floating 📤 button
-  - Explains the badge showing logged games count
-  - Forces FAB visible during tutorial demo
-  
-- Improved tutorial content:
-  - Better descriptions for Friends & Battles section
-  - Updated Share Hub description to mention weekly recaps
-  - Refined wording throughout
+BATTLE INTEGRITY GUARDRAILS:
 
-- Tutorial now has 11 steps:
-  1. Your Games (home grid)
-  2. Daily Progress (progress section)
-  3. Log Your Results (log button)
-  4. Quick Share Button (floating FAB) ← NEW
-  5. Games Tab (nav)
-  6. Browse Games (categories)
-  7. Battles Tab (nav)
-  8. Friends & Battles (social tabs)
-  9. Share Tab (nav)
-  10. Share Hub (header)
-  11. Menu & Settings (menu)
+1. Entry Fee Limits
+   - Private battles: Max 5 coins (was up to 50)
+   - Public battles: Always free (entry fee disabled)
+   - Rationale: Keeps it a "friendly wager" like golf or office pools
+   
+2. UI Changes
+   - Entry fee dropdown: 0, 1, 2, 3, 5 coins only
+   - Added note under entry fee explaining the max
+   - When public is selected, entry fee dropdown disabled
+   - Public battles always show "🆓 Free" in listings
+   
+3. Honor System Messaging
+   - New "🤝 Community Honor System" notice in create battle form
+   - New "🤝 Honor System" section in battle rules
+   - Explains: "Battles run on trust, like a friendly golf wager.
+     There's no automated verification - the community polices itself."
+   
+4. Backend Safeguards
+   - createBattle() forces entryFee=0 for public battles
+   - createBattle() caps entryFee at 5 for private battles
+   - Even if UI is bypassed, server-side logic enforces limits
 
-PREVIOUS (v1.2.0.13):
+RATIONALE:
+- Main cheat vector (play on device A, get answer, replay on B) is undetectable
+- Low stakes remove incentive to cheat
+- Public battles (strangers) have no coin stakes
+- Private battles (friends) have social accountability
+- No false sense of security from ineffective "anti-cheat"
+
+PREVIOUS (v1.2.0.14):
 ---------------------
-- Tutorial dark mode fix (purple border/glow)
-- Tutorial selector fixes
+- Tutorial: Quick Share FAB step
+- Tutorial content improvements

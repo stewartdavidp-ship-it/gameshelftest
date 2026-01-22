@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.14">
+    <meta name="version" content="1.2.0.15">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6886,7 +6886,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.14</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.15</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7115,7 +7115,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.14</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.15</div>
         </div>
     </div>
     
@@ -8751,11 +8751,14 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
                 <label class="battle-form-label">Entry Fee (optional)</label>
                 <select class="battle-input" id="battle-entry-fee">
                     <option value="0">Free - Just for fun</option>
-                    <option value="5">🪙 5 coins</option>
-                    <option value="10">🪙 10 coins</option>
-                    <option value="25">🪙 25 coins</option>
-                    <option value="50">🪙 50 coins - High stakes!</option>
+                    <option value="1">🪙 1 coin</option>
+                    <option value="2">🪙 2 coins</option>
+                    <option value="3">🪙 3 coins</option>
+                    <option value="5">🪙 5 coins - Max wager</option>
                 </select>
+                <div id="entry-fee-note" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+                    💡 Keep it friendly - max 5 coins like a golf wager
+                </div>
             </div>
             
             <!-- Public/Private Toggle -->
@@ -8768,6 +8771,12 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
                     </div>
                 </div>
                 <input type="checkbox" id="battle-public-toggle" style="width: 50px; height: 28px; accent-color: var(--accent-purple);">
+            </div>
+            
+            <!-- Integrity Notice -->
+            <div id="battle-integrity-notice" style="background: var(--bg-tertiary); border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary);">
+                <div style="font-weight: 600; margin-bottom: 4px;">🤝 Community Honor System</div>
+                <div>Battles are played on trust. There's no automated verification - it's like a friendly office pool or golf wager. Play fair with your friends!</div>
             </div>
             
             <!-- Battle Rules Preview -->
@@ -14730,7 +14739,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.14';
+            const version = '1.2.0.15';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -15393,7 +15402,7 @@ Made with ❤️ for puzzle enthusiasts`;
             }
             
             // Disqualification rules
-            rules.push('<div class="rules-section-title">⚠️ Disqualification</div>');
+            rules.push('<div class="rules-section-title">⚠️ Fair Play</div>');
             rules.push('<div class="rules-list rules-warning">');
             rules.push('<div class="rules-item">Playing a game but NOT logging it = does not count</div>');
             rules.push('<div class="rules-item">Logging fake/edited results = immediate disqualification</div>');
@@ -15401,6 +15410,12 @@ Made with ❤️ for puzzle enthusiasts`;
             if (battleType === 'streak') {
                 rules.push('<div class="rules-item">Missing a day = streak bonus lost for entire battle</div>');
             }
+            rules.push('</div>');
+            
+            // Honor system notice
+            rules.push('<div class="rules-section-title">🤝 Honor System</div>');
+            rules.push('<div class="rules-list" style="background: var(--bg-tertiary); border-radius: 8px; padding: 10px;">');
+            rules.push('<div class="rules-item" style="font-style: italic;">Battles run on trust, like a friendly golf wager or office pool. There\'s no automated verification - the community polices itself. Play fair!</div>');
             rules.push('</div>');
             
             // Agreement
@@ -15461,15 +15476,36 @@ Made with ❤️ for puzzle enthusiasts`;
             const icon = document.getElementById('battle-visibility-icon');
             const text = document.getElementById('battle-visibility-text');
             const desc = document.getElementById('battle-visibility-desc');
+            const entryFeeSelect = document.getElementById('battle-entry-fee');
+            const entryFeeNote = document.getElementById('entry-fee-note');
             
             if (isPublic) {
                 icon.textContent = '🌍';
                 text.textContent = 'Public Battle';
                 desc.textContent = 'Anyone can find and join';
+                
+                // Disable entry fee for public battles
+                if (entryFeeSelect) {
+                    entryFeeSelect.value = '0';
+                    entryFeeSelect.disabled = true;
+                    entryFeeSelect.style.opacity = '0.5';
+                }
+                if (entryFeeNote) {
+                    entryFeeNote.innerHTML = '🚫 Public battles are free to keep things fair';
+                }
             } else {
                 icon.textContent = '🔒';
                 text.textContent = 'Private Battle';
                 desc.textContent = 'Only people with code can join';
+                
+                // Enable entry fee for private battles
+                if (entryFeeSelect) {
+                    entryFeeSelect.disabled = false;
+                    entryFeeSelect.style.opacity = '1';
+                }
+                if (entryFeeNote) {
+                    entryFeeNote.innerHTML = '💡 Keep it friendly - max 5 coins like a golf wager';
+                }
             }
         }
         
@@ -15721,8 +15757,17 @@ Made with ❤️ for puzzle enthusiasts`;
             
             const name = document.getElementById('battle-name-input').value.trim() || 'Brain Battle';
             const duration = parseInt(document.getElementById('battle-duration').value);
-            const entryFee = parseInt(document.getElementById('battle-entry-fee').value);
+            let entryFee = parseInt(document.getElementById('battle-entry-fee').value);
             const isPublic = document.getElementById('battle-public-toggle')?.checked || false;
+            
+            // SAFEGUARD: Enforce entry fee rules
+            // - Public battles: always free (prevents cheating incentive with strangers)
+            // - Private battles: max 5 coins (keeps it a friendly wager)
+            if (isPublic) {
+                entryFee = 0;
+            } else {
+                entryFee = Math.min(entryFee, 5); // Cap at 5 coins
+            }
             
             // Get selected battle type
             const selectedTypeEl = document.querySelector('.battle-type-option.selected');
@@ -16711,7 +16756,7 @@ Made with ❤️ for puzzle enthusiasts`;
                             <span>👤 ${participantCount} player${participantCount !== 1 ? 's' : ''}</span>
                             <span>⏱️ ${daysLeft}d left</span>
                             <span>${battle.typeIcon || '🏆'} ${battle.typeName || 'Total Score'}</span>
-                            ${battle.entryFee > 0 ? `<span>🪙 ${battle.entryFee} entry</span>` : '<span>🆓 Free</span>'}
+                            <span>🆓 Free</span>
                         </div>
                         <div class="public-battle-games">
                             ${gameIcons}${moreGames}
@@ -22727,7 +22772,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.14 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.15 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
