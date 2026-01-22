@@ -1,0 +1,27 @@
+Game Shelf v1.2.0.8 Release Notes
+==================================
+Released: January 22, 2026
+
+CHANGES FROM v1.2.0.7:
+----------------------
+- Redesigned clipboard detection with "diff" approach
+  - Captures clipboard state when leaving the app
+  - On return, compares current vs captured to detect new content
+  - Only prompts if clipboard actually changed (no more false prompts)
+  
+- New functions:
+  - captureClipboardOnLeave() - saves clipboard state on app hide
+  - checkClipboardOnReturn() - compares clipboard on app visible
+  - checkClipboardOnInit() - handles "copy then open app" flow
+  - tapToLogClipboardWithDiff() - iOS tap handler with diff check
+  - showTapToLogCardForClipboardCheck() - iOS gesture prompt
+
+- Edge cases handled:
+  - User leaves without copying: no prompt on return ✓
+  - User copies result then returns: prompt to log ✓
+  - User closes app, copies result, reopens: prompt to log ✓
+  - User has old content from yesterday: no prompt ✓
+
+PREVIOUS (v1.2.0.7):
+--------------------
+- Fixed tap-to-log card for GS Originals

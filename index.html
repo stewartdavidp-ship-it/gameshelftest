@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.7">
+    <meta name="version" content="1.2.0.8">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6877,7 +6877,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.7</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.8</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7106,7 +7106,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.7</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.8</div>
         </div>
     </div>
     
@@ -8278,7 +8278,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
     
     <!-- TAP TO LOG CARD - Appears when user returns with clipboard content -->
     <div class="tap-to-log-card" id="tap-to-log-card" style="display: none;">
-        <div class="tap-to-log-content" onclick="tapToLogClipboard()">
+        <div class="tap-to-log-content" onclick="tapToLogClipboardWithDiff()">
             <div class="tap-to-log-icon" id="tap-to-log-icon">📋</div>
             <div class="tap-to-log-text">
                 <div class="tap-to-log-title" id="tap-to-log-title">Just played a game?</div>
@@ -14721,7 +14721,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.7';
+            const version = '1.2.0.8';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17205,6 +17205,12 @@ Made with ❤️ for puzzle enthusiasts`;
         let lastClipboardContent = null;
         let returnPromptDismissedFor = null;
         
+        // ============ CLIPBOARD DIFF TRACKING ============
+        // Stores clipboard content when user LEAVES the app
+        // On return, we compare to detect if user copied something new
+        let clipboardOnLeave = null; // null = unknown, string = content when left
+        const CLIPBOARD_UNKNOWN = '__CLIPBOARD_UNKNOWN__'; // Marker for when we couldn't read
+        
         // Enhanced playGame - tracks what was launched
         // Track pending game for launch pref modal
         let pendingLaunchGame = null;
@@ -18104,6 +18110,224 @@ Made with ❤️ for puzzle enthusiasts`;
             const game = GAMES[lastLaunchedGame];
             if (game) {
                 showTapToLogCard(game);
+            }
+        }
+        
+        // ============ CLIPBOARD DIFF DETECTION ============
+        // Capture clipboard when user leaves the app
+        async function captureClipboardOnLeave() {
+            try {
+                if (!navigator.clipboard || !navigator.clipboard.readText) {
+                    clipboardOnLeave = CLIPBOARD_UNKNOWN;
+                    console.log('📋 Leave: Clipboard API not available');
+                    return;
+                }
+                
+                const text = await navigator.clipboard.readText();
+                clipboardOnLeave = text || '';
+                console.log('📋 Leave: Captured clipboard state', clipboardOnLeave.substring(0, 50) + '...');
+            } catch (e) {
+                // Can't read clipboard (permission denied, etc.)
+                clipboardOnLeave = CLIPBOARD_UNKNOWN;
+                console.log('📋 Leave: Could not read clipboard:', e.message);
+            }
+        }
+        
+        // Check clipboard on return and show prompt if content changed
+        async function checkClipboardOnReturn() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            
+            // On iOS, we need a user gesture to read clipboard
+            // So we show tap-to-log card and let that handle the comparison
+            if (isIOS) {
+                console.log('📋 Return (iOS): Showing tap-to-log for user gesture');
+                showTapToLogCardForClipboardCheck();
+                return;
+            }
+            
+            // On desktop/Android, we can read clipboard directly
+            try {
+                if (!navigator.clipboard || !navigator.clipboard.readText) {
+                    console.log('📋 Return: Clipboard API not available');
+                    return;
+                }
+                
+                const currentClipboard = await navigator.clipboard.readText();
+                console.log('📋 Return: Current clipboard', currentClipboard.substring(0, 50) + '...');
+                
+                // Check if clipboard changed
+                const clipboardChanged = (clipboardOnLeave === CLIPBOARD_UNKNOWN) || 
+                                         (clipboardOnLeave !== currentClipboard);
+                
+                if (!clipboardChanged) {
+                    console.log('📋 Return: Clipboard unchanged, no prompt needed');
+                    return;
+                }
+                
+                console.log('📋 Return: Clipboard CHANGED! Checking for game result...');
+                
+                // Try to parse as game result
+                const result = parseShareText(currentClipboard);
+                if (!result) {
+                    console.log('📋 Return: No valid game result in clipboard');
+                    return;
+                }
+                
+                // Check if already logged today
+                const todayHistory = getTodayHistory();
+                if (todayHistory[result.gameId]) {
+                    console.log(`📋 Return: ${result.gameId} already logged today`);
+                    return;
+                }
+                
+                const game = GAMES[result.gameId];
+                detectedClipboard = { text: currentClipboard, result };
+                
+                // Auto-log if enabled, otherwise show prompt
+                if (appData.settings?.autoLog !== false) {
+                    console.log(`📋 Return: Auto-logging ${game?.name || result.gameId}`);
+                    autoLogClipboard(game, result);
+                } else {
+                    console.log(`📋 Return: Showing prompt for ${game?.name || result.gameId}`);
+                    showClipboardPrompt(game, result);
+                }
+                
+                // Clear active game tracking since we handled via clipboard
+                clearActiveGame();
+                
+            } catch (e) {
+                console.log('📋 Return: Could not read clipboard:', e.message);
+            }
+        }
+        
+        // iOS-friendly: Show tap-to-log card that will check clipboard diff on tap
+        function showTapToLogCardForClipboardCheck() {
+            // Don't show if dismissed recently
+            if (tapToLogDismissed) return;
+            
+            // Don't show during onboarding
+            if (document.getElementById('setup-container')?.classList.contains('active')) return;
+            
+            const card = document.getElementById('tap-to-log-card');
+            if (!card) return;
+            
+            // If we know which game was launched, show that game
+            // Otherwise show generic "Just played a game?"
+            if (lastLaunchedGame && GAMES[lastLaunchedGame]) {
+                const game = GAMES[lastLaunchedGame];
+                document.getElementById('tap-to-log-icon').textContent = game.icon;
+                document.getElementById('tap-to-log-title').textContent = `Log ${game.name}?`;
+            } else {
+                document.getElementById('tap-to-log-icon').textContent = '📋';
+                document.getElementById('tap-to-log-title').textContent = 'Just played a game?';
+            }
+            
+            card.style.display = 'block';
+        }
+        
+        // Enhanced tap handler that checks clipboard diff
+        async function tapToLogClipboardWithDiff() {
+            try {
+                if (!navigator.clipboard || !navigator.clipboard.readText) {
+                    hideTapToLogCard();
+                    openLogSheet();
+                    return;
+                }
+                
+                const currentClipboard = await navigator.clipboard.readText();
+                
+                // Check if clipboard changed since we left
+                const clipboardChanged = (clipboardOnLeave === CLIPBOARD_UNKNOWN) || 
+                                         (clipboardOnLeave !== currentClipboard);
+                
+                if (!clipboardChanged) {
+                    // Clipboard hasn't changed - user didn't copy anything new
+                    hideTapToLogCard();
+                    showToast('No new game results found', 'info');
+                    console.log('📋 Tap: Clipboard unchanged, no game result');
+                    return;
+                }
+                
+                // Try to parse
+                const result = parseShareText(currentClipboard);
+                
+                if (result) {
+                    const todayHistory = getTodayHistory();
+                    const game = GAMES[result.gameId];
+                    
+                    if (todayHistory[result.gameId]) {
+                        hideTapToLogCard();
+                        renderAll();
+                        showToast(`${game?.icon || '🎮'} ${game?.name || 'Game'} already logged today!`, 'info');
+                        return;
+                    }
+                    
+                    // Log it!
+                    if (logGame(result)) {
+                        hideTapToLogCard();
+                        renderAll();
+                        showCelebration(game, result);
+                        clearActiveGame();
+                    }
+                } else {
+                    // Has content but not a game result - open manual log
+                    hideTapToLogCard();
+                    openLogSheet();
+                    showToast('Paste your game results', 'info');
+                }
+            } catch (e) {
+                console.log('📋 Tap: Clipboard access denied:', e);
+                hideTapToLogCard();
+                openLogSheet();
+            }
+        }
+        
+        // Check clipboard on app init - catches "copy then open app" flow
+        // Only runs once when app loads, not on every return
+        let hasCheckedClipboardOnInit = false;
+        async function checkClipboardOnInit() {
+            if (hasCheckedClipboardOnInit) return;
+            hasCheckedClipboardOnInit = true;
+            
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            
+            // On iOS, can't read clipboard without gesture
+            if (isIOS) {
+                console.log('📋 Init (iOS): Skipping auto-check, will use tap-to-log');
+                return;
+            }
+            
+            try {
+                if (!navigator.clipboard || !navigator.clipboard.readText) return;
+                
+                const text = await navigator.clipboard.readText();
+                const result = parseShareText(text);
+                
+                if (!result) {
+                    console.log('📋 Init: No game result in clipboard');
+                    return;
+                }
+                
+                // Check if already logged today
+                const todayHistory = getTodayHistory();
+                if (todayHistory[result.gameId]) {
+                    console.log(`📋 Init: ${result.gameId} already logged today`);
+                    return;
+                }
+                
+                const game = GAMES[result.gameId];
+                detectedClipboard = { text, result };
+                
+                console.log(`📋 Init: Found unlogged game result for ${game?.name || result.gameId}`);
+                
+                // Auto-log if enabled, otherwise show prompt
+                if (appData.settings?.autoLog !== false) {
+                    autoLogClipboard(game, result);
+                } else {
+                    showClipboardPrompt(game, result);
+                }
+            } catch (e) {
+                console.log('📋 Init: Clipboard check failed:', e.message);
             }
         }
         
@@ -22326,25 +22550,20 @@ Made with ❤️ for puzzle enthusiasts`;
             // Check clipboard when app becomes visible + return-from-game detection
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'visible') {
-                    // On iOS, we can't read clipboard without user gesture
-                    // So show the tap-to-log card which provides the gesture
-                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                    console.log('📱 App became visible');
                     
-                    if (isIOS) {
-                        // Show tap-to-log card (user tap = gesture = clipboard access)
-                        setTimeout(checkForTapToLog, 500);
-                    } else {
-                        // On desktop/Android, try direct clipboard access
-                        setTimeout(checkClipboard, 500);
-                    }
+                    // Use new clipboard diff detection
+                    // This compares clipboard now vs when we left
+                    setTimeout(checkClipboardOnReturn, 500);
                     
-                    // Then check if user returned from a game
+                    // Then check if user returned from a game (for non-clipboard flows)
                     setTimeout(checkReturnFromGame, 1500);
                     
                     // Check if we need to verify a first-time launch worked
                     setTimeout(checkLaunchVerification, 800);
                     
                     // Start clipboard++ monitoring (works better on non-iOS)
+                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
                     if (!isIOS) {
                         startClipboardMonitor();
                     }
@@ -22357,6 +22576,11 @@ Made with ❤️ for puzzle enthusiasts`;
                         updateAuthUI();
                     }
                 } else {
+                    console.log('📱 App going to background - capturing clipboard state');
+                    // CRITICAL: Capture clipboard state BEFORE we leave
+                    // This lets us detect if user copied something new while away
+                    captureClipboardOnLeave();
+                    
                     // Stop clipboard monitoring when app goes to background
                     stopClipboardMonitor();
                     // Hide tap-to-log when leaving
@@ -22364,8 +22588,17 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             });
             
-            // Initial clipboard check (delayed)
-            setTimeout(checkClipboard, 1500);
+            // Capture initial clipboard state as baseline for diff detection
+            // This ensures we have something to compare against when user returns
+            setTimeout(() => {
+                console.log('📋 Init: Capturing initial clipboard state');
+                captureClipboardOnLeave();
+            }, 1500);
+            
+            // Also check if user already has a game result ready to log (copy-then-open flow)
+            // This is separate from diff detection - it catches the case where user
+            // copied a result BEFORE opening the app
+            setTimeout(checkClipboardOnInit, 2000);
             
             // Start clipboard++ monitoring
             startClipboardMonitor();
@@ -22396,7 +22629,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.7 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.8 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
