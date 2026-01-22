@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.10">
+    <meta name="version" content="1.2.0.12">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6877,7 +6877,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.10</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.12</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7106,7 +7106,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.10</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.12</div>
         </div>
     </div>
     
@@ -7595,12 +7595,12 @@
             <span class="nav-label">Home</span>
         </button>
         <button class="nav-tab" data-tab="games" onclick="switchTab('games')">
-            <span class="nav-icon">🎮</span>
+            <span class="nav-icon">🧩</span>
             <span class="nav-label">Games</span>
         </button>
         <button class="nav-tab" data-tab="social" onclick="switchTab('social')">
-            <span class="nav-icon">👥</span>
-            <span class="nav-label">Social</span>
+            <span class="nav-icon">⚔️</span>
+            <span class="nav-label">Battles</span>
         </button>
         <button class="nav-tab" data-tab="share" onclick="switchTab('share')">
             <span class="nav-icon">📢</span>
@@ -14721,7 +14721,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.10';
+            const version = '1.2.0.12';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17211,6 +17211,10 @@ Made with ❤️ for puzzle enthusiasts`;
         let clipboardOnLeave = null; // null = unknown, string = content when left
         const CLIPBOARD_UNKNOWN = '__CLIPBOARD_UNKNOWN__'; // Marker for when we couldn't read
         
+        // Stores clipboard content that was ALREADY PROCESSED (logged)
+        // If current clipboard matches this, it's stale - don't prompt again
+        let lastProcessedClipboard = null;
+        
         // Enhanced playGame - tracks what was launched
         // Track pending game for launch pref modal
         let pendingLaunchGame = null;
@@ -18148,6 +18152,12 @@ Made with ❤️ for puzzle enthusiasts`;
                 console.log('📋 Return: Current clipboard', currentClipboard ? currentClipboard.substring(0, 50) + '...' : '(empty)');
                 console.log('📋 Return: Clipboard on leave was', clipboardOnLeave === CLIPBOARD_UNKNOWN ? 'UNKNOWN' : (clipboardOnLeave ? clipboardOnLeave.substring(0, 50) + '...' : '(empty)'));
                 
+                // Check if this clipboard was already processed (logged earlier)
+                if (lastProcessedClipboard && currentClipboard === lastProcessedClipboard) {
+                    console.log('📋 Return: Clipboard already processed, skipping');
+                    return;
+                }
+                
                 // Check if clipboard changed
                 // If we couldn't capture on leave (UNKNOWN), we need to be careful
                 // Only proceed if we have a valid game result that matches lastLaunchedGame
@@ -18222,8 +18232,16 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Don't show if no game was launched from Game Shelf
             // We need to know WHICH game to avoid false prompts
-            if (!lastLaunchedGame) {
-                console.log('📋 iOS: No lastLaunchedGame, skipping tap-to-log');
+            if (!lastLaunchedGame || !lastLaunchTime) {
+                console.log('📋 iOS: No lastLaunchedGame or lastLaunchTime, skipping tap-to-log');
+                return;
+            }
+            
+            // Don't show if user was away less than 30 seconds
+            // Quick exit = just browsed menu, didn't actually play
+            const elapsed = Date.now() - lastLaunchTime;
+            if (elapsed < 30000) {
+                console.log(`📋 iOS: Only away ${Math.round(elapsed/1000)}s, skipping tap-to-log (need 30s+)`);
                 return;
             }
             
@@ -18258,6 +18276,14 @@ Made with ❤️ for puzzle enthusiasts`;
                 
                 const currentClipboard = await navigator.clipboard.readText();
                 console.log('📋 Tap: Current clipboard', currentClipboard ? currentClipboard.substring(0, 50) + '...' : '(empty)');
+                
+                // Check if this clipboard was already processed (logged earlier)
+                if (lastProcessedClipboard && currentClipboard === lastProcessedClipboard) {
+                    hideTapToLogCard();
+                    showToast('No new game results found', 'info');
+                    console.log('📋 Tap: Clipboard already processed, skipping');
+                    return;
+                }
                 
                 // Check if clipboard changed since we left
                 // Be conservative with UNKNOWN - require matching lastLaunchedGame
@@ -18302,6 +18328,10 @@ Made with ❤️ for puzzle enthusiasts`;
                     
                     // Log it!
                     if (logGame(result)) {
+                        // Mark this clipboard as processed
+                        lastProcessedClipboard = currentClipboard;
+                        console.log('📋 Tap: Marked clipboard as processed');
+                        
                         hideTapToLogCard();
                         renderAll();
                         showCelebration(game, result);
@@ -18426,6 +18456,12 @@ Made with ❤️ for puzzle enthusiasts`;
             if (logGame(result)) {
                 // Store for potential undo
                 lastAutoLoggedResult = { game, result, timestamp: Date.now() };
+                
+                // Mark this clipboard content as processed so we don't prompt again
+                if (detectedClipboard?.text) {
+                    lastProcessedClipboard = detectedClipboard.text;
+                    console.log('📋 Marked clipboard as processed');
+                }
                 
                 // Hide tap-to-log card if showing
                 hideTapToLogCard();
@@ -22667,7 +22703,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.10 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.12 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
