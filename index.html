@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XRL2SVN0YF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XRL2SVN0YF');
+    </script>
+    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.15">
+    <meta name="version" content="1.2.0.19">
+    <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6886,7 +6897,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.15</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.19</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7115,7 +7126,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.15</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.19</div>
         </div>
     </div>
     
@@ -7186,7 +7197,7 @@
         <div class="screen active" id="screen-home">
             <div class="section-header">
                 <span class="section-title">Your Games</span>
-                <button class="see-all" onclick="switchTab('games')">See All</button>
+                <button class="see-all" onclick="switchTab('games')">See All <span id="total-games-count"></span></button>
             </div>
             <div class="games-grid" id="home-games-grid">
                 <!-- Populated by JS -->
@@ -14739,7 +14750,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.15';
+            const version = '1.2.0.19';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -16957,6 +16968,17 @@ Made with ❤️ for puzzle enthusiasts`;
             const shelf = appData.games.slice(0, 6);
             const todayHistory = getTodayHistory();
             
+            // Update header to show if there are more games on shelf
+            const totalGamesCount = document.getElementById('total-games-count');
+            const totalOnShelf = appData.games.length;
+            if (totalGamesCount) {
+                if (totalOnShelf > 6) {
+                    totalGamesCount.textContent = `+${totalOnShelf - 6} more`;
+                } else {
+                    totalGamesCount.textContent = '';
+                }
+            }
+            
             container.innerHTML = shelf.map(g => {
                 const game = GAMES[g.id];
                 if (!game) return '';
@@ -17273,13 +17295,23 @@ Made with ❤️ for puzzle enthusiasts`;
         // Track pending game for launch pref modal
         let pendingLaunchGame = null;
         
-        function playGame(gameId) {
+        function playGame(gameId, forceVisit = false) {
             const game = GAMES[gameId];
             if (!game) return;
             
             const todayHistory = getTodayHistory();
-            if (todayHistory[gameId]) {
-                showToast(`${game.name} already logged today!`);
+            if (todayHistory[gameId] && !forceVisit) {
+                // Game already played - ask if they want to visit anyway
+                showConfirmModal({
+                    icon: '✅',
+                    title: 'Already Played!',
+                    message: `You've already logged ${game.name} today. Want to revisit and admire your work?`,
+                    confirmText: 'Visit Anyway',
+                    confirmStyle: 'primary',
+                    onConfirm: () => {
+                        playGame(gameId, true);
+                    }
+                });
                 return;
             }
             
@@ -22772,7 +22804,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.15 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.19 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
