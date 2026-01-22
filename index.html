@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.1.0">
+    <meta name="version" content="1.2.0">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6871,9 +6871,13 @@
     <!-- Header -->
     <header class="header">
         <div class="logo">
-            <span>🎮</span>
+            <svg viewBox="0 0 110 80" width="32" height="23" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+                <defs><linearGradient id="gsLogoG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#667eea"/><stop offset="100%" style="stop-color:#5568d8"/></linearGradient><linearGradient id="gsLogoS" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#9061f9"/><stop offset="100%" style="stop-color:#764ba2"/></linearGradient></defs>
+                <g transform="rotate(10, 75, 40)"><rect x="55" y="10" width="48" height="55" rx="6" fill="url(#gsLogoS)"/><circle cx="55" cy="37" r="10" fill="var(--bg-primary, #1a1a2e)"/><text x="80" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">S</text></g>
+                <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
+            </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.1.0</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7087,7 +7091,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.1.0</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0</div>
         </div>
     </div>
     
@@ -14640,8 +14644,8 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.1.0';
-            const aboutText = `🎮 Game Shelf PWA
+            const version = '1.2.0';
+            const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
 
@@ -18719,7 +18723,7 @@ Made with ❤️ for puzzle enthusiasts`;
             }
             
             // CTA
-            lines.push('via Game Shelf 🎮');
+            lines.push('via Game Shelf 🧩');
             
             return lines.join('\n');
         }
@@ -18729,14 +18733,14 @@ Made with ❤️ for puzzle enthusiasts`;
             const gameIds = Object.keys(todayHistory);
             
             if (gameIds.length === 0) {
-                return 'No games played yet today!\n\nvia Game Shelf 🎮';
+                return 'No games played yet today!\n\nvia Game Shelf 🧩';
             }
             
             let lines = [];
             
             // Header with game count
             const gameCount = gameIds.length;
-            lines.push(`🎮 Daily Puzzle Recap • ${gameCount} game${gameCount !== 1 ? 's' : ''}`);
+            lines.push(`🧩 Daily Puzzle Recap • ${gameCount} game${gameCount !== 1 ? 's' : ''}`);
             lines.push('');
             
             // List games with scores
@@ -18790,7 +18794,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 lines.push('');
             }
             
-            lines.push('via Game Shelf 🎮');
+            lines.push('via Game Shelf 🧩');
             
             return lines.join('\n');
         }
@@ -18800,7 +18804,7 @@ Made with ❤️ for puzzle enthusiasts`;
             const weekData = getWeeklyStats();
             
             if (weekData.totalGames === 0) {
-                return 'No games played this week yet!\n\nvia Game Shelf 🎮';
+                return 'No games played this week yet!\n\nvia Game Shelf 🧩';
             }
             
             let lines = [];
@@ -18846,7 +18850,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 lines.push('');
             }
             
-            lines.push('via Game Shelf 🎮');
+            lines.push('via Game Shelf 🧩');
             
             return lines.join('\n');
         }
@@ -19226,7 +19230,7 @@ Made with ❤️ for puzzle enthusiasts`;
             ctx.font = `600 ${isStory ? 18 : 14}px -apple-system, BlinkMacSystemFont, sans-serif`;
             ctx.fillStyle = style.secondary;
             ctx.textAlign = 'center';
-            ctx.fillText('via Game Shelf 🎮', width / 2, height - (isStory ? 40 : 20));
+            ctx.fillText('via Game Shelf 🧩', width / 2, height - (isStory ? 40 : 20));
         }
         
         function drawStoryCard(ctx, width, height, style, todayHistory, gameIds) {
@@ -19354,7 +19358,7 @@ Made with ❤️ for puzzle enthusiasts`;
             ctx.font = '700 28px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillStyle = style.text;
             ctx.textAlign = 'center';
-            ctx.fillText('🎮 Daily Puzzle Recap', width / 2, 50);
+            ctx.fillText('🧩 Daily Puzzle Recap', width / 2, 50);
             
             // Date
             const today = new Date();
@@ -19519,7 +19523,7 @@ Made with ❤️ for puzzle enthusiasts`;
             // Branding
             ctx.font = '600 14px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillStyle = style.secondary;
-            ctx.fillText('via Game Shelf 🎮', width / 2, height - 20);
+            ctx.fillText('via Game Shelf 🧩', width / 2, height - 20);
         }
         
         function downloadShareCard() {
@@ -22251,7 +22255,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🎮 Game Shelf PWA v1.1.0 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
