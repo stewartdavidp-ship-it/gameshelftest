@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.8">
+    <meta name="version" content="1.2.0.9">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
     
@@ -6877,7 +6877,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.8</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.9</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7106,7 +7106,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.8</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.9</div>
         </div>
     </div>
     
@@ -14721,7 +14721,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.8';
+            const version = '1.2.0.9';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18153,23 +18153,50 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
                 
                 const currentClipboard = await navigator.clipboard.readText();
-                console.log('📋 Return: Current clipboard', currentClipboard.substring(0, 50) + '...');
+                console.log('📋 Return: Current clipboard', currentClipboard ? currentClipboard.substring(0, 50) + '...' : '(empty)');
+                console.log('📋 Return: Clipboard on leave was', clipboardOnLeave === CLIPBOARD_UNKNOWN ? 'UNKNOWN' : (clipboardOnLeave ? clipboardOnLeave.substring(0, 50) + '...' : '(empty)'));
                 
                 // Check if clipboard changed
-                const clipboardChanged = (clipboardOnLeave === CLIPBOARD_UNKNOWN) || 
-                                         (clipboardOnLeave !== currentClipboard);
+                // If we couldn't capture on leave (UNKNOWN), we need to be careful
+                // Only proceed if we have a valid game result that matches lastLaunchedGame
+                let shouldProceed = false;
                 
-                if (!clipboardChanged) {
+                if (clipboardOnLeave === CLIPBOARD_UNKNOWN) {
+                    // Couldn't read clipboard when leaving - be conservative
+                    // Only proceed if we launched a game AND clipboard has valid result
+                    console.log('📋 Return: Clipboard on leave was UNKNOWN, being conservative');
+                    if (lastLaunchedGame) {
+                        const result = parseShareText(currentClipboard);
+                        if (result && result.gameId === lastLaunchedGame) {
+                            console.log(`📋 Return: Found result matching launched game ${lastLaunchedGame}`);
+                            shouldProceed = true;
+                        } else {
+                            console.log('📋 Return: No matching result for launched game, skipping');
+                        }
+                    } else {
+                        console.log('📋 Return: No lastLaunchedGame, skipping');
+                    }
+                } else if (clipboardOnLeave !== currentClipboard) {
+                    // We have a real diff - clipboard actually changed
+                    console.log('📋 Return: Clipboard CHANGED!');
+                    shouldProceed = true;
+                } else {
                     console.log('📋 Return: Clipboard unchanged, no prompt needed');
-                    return;
                 }
                 
-                console.log('📋 Return: Clipboard CHANGED! Checking for game result...');
+                if (!shouldProceed) return;
                 
                 // Try to parse as game result
                 const result = parseShareText(currentClipboard);
                 if (!result) {
                     console.log('📋 Return: No valid game result in clipboard');
+                    return;
+                }
+                
+                // Skip GS Originals - they use localStorage sync
+                if (isGSOriginal(result.gameId)) {
+                    console.log(`📋 Return: ${result.gameId} is GS Original, skipping clipboard prompt`);
+                    clearActiveGame();
                     return;
                 }
                 
@@ -18208,21 +18235,38 @@ Made with ❤️ for puzzle enthusiasts`;
             // Don't show during onboarding
             if (document.getElementById('setup-container')?.classList.contains('active')) return;
             
+            // Don't show if no game was launched from Game Shelf
+            // We need to know WHICH game to avoid false prompts
+            if (!lastLaunchedGame) {
+                console.log('📋 iOS: No lastLaunchedGame, skipping tap-to-log');
+                return;
+            }
+            
+            // For GS Originals, don't show tap-to-log - they use localStorage sync
+            if (isGSOriginal(lastLaunchedGame)) {
+                console.log(`📋 iOS: ${lastLaunchedGame} is GS Original, skipping tap-to-log`);
+                clearActiveGame();
+                return;
+            }
+            
+            // Check if already logged today
+            const todayHistory = getTodayHistory();
+            if (todayHistory[lastLaunchedGame]) {
+                console.log(`📋 iOS: ${lastLaunchedGame} already logged today`);
+                clearActiveGame();
+                return;
+            }
+            
             const card = document.getElementById('tap-to-log-card');
             if (!card) return;
             
-            // If we know which game was launched, show that game
-            // Otherwise show generic "Just played a game?"
-            if (lastLaunchedGame && GAMES[lastLaunchedGame]) {
-                const game = GAMES[lastLaunchedGame];
+            const game = GAMES[lastLaunchedGame];
+            if (game) {
                 document.getElementById('tap-to-log-icon').textContent = game.icon;
                 document.getElementById('tap-to-log-title').textContent = `Log ${game.name}?`;
-            } else {
-                document.getElementById('tap-to-log-icon').textContent = '📋';
-                document.getElementById('tap-to-log-title').textContent = 'Just played a game?';
+                card.style.display = 'block';
+                console.log(`📋 iOS: Showing tap-to-log for ${game.name}`);
             }
-            
-            card.style.display = 'block';
         }
         
         // Enhanced tap handler that checks clipboard diff
@@ -18235,16 +18279,32 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
                 
                 const currentClipboard = await navigator.clipboard.readText();
+                console.log('📋 Tap: Current clipboard', currentClipboard ? currentClipboard.substring(0, 50) + '...' : '(empty)');
                 
                 // Check if clipboard changed since we left
-                const clipboardChanged = (clipboardOnLeave === CLIPBOARD_UNKNOWN) || 
-                                         (clipboardOnLeave !== currentClipboard);
+                // Be conservative with UNKNOWN - require matching lastLaunchedGame
+                let shouldProceed = false;
                 
-                if (!clipboardChanged) {
+                if (clipboardOnLeave === CLIPBOARD_UNKNOWN) {
+                    // We couldn't capture on leave - only proceed if result matches launched game
+                    const result = parseShareText(currentClipboard);
+                    if (result && lastLaunchedGame && result.gameId === lastLaunchedGame) {
+                        shouldProceed = true;
+                        console.log('📋 Tap: UNKNOWN state but found matching result');
+                    } else {
+                        hideTapToLogCard();
+                        showToast('No new game results found', 'info');
+                        console.log('📋 Tap: UNKNOWN state, no matching result');
+                        return;
+                    }
+                } else if (clipboardOnLeave !== currentClipboard) {
+                    shouldProceed = true;
+                    console.log('📋 Tap: Clipboard changed');
+                } else {
                     // Clipboard hasn't changed - user didn't copy anything new
                     hideTapToLogCard();
                     showToast('No new game results found', 'info');
-                    console.log('📋 Tap: Clipboard unchanged, no game result');
+                    console.log('📋 Tap: Clipboard unchanged');
                     return;
                 }
                 
@@ -18252,6 +18312,15 @@ Made with ❤️ for puzzle enthusiasts`;
                 const result = parseShareText(currentClipboard);
                 
                 if (result) {
+                    // Skip GS Originals - they use localStorage sync
+                    if (isGSOriginal(result.gameId)) {
+                        hideTapToLogCard();
+                        console.log(`📋 Tap: ${result.gameId} is GS Original, skipping`);
+                        showToast('Game synced automatically!', 'info');
+                        clearActiveGame();
+                        return;
+                    }
+                    
                     const todayHistory = getTodayHistory();
                     const game = GAMES[result.gameId];
                     
@@ -22629,7 +22698,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.8 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.9 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

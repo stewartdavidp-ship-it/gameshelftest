@@ -1,27 +1,24 @@
-Game Shelf v1.2.0.8 Release Notes
+Game Shelf v1.2.0.9 Release Notes
 ==================================
 Released: January 22, 2026
 
-CHANGES FROM v1.2.0.7:
+CHANGES FROM v1.2.0.8:
 ----------------------
-- Redesigned clipboard detection with "diff" approach
-  - Captures clipboard state when leaving the app
-  - On return, compares current vs captured to detect new content
-  - Only prompts if clipboard actually changed (no more false prompts)
+- Fixed clipboard prompt showing for GS Originals (Quotle/Slate/Rungs/Word Boxing)
+  - showTapToLogCardForClipboardCheck() now skips GS Originals
+  - checkClipboardOnReturn() now skips GS Originals
+  - tapToLogClipboardWithDiff() now skips GS Originals
   
-- New functions:
-  - captureClipboardOnLeave() - saves clipboard state on app hide
-  - checkClipboardOnReturn() - compares clipboard on app visible
-  - checkClipboardOnInit() - handles "copy then open app" flow
-  - tapToLogClipboardWithDiff() - iOS tap handler with diff check
-  - showTapToLogCardForClipboardCheck() - iOS gesture prompt
+- Fixed false prompts when clipboard couldn't be captured on leave
+  - CLIPBOARD_UNKNOWN state now requires matching lastLaunchedGame
+  - More conservative: only prompt if result matches the game we launched
+  
+- Added detailed console logging for debugging clipboard flow:
+  - Logs clipboard state on leave and return
+  - Logs decision points for troubleshooting
 
-- Edge cases handled:
-  - User leaves without copying: no prompt on return ✓
-  - User copies result then returns: prompt to log ✓
-  - User closes app, copies result, reopens: prompt to log ✓
-  - User has old content from yesterday: no prompt ✓
-
-PREVIOUS (v1.2.0.7):
+PREVIOUS (v1.2.0.8):
 --------------------
-- Fixed tap-to-log card for GS Originals
+- Redesigned clipboard detection with "diff" approach
+- Captures clipboard state when leaving the app
+- Compares on return to detect new content
