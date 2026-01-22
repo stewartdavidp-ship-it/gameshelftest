@@ -1,36 +1,28 @@
-Game Shelf v1.2.0.20 Release Notes
+Game Shelf v1.2.0.21 Release Notes
 ==================================
 
 Release Date: 2025-01-22
 
-Changes in v1.2.0.20:
+Changes in v1.2.0.21:
 ---------------------
-- Fixed TestHelpers to use correct field names
-  - getState() now returns: games, history, stats, wallet (not selectedGames, results, streaks)
-  - seedTestData() now properly seeds: games, history, stats, wallet, friends, dailyGoal
-- Enables proper automated testing with window.GameShelfTest
+- Fixed GS Originals URLs to use lowercase repo names
+- Test Mode now uses correct URLs: quotletest, slatetest, rungstest, wordboxingtest
+- Production URLs now use: quotle, slate, rungs, wordboxing
 
-TestHelpers Methods:
--------------------
-- isTestMode() - Check if test mode active
-- getState() - Get sanitized app state
-- seedTestData(data) - Seed test data with deep merge
-- resetToFresh() - Clear all data
-- simulatePaste(text) - Simulate paste
-- click(selector) - Click helper
-- waitFor(selector) - Wait for element
-- isVisible(selector) - Check visibility
-- getText(selector) - Get text
-- getAppData() - Direct data access
+URL Mapping (Test Mode OFF - Production):
+-----------------------------------------
+- Quotle:      https://stewartdavidp-ship-it.github.io/quotle/
+- Slate:       https://stewartdavidp-ship-it.github.io/slate/
+- Rungs:       https://stewartdavidp-ship-it.github.io/rungs/
+- Word Boxing: https://stewartdavidp-ship-it.github.io/wordboxing/
 
-URL Parameters:
---------------
-- ?fresh=1 - Clear all data and start fresh
-- ?testMode=1 - Enable test mode with helpers
-- ?seedData=base64json - Seed with test data
+URL Mapping (Test Mode ON):
+---------------------------
+- Quotle:      https://stewartdavidp-ship-it.github.io/quotletest/
+- Slate:       https://stewartdavidp-ship-it.github.io/slatetest/
+- Rungs:       https://stewartdavidp-ship-it.github.io/rungstest/
+- Word Boxing: https://stewartdavidp-ship-it.github.io/wordboxingtest/
 
-Files Included:
----------------
-- index.html (main app)
-- sw.js (service worker v1.2.0.20)
-- manifest.json (PWA manifest)
+Previous v1.2.0.20 Changes:
+---------------------------
+- Fixed TestHelpers to use correct field names (games, history, stats, wallet)

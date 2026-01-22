@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.20">
+    <meta name="version" content="1.2.0.21">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -6897,7 +6897,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.20</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.21</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7126,7 +7126,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.20</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.21</div>
         </div>
     </div>
     
@@ -10933,26 +10933,26 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             'immaculate-grid': { id: 'immaculate-grid', name: 'Immaculate Grid', icon: '⚾', url: 'https://www.immaculategrid.com', hasApp: false },
             costcodle: { id: 'costcodle', name: 'Costcodle', icon: '🛒', url: 'https://costcodle.com', hasApp: false },
             // Game Shelf Originals (browser only)
-            quotle: { id: 'quotle', name: 'Quotle', icon: '💬', url: 'https://stewartdavidp-ship-it.github.io/Quotle/', hasApp: false },
-            slate: { id: 'slate', name: 'Slate', icon: '📝', url: 'https://stewartdavidp-ship-it.github.io/Slate/', hasApp: false },
-            rungs: { id: 'rungs', name: 'Rungs', icon: '🪜', url: 'https://stewartdavidp-ship-it.github.io/Rungstest/', hasApp: false },
-            wordboxing: { id: 'wordboxing', name: 'Word Boxing', icon: '🥊', url: 'https://stewartdavidp-ship-it.github.io/WordBoxing/', hasApp: false }
+            quotle: { id: 'quotle', name: 'Quotle', icon: '💬', url: 'https://stewartdavidp-ship-it.github.io/quotle/', hasApp: false },
+            slate: { id: 'slate', name: 'Slate', icon: '📝', url: 'https://stewartdavidp-ship-it.github.io/slate/', hasApp: false },
+            rungs: { id: 'rungs', name: 'Rungs', icon: '🪜', url: 'https://stewartdavidp-ship-it.github.io/rungs/', hasApp: false },
+            wordboxing: { id: 'wordboxing', name: 'Word Boxing', icon: '🥊', url: 'https://stewartdavidp-ship-it.github.io/wordboxing/', hasApp: false }
         };
         
         // Test URLs for GS Originals (used when Test Mode is enabled)
         const GS_ORIGINALS_TEST_URLS = {
-            quotle: 'https://stewartdavidp-ship-it.github.io/Quotle-test/',
-            slate: 'https://stewartdavidp-ship-it.github.io/Slate-test/',
-            rungs: 'https://stewartdavidp-ship-it.github.io/Rungs-test/',
-            wordboxing: 'https://stewartdavidp-ship-it.github.io/WordBoxing-test/'
+            quotle: 'https://stewartdavidp-ship-it.github.io/quotletest/',
+            slate: 'https://stewartdavidp-ship-it.github.io/slatetest/',
+            rungs: 'https://stewartdavidp-ship-it.github.io/rungstest/',
+            wordboxing: 'https://stewartdavidp-ship-it.github.io/wordboxingtest/'
         };
         
         // Production URLs for GS Originals (default)
         const GS_ORIGINALS_PROD_URLS = {
-            quotle: 'https://stewartdavidp-ship-it.github.io/Quotle/',
-            slate: 'https://stewartdavidp-ship-it.github.io/Slate/',
-            rungs: 'https://stewartdavidp-ship-it.github.io/Rungstest/',
-            wordboxing: 'https://stewartdavidp-ship-it.github.io/WordBoxing/'
+            quotle: 'https://stewartdavidp-ship-it.github.io/quotle/',
+            slate: 'https://stewartdavidp-ship-it.github.io/slate/',
+            rungs: 'https://stewartdavidp-ship-it.github.io/rungs/',
+            wordboxing: 'https://stewartdavidp-ship-it.github.io/wordboxing/'
         };
         
         // Check if game is a GS Original
@@ -14754,7 +14754,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.20';
+            const version = '1.2.0.21';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -22808,7 +22808,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.20 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.21 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
