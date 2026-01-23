@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.6.7">
+    <meta name="version" content="1.2.6.8">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -21,13 +21,48 @@
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Game Shelf">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- Manifest & Icons -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <!-- Dynamic Manifest & Icons based on repo detection -->
+    <script>
+        // Detect if running from test repo
+        const isTestBuild = window.location.pathname.toLowerCase().includes('gameshelftest');
+        
+        // Set theme color based on build
+        const themeColor = isTestBuild ? '#ff9900' : '#667eea';
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', themeColor);
+        
+        // Set apple-mobile-web-app-title
+        const appTitle = isTestBuild ? 'GS Test' : 'Game Shelf';
+        const metaTitle = document.createElement('meta');
+        metaTitle.name = 'apple-mobile-web-app-title';
+        metaTitle.content = appTitle;
+        document.head.appendChild(metaTitle);
+        
+        // Set manifest link
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        manifestLink.href = isTestBuild ? 'manifest-test.json' : 'manifest.json';
+        document.head.appendChild(manifestLink);
+        
+        // Set icons
+        const iconFolder = isTestBuild ? 'icons-test' : 'icons';
+        
+        const appleIcon = document.createElement('link');
+        appleIcon.rel = 'apple-touch-icon';
+        appleIcon.href = iconFolder + '/apple-touch-icon.png';
+        document.head.appendChild(appleIcon);
+        
+        const favicon = document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.type = 'image/png';
+        favicon.sizes = '192x192';
+        favicon.href = iconFolder + '/icon-192.png';
+        document.head.appendChild(favicon);
+        
+        // Log which build is running
+        console.log(isTestBuild ? '🧪 TEST BUILD detected' : '🚀 PRODUCTION BUILD');
+    </script>
     
     <title>Game Shelf PWA</title>
     
@@ -7312,6 +7347,9 @@
     <!-- UAT Mode Badge -->
     <div class="uat-mode-badge" id="uat-mode-badge">🧪 UAT Mode</div>
     
+    <!-- Test Game Shelf Badge (auto-shows when on test repo) -->
+    <div class="uat-mode-badge" id="test-gameshelf-badge" style="display:none; left:10px; right:auto; background: linear-gradient(135deg, #f90, #f60);">🔧 TEST BUILD</div>
+    
     <!-- Floating Feedback Button (UAT) -->
     <button class="uat-feedback-btn hidden" id="uat-feedback-btn" onclick="openUATFeedback()" title="Send Feedback">
         💬
@@ -7326,7 +7364,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.6.7</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.6.8</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7571,7 +7609,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version" onclick="handleVersionTap()" style="cursor: pointer;" title="Triple-tap for debug mode">Game Shelf PWA v1.2.6.7</div>
+            <div class="settings-version" onclick="handleVersionTap()" style="cursor: pointer;" title="Triple-tap for debug mode">Game Shelf PWA v1.2.6.8</div>
         </div>
     </div>
     
@@ -11532,7 +11570,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         // Get URL for game (respects test mode for GS Originals)
         function getGameUrl(gameId) {
             if (isGSOriginal(gameId)) {
-                // v1.2.6.7: Use correct prod/test URLs for GS Originals
+                // v1.2.6.8: Use correct prod/test URLs for GS Originals
                 if (isTestModeEnabled()) {
                     return GS_ORIGINALS_TEST_URLS[gameId];
                 }
@@ -11542,8 +11580,20 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         // Check if test mode is enabled
+        // v1.2.6.8: Auto-enable if running from test repo
         function isTestModeEnabled() {
+            // Auto-enable test mode if running from test Game Shelf repo
+            if (window.location.hostname.includes('github.io') && 
+                window.location.pathname.toLowerCase().includes('gameshelftest')) {
+                return true;
+            }
             return localStorage.getItem('gameshelf_test_mode') === 'true';
+        }
+        
+        // Check if this is the test Game Shelf instance
+        function isTestGameShelf() {
+            return window.location.hostname.includes('github.io') && 
+                   window.location.pathname.toLowerCase().includes('gameshelftest');
         }
         
         // App info for publishers that have apps
@@ -14351,6 +14401,29 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             const toggle = document.getElementById('test-mode-toggle');
             if (toggle) {
                 toggle.checked = isTestModeEnabled();
+                
+                // v1.2.6.8: Disable toggle if running from test repo (always on)
+                if (isTestGameShelf()) {
+                    toggle.disabled = true;
+                    toggle.parentElement.title = 'Test mode auto-enabled on test Game Shelf';
+                }
+            }
+            
+            // Show indicator if on test Game Shelf
+            if (isTestGameShelf()) {
+                console.log('🧪 Running from TEST Game Shelf - test mode auto-enabled');
+                
+                // Show TEST badge
+                const testBadge = document.getElementById('test-gameshelf-badge');
+                if (testBadge) {
+                    testBadge.style.display = 'block';
+                }
+                
+                // Add [TEST] to header title
+                const headerTitle = document.querySelector('.header-title');
+                if (headerTitle && !headerTitle.innerHTML.includes('[TEST]')) {
+                    headerTitle.innerHTML = headerTitle.innerHTML + ' <span style="color:#f90;font-size:0.6em;">[TEST]</span>';
+                }
             }
         }
         
@@ -15508,7 +15581,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.6.7';
+            const version = '1.2.6.8';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18098,7 +18171,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.6.7'
+                    appVersion: '1.2.6.8'
                 }
             };
             
@@ -18262,7 +18335,7 @@ Made with ❤️ for puzzle enthusiasts`;
             return causes;
         }
         
-        // ============ v1.2.6.7 DEBUG MODE ============
+        // ============ v1.2.6.8 DEBUG MODE ============
         // Comprehensive capture algorithm testing mode
         // Activate: Triple-tap version number in settings, or localStorage.setItem('gs_debug_mode', 'true')
         
@@ -18274,7 +18347,9 @@ Made with ❤️ for puzzle enthusiasts`;
         let debugGamesCompleted = 0;
         
         // Firebase config for debug data
-        const DEBUG_FIREBASE_URL = 'https://word-boxing-default-rtdb.firebaseio.com/debug-sessions';
+        const DEBUG_FIREBASE_URL = isTestGameShelf() 
+            ? 'https://word-boxing-default-rtdb.firebaseio.com/debug-sessions-test'
+            : 'https://word-boxing-default-rtdb.firebaseio.com/debug-sessions';
         
         function initDebugSession() {
             const platform = getPlatform();
@@ -18288,7 +18363,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 isIOS: /iPad|iPhone|iPod/.test(ua),
                 isAndroid: /Android/.test(ua),
                 isStandalone: isStandalone(),
-                appVersion: '1.2.6.7',
+                appVersion: '1.2.6.8',
                 gamesTarget: DEBUG_GAMES_TARGET,
                 gamesCompleted: 0,
                 events: [],
@@ -19005,7 +19080,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 signals.launchedGame = context.lastLaunchedGame;
             }
             
-            // v1.2.6.7: iOS compensation - ensure valid matches always get a chance
+            // v1.2.6.8: iOS compensation - ensure valid matches always get a chance
             // Even with clipboard capture on launch, iOS may still face edge cases
             // where penalty stacking blocks legitimate captures (e.g., 3+ dismissals)
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -19488,7 +19563,7 @@ Made with ❤️ for puzzle enthusiasts`;
             const game = GAMES[gameId];
             if (!game) return;
             
-            // v1.2.6.7 DEBUG: Start tracking this game flow
+            // v1.2.6.8 DEBUG: Start tracking this game flow
             startGameFlow(gameId);
             
             // Track this launch for return detection
@@ -19497,12 +19572,12 @@ Made with ❤️ for puzzle enthusiasts`;
             returnPromptDismissedFor = null;
             returnPromptDismissedAt = null; // v1.2.3: Reset dismiss timestamp
             
-            // v1.2.6.7: REMOVED clipboard capture on launch
+            // v1.2.6.8: REMOVED clipboard capture on launch
             // It triggered confusing iOS "Paste" popup and didn't help detection
             // We'll capture clipboard on RETURN instead (tap-to-log card provides gesture)
             clipboardOnLeave = CLIPBOARD_UNKNOWN;
             
-            // v1.2.6.7 DEBUG: Log game launch
+            // v1.2.6.8 DEBUG: Log game launch
             logDebugEvent('GAME_LAUNCH', {
                 gameId: gameId,
                 gameName: game.name
@@ -19580,7 +19655,7 @@ Made with ❤️ for puzzle enthusiasts`;
         function showPrelaunchReminder(game, launchUrl) {
             const reminder = document.getElementById('prelaunch-reminder');
             
-            // v1.2.6.7: Open URL IMMEDIATELY to preserve tap gesture for iOS
+            // v1.2.6.8: Open URL IMMEDIATELY to preserve tap gesture for iOS
             // iOS blocks window.open if called after timeout
             openGameUrl(launchUrl);
             
@@ -19881,7 +19956,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // v1.2.6.7: Drastically reduced time thresholds for better UX
+            // v1.2.6.8: Drastically reduced time thresholds for better UX
             const isQuickGame = QUICK_GAMES.includes(lastLaunchedGame);
             const minTimeMs = 5000; // 5 seconds for ALL games
             if (elapsed < minTimeMs) {
@@ -20294,7 +20369,7 @@ Made with ❤️ for puzzle enthusiasts`;
         async function checkClipboardOnReturn() {
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             
-            // v1.2.6.7 DEBUG: Log return detection
+            // v1.2.6.8 DEBUG: Log return detection
             logDebugEvent('RETURN_DETECTED', {
                 isIOS: isIOS,
                 lastLaunchedGame: lastLaunchedGame,
@@ -20314,7 +20389,7 @@ Made with ❤️ for puzzle enthusiasts`;
             const confidence = calculateReturnConfidence(context);
             lastConfidenceScore = confidence.score;
             
-            // v1.2.6.7 DEBUG: Log full confidence calculation
+            // v1.2.6.8 DEBUG: Log full confidence calculation
             logDebugConfidence(context, confidence.score, confidence.signals);
             if (currentGameFlow) {
                 currentGameFlow.clipboardOnReturn = context.currentClipboard ? 
@@ -20435,7 +20510,7 @@ Made with ❤️ for puzzle enthusiasts`;
         // iOS-friendly: Show tap-to-log card that will check clipboard diff on tap
         // v1.2.3: Added game-aware time thresholds and dismiss time decay
         function showTapToLogCardForClipboardCheck() {
-            // v1.2.6.7 DEBUG: Log entry into this function
+            // v1.2.6.8 DEBUG: Log entry into this function
             logDebugEvent('IOS_RETURN_CHECK', {
                 tapToLogDismissed: tapToLogDismissed,
                 lastLaunchedGame: lastLaunchedGame,
@@ -20462,7 +20537,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // v1.2.6.7: Drastically reduced time thresholds for better UX
+            // v1.2.6.8: Drastically reduced time thresholds for better UX
             const elapsed = Date.now() - lastLaunchTime;
             const isQuickGame = QUICK_GAMES.includes(lastLaunchedGame);
             const minTimeMs = 5000; // 5 seconds for ALL games - user clearly went somewhere and came back
@@ -20519,7 +20594,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 card.style.display = 'block';
                 console.log(`📋 iOS: Showing tap-to-log for ${game.name} (away ${Math.round(elapsed/1000)}s)`);
                 
-                // v1.2.6.7 DEBUG: Log card shown
+                // v1.2.6.8 DEBUG: Log card shown
                 logDebugEvent('TAP_TO_LOG_SHOWN', {
                     gameId: game.id,
                     gameName: game.name,
@@ -21146,7 +21221,7 @@ Made with ❤️ for puzzle enthusiasts`;
         
         function acceptClipboard() {
             if (detectedClipboard) {
-                // v1.2.6.7 DEBUG: Log user acceptance
+                // v1.2.6.8 DEBUG: Log user acceptance
                 logDebugUserResponse('PROMPT_ACCEPTED', {
                     gameId: detectedClipboard.result.gameId,
                     score: detectedClipboard.result.score
@@ -21181,7 +21256,7 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Only track dismiss and set state when it's a real user dismiss
             if (trackDismiss) {
-                // v1.2.6.7 DEBUG: Log user dismissal
+                // v1.2.6.8 DEBUG: Log user dismissal
                 logDebugUserResponse('PROMPT_DISMISSED', {
                     gameId: detectedClipboard?.result?.gameId || lastLaunchedGame
                 });
@@ -25045,7 +25120,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 if (document.visibilityState === 'visible') {
                     console.log('📱 App became visible');
                     
-                    // v1.2.6.7 DEBUG: Log visibility change
+                    // v1.2.6.8 DEBUG: Log visibility change
                     logDebugEvent('VISIBILITY_CHANGE', {
                         state: 'visible',
                         lastLaunchedGame: lastLaunchedGame,
@@ -25129,7 +25204,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.6.7 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.6.8 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
