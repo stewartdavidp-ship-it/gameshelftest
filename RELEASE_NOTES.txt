@@ -1,25 +1,25 @@
-Game Shelf v1.2.0.24
+Game Shelf v1.2.0.26
 ====================
 Release Date: January 22, 2025
 
-CLIPBOARD COMPARISON FIX
-------------------------
-Fixed race condition where clipboard state wasn't being captured
-before launching a game.
+URL FIX - RESTORE CAPITALIZED REPO NAMES
+----------------------------------------
+Fixed 404 errors when launching GS Originals games.
 
-Bug Fix:
-- Added `captureClipboardOnLeave()` call in `launchGame()` function
-- Ensures clipboard baseline is captured BEFORE opening game URL
-- Previously relied only on visibilitychange event which could fire
-  after the new tab/app was already open
+The Issue:
+- URLs were changed to lowercase (quotle, slate, etc.)
+- GitHub Pages is case-sensitive
+- Repos still have capitalized names → 404 errors
 
-This fixes the issue where the app wasn't properly detecting new 
-clipboard content when returning from a game.
+Fixed URLs:
+- Quotle:     .../Quotle/      (was .../quotle/)
+- Slate:      .../Slate/       (was .../slate/)
+- Rungs:      .../Rungstest/   (was .../rungs/)
+- Word Boxing: .../WordBoxing/ (was .../wordboxing/)
 
-Previous Changes (v1.2.0.23):
-- Force Update option in Settings > Data
-- updateViaCache: 'none' for faster SW updates
+Test URLs also restored to original format with hyphens:
+- .../Quotle-test/     (was .../quotletest/)
+- .../Slate-test/      (was .../slatetest/)
+- etc.
 
-Previous Changes (v1.2.0.22):
-- UAT Mode with floating feedback button
-- Debug context auto-capture for issue reports
+This version matches v1.2.0.19 behavior exactly.
