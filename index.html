@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.6">
+    <meta name="version" content="1.2.6.1">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -1358,7 +1358,8 @@
             font-size: 1.4rem;
             font-weight: 700;
             margin-bottom: 20px;
-            color: var(--text-primary);
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
         }
         
         .tutorial-desc {
@@ -7320,7 +7321,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.6</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.6.1</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7565,7 +7566,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version" onclick="handleVersionTap()" style="cursor: pointer;" title="Triple-tap for debug mode">Game Shelf PWA v1.2.6</div>
+            <div class="settings-version" onclick="handleVersionTap()" style="cursor: pointer;" title="Triple-tap for debug mode">Game Shelf PWA v1.2.6.1</div>
         </div>
     </div>
     
@@ -15498,7 +15499,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.6';
+            const version = '1.2.6.1';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18088,7 +18089,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.6'
+                    appVersion: '1.2.6.1'
                 }
             };
             
@@ -18252,7 +18253,7 @@ Made with ❤️ for puzzle enthusiasts`;
             return causes;
         }
         
-        // ============ v1.2.6 DEBUG MODE ============
+        // ============ v1.2.6.1 DEBUG MODE ============
         // Comprehensive capture algorithm testing mode
         // Activate: Triple-tap version number in settings, or localStorage.setItem('gs_debug_mode', 'true')
         
@@ -18278,7 +18279,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 isIOS: /iPad|iPhone|iPod/.test(ua),
                 isAndroid: /Android/.test(ua),
                 isStandalone: isStandalone(),
-                appVersion: '1.2.6',
+                appVersion: '1.2.6.1',
                 gamesTarget: DEBUG_GAMES_TARGET,
                 gamesCompleted: 0,
                 events: [],
@@ -18528,10 +18529,14 @@ Made with ❤️ for puzzle enthusiasts`;
             URL.revokeObjectURL(url);
         }
         
+        let debugPanelMinimized = false;
+        
         function showDebugPanel() {
             // Remove existing panel if any
             const existing = document.getElementById('debug-panel');
             if (existing) existing.remove();
+            const existingBadge = document.getElementById('debug-badge');
+            if (existingBadge) existingBadge.remove();
             
             const panel = document.createElement('div');
             panel.id = 'debug-panel';
@@ -18539,90 +18544,109 @@ Made with ❤️ for puzzle enthusiasts`;
                 <style>
                     #debug-panel {
                         position: fixed;
-                        bottom: 0;
-                        left: 0;
-                        right: 0;
-                        background: rgba(0, 0, 0, 0.95);
+                        bottom: 60px;
+                        left: 8px;
+                        right: 8px;
+                        background: rgba(0, 0, 0, 0.9);
                         color: #0f0;
                         font-family: monospace;
-                        font-size: 11px;
-                        padding: 8px;
-                        z-index: 99999;
-                        max-height: 40vh;
+                        font-size: 10px;
+                        padding: 6px;
+                        z-index: 9999;
+                        max-height: 25vh;
                         overflow-y: auto;
-                        border-top: 2px solid #0f0;
+                        border: 1px solid #0f0;
+                        border-radius: 8px;
+                        pointer-events: auto;
+                    }
+                    #debug-panel.minimized {
+                        display: none;
+                    }
+                    #debug-badge {
+                        position: fixed;
+                        bottom: 70px;
+                        right: 10px;
+                        background: #0f0;
+                        color: #000;
+                        font-family: monospace;
+                        font-size: 11px;
+                        font-weight: bold;
+                        padding: 6px 10px;
+                        border-radius: 20px;
+                        z-index: 9999;
+                        cursor: pointer;
+                        box-shadow: 0 2px 8px rgba(0,255,0,0.5);
+                    }
+                    #debug-badge:active {
+                        transform: scale(0.95);
                     }
                     #debug-panel .debug-header {
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
-                        margin-bottom: 8px;
-                        padding-bottom: 8px;
+                        margin-bottom: 4px;
+                        padding-bottom: 4px;
                         border-bottom: 1px solid #0f0;
                     }
                     #debug-panel .debug-title {
                         font-weight: bold;
-                        font-size: 14px;
+                        font-size: 11px;
                     }
                     #debug-panel .debug-controls button {
                         background: #0f0;
                         color: #000;
                         border: none;
-                        padding: 4px 8px;
-                        margin-left: 4px;
+                        padding: 3px 6px;
+                        margin-left: 3px;
                         cursor: pointer;
                         font-family: monospace;
-                        font-size: 10px;
+                        font-size: 9px;
+                        border-radius: 3px;
                     }
                     #debug-panel .debug-stats {
                         display: grid;
                         grid-template-columns: repeat(4, 1fr);
-                        gap: 8px;
-                        margin-bottom: 8px;
+                        gap: 4px;
+                        margin-bottom: 4px;
                     }
                     #debug-panel .debug-stat {
                         background: rgba(0, 255, 0, 0.1);
-                        padding: 4px;
+                        padding: 2px;
                         text-align: center;
+                        border-radius: 4px;
                     }
                     #debug-panel .debug-stat-value {
-                        font-size: 18px;
+                        font-size: 14px;
                         font-weight: bold;
                     }
                     #debug-panel .debug-stat-label {
-                        font-size: 9px;
+                        font-size: 8px;
                         opacity: 0.7;
                     }
                     #debug-panel .debug-log {
-                        max-height: 150px;
+                        max-height: 60px;
                         overflow-y: auto;
                         background: rgba(0, 0, 0, 0.5);
-                        padding: 4px;
-                        font-size: 10px;
+                        padding: 3px;
+                        font-size: 9px;
+                        border-radius: 4px;
+                        margin-top: 4px;
                     }
                     #debug-panel .debug-log-entry {
                         border-bottom: 1px solid rgba(0, 255, 0, 0.2);
-                        padding: 2px 0;
+                        padding: 1px 0;
                     }
                     #debug-panel .debug-log-entry.CONFIDENCE_CALC { color: #ff0; }
                     #debug-panel .debug-log-entry.ACTION_TAKEN { color: #0ff; }
                     #debug-panel .debug-log-entry.USER_RESPONSE { color: #f0f; }
                     #debug-panel .debug-log-entry.GAME_FLOW { color: #f90; }
-                    #debug-panel .debug-instructions {
-                        background: rgba(255, 255, 0, 0.1);
-                        padding: 8px;
-                        margin-top: 8px;
-                        border: 1px solid #ff0;
-                        color: #ff0;
-                    }
                 </style>
                 <div class="debug-header">
-                    <span class="debug-title">🔬 DEBUG MODE - Session: ${debugSession?.id?.slice(-8) || 'N/A'}</span>
+                    <span class="debug-title">🔬 DEBUG ${debugSession?.id?.slice(-6) || ''}</span>
                     <div class="debug-controls">
-                        <button onclick="exportDebugSession()">📥 Export</button>
-                        <button onclick="uploadDebugSession()">☁️ Upload</button>
-                        <button onclick="endDebugSession()">⏹️ End</button>
-                        <button onclick="document.getElementById('debug-panel').remove()">✕</button>
+                        <button onclick="window.exportDebugSession()">📥</button>
+                        <button onclick="window.endDebugSession()">⏹️</button>
+                        <button onclick="window.minimizeDebugPanel()">▼</button>
                     </div>
                 </div>
                 <div class="debug-stats">
@@ -18640,20 +18664,45 @@ Made with ❤️ for puzzle enthusiasts`;
                     </div>
                     <div class="debug-stat">
                         <div class="debug-stat-value" id="debug-last-score">—</div>
-                        <div class="debug-stat-label">Last Score</div>
+                        <div class="debug-stat-label">Score</div>
                     </div>
-                </div>
-                <div class="debug-instructions">
-                    <strong>Instructions:</strong> Play ${DEBUG_GAMES_TARGET} games normally. For each game:<br>
-                    1️⃣ Tap a game tile to launch<br>
-                    2️⃣ Play the game and copy your result<br>
-                    3️⃣ Return to Game Shelf<br>
-                    4️⃣ Accept or dismiss the prompt<br>
-                    Session will auto-upload when complete.
                 </div>
                 <div class="debug-log" id="debug-log"></div>
             `;
             document.body.appendChild(panel);
+            
+            // Also create minimized badge
+            showDebugBadge();
+        }
+        
+        function showDebugBadge() {
+            let badge = document.getElementById('debug-badge');
+            if (!badge) {
+                badge = document.createElement('div');
+                badge.id = 'debug-badge';
+                badge.onclick = () => window.maximizeDebugPanel();
+                document.body.appendChild(badge);
+            }
+            badge.innerHTML = `🔬 ${debugGamesCompleted}/${DEBUG_GAMES_TARGET}`;
+            badge.style.display = debugPanelMinimized ? 'block' : 'none';
+        }
+        
+        function minimizeDebugPanel() {
+            debugPanelMinimized = true;
+            const panel = document.getElementById('debug-panel');
+            if (panel) panel.classList.add('minimized');
+            showDebugBadge();
+        }
+        window.minimizeDebugPanel = minimizeDebugPanel;
+        
+        function maximizeDebugPanel() {
+            debugPanelMinimized = false;
+            const panel = document.getElementById('debug-panel');
+            if (panel) panel.classList.remove('minimized');
+            const badge = document.getElementById('debug-badge');
+            if (badge) badge.style.display = 'none';
+        }
+        window.maximizeDebugPanel = maximizeDebugPanel;
         }
         
         function updateDebugPanel() {
@@ -18666,8 +18715,12 @@ Made with ❤️ for puzzle enthusiasts`;
             if (eventsCount) eventsCount.textContent = debugEvents.length;
             if (lastScore && lastConfidenceScore !== null) lastScore.textContent = lastConfidenceScore;
             
+            // Update minimized badge too
+            const badge = document.getElementById('debug-badge');
+            if (badge) badge.innerHTML = `🔬 ${debugGamesCompleted}/${DEBUG_GAMES_TARGET}`;
+            
             if (logContainer && debugEvents.length > 0) {
-                const recentEvents = debugEvents.slice(-20).reverse();
+                const recentEvents = debugEvents.slice(-10).reverse();
                 logContainer.innerHTML = recentEvents.map(e => 
                     `<div class="debug-log-entry ${e.type}">
                         <strong>[${e.type}]</strong> 
@@ -18734,6 +18787,8 @@ Made with ❤️ for puzzle enthusiasts`;
                 finalizeDebugSession();
             }
         }
+        window.endDebugSession = endDebugSession;
+        window.exportDebugSession = exportDebugSession;
         
         function enableDebugMode() {
             debugModeEnabled = true;
@@ -18749,6 +18804,8 @@ Made with ❤️ for puzzle enthusiasts`;
             debugEvents = [];
             const panel = document.getElementById('debug-panel');
             if (panel) panel.remove();
+            const badge = document.getElementById('debug-badge');
+            if (badge) badge.remove();
             console.log('🔬 DEBUG MODE DISABLED');
         }
         
@@ -18940,7 +18997,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 signals.launchedGame = context.lastLaunchedGame;
             }
             
-            // v1.2.6: iOS compensation - ensure valid matches always get a chance
+            // v1.2.6.1: iOS compensation - ensure valid matches always get a chance
             // Even with clipboard capture on launch, iOS may still face edge cases
             // where penalty stacking blocks legitimate captures (e.g., 3+ dismissals)
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -19423,7 +19480,7 @@ Made with ❤️ for puzzle enthusiasts`;
             const game = GAMES[gameId];
             if (!game) return;
             
-            // v1.2.6 DEBUG: Start tracking this game flow
+            // v1.2.6.1 DEBUG: Start tracking this game flow
             startGameFlow(gameId);
             
             // Track this launch for return detection
@@ -19432,7 +19489,7 @@ Made with ❤️ for puzzle enthusiasts`;
             returnPromptDismissedFor = null;
             returnPromptDismissedAt = null; // v1.2.3: Reset dismiss timestamp
             
-            // v1.2.6: Capture clipboard NOW while we have the tap gesture!
+            // v1.2.6.1: Capture clipboard NOW while we have the tap gesture!
             // This is the KEY FIX for iOS - the tile tap IS a valid gesture
             // so we can read clipboard before launching, then compare on return
             let clipboardCaptureSuccess = false;
@@ -19448,7 +19505,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 console.log('📋 Launch: Clipboard read failed -', e.name);
             }
             
-            // v1.2.6 DEBUG: Log clipboard capture result
+            // v1.2.6.1 DEBUG: Log clipboard capture result
             logDebugEvent('CLIPBOARD_CAPTURE', {
                 context: 'LAUNCH_TAP',
                 success: clipboardCaptureSuccess,
@@ -19460,7 +19517,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     `${clipboardOnLeave.length} chars` : 'FAILED';
             }
             
-            // v1.2.6 DEBUG: Log game launch
+            // v1.2.6.1 DEBUG: Log game launch
             logDebugEvent('GAME_LAUNCH', {
                 gameId: gameId,
                 gameName: game.name,
@@ -20265,7 +20322,7 @@ Made with ❤️ for puzzle enthusiasts`;
             const confidence = calculateReturnConfidence(context);
             lastConfidenceScore = confidence.score;
             
-            // v1.2.6 DEBUG: Log full confidence calculation
+            // v1.2.6.1 DEBUG: Log full confidence calculation
             logDebugConfidence(context, confidence.score, confidence.signals);
             if (currentGameFlow) {
                 currentGameFlow.clipboardOnReturn = context.currentClipboard ? 
@@ -21065,7 +21122,7 @@ Made with ❤️ for puzzle enthusiasts`;
         
         function acceptClipboard() {
             if (detectedClipboard) {
-                // v1.2.6 DEBUG: Log user acceptance
+                // v1.2.6.1 DEBUG: Log user acceptance
                 logDebugUserResponse('PROMPT_ACCEPTED', {
                     gameId: detectedClipboard.result.gameId,
                     score: detectedClipboard.result.score
@@ -21100,7 +21157,7 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Only track dismiss and set state when it's a real user dismiss
             if (trackDismiss) {
-                // v1.2.6 DEBUG: Log user dismissal
+                // v1.2.6.1 DEBUG: Log user dismissal
                 logDebugUserResponse('PROMPT_DISMISSED', {
                     gameId: detectedClipboard?.result?.gameId || lastLaunchedGame
                 });
@@ -25041,7 +25098,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.6 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.6.1 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
