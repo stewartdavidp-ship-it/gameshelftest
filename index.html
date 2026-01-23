@@ -18809,6 +18809,7 @@ Made with ❤️ for puzzle enthusiasts`;
         let versionTapTimer = null;
         function handleVersionTap() {
             versionTapCount++;
+            console.log('🔬 Version tap:', versionTapCount);
             if (versionTapTimer) clearTimeout(versionTapTimer);
             
             if (versionTapCount >= 3) {
@@ -18828,6 +18829,8 @@ Made with ❤️ for puzzle enthusiasts`;
                 }, 500);
             }
         }
+        // Expose to global scope for onclick handler
+        window.handleVersionTap = handleVersionTap;
         
         // ============ RETURN CONFIDENCE ALGORITHM ============
         // v1.2.3: Added mismatch penalty, game-aware time thresholds, dismiss time decay
