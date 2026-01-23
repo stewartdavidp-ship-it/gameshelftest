@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.22">
+    <meta name="version" content="1.2.0.24">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -6983,7 +6983,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.22</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.24</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7112,6 +7112,11 @@
                             Import Data
                         </a>
                         -->
+                        <a class="settings-link" onclick="forceAppUpdate(); toggleSettingsMenu();">
+                            <span class="icon">🔄</span>
+                            Force Update Check
+                        </a>
+                        <p class="settings-desc">Check for new version and reload</p>
                         <a class="settings-link" onclick="clearAllData(); toggleSettingsMenu();" style="color: var(--accent-red);">
                             <span class="icon">🗑️</span>
                             Reset All Data
@@ -7223,7 +7228,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.22</div>
+            <div class="settings-version">Game Shelf PWA v1.2.0.24</div>
         </div>
     </div>
     
@@ -17938,6 +17943,11 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }
             
+            // CRITICAL: Capture clipboard state BEFORE launching
+            // This ensures we can detect if user copies new result while in game
+            // Don't await - let it run in background
+            captureClipboardOnLeave();
+            
             // Open game
             if (launchUrl.startsWith('http')) {
                 window.open(launchUrl, '_blank');
@@ -21095,8 +21105,8 @@ Made with ❤️ for puzzle enthusiasts`;
         
         // ============ PWA / SERVICE WORKER ============
         if ('serviceWorker' in navigator) {
-            // Register service worker
-            navigator.serviceWorker.register('sw.js')
+            // Register service worker with cache bypass for faster updates
+            navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
                 .then(reg => {
                     console.log('SW registered');
                     
@@ -21154,6 +21164,46 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         // Force refresh function (can be called from console)
+        // Force update check (called from Settings)
+        function forceAppUpdate() {
+            showToast('🔄 Checking for updates...', 'info');
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration().then(reg => {
+                    if (reg) {
+                        // Force SW to check for updates
+                        reg.update().then(() => {
+                            console.log('SW update check triggered');
+                            
+                            // Check if there's a waiting worker
+                            if (reg.waiting) {
+                                // Tell it to skip waiting and take over
+                                reg.waiting.postMessage('SKIP_WAITING');
+                                showToast('✅ Update installing...', 'success');
+                            } else if (reg.installing) {
+                                showToast('⏳ Update downloading...', 'info');
+                            } else {
+                                // No update found, do a hard reload anyway to be sure
+                                showToast('✅ Already on latest version! Reloading...', 'success');
+                                setTimeout(() => {
+                                    window.location.reload(true);
+                                }, 1000);
+                            }
+                        }).catch(err => {
+                            console.error('Update check failed:', err);
+                            showToast('⚠️ Update check failed, forcing refresh...', 'warning');
+                            setTimeout(() => window.forceRefresh(), 1000);
+                        });
+                    } else {
+                        // No SW registered, just reload
+                        window.location.reload(true);
+                    }
+                });
+            } else {
+                window.location.reload(true);
+            }
+        }
+        
         window.forceRefresh = function() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(registrations => {
@@ -23116,7 +23166,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.22 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.0.24 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

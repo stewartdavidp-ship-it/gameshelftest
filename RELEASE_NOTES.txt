@@ -1,43 +1,25 @@
-Game Shelf v1.2.0.22
+Game Shelf v1.2.0.24
 ====================
 Release Date: January 22, 2025
 
-UAT MODE & FEEDBACK SYSTEM
---------------------------
-This release adds a comprehensive User Acceptance Testing (UAT) mode 
-designed for collecting feedback during beta testing.
+CLIPBOARD COMPARISON FIX
+------------------------
+Fixed race condition where clipboard state wasn't being captured
+before launching a game.
 
-New Features:
+Bug Fix:
+- Added `captureClipboardOnLeave()` call in `launchGame()` function
+- Ensures clipboard baseline is captured BEFORE opening game URL
+- Previously relied only on visibilitychange event which could fire
+  after the new tab/app was already open
 
-1. UAT Mode Toggle (Settings > Developer)
-   - Enables floating feedback button
-   - Shows "UAT Mode" badge in top-left corner
-   - Captures debug log of user actions
+This fixes the issue where the app wasn't properly detecting new 
+clipboard content when returning from a game.
 
-2. Floating Feedback Button
-   - Always-visible purple button (bottom-left)
-   - One-tap access to report issues/enhancements
-   - Only visible when UAT Mode is enabled
+Previous Changes (v1.2.0.23):
+- Force Update option in Settings > Data
+- updateViaCache: 'none' for faster SW updates
 
-3. Auto-Captured Debug Context
-   - Current tab and app version
-   - Wallet balance, game count, streak
-   - Device/platform info
-   - Last 5 activity log entries
-   - Console errors captured during session
-   - Recent user actions (tab switches, game logs, launches)
-
-4. Enhanced Issue Reports
-   - Debug context automatically attached when UAT mode is on
-   - "Include debug log" checkbox (default: ON)
-   - Source marked as "pwa-uat" for UAT submissions
-   - App version now pulled from meta tag (not hardcoded)
-
-Technical Details:
-- UAT debug log stores up to 50 recent actions
-- Console.error intercepted and logged
-- Context captured on feedback form open
-- Firebase structure: reported-issues/{id}/debugContext
-
-Previous (v1.2.0.21):
-- Fixed GS Originals test/prod URL capitalization
+Previous Changes (v1.2.0.22):
+- UAT Mode with floating feedback button
+- Debug context auto-capture for issue reports
