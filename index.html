@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.7.3">
+    <meta name="version" content="1.2.7.4">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7363,7 +7363,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.7.3</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.7.4</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7608,7 +7608,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.7.3</div>
+            <div class="settings-version">Game Shelf PWA v1.2.7.4</div>
         </div>
     </div>
     
@@ -8594,7 +8594,11 @@
             
             <!-- Paste Tab -->
             <div class="log-tab-content" id="log-tab-paste">
-                <textarea class="log-textarea" id="log-input" placeholder="Paste your game result here...
+                <!-- v1.2.7.4: Explicit paste button for iOS (avoids auto-paste permission popup) -->
+                <button id="tap-to-paste-btn" onclick="tapToPaste()" style="width: 100%; padding: 14px; margin-bottom: 12px; background: var(--accent-blue); border: none; border-radius: 10px; color: white; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    📋 Tap to Paste from Clipboard
+                </button>
+                <textarea class="log-textarea" id="log-input" placeholder="Or tap here to type/paste manually...
 
 Example:
 Wordle 1,234 3/6
@@ -11573,7 +11577,7 @@ Wordle 1,234 3/6
         }
         
         // Check if test mode is enabled
-        // v1.2.7.3: Auto-enable when deployed to gameshelftest/ repo
+        // v1.2.7.4: Auto-enable when deployed to gameshelftest/ repo
         function isTestModeEnabled() {
             // Auto-enable when running from test repo (can't be toggled off)
             if (window.location.pathname.toLowerCase().includes('gameshelftest')) {
@@ -13706,7 +13710,7 @@ Wordle 1,234 3/6
         }
         
         // Quick log for generic games (not NYT)
-        // v1.2.7.3: Show confirmation instead of instant log
+        // v1.2.7.4: Show confirmation instead of instant log
         function quickLogGeneric(gameId) {
             const game = GAMES[gameId];
             if (!game) return;
@@ -14429,7 +14433,7 @@ Wordle 1,234 3/6
             const toggle = document.getElementById('test-mode-toggle');
             if (toggle) {
                 toggle.checked = isTestModeEnabled();
-                // v1.2.7.3: Disable toggle when auto-enabled from gameshelftest/
+                // v1.2.7.4: Disable toggle when auto-enabled from gameshelftest/
                 if (isTestModeAutoEnabled()) {
                     toggle.disabled = true;
                     toggle.parentElement.style.opacity = '0.6';
@@ -15609,7 +15613,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.7.3';
+            const version = '1.2.7.4';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18199,7 +18203,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.7.3'
+                    appVersion: '1.2.7.4'
                 }
             };
             
@@ -18471,7 +18475,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 signals.launchedGame = context.lastLaunchedGame;
             }
             
-            // v1.2.7.3: iOS score floor - ensure valid matches always get a chance
+            // v1.2.7.4: iOS score floor - ensure valid matches always get a chance
             // iOS users face unavoidable clipboardUnknown penalty due to gesture requirement
             // When they have a valid, matching result, don't let penalty stacking block capture
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -19030,7 +19034,7 @@ Made with ❤️ for puzzle enthusiasts`;
         function showPrelaunchReminder(game, launchUrl) {
             const reminder = document.getElementById('prelaunch-reminder');
             
-            // v1.2.7.3: Open URL IMMEDIATELY to preserve tap gesture for iOS
+            // v1.2.7.4: Open URL IMMEDIATELY to preserve tap gesture for iOS
             // iOS blocks window.open if called after timeout
             openGameUrl(launchUrl);
             
@@ -20279,7 +20283,7 @@ Made with ❤️ for puzzle enthusiasts`;
         
         // ============ LOG SHEET ============
         function openLogSheet() {
-            // v1.2.7.3: Clear any previous content for fresh start
+            // v1.2.7.4: Clear any previous content for fresh start
             const input = document.getElementById('log-input');
             if (input) input.value = '';
             const preview = document.getElementById('parse-preview');
@@ -20292,25 +20296,28 @@ Made with ❤️ for puzzle enthusiasts`;
             const bulkBtn = document.getElementById('bulk-log-btn');
             if (bulkBtn) bulkBtn.style.display = 'none';
             
+            // v1.2.7.4: Show tap-to-paste button (for iOS especially)
+            showTapToPasteButton();
+            
             document.getElementById('log-sheet').classList.add('active');
             // Reset to paste tab
             switchLogTab('paste');
             renderQuickLogButtons();
             
-            // v1.2.7.3: Auto-paste clipboard if it contains a game result
-            // (skipped on iOS due to permission popup)
+            // v1.2.7.4: Auto-paste clipboard if it contains a game result
+            // (skipped on iOS due to permission popup - they use tap-to-paste button)
             autoPasteClipboard();
             
             document.getElementById('log-input').focus();
         }
         
-        // v1.2.7.3: Auto-paste clipboard content into log sheet
+        // v1.2.7.4: Auto-paste clipboard content into log sheet
         // Skip on iOS - it shows a disruptive permission popup
         // Skip if game already logged - avoids confusing "Already Logged" message
         async function autoPasteClipboard() {
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             if (isIOS) {
-                console.log('📋 Skipping auto-paste on iOS (permission popup)');
+                console.log('📋 Skipping auto-paste on iOS (use tap-to-paste button)');
                 return;
             }
             
@@ -20332,12 +20339,59 @@ Made with ❤️ for puzzle enthusiasts`;
                     const input = document.getElementById('log-input');
                     input.value = text;
                     parseLogInput(); // Show preview
+                    hideTapToPasteButton(); // Hide button after successful paste
                     console.log('📋 Auto-pasted clipboard content');
                 }
             } catch (e) {
                 // Clipboard access denied - user will paste manually
                 console.log('📋 Could not auto-paste:', e.message);
             }
+        }
+        
+        // v1.2.7.4: User-initiated paste for iOS - shows native paste permission naturally
+        async function tapToPaste() {
+            const btn = document.getElementById('tap-to-paste-btn');
+            
+            try {
+                if (!navigator.clipboard || !navigator.clipboard.readText) {
+                    showToast('Clipboard not available', 'error');
+                    return;
+                }
+                
+                const text = await navigator.clipboard.readText();
+                
+                if (!text) {
+                    showToast('Clipboard is empty', 'info');
+                    return;
+                }
+                
+                const input = document.getElementById('log-input');
+                input.value = text;
+                parseLogInput(); // Show preview
+                
+                // Check if we detected a game
+                const result = parseShareText(text);
+                if (result) {
+                    hideTapToPasteButton();
+                    console.log('📋 Pasted from clipboard:', result.gameId);
+                } else {
+                    showToast('Pasted - but no game detected', 'info');
+                }
+            } catch (e) {
+                // User denied clipboard access or other error
+                console.log('📋 Paste failed:', e.message);
+                showToast('Could not access clipboard', 'error');
+            }
+        }
+        
+        function hideTapToPasteButton() {
+            const btn = document.getElementById('tap-to-paste-btn');
+            if (btn) btn.style.display = 'none';
+        }
+        
+        function showTapToPasteButton() {
+            const btn = document.getElementById('tap-to-paste-btn');
+            if (btn) btn.style.display = 'flex';
         }
         
         function closeLogSheet(e) {
@@ -20385,7 +20439,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 
                 document.getElementById('parse-game-name').textContent = previewText;
                 
-                // v1.2.7.3: Show bulk button only when 2+ games detected
+                // v1.2.7.4: Show bulk button only when 2+ games detected
                 if (bulkBtn) {
                     if (results.length > 1) {
                         const unlogged = results.filter(r => !todayHistory[r.gameId]).length;
@@ -20400,7 +20454,10 @@ Made with ❤️ for puzzle enthusiasts`;
                 if (alreadyLogged) {
                     document.getElementById('parse-score').innerHTML = `
                         <span style="color: var(--accent-green);">✓ Already logged today!</span>
-                        <button onclick="showShareHub()" style="margin-left: 10px; padding: 4px 10px; background: var(--accent-purple); border: none; border-radius: 6px; color: white; font-size: 0.85rem; cursor: pointer;">Share Instead</button>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <button onclick="showShareHub()" style="flex: 1; padding: 6px 10px; background: var(--accent-purple); border: none; border-radius: 6px; color: white; font-size: 0.85rem; cursor: pointer;">Share Instead</button>
+                            <button onclick="adjustRecording('${result.gameId}')" style="flex: 1; padding: 6px 10px; background: var(--accent-orange); border: none; border-radius: 6px; color: white; font-size: 0.85rem; cursor: pointer;">Adjust</button>
+                        </div>
                     `;
                     // Disable the log button
                     const logBtn = document.getElementById('log-btn');
@@ -20434,6 +20491,26 @@ Made with ❤️ for puzzle enthusiasts`;
             }
         }
         
+        // v1.2.7.4: Remove a game's recording so user can re-log with correct info
+        function adjustRecording(gameId) {
+            const today = getTodayString();
+            const game = GAMES[gameId];
+            
+            // Remove from history
+            if (appData.history[today] && appData.history[today][gameId]) {
+                delete appData.history[today][gameId];
+                saveData();
+                
+                showToast(`${game?.icon || '🎮'} ${game?.name || gameId} removed - you can now re-log`, 'info');
+                
+                // Re-parse the input to update the UI
+                parseLogInput();
+                
+                // Re-render quick log buttons
+                renderQuickLogButtons();
+            }
+        }
+        
         function submitLog() {
             const input = document.getElementById('log-input').value;
             const result = parseShareText(input);
@@ -20454,7 +20531,7 @@ Made with ❤️ for puzzle enthusiasts`;
             }
             
             if (logGame(result, 'manual')) {
-                // v1.2.7.3: Mark clipboard as processed to prevent duplicate prompts
+                // v1.2.7.4: Mark clipboard as processed to prevent duplicate prompts
                 lastProcessedClipboard = input;
                 detectedClipboard = null;
                 
@@ -24433,7 +24510,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.7.3 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.7.4 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
