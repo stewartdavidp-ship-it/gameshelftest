@@ -44,6 +44,18 @@
       "short_name": "Log",
       "description": "Quickly log today's game results",
       "url": "./index.html?action=log"
+    },
+    {
+      "name": "Share Results",
+      "short_name": "Share",
+      "description": "Share your daily results",
+      "url": "./index.html?tab=share"
+    },
+    {
+      "name": "Play Wordle",
+      "short_name": "Wordle",
+      "description": "Launch Wordle",
+      "url": "./index.html?game=wordle"
     }
   ],
   

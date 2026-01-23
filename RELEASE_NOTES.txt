@@ -1,25 +1,27 @@
-Game Shelf v1.2.0.26
+Game Shelf v1.2.0.27
 ====================
-Release Date: January 22, 2025
+Release Date: January 23, 2025
 
-URL FIX - RESTORE CAPITALIZED REPO NAMES
-----------------------------------------
-Fixed 404 errors when launching GS Originals games.
+PWA DEEP LINK SUPPORT
+---------------------
+Added URL parameter handling for PWA navigation:
 
-The Issue:
-- URLs were changed to lowercase (quotle, slate, etc.)
-- GitHub Pages is case-sensitive
-- Repos still have capitalized names → 404 errors
+Deep Link Parameters:
+- ?tab=home|share|settings  - Jump to specific tab
+- ?game=wordle              - Launch a game directly
+- ?play=connections         - Alias for ?game
+- ?action=log               - Open log sheet (existing)
+- ?share-target=true        - Receive shared text (existing)
 
-Fixed URLs:
-- Quotle:     .../Quotle/      (was .../quotle/)
-- Slate:      .../Slate/       (was .../slate/)
-- Rungs:      .../Rungstest/   (was .../rungs/)
-- Word Boxing: .../WordBoxing/ (was .../wordboxing/)
+PWA Shortcuts (long-press app icon):
+- Log Game       - Open log sheet
+- Share Results  - Go to share tab
+- Play Wordle    - Launch Wordle directly
 
-Test URLs also restored to original format with hyphens:
-- .../Quotle-test/     (was .../quotletest/)
-- .../Slate-test/      (was .../slatetest/)
-- etc.
+Detection:
+- isStandalone() returns true when running as installed PWA
+- Console logs "🚀 Launched as PWA" on standalone launch
 
-This version matches v1.2.0.19 behavior exactly.
+Examples:
+- gameshelf.app?game=connections  → Launches Connections
+- gameshelf.app?tab=share         → Opens Share tab
