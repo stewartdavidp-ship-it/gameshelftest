@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.6.8">
+    <meta name="version" content="1.2.6.10">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7364,7 +7364,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.6.8</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.6.10</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7609,7 +7609,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version" onclick="handleVersionTap()" style="cursor: pointer;" title="Triple-tap for debug mode">Game Shelf PWA v1.2.6.8</div>
+            <div class="settings-version" onclick="handleVersionTap()" style="cursor: pointer;" title="Triple-tap for debug mode">Game Shelf PWA v1.2.6.10</div>
         </div>
     </div>
     
@@ -8850,7 +8850,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             <!-- Step 1: The Workflow -->
             <div class="tutorial-step active" data-step="1">
                 <div class="tutorial-icon">📋</div>
-                <h2>Recording Your Games</h2>
+                <h2 style="color: #ffffff !important; font-size: 1.5rem; font-weight: 700;">Recording Your Games</h2>
                 
                 <div class="tutorial-visual">
                     <div class="tutorial-phone">
@@ -8885,7 +8885,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             <!-- Step 2: What We Track -->
             <div class="tutorial-step" data-step="2">
                 <div class="tutorial-icon">📊</div>
-                <h2>Building Your Stats</h2>
+                <h2 style="color: #ffffff !important; font-size: 1.5rem; font-weight: 700;">Building Your Stats</h2>
                 
                 <p class="tutorial-desc">Every time you log a game, we track:</p>
                 
@@ -8914,7 +8914,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             <!-- Step 3: Share & Battle Teaser -->
             <div class="tutorial-step" data-step="3">
                 <div class="tutorial-icon">🤝</div>
-                <h2>Share & Battle</h2>
+                <h2 style="color: #ffffff !important; font-size: 1.5rem; font-weight: 700;">Share & Battle</h2>
                 
                 <p class="tutorial-desc">Once you're logging games, you can:</p>
                 
@@ -11548,10 +11548,10 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         
         // Test URLs for GS Originals (used when Test Mode is enabled)
         const GS_ORIGINALS_TEST_URLS = {
-            quotle: 'https://stewartdavidp-ship-it.github.io/Quotle-test/',
-            slate: 'https://stewartdavidp-ship-it.github.io/Slate-test/',
-            rungs: 'https://stewartdavidp-ship-it.github.io/Rungs-test/',
-            wordboxing: 'https://stewartdavidp-ship-it.github.io/WordBoxing-test/'
+            quotle: 'https://stewartdavidp-ship-it.github.io/quotletest/',
+            slate: 'https://stewartdavidp-ship-it.github.io/slatetest/',
+            rungs: 'https://stewartdavidp-ship-it.github.io/Rungstest/',
+            wordboxing: 'https://stewartdavidp-ship-it.github.io/wordboxingtest/'
         };
         
         // Production URLs for GS Originals (default)
@@ -11570,7 +11570,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         // Get URL for game (respects test mode for GS Originals)
         function getGameUrl(gameId) {
             if (isGSOriginal(gameId)) {
-                // v1.2.6.8: Use correct prod/test URLs for GS Originals
+                // v1.2.6.10: Use correct prod/test URLs for GS Originals
                 if (isTestModeEnabled()) {
                     return GS_ORIGINALS_TEST_URLS[gameId];
                 }
@@ -11580,7 +11580,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         // Check if test mode is enabled
-        // v1.2.6.8: Auto-enable if running from test repo
+        // v1.2.6.10: Auto-enable if running from test repo
         function isTestModeEnabled() {
             // Auto-enable test mode if running from test Game Shelf repo
             if (window.location.hostname.includes('github.io') && 
@@ -14402,7 +14402,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             if (toggle) {
                 toggle.checked = isTestModeEnabled();
                 
-                // v1.2.6.8: Disable toggle if running from test repo (always on)
+                // v1.2.6.10: Disable toggle if running from test repo (always on)
                 if (isTestGameShelf()) {
                     toggle.disabled = true;
                     toggle.parentElement.title = 'Test mode auto-enabled on test Game Shelf';
@@ -15581,7 +15581,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.6.8';
+            const version = '1.2.6.10';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18171,7 +18171,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.6.8'
+                    appVersion: '1.2.6.10'
                 }
             };
             
@@ -18335,7 +18335,7 @@ Made with ❤️ for puzzle enthusiasts`;
             return causes;
         }
         
-        // ============ v1.2.6.8 DEBUG MODE ============
+        // ============ v1.2.6.10 DEBUG MODE ============
         // Comprehensive capture algorithm testing mode
         // Activate: Triple-tap version number in settings, or localStorage.setItem('gs_debug_mode', 'true')
         
@@ -18363,7 +18363,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 isIOS: /iPad|iPhone|iPod/.test(ua),
                 isAndroid: /Android/.test(ua),
                 isStandalone: isStandalone(),
-                appVersion: '1.2.6.8',
+                appVersion: '1.2.6.10',
                 gamesTarget: DEBUG_GAMES_TARGET,
                 gamesCompleted: 0,
                 events: [],
@@ -19080,7 +19080,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 signals.launchedGame = context.lastLaunchedGame;
             }
             
-            // v1.2.6.8: iOS compensation - ensure valid matches always get a chance
+            // v1.2.6.10: iOS compensation - ensure valid matches always get a chance
             // Even with clipboard capture on launch, iOS may still face edge cases
             // where penalty stacking blocks legitimate captures (e.g., 3+ dismissals)
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -19563,7 +19563,7 @@ Made with ❤️ for puzzle enthusiasts`;
             const game = GAMES[gameId];
             if (!game) return;
             
-            // v1.2.6.8 DEBUG: Start tracking this game flow
+            // v1.2.6.10 DEBUG: Start tracking this game flow
             startGameFlow(gameId);
             
             // Track this launch for return detection
@@ -19572,12 +19572,12 @@ Made with ❤️ for puzzle enthusiasts`;
             returnPromptDismissedFor = null;
             returnPromptDismissedAt = null; // v1.2.3: Reset dismiss timestamp
             
-            // v1.2.6.8: REMOVED clipboard capture on launch
+            // v1.2.6.10: REMOVED clipboard capture on launch
             // It triggered confusing iOS "Paste" popup and didn't help detection
             // We'll capture clipboard on RETURN instead (tap-to-log card provides gesture)
             clipboardOnLeave = CLIPBOARD_UNKNOWN;
             
-            // v1.2.6.8 DEBUG: Log game launch
+            // v1.2.6.10 DEBUG: Log game launch
             logDebugEvent('GAME_LAUNCH', {
                 gameId: gameId,
                 gameName: game.name
@@ -19655,7 +19655,7 @@ Made with ❤️ for puzzle enthusiasts`;
         function showPrelaunchReminder(game, launchUrl) {
             const reminder = document.getElementById('prelaunch-reminder');
             
-            // v1.2.6.8: Open URL IMMEDIATELY to preserve tap gesture for iOS
+            // v1.2.6.10: Open URL IMMEDIATELY to preserve tap gesture for iOS
             // iOS blocks window.open if called after timeout
             openGameUrl(launchUrl);
             
@@ -19956,7 +19956,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // v1.2.6.8: Drastically reduced time thresholds for better UX
+            // v1.2.6.10: Drastically reduced time thresholds for better UX
             const isQuickGame = QUICK_GAMES.includes(lastLaunchedGame);
             const minTimeMs = 5000; // 5 seconds for ALL games
             if (elapsed < minTimeMs) {
@@ -20369,7 +20369,7 @@ Made with ❤️ for puzzle enthusiasts`;
         async function checkClipboardOnReturn() {
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             
-            // v1.2.6.8 DEBUG: Log return detection
+            // v1.2.6.10 DEBUG: Log return detection
             logDebugEvent('RETURN_DETECTED', {
                 isIOS: isIOS,
                 lastLaunchedGame: lastLaunchedGame,
@@ -20389,7 +20389,7 @@ Made with ❤️ for puzzle enthusiasts`;
             const confidence = calculateReturnConfidence(context);
             lastConfidenceScore = confidence.score;
             
-            // v1.2.6.8 DEBUG: Log full confidence calculation
+            // v1.2.6.10 DEBUG: Log full confidence calculation
             logDebugConfidence(context, confidence.score, confidence.signals);
             if (currentGameFlow) {
                 currentGameFlow.clipboardOnReturn = context.currentClipboard ? 
@@ -20510,7 +20510,7 @@ Made with ❤️ for puzzle enthusiasts`;
         // iOS-friendly: Show tap-to-log card that will check clipboard diff on tap
         // v1.2.3: Added game-aware time thresholds and dismiss time decay
         function showTapToLogCardForClipboardCheck() {
-            // v1.2.6.8 DEBUG: Log entry into this function
+            // v1.2.6.10 DEBUG: Log entry into this function
             logDebugEvent('IOS_RETURN_CHECK', {
                 tapToLogDismissed: tapToLogDismissed,
                 lastLaunchedGame: lastLaunchedGame,
@@ -20537,7 +20537,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // v1.2.6.8: Drastically reduced time thresholds for better UX
+            // v1.2.6.10: Drastically reduced time thresholds for better UX
             const elapsed = Date.now() - lastLaunchTime;
             const isQuickGame = QUICK_GAMES.includes(lastLaunchedGame);
             const minTimeMs = 5000; // 5 seconds for ALL games - user clearly went somewhere and came back
@@ -20594,7 +20594,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 card.style.display = 'block';
                 console.log(`📋 iOS: Showing tap-to-log for ${game.name} (away ${Math.round(elapsed/1000)}s)`);
                 
-                // v1.2.6.8 DEBUG: Log card shown
+                // v1.2.6.10 DEBUG: Log card shown
                 logDebugEvent('TAP_TO_LOG_SHOWN', {
                     gameId: game.id,
                     gameName: game.name,
@@ -21221,7 +21221,7 @@ Made with ❤️ for puzzle enthusiasts`;
         
         function acceptClipboard() {
             if (detectedClipboard) {
-                // v1.2.6.8 DEBUG: Log user acceptance
+                // v1.2.6.10 DEBUG: Log user acceptance
                 logDebugUserResponse('PROMPT_ACCEPTED', {
                     gameId: detectedClipboard.result.gameId,
                     score: detectedClipboard.result.score
@@ -21256,7 +21256,7 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Only track dismiss and set state when it's a real user dismiss
             if (trackDismiss) {
-                // v1.2.6.8 DEBUG: Log user dismissal
+                // v1.2.6.10 DEBUG: Log user dismissal
                 logDebugUserResponse('PROMPT_DISMISSED', {
                     gameId: detectedClipboard?.result?.gameId || lastLaunchedGame
                 });
@@ -25120,7 +25120,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 if (document.visibilityState === 'visible') {
                     console.log('📱 App became visible');
                     
-                    // v1.2.6.8 DEBUG: Log visibility change
+                    // v1.2.6.10 DEBUG: Log visibility change
                     logDebugEvent('VISIBILITY_CHANGE', {
                         state: 'visible',
                         lastLaunchedGame: lastLaunchedGame,
@@ -25204,7 +25204,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.6.8 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.6.10 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
