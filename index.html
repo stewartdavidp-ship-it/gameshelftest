@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.0.29">
+    <meta name="version" content="1.2.6">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -1294,6 +1294,264 @@
         }
         
         .celebration-done:active {
+            color: var(--text-secondary);
+        }
+        
+        /* ============ RECORDING TUTORIAL MODAL ============ */
+        .recording-tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .recording-tutorial-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .recording-tutorial-modal {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 32px 24px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+            animation: tutorialSlide 0.4s ease-out;
+        }
+        
+        @keyframes tutorialSlide {
+            from { transform: translateY(30px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        
+        .tutorial-step {
+            display: none;
+        }
+        
+        .tutorial-step.active {
+            display: block;
+            animation: tutorialFade 0.3s ease-out;
+        }
+        
+        @keyframes tutorialFade {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .tutorial-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        
+        .tutorial-step h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        
+        .tutorial-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        
+        /* Visual animation for step 1 */
+        .tutorial-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+        }
+        
+        .tutorial-phone {
+            width: 80px;
+            height: 100px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            padding: 8px;
+        }
+        
+        .tutorial-phone-screen {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .tutorial-game-result {
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+        
+        .tutorial-share-btn {
+            font-size: 0.6rem;
+            background: var(--accent-purple);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            animation: tutorialPulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes tutorialPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .tutorial-arrow {
+            font-size: 1.5rem;
+            color: var(--accent-purple);
+            animation: tutorialArrow 1s ease-in-out infinite;
+        }
+        
+        @keyframes tutorialArrow {
+            0%, 100% { transform: translateX(0); opacity: 1; }
+            50% { transform: translateX(5px); opacity: 0.6; }
+        }
+        
+        .tutorial-copy-icon {
+            font-size: 2rem;
+        }
+        
+        /* Steps list for step 1 */
+        .tutorial-steps-list {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+        
+        .tutorial-step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tutorial-step-item:last-child {
+            border-bottom: none;
+        }
+        
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: var(--accent-purple);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        /* Benefits for step 2 */
+        .tutorial-benefits {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+        
+        .tutorial-benefit {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .benefit-icon {
+            font-size: 1.3rem;
+        }
+        
+        /* Features for step 3 */
+        .tutorial-features {
+            margin-bottom: 20px;
+        }
+        
+        .tutorial-feature {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        
+        .feature-icon {
+            font-size: 1.3rem;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .tutorial-feature p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .tutorial-cta {
+            color: var(--accent-purple);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        /* Tutorial buttons */
+        .tutorial-btn {
+            width: 100%;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .tutorial-btn.primary {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-secondary));
+            color: white;
+            margin-bottom: 12px;
+        }
+        
+        .tutorial-btn.primary:active {
+            transform: scale(0.98);
+        }
+        
+        .tutorial-btn.ghost {
+            background: transparent;
+            color: var(--text-muted);
+        }
+        
+        .tutorial-btn.ghost:active {
             color: var(--text-secondary);
         }
         
@@ -3112,6 +3370,85 @@
         @keyframes clipboardPulse {
             0%, 100% { opacity: 0.8; }
             50% { opacity: 1; }
+        }
+        
+        /* Pre-Launch Reminder */
+        .prelaunch-reminder {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10002;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: prelaunchFadeIn 0.2s ease-out;
+        }
+        
+        .prelaunch-reminder.active {
+            display: flex;
+        }
+        
+        @keyframes prelaunchFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .prelaunch-content {
+            text-align: center;
+            padding: 32px;
+        }
+        
+        .prelaunch-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            animation: prelaunchBounce 0.6s ease infinite;
+        }
+        
+        @keyframes prelaunchBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .prelaunch-text {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .prelaunch-text strong {
+            color: var(--accent-purple);
+        }
+        
+        .prelaunch-subtext {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        
+        .prelaunch-progress {
+            width: 120px;
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        
+        .prelaunch-progress::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-purple);
+            animation: prelaunchProgress 1.5s ease-out forwards;
+        }
+        
+        @keyframes prelaunchProgress {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
         }
         
         /* Toast */
@@ -6983,7 +7320,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.0.29</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.6</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7228,7 +7565,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.0.29</div>
+            <div class="settings-version" onclick="handleVersionTap()" style="cursor: pointer;" title="Triple-tap for debug mode">Game Shelf PWA v1.2.6</div>
         </div>
     </div>
     
@@ -8378,6 +8715,16 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         <span>Watching clipboard...</span>
     </div>
     
+    <!-- Pre-Launch Reminder Overlay -->
+    <div class="prelaunch-reminder" id="prelaunch-reminder">
+        <div class="prelaunch-content">
+            <div class="prelaunch-icon">📋</div>
+            <div class="prelaunch-text">Remember to <strong>copy</strong> your result!</div>
+            <div class="prelaunch-subtext">Launching <span id="prelaunch-game-name">Game</span>...</div>
+            <div class="prelaunch-progress"></div>
+        </div>
+    </div>
+    
     <!-- Quick Capture Bottom Sheet -->
     <div class="bottom-sheet-overlay" id="quick-capture-sheet" onclick="closeQuickCapture()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 70vh;">
@@ -8450,6 +8797,106 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
             </div>
             
             <div class="celebration-done" onclick="closeCelebration()">Done for now</div>
+        </div>
+    </div>
+    
+    <!-- RECORDING TUTORIAL - First time ANY game launch -->
+    <div class="recording-tutorial-overlay" id="recording-tutorial-overlay">
+        <div class="recording-tutorial-modal">
+            <!-- Step 1: The Workflow -->
+            <div class="tutorial-step active" data-step="1">
+                <div class="tutorial-icon">📋</div>
+                <h2>Recording Your Games</h2>
+                
+                <div class="tutorial-visual">
+                    <div class="tutorial-phone">
+                        <div class="tutorial-phone-screen">
+                            <div class="tutorial-game-result">🟩🟨⬛🟩🟩</div>
+                            <div class="tutorial-share-btn">Share ↗</div>
+                        </div>
+                    </div>
+                    <div class="tutorial-arrow">→</div>
+                    <div class="tutorial-copy-icon">📋</div>
+                </div>
+                
+                <div class="tutorial-steps-list">
+                    <div class="tutorial-step-item">
+                        <span class="step-num">1</span>
+                        <span>Tap the game's <strong>Share</strong> button</span>
+                    </div>
+                    <div class="tutorial-step-item">
+                        <span class="step-num">2</span>
+                        <span>Choose <strong>"Copy"</strong> to clipboard</span>
+                    </div>
+                    <div class="tutorial-step-item">
+                        <span class="step-num">3</span>
+                        <span>Come back here - we'll detect it! ✨</span>
+                    </div>
+                </div>
+                
+                <button class="tutorial-btn primary" onclick="tutorialNext()">Next →</button>
+                <button class="tutorial-btn ghost" onclick="skipTutorial()">Skip</button>
+            </div>
+            
+            <!-- Step 2: What We Track -->
+            <div class="tutorial-step" data-step="2">
+                <div class="tutorial-icon">📊</div>
+                <h2>Building Your Stats</h2>
+                
+                <p class="tutorial-desc">Every time you log a game, we track:</p>
+                
+                <div class="tutorial-benefits">
+                    <div class="tutorial-benefit">
+                        <span class="benefit-icon">🔥</span>
+                        <span>Streaks - Don't break the chain</span>
+                    </div>
+                    <div class="tutorial-benefit">
+                        <span class="benefit-icon">📈</span>
+                        <span>Win rate - How you're doing</span>
+                    </div>
+                    <div class="tutorial-benefit">
+                        <span class="benefit-icon">⏱️</span>
+                        <span>Speed - Quick solve bonus</span>
+                    </div>
+                    <div class="tutorial-benefit">
+                        <span class="benefit-icon">🏆</span>
+                        <span>Best scores - Personal records</span>
+                    </div>
+                </div>
+                
+                <button class="tutorial-btn primary" onclick="tutorialNext()">Next →</button>
+            </div>
+            
+            <!-- Step 3: Share & Battle Teaser -->
+            <div class="tutorial-step" data-step="3">
+                <div class="tutorial-icon">🤝</div>
+                <h2>Share & Battle</h2>
+                
+                <p class="tutorial-desc">Once you're logging games, you can:</p>
+                
+                <div class="tutorial-features">
+                    <div class="tutorial-feature">
+                        <div class="feature-header">
+                            <span class="feature-icon">📤</span>
+                            <span class="feature-title">Enhanced Share</span>
+                        </div>
+                        <p>Share beautiful result cards with friends</p>
+                    </div>
+                    <div class="tutorial-feature">
+                        <div class="feature-header">
+                            <span class="feature-icon">⚔️</span>
+                            <span class="feature-title">Brain Battles</span>
+                        </div>
+                        <p>Challenge friends to see who's really better!</p>
+                    </div>
+                </div>
+                
+                <p class="tutorial-cta">But first, let's play a game!</p>
+                
+                <button class="tutorial-btn primary" onclick="completeTutorial()">
+                    Got it! Launch <span id="tutorial-game-name">Game</span> →
+                </button>
+            </div>
         </div>
     </div>
     
@@ -11108,6 +11555,10 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         const DEFAULT_SHELF = ['wordle', 'connections', 'strands', 'mini', 'spelling-bee', 'worldle'];
         const POPULAR_GAMES = ['quotle', 'slate', 'rungs', 'wordboxing', 'quordle', 'framed', 'queens', 'heardle', 'nerdle'];
         
+        // Quick games that can reasonably be completed in under 30 seconds
+        // Used for game-aware time thresholds in confidence algorithm
+        const QUICK_GAMES = ['mini', 'zip', 'heardle', 'framed', 'worldle', 'tango'];
+        
         // Quick Start preset - NYT core + Game Shelf Originals (best auto-sync UX)
         const QUICK_START_GAMES = [
             'wordle', 'connections', 'strands',           // NYT Core
@@ -13119,7 +13570,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
                 numericScore
             };
             
-            if (logGame(result)) {
+            if (logGame(result, 'quick-log')) {
                 renderAll();
                 showSuccessModal(game, result);
                 return true;
@@ -13209,7 +13660,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
                 raw: 'Quick log'
             };
             
-            if (logGame(result)) {
+            if (logGame(result, 'quick-log')) {
                 SoundManager.play('success');
                 showToast(`${game.icon} ${game.name} logged!`, 'success');
                 closeLogSheet();
@@ -13348,7 +13799,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
                     skipped++;
                     continue;
                 }
-                if (logGame(result)) {
+                if (logGame(result, 'paste')) {
                     logged++;
                 }
             }
@@ -13364,11 +13815,14 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         // ============ LOG GAME ============
-        function logGame(result) {
+        function logGame(result, logMethod = 'unknown') {
             if (!result || !result.gameId) return false;
             
             const today = getTodayString();
             const gameInfo = GAMES[result.gameId];
+            
+            // Track detection failures - did we miss auto-detecting this?
+            trackGameLog(result, logMethod);
             
             // Clear active game state if this was the game being tracked
             // This clears both memory and localStorage
@@ -13589,7 +14043,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
                     };
                     
                     // Log it (this updates history, stats, achievements)
-                    logGame(result);
+                    logGame(result, 'auto-sync');
                     synced++;
                     console.log(`🎮 Synced ${gameId} result from Game Shelf`);
                     
@@ -15044,7 +15498,7 @@ Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea
         }
         
         function showAbout() {
-            const version = '1.2.0.29';
+            const version = '1.2.6';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17589,6 +18043,965 @@ Made with ❤️ for puzzle enthusiasts`;
         let clipboardPlusInterval = null;
         let lastClipboardContent = null;
         let returnPromptDismissedFor = null;
+        let returnPromptDismissedAt = null; // v1.2.3: Track when dismissed for time decay
+        let lastConfidenceScore = null;
+        let promptShownTime = null;
+        
+        // ============ ANALYTICS SYSTEM ============
+        const ANALYTICS_EVENTS = {
+            GAME_LAUNCH: 'game_launch',
+            GAME_RETURN: 'game_return',
+            GAME_LOGGED: 'game_logged',
+            PROMPT_SHOWN: 'prompt_shown',
+            PROMPT_DISMISSED: 'prompt_dismissed',
+            PROMPT_ACCEPTED: 'prompt_accepted',
+            PROMPT_TIMEOUT: 'prompt_timeout',
+            TUTORIAL_STARTED: 'tutorial_started',
+            TUTORIAL_COMPLETED: 'tutorial_completed',
+            TUTORIAL_SKIPPED: 'tutorial_skipped',
+            CLIPBOARD_READ_SUCCESS: 'clipboard_read_success',
+            CLIPBOARD_READ_FAILED: 'clipboard_read_failed',
+            PUBLISHER_PREF_SET: 'publisher_pref_set'
+        };
+        
+        let sessionId = null;
+        function getSessionId() {
+            if (!sessionId) {
+                sessionId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            }
+            return sessionId;
+        }
+        
+        function getPlatform() {
+            const ua = navigator.userAgent;
+            if (/iPad|iPhone|iPod/.test(ua)) return 'ios';
+            if (/Android/.test(ua)) return 'android';
+            return 'desktop';
+        }
+        
+        function trackEvent(eventType, data = {}) {
+            const event = {
+                type: eventType,
+                timestamp: Date.now(),
+                sessionId: getSessionId(),
+                data: {
+                    ...data,
+                    platform: getPlatform(),
+                    isStandalone: isStandalone(),
+                    appVersion: '1.2.6'
+                }
+            };
+            
+            // Store locally
+            try {
+                const events = JSON.parse(localStorage.getItem('gs_analytics') || '[]');
+                events.push(event);
+                if (events.length > 500) events.splice(0, events.length - 500);
+                localStorage.setItem('gs_analytics', JSON.stringify(events));
+            } catch (e) {
+                console.warn('Analytics storage failed:', e);
+            }
+            
+            // Update daily dismiss count if needed
+            if (eventType === ANALYTICS_EVENTS.PROMPT_DISMISSED) {
+                incrementDismissCount();
+            }
+            
+            console.log(`📊 Analytics: ${eventType}`, data);
+        }
+        
+        function getTodayDismissCount() {
+            try {
+                const data = JSON.parse(localStorage.getItem('gs_dismiss_tracking') || '{}');
+                const today = getTodayString();
+                return data[today] || 0;
+            } catch (e) {
+                return 0;
+            }
+        }
+        
+        function incrementDismissCount() {
+            try {
+                const data = JSON.parse(localStorage.getItem('gs_dismiss_tracking') || '{}');
+                const today = getTodayString();
+                data[today] = (data[today] || 0) + 1;
+                // Clean up old days (keep last 7)
+                const keys = Object.keys(data).sort().reverse();
+                keys.slice(7).forEach(k => delete data[k]);
+                localStorage.setItem('gs_dismiss_tracking', JSON.stringify(data));
+                return data[today];
+            } catch (e) {
+                return 1;
+            }
+        }
+        
+        function getAnalyticsSummary(dateString = getTodayString()) {
+            try {
+                const events = JSON.parse(localStorage.getItem('gs_analytics') || '[]');
+                const dayStart = new Date(dateString + 'T00:00:00').getTime();
+                const dayEnd = dayStart + 86400000;
+                const dayEvents = events.filter(e => e.timestamp >= dayStart && e.timestamp < dayEnd);
+                
+                const launches = dayEvents.filter(e => e.type === 'game_launch').length;
+                const logs = dayEvents.filter(e => e.type === 'game_logged').length;
+                
+                return {
+                    date: dateString,
+                    launches: launches,
+                    returns: dayEvents.filter(e => e.type === 'game_return').length,
+                    logsTotal: logs,
+                    logsAuto: dayEvents.filter(e => e.type === 'game_logged' && e.data?.logMethod === 'auto').length,
+                    logsPrompt: dayEvents.filter(e => e.type === 'game_logged' && e.data?.logMethod === 'prompt').length,
+                    logsManual: dayEvents.filter(e => e.type === 'game_logged' && e.data?.logMethod === 'manual').length,
+                    promptsShown: dayEvents.filter(e => e.type === 'prompt_shown').length,
+                    promptsDismissed: dayEvents.filter(e => e.type === 'prompt_dismissed').length,
+                    conversionRate: launches > 0 ? (logs / launches * 100).toFixed(1) + '%' : 'N/A'
+                };
+            } catch (e) {
+                return { error: e.message };
+            }
+        }
+        
+        // Make analytics accessible for UAT
+        window.gsAnalytics = {
+            getSummary: getAnalyticsSummary,
+            getEvents: () => JSON.parse(localStorage.getItem('gs_analytics') || '[]'),
+            clearEvents: () => localStorage.removeItem('gs_analytics'),
+            getDetectionFailures: () => {
+                const events = JSON.parse(localStorage.getItem('gs_analytics') || '[]');
+                return events.filter(e => e.type === 'detection_failure');
+            },
+            getDetectionRate: () => {
+                const events = JSON.parse(localStorage.getItem('gs_analytics') || '[]');
+                const logs = events.filter(e => e.type === 'game_logged');
+                const autoLogs = logs.filter(e => e.data?.logMethod === 'auto');
+                const promptLogs = logs.filter(e => e.data?.logMethod === 'prompt');
+                const manualLogs = logs.filter(e => e.data?.logMethod === 'manual' || e.data?.logMethod === 'quick-log');
+                const failures = events.filter(e => e.type === 'detection_failure');
+                return {
+                    total: logs.length,
+                    auto: autoLogs.length,
+                    prompt: promptLogs.length,
+                    manual: manualLogs.length,
+                    failures: failures.length,
+                    detectionRate: logs.length > 0 ? ((autoLogs.length + promptLogs.length) / logs.length * 100).toFixed(1) + '%' : 'N/A'
+                };
+            }
+        };
+        
+        // Track game log and detect potential detection failures
+        function trackGameLog(result, logMethod) {
+            const gameInfo = GAMES[result.gameId];
+            const timeSinceLaunch = lastLaunchTime ? Date.now() - lastLaunchTime : null;
+            
+            // Track the log event
+            trackEvent(ANALYTICS_EVENTS.GAME_LOGGED, {
+                gameId: result.gameId,
+                gameName: gameInfo?.name,
+                logMethod: logMethod,
+                timeSinceLaunch: timeSinceLaunch,
+                confidenceScore: lastConfidenceScore,
+                launchedFromGS: lastLaunchedGame === result.gameId
+            });
+            
+            // Detect potential detection failures
+            // If user manually logged a game we launched and should have detected
+            if (logMethod === 'manual' || logMethod === 'quick-log' || logMethod === 'paste') {
+                if (lastLaunchedGame === result.gameId && timeSinceLaunch && timeSinceLaunch < 30 * 60 * 1000) {
+                    // This was a detection failure - we launched this game but didn't auto-detect
+                    trackEvent('detection_failure', {
+                        gameId: result.gameId,
+                        gameName: gameInfo?.name,
+                        logMethod: logMethod,
+                        timeSinceLaunch: timeSinceLaunch,
+                        lastConfidenceScore: lastConfidenceScore,
+                        clipboardWasUnknown: clipboardOnLeave === CLIPBOARD_UNKNOWN,
+                        platform: getPlatform(),
+                        // Why might we have failed?
+                        possibleCauses: detectFailureCauses()
+                    });
+                    console.warn(`⚠️ Detection failure: User manually logged ${gameInfo?.name || result.gameId} that we launched ${Math.round(timeSinceLaunch/1000)}s ago`);
+                }
+            }
+        }
+        
+        // Analyze why detection might have failed
+        function detectFailureCauses() {
+            const causes = [];
+            
+            if (clipboardOnLeave === CLIPBOARD_UNKNOWN) {
+                causes.push('clipboard_read_failed_on_leave');
+            }
+            
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                causes.push('ios_clipboard_requires_gesture');
+            }
+            
+            if (lastConfidenceScore !== null && lastConfidenceScore < 50) {
+                causes.push('low_confidence_score');
+            }
+            
+            if (getTodayDismissCount() >= 2) {
+                causes.push('multiple_dismissals_penalty');
+            }
+            
+            if (!lastLaunchTime) {
+                causes.push('launch_time_not_tracked');
+            }
+            
+            return causes;
+        }
+        
+        // ============ v1.2.6 DEBUG MODE ============
+        // Comprehensive capture algorithm testing mode
+        // Activate: Triple-tap version number in settings, or localStorage.setItem('gs_debug_mode', 'true')
+        
+        let debugModeEnabled = localStorage.getItem('gs_debug_mode') === 'true';
+        let debugSession = null;
+        let debugEvents = [];
+        let debugSessionStartTime = null;
+        const DEBUG_GAMES_TARGET = 6;
+        let debugGamesCompleted = 0;
+        
+        // Firebase config for debug data
+        const DEBUG_FIREBASE_URL = 'https://word-boxing-default-rtdb.firebaseio.com/debug-sessions';
+        
+        function initDebugSession() {
+            const platform = getPlatform();
+            const ua = navigator.userAgent;
+            debugSession = {
+                id: 'debug_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 6),
+                startTime: Date.now(),
+                startTimeISO: new Date().toISOString(),
+                platform: platform,
+                userAgent: ua,
+                isIOS: /iPad|iPhone|iPod/.test(ua),
+                isAndroid: /Android/.test(ua),
+                isStandalone: isStandalone(),
+                appVersion: '1.2.6',
+                gamesTarget: DEBUG_GAMES_TARGET,
+                gamesCompleted: 0,
+                events: [],
+                gameFlows: [], // Complete flow for each game
+                summary: null
+            };
+            debugEvents = [];
+            debugSessionStartTime = Date.now();
+            debugGamesCompleted = 0;
+            
+            console.log('🔬 DEBUG SESSION STARTED:', debugSession.id);
+            logDebugEvent('SESSION_START', { sessionId: debugSession.id });
+            
+            showDebugPanel();
+            return debugSession;
+        }
+        
+        function logDebugEvent(eventType, data = {}) {
+            if (!debugModeEnabled) return;
+            
+            const event = {
+                type: eventType,
+                timestamp: Date.now(),
+                timeSinceStart: debugSessionStartTime ? Date.now() - debugSessionStartTime : 0,
+                timeISO: new Date().toISOString(),
+                data: {
+                    ...data,
+                    // Always capture current state
+                    currentGame: lastLaunchedGame,
+                    lastLaunchTime: lastLaunchTime,
+                    clipboardOnLeave: clipboardOnLeave ? 
+                        (clipboardOnLeave === CLIPBOARD_UNKNOWN ? 'UNKNOWN' : `${clipboardOnLeave.length} chars`) : 'null',
+                    todayDismissCount: getTodayDismissCount(),
+                    lastConfidenceScore: lastConfidenceScore
+                }
+            };
+            
+            debugEvents.push(event);
+            if (debugSession) {
+                debugSession.events.push(event);
+            }
+            
+            console.log(`🔬 DEBUG [${eventType}]:`, event.data);
+            updateDebugPanel();
+        }
+        
+        function logDebugGameFlow(gameId, flowData) {
+            if (!debugModeEnabled || !debugSession) return;
+            
+            const flow = {
+                gameId: gameId,
+                gameName: GAMES[gameId]?.name || gameId,
+                flowNumber: debugSession.gameFlows.length + 1,
+                timestamp: Date.now(),
+                timeISO: new Date().toISOString(),
+                ...flowData
+            };
+            
+            debugSession.gameFlows.push(flow);
+            debugGamesCompleted = debugSession.gameFlows.length;
+            debugSession.gamesCompleted = debugGamesCompleted;
+            
+            console.log(`🔬 DEBUG FLOW #${flow.flowNumber}:`, flow);
+            updateDebugPanel();
+            
+            // Check if we've completed target games
+            if (debugGamesCompleted >= DEBUG_GAMES_TARGET) {
+                finalizeDebugSession();
+            }
+        }
+        
+        function logDebugConfidence(context, score, signals) {
+            if (!debugModeEnabled) return;
+            
+            logDebugEvent('CONFIDENCE_CALC', {
+                inputContext: {
+                    lastLaunchedGame: context.lastLaunchedGame,
+                    timeAway: context.timeAway,
+                    timeAwayMinutes: (context.timeAway / 60000).toFixed(2),
+                    clipboardOnLeave: context.clipboardOnLeave === CLIPBOARD_UNKNOWN ? 'UNKNOWN' : 
+                        (context.clipboardOnLeave ? `${context.clipboardOnLeave.length} chars` : 'empty'),
+                    currentClipboard: context.currentClipboard ? `${context.currentClipboard.length} chars` : 'empty',
+                    clipboardChanged: context.clipboardChanged,
+                    clipboardHasContent: context.clipboardHasContent,
+                    clipboardHasGameResult: context.clipboardHasGameResult,
+                    resultMatchesLaunchedGame: context.resultMatchesLaunchedGame,
+                    parsedGameId: context.parsedResult?.gameId,
+                    hasLoggedThisGameBefore: context.hasLoggedThisGameBefore,
+                    alreadyLoggedToday: context.alreadyLoggedToday,
+                    dismissedPromptRecently: context.dismissedPromptRecently,
+                    todayDismissCount: context.todayDismissCount
+                },
+                outputScore: score,
+                outputSignals: signals,
+                thresholdAnalysis: {
+                    wouldAutoLog: score >= 80,
+                    wouldPrompt: score >= 40,
+                    wouldToast: score >= 25,
+                    wouldNoAction: score < 25
+                }
+            });
+        }
+        
+        function logDebugAction(actionType, details = {}) {
+            if (!debugModeEnabled) return;
+            
+            logDebugEvent('ACTION_TAKEN', {
+                action: actionType,
+                ...details
+            });
+        }
+        
+        function logDebugUserResponse(responseType, details = {}) {
+            if (!debugModeEnabled) return;
+            
+            logDebugEvent('USER_RESPONSE', {
+                response: responseType,
+                ...details
+            });
+        }
+        
+        async function finalizeDebugSession() {
+            if (!debugSession) return;
+            
+            debugSession.endTime = Date.now();
+            debugSession.endTimeISO = new Date().toISOString();
+            debugSession.duration = debugSession.endTime - debugSession.startTime;
+            debugSession.durationMinutes = (debugSession.duration / 60000).toFixed(2);
+            
+            // Calculate summary
+            debugSession.summary = calculateDebugSummary();
+            
+            logDebugEvent('SESSION_COMPLETE', {
+                gamesCompleted: debugGamesCompleted,
+                duration: debugSession.duration,
+                summary: debugSession.summary
+            });
+            
+            console.log('🔬 DEBUG SESSION COMPLETE:', debugSession);
+            
+            // Auto-upload to Firebase
+            await uploadDebugSession();
+            
+            // Show completion UI
+            showDebugComplete();
+        }
+        
+        function calculateDebugSummary() {
+            if (!debugSession) return null;
+            
+            const flows = debugSession.gameFlows;
+            const events = debugSession.events;
+            
+            // Count outcomes
+            const outcomes = {
+                autoLog: 0,
+                promptAccepted: 0,
+                promptDismissed: 0,
+                noAction: 0,
+                errors: 0
+            };
+            
+            flows.forEach(f => {
+                if (f.outcome === 'AUTO_LOG') outcomes.autoLog++;
+                else if (f.outcome === 'PROMPT_ACCEPTED') outcomes.promptAccepted++;
+                else if (f.outcome === 'PROMPT_DISMISSED') outcomes.promptDismissed++;
+                else if (f.outcome === 'NO_ACTION') outcomes.noAction++;
+                else if (f.outcome === 'ERROR') outcomes.errors++;
+            });
+            
+            // Calculate averages
+            const confidenceScores = events
+                .filter(e => e.type === 'CONFIDENCE_CALC')
+                .map(e => e.data.outputScore);
+            
+            const avgConfidence = confidenceScores.length > 0 
+                ? (confidenceScores.reduce((a, b) => a + b, 0) / confidenceScores.length).toFixed(1)
+                : 'N/A';
+            
+            // iOS-specific metrics
+            const clipboardCaptures = events.filter(e => 
+                e.type === 'CLIPBOARD_CAPTURE' && e.data.success
+            ).length;
+            
+            const clipboardFailures = events.filter(e => 
+                e.type === 'CLIPBOARD_CAPTURE' && !e.data.success
+            ).length;
+            
+            return {
+                totalGames: flows.length,
+                outcomes: outcomes,
+                avgConfidenceScore: avgConfidence,
+                clipboardCaptures: clipboardCaptures,
+                clipboardFailures: clipboardFailures,
+                clipboardSuccessRate: clipboardCaptures + clipboardFailures > 0
+                    ? ((clipboardCaptures / (clipboardCaptures + clipboardFailures)) * 100).toFixed(1) + '%'
+                    : 'N/A',
+                platform: debugSession.platform,
+                isIOS: debugSession.isIOS
+            };
+        }
+        
+        async function uploadDebugSession() {
+            if (!debugSession) return;
+            
+            try {
+                const response = await fetch(`${DEBUG_FIREBASE_URL}/${debugSession.id}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(debugSession)
+                });
+                
+                if (response.ok) {
+                    console.log('🔬 DEBUG: Session uploaded to Firebase');
+                    logDebugEvent('UPLOAD_SUCCESS', { sessionId: debugSession.id });
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (e) {
+                console.error('🔬 DEBUG: Firebase upload failed:', e);
+                logDebugEvent('UPLOAD_FAILED', { error: e.message });
+                // Store locally as backup
+                try {
+                    localStorage.setItem(`gs_debug_session_${debugSession.id}`, JSON.stringify(debugSession));
+                } catch (storageError) {
+                    console.error('Local storage also failed:', storageError);
+                }
+                return false;
+            }
+        }
+        
+        function exportDebugSession() {
+            if (!debugSession) {
+                alert('No debug session active');
+                return;
+            }
+            
+            const blob = new Blob([JSON.stringify(debugSession, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `debug-session-${debugSession.id}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function showDebugPanel() {
+            // Remove existing panel if any
+            const existing = document.getElementById('debug-panel');
+            if (existing) existing.remove();
+            
+            const panel = document.createElement('div');
+            panel.id = 'debug-panel';
+            panel.innerHTML = `
+                <style>
+                    #debug-panel {
+                        position: fixed;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        background: rgba(0, 0, 0, 0.95);
+                        color: #0f0;
+                        font-family: monospace;
+                        font-size: 11px;
+                        padding: 8px;
+                        z-index: 99999;
+                        max-height: 40vh;
+                        overflow-y: auto;
+                        border-top: 2px solid #0f0;
+                    }
+                    #debug-panel .debug-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 8px;
+                        padding-bottom: 8px;
+                        border-bottom: 1px solid #0f0;
+                    }
+                    #debug-panel .debug-title {
+                        font-weight: bold;
+                        font-size: 14px;
+                    }
+                    #debug-panel .debug-controls button {
+                        background: #0f0;
+                        color: #000;
+                        border: none;
+                        padding: 4px 8px;
+                        margin-left: 4px;
+                        cursor: pointer;
+                        font-family: monospace;
+                        font-size: 10px;
+                    }
+                    #debug-panel .debug-stats {
+                        display: grid;
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 8px;
+                        margin-bottom: 8px;
+                    }
+                    #debug-panel .debug-stat {
+                        background: rgba(0, 255, 0, 0.1);
+                        padding: 4px;
+                        text-align: center;
+                    }
+                    #debug-panel .debug-stat-value {
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
+                    #debug-panel .debug-stat-label {
+                        font-size: 9px;
+                        opacity: 0.7;
+                    }
+                    #debug-panel .debug-log {
+                        max-height: 150px;
+                        overflow-y: auto;
+                        background: rgba(0, 0, 0, 0.5);
+                        padding: 4px;
+                        font-size: 10px;
+                    }
+                    #debug-panel .debug-log-entry {
+                        border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+                        padding: 2px 0;
+                    }
+                    #debug-panel .debug-log-entry.CONFIDENCE_CALC { color: #ff0; }
+                    #debug-panel .debug-log-entry.ACTION_TAKEN { color: #0ff; }
+                    #debug-panel .debug-log-entry.USER_RESPONSE { color: #f0f; }
+                    #debug-panel .debug-log-entry.GAME_FLOW { color: #f90; }
+                    #debug-panel .debug-instructions {
+                        background: rgba(255, 255, 0, 0.1);
+                        padding: 8px;
+                        margin-top: 8px;
+                        border: 1px solid #ff0;
+                        color: #ff0;
+                    }
+                </style>
+                <div class="debug-header">
+                    <span class="debug-title">🔬 DEBUG MODE - Session: ${debugSession?.id?.slice(-8) || 'N/A'}</span>
+                    <div class="debug-controls">
+                        <button onclick="exportDebugSession()">📥 Export</button>
+                        <button onclick="uploadDebugSession()">☁️ Upload</button>
+                        <button onclick="endDebugSession()">⏹️ End</button>
+                        <button onclick="document.getElementById('debug-panel').remove()">✕</button>
+                    </div>
+                </div>
+                <div class="debug-stats">
+                    <div class="debug-stat">
+                        <div class="debug-stat-value" id="debug-games-count">0/${DEBUG_GAMES_TARGET}</div>
+                        <div class="debug-stat-label">Games</div>
+                    </div>
+                    <div class="debug-stat">
+                        <div class="debug-stat-value" id="debug-events-count">0</div>
+                        <div class="debug-stat-label">Events</div>
+                    </div>
+                    <div class="debug-stat">
+                        <div class="debug-stat-value" id="debug-platform">${getPlatform().toUpperCase()}</div>
+                        <div class="debug-stat-label">Platform</div>
+                    </div>
+                    <div class="debug-stat">
+                        <div class="debug-stat-value" id="debug-last-score">—</div>
+                        <div class="debug-stat-label">Last Score</div>
+                    </div>
+                </div>
+                <div class="debug-instructions">
+                    <strong>Instructions:</strong> Play ${DEBUG_GAMES_TARGET} games normally. For each game:<br>
+                    1️⃣ Tap a game tile to launch<br>
+                    2️⃣ Play the game and copy your result<br>
+                    3️⃣ Return to Game Shelf<br>
+                    4️⃣ Accept or dismiss the prompt<br>
+                    Session will auto-upload when complete.
+                </div>
+                <div class="debug-log" id="debug-log"></div>
+            `;
+            document.body.appendChild(panel);
+        }
+        
+        function updateDebugPanel() {
+            const gamesCount = document.getElementById('debug-games-count');
+            const eventsCount = document.getElementById('debug-events-count');
+            const lastScore = document.getElementById('debug-last-score');
+            const logContainer = document.getElementById('debug-log');
+            
+            if (gamesCount) gamesCount.textContent = `${debugGamesCompleted}/${DEBUG_GAMES_TARGET}`;
+            if (eventsCount) eventsCount.textContent = debugEvents.length;
+            if (lastScore && lastConfidenceScore !== null) lastScore.textContent = lastConfidenceScore;
+            
+            if (logContainer && debugEvents.length > 0) {
+                const recentEvents = debugEvents.slice(-20).reverse();
+                logContainer.innerHTML = recentEvents.map(e => 
+                    `<div class="debug-log-entry ${e.type}">
+                        <strong>[${e.type}]</strong> 
+                        ${formatDebugEventData(e)}
+                    </div>`
+                ).join('');
+            }
+        }
+        
+        function formatDebugEventData(event) {
+            const d = event.data;
+            switch (event.type) {
+                case 'GAME_LAUNCH':
+                    return `${d.gameId} | clipboard: ${d.clipboardCaptured ? '✅' : '❌'}`;
+                case 'CONFIDENCE_CALC':
+                    return `score=${d.outputScore} | signals: ${Object.keys(d.outputSignals || {}).join(', ')}`;
+                case 'ACTION_TAKEN':
+                    return `${d.action} | game: ${d.currentGame}`;
+                case 'USER_RESPONSE':
+                    return `${d.response}`;
+                case 'CLIPBOARD_CAPTURE':
+                    return `${d.success ? '✅' : '❌'} ${d.context} | ${d.contentLength || 0} chars`;
+                default:
+                    return JSON.stringify(d).slice(0, 80);
+            }
+        }
+        
+        function showDebugComplete() {
+            const panel = document.getElementById('debug-panel');
+            if (panel) {
+                panel.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 48px;">✅</div>
+                        <h2 style="color: #0f0; margin: 10px 0;">Debug Session Complete!</h2>
+                        <p>Session ID: ${debugSession.id}</p>
+                        <p>Games tested: ${debugGamesCompleted}</p>
+                        <p>Total events: ${debugEvents.length}</p>
+                        <p style="margin-top: 10px;">Data has been uploaded to Firebase.</p>
+                        <div style="margin-top: 15px;">
+                            <button onclick="exportDebugSession()" style="background:#0f0;color:#000;padding:10px 20px;border:none;cursor:pointer;margin:5px;">
+                                📥 Download JSON
+                            </button>
+                            <button onclick="copyDebugSessionId()" style="background:#0f0;color:#000;padding:10px 20px;border:none;cursor:pointer;margin:5px;">
+                                📋 Copy Session ID
+                            </button>
+                            <button onclick="document.getElementById('debug-panel').remove();disableDebugMode();" style="background:#f00;color:#fff;padding:10px 20px;border:none;cursor:pointer;margin:5px;">
+                                ✕ Close & Disable Debug
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function copyDebugSessionId() {
+            if (debugSession) {
+                navigator.clipboard.writeText(debugSession.id);
+                alert('Session ID copied: ' + debugSession.id);
+            }
+        }
+        
+        function endDebugSession() {
+            if (confirm('End debug session early? Data will still be uploaded.')) {
+                finalizeDebugSession();
+            }
+        }
+        
+        function enableDebugMode() {
+            debugModeEnabled = true;
+            localStorage.setItem('gs_debug_mode', 'true');
+            initDebugSession();
+            console.log('🔬 DEBUG MODE ENABLED');
+        }
+        
+        function disableDebugMode() {
+            debugModeEnabled = false;
+            localStorage.removeItem('gs_debug_mode');
+            debugSession = null;
+            debugEvents = [];
+            const panel = document.getElementById('debug-panel');
+            if (panel) panel.remove();
+            console.log('🔬 DEBUG MODE DISABLED');
+        }
+        
+        // Track current game flow for complete picture
+        let currentGameFlow = null;
+        
+        function startGameFlow(gameId) {
+            if (!debugModeEnabled) return;
+            
+            currentGameFlow = {
+                gameId: gameId,
+                startTime: Date.now(),
+                events: [],
+                clipboardOnLaunch: null,
+                clipboardOnReturn: null,
+                confidenceScore: null,
+                confidenceSignals: null,
+                actionTaken: null,
+                userResponse: null,
+                outcome: null
+            };
+            
+            logDebugEvent('GAME_FLOW_START', { gameId });
+        }
+        
+        function completeGameFlow(outcome) {
+            if (!debugModeEnabled || !currentGameFlow) return;
+            
+            currentGameFlow.endTime = Date.now();
+            currentGameFlow.duration = currentGameFlow.endTime - currentGameFlow.startTime;
+            currentGameFlow.outcome = outcome;
+            
+            logDebugGameFlow(currentGameFlow.gameId, currentGameFlow);
+            currentGameFlow = null;
+        }
+        
+        // Expose debug functions globally
+        window.gsDebug = {
+            enable: enableDebugMode,
+            disable: disableDebugMode,
+            isEnabled: () => debugModeEnabled,
+            getSession: () => debugSession,
+            getEvents: () => debugEvents,
+            export: exportDebugSession,
+            upload: uploadDebugSession,
+            endSession: endDebugSession
+        };
+        
+        // Auto-start debug session if mode was enabled
+        if (debugModeEnabled) {
+            setTimeout(() => {
+                initDebugSession();
+            }, 1000);
+        }
+        
+        // Triple-tap version to enable debug mode
+        let versionTapCount = 0;
+        let versionTapTimer = null;
+        function handleVersionTap() {
+            versionTapCount++;
+            if (versionTapTimer) clearTimeout(versionTapTimer);
+            
+            if (versionTapCount >= 3) {
+                versionTapCount = 0;
+                if (!debugModeEnabled) {
+                    if (confirm('Enable Debug Mode? This will track your next 6 games for algorithm testing.')) {
+                        enableDebugMode();
+                    }
+                } else {
+                    if (confirm('Debug Mode is active. Disable it?')) {
+                        disableDebugMode();
+                    }
+                }
+            } else {
+                versionTapTimer = setTimeout(() => {
+                    versionTapCount = 0;
+                }, 500);
+            }
+        }
+        
+        // ============ RETURN CONFIDENCE ALGORITHM ============
+        // v1.2.3: Added mismatch penalty, game-aware time thresholds, dismiss time decay
+        function calculateReturnConfidence(context) {
+            let score = 0;
+            let signals = {};;
+            
+            // ===== POSITIVE SIGNALS =====
+            
+            // 1. Clipboard contains valid game result (+25 base)
+            if (context.clipboardHasGameResult) {
+                score += 25;
+                signals.hasGameResult = true;
+                
+                // Bonus: Result matches launched game (+15)
+                if (context.resultMatchesLaunchedGame) {
+                    score += 15;
+                    signals.matchesLaunchedGame = true;
+                }
+            }
+            
+            // 2. Clipboard actually changed from when they left (+20)
+            if (context.clipboardChanged && context.clipboardOnLeave !== CLIPBOARD_UNKNOWN) {
+                score += 20;
+                signals.clipboardChanged = true;
+            }
+            
+            // 3. Time away is reasonable for playing a game (+15 max)
+            // v1.2.3: Game-aware thresholds for quick games
+            const minutesAway = context.timeAway / 60000;
+            const isQuickGame = context.lastLaunchedGame && QUICK_GAMES.includes(context.lastLaunchedGame);
+            const minTimeThreshold = isQuickGame ? 0.33 : 0.5; // 20s for quick games, 30s for others
+            
+            if (minutesAway >= 1 && minutesAway <= 15) {
+                score += 15;
+                signals.timeAwayOptimal = true;
+            } else if (minutesAway > 15 && minutesAway <= 30) {
+                score += 10;
+                signals.timeAwayReasonable = true;
+            } else if (minutesAway >= minTimeThreshold && minutesAway < 1) {
+                score += 5;
+                signals.timeAwayQuick = true;
+                if (isQuickGame) signals.quickGameBonus = true;
+            }
+            
+            // 4. User has history of logging this game (+10)
+            if (context.hasLoggedThisGameBefore) {
+                score += 10;
+                signals.hasHistory = true;
+            }
+            
+            // 5. This game not yet logged today (+5)
+            if (!context.alreadyLoggedToday) {
+                score += 5;
+                signals.notLoggedToday = true;
+            }
+            
+            // ===== NEGATIVE SIGNALS =====
+            
+            // 6. User dismissed prompt for this game recently (-20)
+            // v1.2.3: Check if dismissal was within last 2 hours
+            if (context.dismissedPromptRecently) {
+                const hoursSinceDismiss = context.hoursSinceLastDismiss || 0;
+                if (hoursSinceDismiss < 2) {
+                    score -= 20;
+                    signals.recentlyDismissed = true;
+                } else {
+                    // Dismissal was >2 hours ago, reduced penalty
+                    score -= 5;
+                    signals.dismissedButDecayed = true;
+                }
+            }
+            
+            // 7. Multiple prompts today with no logs (-10 per, max -20)
+            // v1.2.3: Reduced max penalty from -30 to -20
+            const dismissPenalty = Math.min(context.todayDismissCount * 10, 20);
+            if (dismissPenalty > 0) {
+                score -= dismissPenalty;
+                signals.multipleDismissals = context.todayDismissCount;
+            }
+            
+            // 8. Clipboard was UNKNOWN on leave (-10)
+            if (context.clipboardOnLeave === CLIPBOARD_UNKNOWN) {
+                score -= 10;
+                signals.clipboardWasUnknown = true;
+            }
+            
+            // 9. Very short time away - probably didn't play
+            // v1.2.3: Game-aware threshold (20s for quick games, 30s for others)
+            if (minutesAway < minTimeThreshold) {
+                score -= 15;
+                signals.tooQuick = true;
+            }
+            
+            // 10. Clipboard has content but NOT a game result (-5)
+            if (context.clipboardHasContent && !context.clipboardHasGameResult) {
+                score -= 5;
+                signals.clipboardNotGameResult = true;
+            }
+            
+            // 11. [P0 FIX] Result is for DIFFERENT game than launched (-20)
+            // v1.2.3: Critical fix for mismatched game false positives
+            if (context.clipboardHasGameResult && !context.resultMatchesLaunchedGame && context.lastLaunchedGame) {
+                score -= 20;
+                signals.resultMismatch = true;
+                signals.detectedGame = context.parsedResult?.gameId;
+                signals.launchedGame = context.lastLaunchedGame;
+            }
+            
+            // v1.2.6: iOS compensation - ensure valid matches always get a chance
+            // Even with clipboard capture on launch, iOS may still face edge cases
+            // where penalty stacking blocks legitimate captures (e.g., 3+ dismissals)
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS && context.clipboardHasGameResult && context.resultMatchesLaunchedGame) {
+                // If user has a valid, matching result, don't let accumulated penalties
+                // completely block the capture - they can always dismiss if it's wrong
+                const preFloorScore = score;
+                score = Math.max(score, 25); // Floor at tap-to-log threshold
+                if (score !== preFloorScore) {
+                    signals.iosMatchFloor = true;
+                    console.log(`📱 iOS: Score floored from ${preFloorScore} to ${score} for valid match`);
+                }
+            }
+            
+            // Clamp to 0-100
+            score = Math.max(0, Math.min(100, score));
+            
+            console.log(`🎯 Confidence: ${score}`, signals);
+            return { score, signals };
+        }
+        
+        function hasHistoryForGame(gameId) {
+            if (!appData.history) return false;
+            for (const dateKey of Object.keys(appData.history)) {
+                if (appData.history[dateKey][gameId]) return true;
+            }
+            return false;
+        }
+        
+        async function buildReturnContext() {
+            let currentClipboard = '';
+            let clipboardReadSuccess = false;
+            
+            try {
+                if (navigator.clipboard?.readText) {
+                    currentClipboard = await navigator.clipboard.readText() || '';
+                    clipboardReadSuccess = true;
+                    trackEvent(ANALYTICS_EVENTS.CLIPBOARD_READ_SUCCESS);
+                }
+            } catch (e) {
+                trackEvent(ANALYTICS_EVENTS.CLIPBOARD_READ_FAILED, { error: e.message });
+            }
+            
+            const parsedResult = parseShareText(currentClipboard);
+            
+            return {
+                timeAway: lastLaunchTime ? Date.now() - lastLaunchTime : 0,
+                clipboardOnLeave: clipboardOnLeave,
+                currentClipboard: currentClipboard,
+                clipboardChanged: clipboardOnLeave !== CLIPBOARD_UNKNOWN && clipboardOnLeave !== currentClipboard,
+                clipboardHasContent: currentClipboard.length > 0,
+                clipboardHasGameResult: !!parsedResult,
+                parsedResult: parsedResult,
+                resultMatchesLaunchedGame: parsedResult?.gameId === lastLaunchedGame,
+                lastLaunchedGame: lastLaunchedGame,
+                alreadyLoggedToday: lastLaunchedGame ? !!getTodayHistory()[lastLaunchedGame] : false,
+                hasLoggedThisGameBefore: lastLaunchedGame ? hasHistoryForGame(lastLaunchedGame) : false,
+                dismissedPromptRecently: returnPromptDismissedFor === lastLaunchedGame,
+                hoursSinceLastDismiss: returnPromptDismissedAt ? (Date.now() - returnPromptDismissedAt) / 3600000 : 0, // v1.2.3
+                todayDismissCount: getTodayDismissCount(),
+                isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent),
+                clipboardReadSuccess: clipboardReadSuccess
+            };
+        }
         
         // ============ CLIPBOARD DIFF TRACKING ============
         // Stores clipboard content when user LEAVES the app
@@ -17603,6 +19016,7 @@ Made with ❤️ for puzzle enthusiasts`;
         // Enhanced playGame - tracks what was launched
         // Track pending game for launch pref modal
         let pendingLaunchGame = null;
+        let pendingTutorialGame = null; // Game waiting for tutorial completion
         
         function playGame(gameId, forceVisit = false) {
             const game = GAMES[gameId];
@@ -17624,14 +19038,26 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // Check if this game has an app option AND we haven't asked yet
+            // Check if user has seen the recording tutorial (first time ANY game launch)
+            if (!appData.hasSeenRecordingTutorial) {
+                pendingTutorialGame = gameId;
+                showRecordingTutorial(game);
+                return;
+            }
+            
+            // Check if this game has an app option AND we need to ask for publisher pref
             if (game.hasApp && game.publisher) {
-                const prefs = appData.launchPrefs || {};
-                if (!prefs[gameId]) {
-                    // First time - ask user
-                    pendingLaunchGame = gameId;
-                    showLaunchPrefModal(game);
-                    return;
+                // Check for game-specific override first
+                const gameOverride = appData.launchPrefs?.[gameId];
+                if (!gameOverride) {
+                    // Check for publisher preference
+                    const publisherPref = appData.publisherPrefs?.[game.publisher];
+                    if (!publisherPref) {
+                        // First time for this publisher - ask user
+                        pendingLaunchGame = gameId;
+                        showPublisherPrefModal(game);
+                        return;
+                    }
                 }
             }
             
@@ -17639,19 +19065,103 @@ Made with ❤️ for puzzle enthusiasts`;
             launchGame(gameId);
         }
         
-        function showLaunchPrefModal(game) {
+        // ============ RECORDING TUTORIAL (First-time users) ============
+        let tutorialStep = 0;
+        
+        function showRecordingTutorial(game) {
+            trackEvent(ANALYTICS_EVENTS.TUTORIAL_STARTED, { gameId: game?.id });
+            tutorialStep = 1;
+            
+            const overlay = document.getElementById('recording-tutorial-overlay');
+            if (!overlay) {
+                console.warn('Recording tutorial overlay not found');
+                // Fallback: skip tutorial
+                appData.hasSeenRecordingTutorial = true;
+                saveData();
+                if (pendingTutorialGame) {
+                    playGame(pendingTutorialGame);
+                    pendingTutorialGame = null;
+                }
+                return;
+            }
+            
+            // Update game name in final step
+            document.getElementById('tutorial-game-name').textContent = game?.name || 'your game';
+            
+            // Reset to step 1
+            overlay.querySelectorAll('.tutorial-step').forEach((step, i) => {
+                step.classList.toggle('active', i === 0);
+            });
+            
+            overlay.classList.add('active');
+        }
+        
+        function tutorialNext() {
+            tutorialStep++;
+            const overlay = document.getElementById('recording-tutorial-overlay');
+            if (!overlay) return;
+            
+            overlay.querySelectorAll('.tutorial-step').forEach((step, i) => {
+                step.classList.toggle('active', i === tutorialStep - 1);
+            });
+            
+            // If we're past step 3, complete the tutorial
+            if (tutorialStep > 3) {
+                completeTutorial();
+            }
+        }
+        
+        function completeTutorial() {
+            trackEvent(ANALYTICS_EVENTS.TUTORIAL_COMPLETED);
+            appData.hasSeenRecordingTutorial = true;
+            saveData();
+            
+            const overlay = document.getElementById('recording-tutorial-overlay');
+            if (overlay) overlay.classList.remove('active');
+            
+            // Continue with game launch
+            if (pendingTutorialGame) {
+                const gameId = pendingTutorialGame;
+                pendingTutorialGame = null;
+                playGame(gameId);
+            }
+        }
+        
+        function skipTutorial() {
+            trackEvent(ANALYTICS_EVENTS.TUTORIAL_SKIPPED, { step: tutorialStep });
+            completeTutorial();
+        }
+        
+        // ============ PUBLISHER PREFERENCE MODAL ============
+        function showPublisherPrefModal(game) {
             const overlay = document.getElementById('launch-pref-overlay');
             if (!overlay) return;
             
             const appInfo = APP_INFO[game.publisher];
+            const publisherGames = Object.values(GAMES).filter(g => g.publisher === game.publisher);
+            const gameNames = publisherGames.slice(0, 3).map(g => g.name).join(', ');
+            const moreCount = publisherGames.length - 3;
             
-            // Update modal content
-            document.getElementById('launch-pref-icon').textContent = game.icon;
-            document.getElementById('launch-pref-game-name').textContent = game.name;
+            // Update modal content for publisher-level preference
+            document.getElementById('launch-pref-icon').textContent = appInfo?.icon || game.icon;
+            document.getElementById('launch-pref-game-name').textContent = appInfo?.name || game.publisher;
             document.getElementById('launch-pref-app-name').textContent = appInfo?.name || 'the app';
+            
+            // Update subtitle to show this applies to all publisher games
+            const subtitle = overlay.querySelector('.launch-pref-subtitle');
+            if (subtitle) {
+                let text = `This applies to ${gameNames}`;
+                if (moreCount > 0) text += ` and ${moreCount} more`;
+                subtitle.textContent = text;
+            }
             
             // Show modal
             overlay.classList.add('active');
+        }
+        
+        // Legacy function - redirects to publisher modal
+        function showLaunchPrefModal(game) {
+            showPublisherPrefModal(game);
         }
         
         function closeLaunchPrefModal() {
@@ -17880,9 +19390,23 @@ Made with ❤️ for puzzle enthusiasts`;
         function selectLaunchPref(pref) {
             if (!pendingLaunchGame) return;
             
-            // Save preference
-            if (!appData.launchPrefs) appData.launchPrefs = {};
-            appData.launchPrefs[pendingLaunchGame] = pref;
+            const game = GAMES[pendingLaunchGame];
+            
+            // Save preference at PUBLISHER level
+            if (game?.publisher) {
+                if (!appData.publisherPrefs) appData.publisherPrefs = {};
+                appData.publisherPrefs[game.publisher] = pref;
+                
+                trackEvent(ANALYTICS_EVENTS.PUBLISHER_PREF_SET, {
+                    publisher: game.publisher,
+                    preference: pref,
+                    triggeredByGame: pendingLaunchGame
+                });
+            } else {
+                // Fallback to game-level for games without publisher
+                if (!appData.launchPrefs) appData.launchPrefs = {};
+                appData.launchPrefs[pendingLaunchGame] = pref;
+            }
             saveData();
             
             const gameId = pendingLaunchGame;
@@ -17892,17 +19416,60 @@ Made with ❤️ for puzzle enthusiasts`;
             launchGame(gameId);
         }
         
-        function launchGame(gameId) {
+        async function launchGame(gameId) {
             const game = GAMES[gameId];
             if (!game) return;
+            
+            // v1.2.6 DEBUG: Start tracking this game flow
+            startGameFlow(gameId);
             
             // Track this launch for return detection
             lastLaunchedGame = gameId;
             lastLaunchTime = Date.now();
             returnPromptDismissedFor = null;
+            returnPromptDismissedAt = null; // v1.2.3: Reset dismiss timestamp
+            
+            // v1.2.6: Capture clipboard NOW while we have the tap gesture!
+            // This is the KEY FIX for iOS - the tile tap IS a valid gesture
+            // so we can read clipboard before launching, then compare on return
+            let clipboardCaptureSuccess = false;
+            try {
+                const text = await navigator.clipboard.readText();
+                clipboardOnLeave = text || '';
+                clipboardCaptureSuccess = true;
+                console.log('📋 Launch: Captured clipboard via tap gesture', 
+                    clipboardOnLeave.length > 0 ? `(${clipboardOnLeave.length} chars)` : '(empty)');
+            } catch (e) {
+                // Permission denied, no clipboard access, or no gesture
+                clipboardOnLeave = CLIPBOARD_UNKNOWN;
+                console.log('📋 Launch: Clipboard read failed -', e.name);
+            }
+            
+            // v1.2.6 DEBUG: Log clipboard capture result
+            logDebugEvent('CLIPBOARD_CAPTURE', {
+                context: 'LAUNCH_TAP',
+                success: clipboardCaptureSuccess,
+                contentLength: clipboardCaptureSuccess ? clipboardOnLeave.length : 0,
+                errorType: clipboardCaptureSuccess ? null : 'capture_failed'
+            });
+            if (currentGameFlow) {
+                currentGameFlow.clipboardOnLaunch = clipboardCaptureSuccess ? 
+                    `${clipboardOnLeave.length} chars` : 'FAILED';
+            }
+            
+            // v1.2.6 DEBUG: Log game launch
+            logDebugEvent('GAME_LAUNCH', {
+                gameId: gameId,
+                gameName: game.name,
+                clipboardCaptured: clipboardCaptureSuccess,
+                clipboardLength: clipboardCaptureSuccess ? clipboardOnLeave.length : 0
+            });
             
             // PERSIST to localStorage so we can detect on app restart
             persistActiveGame(gameId);
+            
+            // Get launch method for analytics
+            const launchMethod = getLaunchMethod(gameId);
             
             // Track if this is first launch after setting preference (needs verification)
             const isFirstLaunch = !appData.launchVerified?.[gameId];
@@ -17927,7 +19494,12 @@ Made with ❤️ for puzzle enthusiasts`;
                 launchUrl = customUrl;
                 console.log(`✏️ Launching with custom URL: ${launchUrl}`);
             } else {
-                const pref = appData.launchPrefs?.[gameId];
+                // Check game-specific override, then publisher pref
+                let pref = appData.launchPrefs?.[gameId];
+                if (!pref && game.publisher) {
+                    pref = appData.publisherPrefs?.[game.publisher];
+                }
+                
                 if (pref === 'app' && game.hasApp) {
                     // They prefer the app - use the same URL, iOS/Android will intercept via Universal Links
                     // Note: keep original URL for universal links, not test URL
@@ -17940,12 +19512,73 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }
             
-            // Open game
+            // Track analytics
+            trackEvent(ANALYTICS_EVENTS.GAME_LAUNCH, {
+                gameId: gameId,
+                publisher: game.publisher,
+                launchMethod: launchMethod,
+                isGSOriginal: isGSOriginal(gameId),
+                timeOfDay: new Date().getHours()
+            });
+            
+            // Show pre-launch reminder if enabled (not for GS Originals which auto-sync)
+            const showReminder = appData.hasSeenRecordingTutorial && 
+                                 appData.settings?.showPrelaunchReminder !== false &&
+                                 !isGSOriginal(gameId);
+            
+            if (showReminder) {
+                showPrelaunchReminder(game, launchUrl);
+            } else {
+                // Open game directly
+                openGameUrl(launchUrl);
+            }
+        }
+        
+        function showPrelaunchReminder(game, launchUrl) {
+            const reminder = document.getElementById('prelaunch-reminder');
+            if (!reminder) {
+                openGameUrl(launchUrl);
+                return;
+            }
+            
+            document.getElementById('prelaunch-game-name').textContent = game.name;
+            reminder.classList.add('active');
+            
+            // Auto-dismiss and launch after 1.5 seconds
+            setTimeout(() => {
+                reminder.classList.remove('active');
+                openGameUrl(launchUrl);
+            }, 1500);
+        }
+        
+        function openGameUrl(launchUrl) {
             if (launchUrl.startsWith('http')) {
                 window.open(launchUrl, '_blank');
             } else {
                 window.location.href = launchUrl;
             }
+        }
+        
+        // Helper to determine launch method for a game
+        function getLaunchMethod(gameId) {
+            const game = GAMES[gameId];
+            if (!game) return 'browser';
+            
+            // Custom URL takes priority
+            if (appData.customUrls?.[gameId]) return 'custom';
+            
+            // Check game-specific override
+            const gameOverride = appData.launchPrefs?.[gameId];
+            if (gameOverride) return gameOverride;
+            
+            // Check publisher preference
+            if (game.publisher) {
+                const publisherPref = appData.publisherPrefs?.[game.publisher];
+                if (publisherPref) return publisherPref;
+            }
+            
+            // Default to browser
+            return 'browser';
         }
         
         // ============ LAUNCH VERIFICATION ============
@@ -18176,6 +19809,13 @@ Made with ❤️ for puzzle enthusiasts`;
         
         // Return-from-game detection
         function checkReturnFromGame() {
+            // v1.2.5: iOS uses tap-to-log card exclusively (handles clipboard gesture requirement)
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS) {
+                console.log('🎮 iOS: Skipping return prompt (tap-to-log handles this)');
+                return;
+            }
+            
             // Restore from localStorage if memory state is empty (e.g., after app restart)
             if (!lastLaunchedGame || !lastLaunchTime) {
                 const activeGame = getActiveGame();
@@ -18196,11 +19836,28 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // Don't show if prompt was dismissed for this game
-            if (returnPromptDismissedFor === lastLaunchedGame) return;
+            // v1.2.5: Game-aware time thresholds (consistent with iOS tap-to-log)
+            const isQuickGame = QUICK_GAMES.includes(lastLaunchedGame);
+            const minTimeMs = isQuickGame ? 20000 : 30000;
+            if (elapsed < minTimeMs) {
+                console.log(`🎮 Only away ${Math.round(elapsed/1000)}s, need ${minTimeMs/1000}s+ for ${isQuickGame ? 'quick' : 'regular'} game`);
+                return;
+            }
             
-            // Don't show if it's been less than 30 seconds (they didn't really play)
-            if (elapsed < 30000) return;
+            // v1.2.5: Dismiss time decay - allow showing again after 2 hours
+            if (returnPromptDismissedFor === lastLaunchedGame) {
+                if (returnPromptDismissedAt) {
+                    const hoursSinceDismiss = (Date.now() - returnPromptDismissedAt) / 3600000;
+                    if (hoursSinceDismiss < 2) {
+                        console.log(`🎮 Recently dismissed for ${lastLaunchedGame} (${hoursSinceDismiss.toFixed(1)}h ago), skipping`);
+                        return;
+                    }
+                    console.log(`🎮 Dismiss for ${lastLaunchedGame} has decayed (${hoursSinceDismiss.toFixed(1)}h ago), allowing`);
+                } else {
+                    // No timestamp, assume recent dismiss
+                    return;
+                }
+            }
             
             // Don't show if game was already logged (use fresh data from appData)
             const todayHistory = appData.history[getTodayString()] || {};
@@ -18210,8 +19867,19 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // Don't show if clipboard already detected this game
-            if (detectedClipboard?.result?.gameId === lastLaunchedGame) return;
+            // Don't show if clipboard already detected a game result (prioritize clipboard flow)
+            // v1.2.5: Changed from checking only matching game to ANY detected result
+            if (detectedClipboard?.result?.gameId) {
+                console.log(`🎮 Clipboard has ${detectedClipboard.result.gameId} result, skipping return prompt`);
+                return;
+            }
+            
+            // Don't show if clipboard-prompt is already visible
+            const clipboardPrompt = document.getElementById('clipboard-prompt');
+            if (clipboardPrompt && clipboardPrompt.classList.contains('visible')) {
+                console.log('🎮 Clipboard prompt visible, skipping return prompt');
+                return;
+            }
             
             // Don't show if return prompt is already visible
             const prompt = document.getElementById('return-prompt');
@@ -18237,6 +19905,13 @@ Made with ❤️ for puzzle enthusiasts`;
             // Small delay to trigger CSS transition
             setTimeout(() => prompt.classList.add('visible'), 10);
             
+            // v1.2.5: Track when prompt was shown for analytics
+            promptShownTime = Date.now();
+            trackEvent(ANALYTICS_EVENTS.PROMPT_SHOWN, {
+                gameId: game.id,
+                promptType: 'return-prompt'
+            });
+            
             // Auto-dismiss after 15 seconds
             setTimeout(() => {
                 if (prompt.classList.contains('visible')) {
@@ -18245,7 +19920,7 @@ Made with ❤️ for puzzle enthusiasts`;
             }, 15000);
         }
         
-        function dismissReturnPrompt() {
+        function dismissReturnPrompt(trackDismiss = true) {
             const prompt = document.getElementById('return-prompt');
             if (prompt) {
                 prompt.classList.remove('visible');
@@ -18256,8 +19931,21 @@ Made with ❤️ for puzzle enthusiasts`;
                     }
                 }, 300);
             }
-            // Remember we dismissed for this game
-            returnPromptDismissedFor = lastLaunchedGame;
+            
+            // Only track dismiss and set state when it's a real user dismiss
+            // (not when called from auto-cleanup or state transitions)
+            if (trackDismiss) {
+                // Remember we dismissed for this game
+                returnPromptDismissedFor = lastLaunchedGame;
+                returnPromptDismissedAt = Date.now();
+                
+                // v1.2.5: Track dismiss event (triggers incrementDismissCount)
+                trackEvent(ANALYTICS_EVENTS.PROMPT_DISMISSED, {
+                    gameId: lastLaunchedGame,
+                    promptType: 'return-prompt',
+                    timeVisible: promptShownTime ? Date.now() - promptShownTime : null
+                });
+            }
         }
         
         // Dismiss return prompt if it's currently showing for a specific game
@@ -18266,7 +19954,7 @@ Made with ❤️ for puzzle enthusiasts`;
             const prompt = document.getElementById('return-prompt');
             if (prompt && prompt.classList.contains('visible') && lastLaunchedGame === gameId) {
                 console.log(`🎮 Auto-dismissing return prompt for ${gameId} (game was logged)`);
-                dismissReturnPrompt();
+                dismissReturnPrompt(false); // Don't track - this is cleanup, not user dismiss
             }
         }
         
@@ -18276,7 +19964,13 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function returnPromptLogManual() {
-            dismissReturnPrompt();
+            // Track that user chose to log (not a dismiss)
+            trackEvent(ANALYTICS_EVENTS.PROMPT_ACCEPTED, {
+                gameId: lastLaunchedGame,
+                promptType: 'return-prompt',
+                action: 'log-manual'
+            });
+            dismissReturnPrompt(false); // Don't track dismiss - user is logging
             // Open log sheet with this game pre-selected
             openLogSheetForGame(lastLaunchedGame);
         }
@@ -18328,6 +20022,18 @@ Made with ❤️ for puzzle enthusiasts`;
             tapToLogDismissed = true;
             // Reset after 5 minutes
             setTimeout(() => { tapToLogDismissed = false; }, 300000);
+            
+            // v1.2.5: Unified dismiss tracking (same as other prompts)
+            if (lastLaunchedGame) {
+                returnPromptDismissedFor = lastLaunchedGame;
+                returnPromptDismissedAt = Date.now();
+                
+                trackEvent(ANALYTICS_EVENTS.PROMPT_DISMISSED, {
+                    gameId: lastLaunchedGame,
+                    promptType: 'tap-to-log',
+                    timeVisible: promptShownTime ? Date.now() - promptShownTime : null
+                });
+            }
         }
         
         // Handle tap - this is the user gesture that allows clipboard access on iOS
@@ -18357,7 +20063,14 @@ Made with ❤️ for puzzle enthusiasts`;
                     }
                     
                     // Log it!
-                    if (logGame(result)) {
+                    if (logGame(result, 'prompt')) {
+                        // Track that user accepted via tap-to-log
+                        trackEvent(ANALYTICS_EVENTS.PROMPT_ACCEPTED, {
+                            gameId: result.gameId,
+                            promptType: 'tap-to-log-legacy',
+                            action: 'tap-accept'
+                        });
+                        
                         hideTapToLogCard();
                         renderAll();
                         showCelebration(game, result);
@@ -18479,7 +20192,15 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Don't show if no game was launched from Game Shelf
             // This prevents the prompt from appearing when user switches to other apps
-            if (!lastLaunchedGame) return;
+            if (!lastLaunchedGame || !lastLaunchTime) return;
+            
+            // v1.2.5: Check time elapsed for staleness
+            const elapsed = Date.now() - lastLaunchTime;
+            if (elapsed > 30 * 60 * 1000) {
+                console.log('🎮 checkForTapToLog: Launch was >30 min ago (stale), clearing');
+                clearActiveGame();
+                return;
+            }
             
             const todayHistory = getTodayHistory();
             
@@ -18536,88 +20257,131 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // On desktop/Android, we can read clipboard directly
-            try {
-                if (!navigator.clipboard || !navigator.clipboard.readText) {
-                    console.log('📋 Return: Clipboard API not available');
-                    return;
-                }
-                
-                const currentClipboard = await navigator.clipboard.readText();
-                console.log('📋 Return: Current clipboard', currentClipboard ? currentClipboard.substring(0, 50) + '...' : '(empty)');
-                console.log('📋 Return: Clipboard on leave was', clipboardOnLeave === CLIPBOARD_UNKNOWN ? 'UNKNOWN' : (clipboardOnLeave ? clipboardOnLeave.substring(0, 50) + '...' : '(empty)'));
-                
-                // Check if this clipboard was already processed (logged earlier)
-                if (lastProcessedClipboard && currentClipboard === lastProcessedClipboard) {
-                    console.log('📋 Return: Clipboard already processed, skipping');
-                    return;
-                }
-                
-                // Check if clipboard changed
-                // If we couldn't capture on leave (UNKNOWN), we need to be careful
-                // Only proceed if we have a valid game result that matches lastLaunchedGame
-                let shouldProceed = false;
-                
-                if (clipboardOnLeave === CLIPBOARD_UNKNOWN) {
-                    // Couldn't read clipboard when leaving - be conservative
-                    // Only proceed if we launched a game AND clipboard has valid result
-                    console.log('📋 Return: Clipboard on leave was UNKNOWN, being conservative');
-                    if (lastLaunchedGame) {
-                        const result = parseShareText(currentClipboard);
-                        if (result && result.gameId === lastLaunchedGame) {
-                            console.log(`📋 Return: Found result matching launched game ${lastLaunchedGame}`);
-                            shouldProceed = true;
-                        } else {
-                            console.log('📋 Return: No matching result for launched game, skipping');
-                        }
-                    } else {
-                        console.log('📋 Return: No lastLaunchedGame, skipping');
-                    }
-                } else if (clipboardOnLeave !== currentClipboard) {
-                    // We have a real diff - clipboard actually changed
-                    console.log('📋 Return: Clipboard CHANGED!');
-                    shouldProceed = true;
-                } else {
-                    console.log('📋 Return: Clipboard unchanged, no prompt needed');
-                }
-                
-                if (!shouldProceed) return;
-                
-                // Try to parse as game result
-                const result = parseShareText(currentClipboard);
-                if (!result) {
-                    console.log('📋 Return: No valid game result in clipboard');
-                    return;
-                }
-                
-                // Check if already logged today
-                const todayHistory = getTodayHistory();
-                if (todayHistory[result.gameId]) {
-                    console.log(`📋 Return: ${result.gameId} already logged today`);
-                    return;
-                }
-                
-                const game = GAMES[result.gameId];
-                detectedClipboard = { text: currentClipboard, result };
-                
-                // Auto-log if enabled, otherwise show prompt
-                if (appData.settings?.autoLog !== false) {
-                    console.log(`📋 Return: Auto-logging ${game?.name || result.gameId}`);
-                    autoLogClipboard(game, result);
-                } else {
-                    console.log(`📋 Return: Showing prompt for ${game?.name || result.gameId}`);
-                    showClipboardPrompt(game, result);
-                }
-                
-                // Clear active game tracking since we handled via clipboard
-                clearActiveGame();
-                
-            } catch (e) {
-                console.log('📋 Return: Could not read clipboard:', e.message);
+            // Build context and calculate confidence
+            const context = await buildReturnContext();
+            const confidence = calculateReturnConfidence(context);
+            lastConfidenceScore = confidence.score;
+            
+            // v1.2.6 DEBUG: Log full confidence calculation
+            logDebugConfidence(context, confidence.score, confidence.signals);
+            if (currentGameFlow) {
+                currentGameFlow.clipboardOnReturn = context.currentClipboard ? 
+                    `${context.currentClipboard.length} chars` : 'empty';
+                currentGameFlow.confidenceScore = confidence.score;
+                currentGameFlow.confidenceSignals = confidence.signals;
             }
+            
+            // Track return event
+            trackEvent(ANALYTICS_EVENTS.GAME_RETURN, {
+                gameId: lastLaunchedGame,
+                timeAway: context.timeAway,
+                clipboardChanged: context.clipboardChanged,
+                clipboardHadResult: context.clipboardHasGameResult,
+                resultMatchedGame: context.resultMatchesLaunchedGame,
+                confidenceScore: confidence.score,
+                confidenceSignals: confidence.signals
+            });
+            
+            // Check if this clipboard was already processed
+            if (lastProcessedClipboard && context.currentClipboard === lastProcessedClipboard) {
+                console.log('📋 Return: Clipboard already processed, skipping');
+                return;
+            }
+            
+            // Decision based on confidence thresholds
+            // v1.2.3: Adjusted thresholds and added mismatch game handling
+            
+            // Very low confidence (<25): Don't prompt
+            if (confidence.score < 25) {
+                console.log(`📋 Return: Confidence too low (${confidence.score}), no prompt`);
+                return;
+            }
+            
+            // Need a valid game result to proceed
+            if (!context.clipboardHasGameResult) {
+                console.log('📋 Return: No valid game result in clipboard');
+                return;
+            }
+            
+            const result = context.parsedResult;
+            
+            // Check if already logged today
+            if (context.alreadyLoggedToday || getTodayHistory()[result.gameId]) {
+                console.log(`📋 Return: ${result.gameId} already logged today`);
+                return;
+            }
+            
+            const game = GAMES[result.gameId];
+            detectedClipboard = { text: context.currentClipboard, result };
+            
+            // v1.2.3: If result is for a DIFFERENT game, handle specially
+            if (confidence.signals.resultMismatch) {
+                const launchedGame = GAMES[context.lastLaunchedGame];
+                console.log(`📋 Return: Result mismatch - launched ${launchedGame?.name}, found ${game?.name}`);
+                logDebugAction('MISMATCH_TOAST', { 
+                    score: confidence.score, 
+                    launchedGame: context.lastLaunchedGame,
+                    detectedGame: result.gameId 
+                });
+                if (currentGameFlow) currentGameFlow.actionTaken = 'MISMATCH_TOAST';
+                // Show a helpful toast offering to log the detected game
+                showToast(`Found ${game?.icon || '🎮'} ${game?.name} result. Tap to log.`, 'info', 5000);
+                completeGameFlow('MISMATCH_HANDLED');
+                return;
+            }
+            
+            // High confidence (80+): Auto-log if enabled
+            if (confidence.score >= 80 && appData.settings?.autoLog !== false) {
+                console.log(`📋 Return: High confidence (${confidence.score}), auto-logging ${game?.name || result.gameId}`);
+                logDebugAction('AUTO_LOG', { score: confidence.score, gameId: result.gameId });
+                if (currentGameFlow) currentGameFlow.actionTaken = 'AUTO_LOG';
+                autoLogClipboard(game, result);
+                clearActiveGame();
+                completeGameFlow('AUTO_LOG');
+                return;
+            }
+            
+            // Medium confidence (60-79): Show standard prompt
+            // v1.2.3: Raised threshold from 50 to 60 to reduce false positives
+            if (confidence.score >= 60) {
+                console.log(`📋 Return: Medium confidence (${confidence.score}), showing prompt for ${game?.name || result.gameId}`);
+                logDebugAction('PROMPT_SHOWN', { score: confidence.score, gameId: result.gameId, band: 'medium' });
+                if (currentGameFlow) currentGameFlow.actionTaken = 'PROMPT';
+                promptShownTime = Date.now();
+                trackEvent(ANALYTICS_EVENTS.PROMPT_SHOWN, {
+                    gameId: result.gameId,
+                    promptType: 'clipboard-detected',
+                    confidenceScore: confidence.score
+                });
+                showClipboardPrompt(game, result);
+                clearActiveGame();
+                return;
+            }
+            
+            // Lower-medium confidence (40-59): Show standard prompt but with less urgency
+            // v1.2.3: New band between TOAST and NO ACTION
+            if (confidence.score >= 40) {
+                console.log(`📋 Return: Lower-medium confidence (${confidence.score}), showing prompt for ${game?.name || result.gameId}`);
+                logDebugAction('PROMPT_SHOWN', { score: confidence.score, gameId: result.gameId, band: 'lower-medium' });
+                if (currentGameFlow) currentGameFlow.actionTaken = 'PROMPT';
+                promptShownTime = Date.now();
+                trackEvent(ANALYTICS_EVENTS.PROMPT_SHOWN, {
+                    gameId: result.gameId,
+                    promptType: 'clipboard-detected-low',
+                    confidenceScore: confidence.score
+                });
+                showClipboardPrompt(game, result);
+                clearActiveGame();
+                return;
+            }
+            
+            // Low confidence (25-39): Show subtle toast
+            console.log(`📋 Return: Low confidence (${confidence.score}), showing subtle toast`);
+            showToast(`Tap to log ${game?.icon || '🎮'} ${game?.name || 'game'}`, 'info', 5000);
         }
         
         // iOS-friendly: Show tap-to-log card that will check clipboard diff on tap
+        // v1.2.3: Added game-aware time thresholds and dismiss time decay
         function showTapToLogCardForClipboardCheck() {
             // Don't show if dismissed recently
             if (tapToLogDismissed) return;
@@ -18632,11 +20396,20 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // Don't show if user was away less than 30 seconds
-            // Quick exit = just browsed menu, didn't actually play
+            // v1.2.3: Game-aware time thresholds
             const elapsed = Date.now() - lastLaunchTime;
-            if (elapsed < 30000) {
-                console.log(`📋 iOS: Only away ${Math.round(elapsed/1000)}s, skipping tap-to-log (need 30s+)`);
+            const isQuickGame = QUICK_GAMES.includes(lastLaunchedGame);
+            const minTimeMs = isQuickGame ? 20000 : 30000; // 20s for quick games, 30s for others
+            
+            if (elapsed < minTimeMs) {
+                console.log(`📋 iOS: Only away ${Math.round(elapsed/1000)}s, skipping tap-to-log (need ${minTimeMs/1000}s+ for ${isQuickGame ? 'quick' : 'regular'} game)`);
+                return;
+            }
+            
+            // v1.2.5: Don't show if launch was more than 30 minutes ago (stale)
+            if (elapsed > 30 * 60 * 1000) {
+                console.log('📋 iOS: Launch was >30 min ago (stale), skipping tap-to-log');
+                clearActiveGame();
                 return;
             }
             
@@ -18648,6 +20421,17 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
+            // v1.2.3: Check dismiss time decay - if dismissed >2 hours ago, allow showing again
+            if (returnPromptDismissedFor === lastLaunchedGame && returnPromptDismissedAt) {
+                const hoursSinceDismiss = (Date.now() - returnPromptDismissedAt) / 3600000;
+                if (hoursSinceDismiss < 2) {
+                    console.log(`📋 iOS: Recently dismissed for ${lastLaunchedGame} (${hoursSinceDismiss.toFixed(1)}h ago), skipping`);
+                    return;
+                } else {
+                    console.log(`📋 iOS: Dismiss for ${lastLaunchedGame} has decayed (${hoursSinceDismiss.toFixed(1)}h ago), allowing`);
+                }
+            }
+            
             const card = document.getElementById('tap-to-log-card');
             if (!card) return;
             
@@ -18656,7 +20440,14 @@ Made with ❤️ for puzzle enthusiasts`;
                 document.getElementById('tap-to-log-icon').textContent = game.icon;
                 document.getElementById('tap-to-log-title').textContent = `Log ${game.name}?`;
                 card.style.display = 'block';
-                console.log(`📋 iOS: Showing tap-to-log for ${game.name}`);
+                console.log(`📋 iOS: Showing tap-to-log for ${game.name} (away ${Math.round(elapsed/1000)}s)`);
+                
+                // v1.2.5: Track when shown for analytics
+                promptShownTime = Date.now();
+                trackEvent(ANALYTICS_EVENTS.PROMPT_SHOWN, {
+                    gameId: game.id,
+                    promptType: 'tap-to-log'
+                });
             }
         }
         
@@ -18681,19 +20472,23 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
                 
                 // Check if clipboard changed since we left
-                // Be conservative with UNKNOWN - require matching lastLaunchedGame
+                // v1.2.3: More flexible handling - allow logging detected game even if different
                 let shouldProceed = false;
+                const parsedResult = parseShareText(currentClipboard);
                 
                 if (clipboardOnLeave === CLIPBOARD_UNKNOWN) {
-                    // We couldn't capture on leave - only proceed if result matches launched game
-                    const result = parseShareText(currentClipboard);
-                    if (result && lastLaunchedGame && result.gameId === lastLaunchedGame) {
+                    // We couldn't capture on leave - allow if we found ANY valid game result
+                    if (parsedResult) {
                         shouldProceed = true;
-                        console.log('📋 Tap: UNKNOWN state but found matching result');
+                        if (parsedResult.gameId === lastLaunchedGame) {
+                            console.log('📋 Tap: UNKNOWN state, found matching result');
+                        } else {
+                            console.log(`📋 Tap: UNKNOWN state, found different game (${parsedResult.gameId} vs launched ${lastLaunchedGame})`);
+                        }
                     } else {
                         hideTapToLogCard();
-                        showToast('No new game results found', 'info');
-                        console.log('📋 Tap: UNKNOWN state, no matching result');
+                        showToast('No game results found in clipboard', 'info');
+                        console.log('📋 Tap: UNKNOWN state, no valid result');
                         return;
                     }
                 } else if (clipboardOnLeave !== currentClipboard) {
@@ -18707,8 +20502,8 @@ Made with ❤️ for puzzle enthusiasts`;
                     return;
                 }
                 
-                // Try to parse
-                const result = parseShareText(currentClipboard);
+                // Try to parse (may already have parsed above)
+                const result = parsedResult || parseShareText(currentClipboard);
                 
                 if (result) {
                     const todayHistory = getTodayHistory();
@@ -18721,8 +20516,22 @@ Made with ❤️ for puzzle enthusiasts`;
                         return;
                     }
                     
+                    // v1.2.3: If result is for different game than launched, show which game we're logging
+                    const isMatchingGame = result.gameId === lastLaunchedGame;
+                    if (!isMatchingGame && lastLaunchedGame) {
+                        const launchedGame = GAMES[lastLaunchedGame];
+                        console.log(`📋 Tap: Logging ${game?.name} (launched ${launchedGame?.name})`);
+                    }
+                    
                     // Log it!
-                    if (logGame(result)) {
+                    if (logGame(result, 'prompt')) {
+                        // Track that user accepted via tap-to-log
+                        trackEvent(ANALYTICS_EVENTS.PROMPT_ACCEPTED, {
+                            gameId: result.gameId,
+                            promptType: 'tap-to-log',
+                            action: 'tap-accept'
+                        });
+                        
                         // Mark this clipboard as processed
                         lastProcessedClipboard = currentClipboard;
                         console.log('📋 Tap: Marked clipboard as processed');
@@ -18823,7 +20632,7 @@ Made with ❤️ for puzzle enthusiasts`;
                         
                         // Dismiss return prompt if showing for same game
                         if (lastLaunchedGame === result.gameId) {
-                            dismissReturnPrompt();
+                            dismissReturnPrompt(false); // State transition, not user dismiss
                         }
                         
                         // AUTO-LOG MODE: If enabled, log automatically without prompt
@@ -18848,7 +20657,7 @@ Made with ❤️ for puzzle enthusiasts`;
         
         // NEW: Auto-log detected clipboard content without user interaction
         function autoLogClipboard(game, result) {
-            if (logGame(result)) {
+            if (logGame(result, 'auto')) {
                 // Store for potential undo
                 lastAutoLoggedResult = { game, result, timestamp: Date.now() };
                 
@@ -19048,7 +20857,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 raw: 'Quick capture'
             };
             
-            if (logGame(result)) {
+            if (logGame(result, 'quick-log')) {
                 closeQuickCapture();
                 renderAll();
                 SoundManager.play('success');
@@ -19210,7 +21019,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            if (logGame(result)) {
+            if (logGame(result, 'manual')) {
                 closeLogSheet({ target: { id: 'log-sheet' } });
                 renderAll();
                 
@@ -19253,21 +21062,64 @@ Made with ❤️ for puzzle enthusiasts`;
         
         function acceptClipboard() {
             if (detectedClipboard) {
-                if (logGame(detectedClipboard.result)) {
+                // v1.2.6 DEBUG: Log user acceptance
+                logDebugUserResponse('PROMPT_ACCEPTED', {
+                    gameId: detectedClipboard.result.gameId,
+                    score: detectedClipboard.result.score
+                });
+                if (currentGameFlow) {
+                    currentGameFlow.userResponse = 'ACCEPTED';
+                }
+                
+                // Track that user accepted the prompt
+                trackEvent(ANALYTICS_EVENTS.PROMPT_ACCEPTED, {
+                    gameId: detectedClipboard.result.gameId,
+                    promptType: 'clipboard-prompt',
+                    action: 'accept'
+                });
+                
+                if (logGame(detectedClipboard.result, 'prompt')) {
                     const game = GAMES[detectedClipboard.result.gameId];
                     renderAll();
                     showToast(`${game?.icon || '🎮'} Logged!`, 'success');
+                    completeGameFlow('PROMPT_ACCEPTED');
                 }
             }
-            dismissClipboard();
+            dismissClipboard(false); // Don't track dismiss - user accepted
         }
         
-        function dismissClipboard() {
+        function dismissClipboard(trackDismiss = true) {
             const prompt = document.getElementById('clipboard-prompt');
             if (prompt) {
                 prompt.style.display = 'none';
                 prompt.classList.remove('visible');
             }
+            
+            // Only track dismiss and set state when it's a real user dismiss
+            if (trackDismiss) {
+                // v1.2.6 DEBUG: Log user dismissal
+                logDebugUserResponse('PROMPT_DISMISSED', {
+                    gameId: detectedClipboard?.result?.gameId || lastLaunchedGame
+                });
+                if (currentGameFlow) {
+                    currentGameFlow.userResponse = 'DISMISSED';
+                }
+                completeGameFlow('PROMPT_DISMISSED');
+                
+                // v1.2.5: Track dismiss event and set state (must capture before nulling)
+                const dismissedGameId = detectedClipboard?.result?.gameId || lastLaunchedGame;
+                if (dismissedGameId) {
+                    returnPromptDismissedFor = dismissedGameId;
+                    returnPromptDismissedAt = Date.now();
+                    
+                    trackEvent(ANALYTICS_EVENTS.PROMPT_DISMISSED, {
+                        gameId: dismissedGameId,
+                        promptType: 'clipboard-prompt',
+                        timeVisible: promptShownTime ? Date.now() - promptShownTime : null
+                    });
+                }
+            }
+            
             detectedClipboard = null;
         }
         
@@ -21452,7 +23304,7 @@ Made with ❤️ for puzzle enthusiasts`;
         
         function acceptShareTarget() {
             if (detectedClipboard) {
-                if (logGame(detectedClipboard.result)) {
+                if (logGame(detectedClipboard.result, 'prompt')) {
                     const game = GAMES[detectedClipboard.result.gameId];
                     renderAll();
                     showSuccessModal(game, detectedClipboard.result);
@@ -23186,7 +25038,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.0.29 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.6 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
