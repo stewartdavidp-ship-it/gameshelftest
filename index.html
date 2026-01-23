@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.7.2">
+    <meta name="version" content="1.2.7.3">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7363,7 +7363,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.7.2</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.7.3</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7608,7 +7608,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.7.2</div>
+            <div class="settings-version">Game Shelf PWA v1.2.7.3</div>
         </div>
     </div>
     
@@ -11573,7 +11573,7 @@ Wordle 1,234 3/6
         }
         
         // Check if test mode is enabled
-        // v1.2.7.2: Auto-enable when deployed to gameshelftest/ repo
+        // v1.2.7.3: Auto-enable when deployed to gameshelftest/ repo
         function isTestModeEnabled() {
             // Auto-enable when running from test repo (can't be toggled off)
             if (window.location.pathname.toLowerCase().includes('gameshelftest')) {
@@ -13706,14 +13706,40 @@ Wordle 1,234 3/6
         }
         
         // Quick log for generic games (not NYT)
+        // v1.2.7.3: Show confirmation instead of instant log
         function quickLogGeneric(gameId) {
+            const game = GAMES[gameId];
+            if (!game) return;
+            
+            // Show confirmation in the options area
+            const container = document.getElementById('quick-log-options');
+            if (!container) return;
+            
+            container.innerHTML = `
+                <div class="quick-log-options-title">${game.icon} ${game.name}</div>
+                <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+                    Log as played today?
+                </div>
+                <div class="quick-log-scores">
+                    <button class="quick-score-btn" style="flex: 1; background: var(--accent-green);" onclick="confirmQuickLogGeneric('${gameId}', true)">✓ Won</button>
+                    <button class="quick-score-btn fail" style="flex: 1;" onclick="confirmQuickLogGeneric('${gameId}', false)">✗ Lost</button>
+                </div>
+                <button onclick="document.getElementById('quick-log-options').style.display='none'" 
+                    style="margin-top: 10px; padding: 8px; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); width: 100%; cursor: pointer;">
+                    Cancel
+                </button>
+            `;
+            container.style.display = 'block';
+        }
+        
+        function confirmQuickLogGeneric(gameId, won) {
             const game = GAMES[gameId];
             if (!game) return;
             
             const result = {
                 gameId: gameId,
-                score: '✓',
-                won: true,
+                score: won ? '✓' : '✗',
+                won: won,
                 raw: 'Quick log'
             };
             
@@ -14403,7 +14429,7 @@ Wordle 1,234 3/6
             const toggle = document.getElementById('test-mode-toggle');
             if (toggle) {
                 toggle.checked = isTestModeEnabled();
-                // v1.2.7.2: Disable toggle when auto-enabled from gameshelftest/
+                // v1.2.7.3: Disable toggle when auto-enabled from gameshelftest/
                 if (isTestModeAutoEnabled()) {
                     toggle.disabled = true;
                     toggle.parentElement.style.opacity = '0.6';
@@ -15583,7 +15609,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.7.2';
+            const version = '1.2.7.3';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18173,7 +18199,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.7.2'
+                    appVersion: '1.2.7.3'
                 }
             };
             
@@ -18445,7 +18471,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 signals.launchedGame = context.lastLaunchedGame;
             }
             
-            // v1.2.7.2: iOS score floor - ensure valid matches always get a chance
+            // v1.2.7.3: iOS score floor - ensure valid matches always get a chance
             // iOS users face unavoidable clipboardUnknown penalty due to gesture requirement
             // When they have a valid, matching result, don't let penalty stacking block capture
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -19004,7 +19030,7 @@ Made with ❤️ for puzzle enthusiasts`;
         function showPrelaunchReminder(game, launchUrl) {
             const reminder = document.getElementById('prelaunch-reminder');
             
-            // v1.2.7.2: Open URL IMMEDIATELY to preserve tap gesture for iOS
+            // v1.2.7.3: Open URL IMMEDIATELY to preserve tap gesture for iOS
             // iOS blocks window.open if called after timeout
             openGameUrl(launchUrl);
             
@@ -20253,19 +20279,34 @@ Made with ❤️ for puzzle enthusiasts`;
         
         // ============ LOG SHEET ============
         function openLogSheet() {
+            // v1.2.7.3: Clear any previous content for fresh start
+            const input = document.getElementById('log-input');
+            if (input) input.value = '';
+            const preview = document.getElementById('parse-preview');
+            if (preview) preview.classList.remove('visible');
+            const logBtn = document.getElementById('log-btn');
+            if (logBtn) {
+                logBtn.disabled = false;
+                logBtn.textContent = 'Log Game';
+            }
+            const bulkBtn = document.getElementById('bulk-log-btn');
+            if (bulkBtn) bulkBtn.style.display = 'none';
+            
             document.getElementById('log-sheet').classList.add('active');
             // Reset to paste tab
             switchLogTab('paste');
             renderQuickLogButtons();
             
-            // v1.2.7.2: Auto-paste clipboard if it contains a game result
+            // v1.2.7.3: Auto-paste clipboard if it contains a game result
+            // (skipped on iOS due to permission popup)
             autoPasteClipboard();
             
             document.getElementById('log-input').focus();
         }
         
-        // v1.2.7.2: Auto-paste clipboard content into log sheet
+        // v1.2.7.3: Auto-paste clipboard content into log sheet
         // Skip on iOS - it shows a disruptive permission popup
+        // Skip if game already logged - avoids confusing "Already Logged" message
         async function autoPasteClipboard() {
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             if (isIOS) {
@@ -20281,6 +20322,13 @@ Made with ❤️ for puzzle enthusiasts`;
                 
                 const result = parseShareText(text);
                 if (result) {
+                    // Don't auto-paste if already logged today
+                    const todayHistory = getTodayHistory();
+                    if (todayHistory[result.gameId]) {
+                        console.log('📋 Skipping auto-paste - game already logged');
+                        return;
+                    }
+                    
                     const input = document.getElementById('log-input');
                     input.value = text;
                     parseLogInput(); // Show preview
@@ -20337,7 +20385,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 
                 document.getElementById('parse-game-name').textContent = previewText;
                 
-                // v1.2.7.2: Show bulk button only when 2+ games detected
+                // v1.2.7.3: Show bulk button only when 2+ games detected
                 if (bulkBtn) {
                     if (results.length > 1) {
                         const unlogged = results.filter(r => !todayHistory[r.gameId]).length;
@@ -20406,7 +20454,7 @@ Made with ❤️ for puzzle enthusiasts`;
             }
             
             if (logGame(result, 'manual')) {
-                // v1.2.7.2: Mark clipboard as processed to prevent duplicate prompts
+                // v1.2.7.3: Mark clipboard as processed to prevent duplicate prompts
                 lastProcessedClipboard = input;
                 detectedClipboard = null;
                 
@@ -24385,7 +24433,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.7.2 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.7.3 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
