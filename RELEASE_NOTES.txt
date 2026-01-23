@@ -1,19 +1,16 @@
-Game Shelf v1.2.0.28
+Game Shelf v1.2.0.29
 ====================
 Release Date: January 23, 2025
 
-NEW PWA APP ICON
-----------------
-Added proper PWA icons featuring the Game Shelf logo:
-- Two interlocking puzzle pieces (G + S)
-- Blue gradient for G piece
-- Purple gradient for S piece  
-- Dark background matching app theme
-- Includes maskable icons for Android adaptive icons
-
-Icon sizes included: 72, 96, 128, 144, 152, 192, 384, 512
-Plus maskable versions at 192 and 512
-
-Also includes v1.2.0.27 features:
+Includes:
+- PWA icons with G+S puzzle piece branding
+- apple-touch-icon.png for iOS
 - Deep link support (?tab=, ?game=, ?play=)
 - PWA shortcuts for Log, Share, Play Wordle
+
+UAT MODE DEFAULT ON
+-------------------
+Changed UAT mode to be ON by default for new users.
+- Feedback button visible by default
+- UAT badge shows in header
+- Users can turn it off in settings if desired
