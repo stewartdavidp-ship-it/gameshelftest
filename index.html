@@ -8588,28 +8588,26 @@
             
             <!-- Tabs -->
             <div class="log-tabs">
-                <button class="log-tab active" onclick="switchLogTab('paste')">📋 Paste</button>
-                <button class="log-tab" onclick="switchLogTab('quick')">⚡ Quick Log</button>
+                <button class="log-tab active" onclick="switchLogTab('paste')">📋 From Share</button>
+                <button class="log-tab" onclick="switchLogTab('quick')">✏️ Manual</button>
             </div>
             
             <!-- Paste Tab -->
             <div class="log-tab-content" id="log-tab-paste">
-                <textarea class="log-textarea" id="log-input" placeholder="Paste your game results here...
+                <textarea class="log-textarea" id="log-input" placeholder="Paste your game result here...
 
 Example:
 Wordle 1,234 3/6
 ⬛⬛🟨⬛⬛
 🟨🟩⬛⬛⬛
-🟩🟩🟩🟩🟩
-
-Tip: You can paste multiple games at once!" oninput="parseLogInput()"></textarea>
+🟩🟩🟩🟩🟩" oninput="parseLogInput()"></textarea>
                 <div class="parse-preview" id="parse-preview">
                     <div class="parse-game-name" id="parse-game-name"></div>
                     <div class="parse-score" id="parse-score"></div>
                 </div>
                 <div class="log-buttons">
                     <button class="log-btn" id="log-btn" onclick="submitLog()">Log Game</button>
-                    <button class="log-btn-secondary" onclick="bulkImport()">Log All Found</button>
+                    <button class="log-btn-secondary" id="bulk-log-btn" onclick="bulkImport()" style="display: none;">Log All Found</button>
                 </div>
             </div>
             
@@ -20267,7 +20265,14 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         // v1.2.7.2: Auto-paste clipboard content into log sheet
+        // Skip on iOS - it shows a disruptive permission popup
         async function autoPasteClipboard() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS) {
+                console.log('📋 Skipping auto-paste on iOS (permission popup)');
+                return;
+            }
+            
             try {
                 if (!navigator.clipboard || !navigator.clipboard.readText) return;
                 
@@ -20318,6 +20323,7 @@ Made with ❤️ for puzzle enthusiasts`;
             const results = parseMultipleGames(input);
             const preview = document.getElementById('parse-preview');
             const todayHistory = getTodayHistory();
+            const bulkBtn = document.getElementById('bulk-log-btn');
             
             if (results.length > 0) {
                 const result = results[0];
@@ -20330,6 +20336,17 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
                 
                 document.getElementById('parse-game-name').textContent = previewText;
+                
+                // v1.2.7.2: Show bulk button only when 2+ games detected
+                if (bulkBtn) {
+                    if (results.length > 1) {
+                        const unlogged = results.filter(r => !todayHistory[r.gameId]).length;
+                        bulkBtn.textContent = `Log All (${unlogged} games)`;
+                        bulkBtn.style.display = unlogged > 0 ? 'block' : 'none';
+                    } else {
+                        bulkBtn.style.display = 'none';
+                    }
+                }
                 
                 // Show different message if already logged
                 if (alreadyLogged) {
@@ -20361,6 +20378,10 @@ Made with ❤️ for puzzle enthusiasts`;
                 if (logBtn) {
                     logBtn.disabled = false;
                     logBtn.textContent = 'Log Game';
+                }
+                // Hide bulk button
+                if (bulkBtn) {
+                    bulkBtn.style.display = 'none';
                 }
             }
         }
