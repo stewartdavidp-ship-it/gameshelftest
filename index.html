@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.7.6">
+    <meta name="version" content="1.2.8">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7691,10 +7691,19 @@
             </div>
             
             <div class="primary-action">
-                <button class="big-log-button" onclick="openLogSheet()">
+                <button class="big-log-button" 
+                    onmousedown="handleRecordButtonDown()" 
+                    onmouseup="handleRecordButtonUp()" 
+                    onmouseleave="handleRecordButtonUp()"
+                    ontouchstart="handleRecordButtonDown()" 
+                    ontouchend="handleRecordButtonUp()"
+                    ontouchcancel="handleRecordButtonUp()">
                     <span style="font-size: 1.3rem;">📋</span>
-                    <span>Log Today's Games</span>
+                    <span>Record Game</span>
                 </button>
+                <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 6px;">
+                    Tap to paste from clipboard • Hold for manual entry
+                </div>
                 <div class="quick-games" id="quick-games">
                     <!-- Populated by JS -->
                 </div>
@@ -8630,6 +8639,42 @@ Wordle 1,234 3/6
                 </div>
                 <div id="quick-log-options" class="quick-log-options" style="display: none;">
                     <!-- Score options appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Score Conflict Modal (v1.2.8) -->
+    <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
+            <div class="bottom-sheet-handle"></div>
+            <div class="bottom-sheet-header">
+                <span id="conflict-game-icon">🎮</span>
+                <span id="conflict-game-name">Game</span>
+                <span style="color: var(--accent-orange);"> - Score Conflict</span>
+            </div>
+            <div style="padding: 20px; text-align: center;">
+                <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                    You already logged a different score today
+                </p>
+                <div style="display: flex; justify-content: center; gap: 24px; margin-bottom: 24px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Logged</div>
+                        <div id="conflict-old-score" style="font-size: 1.5rem; font-weight: 700; color: var(--text-secondary);">4/6</div>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--text-muted); align-self: center;">→</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Clipboard</div>
+                        <div id="conflict-new-score" style="font-size: 1.5rem; font-weight: 700; color: var(--accent-purple);">3/6</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="resolveScoreConflict('keep')" style="flex: 1; padding: 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary); font-size: 1rem; cursor: pointer;">
+                        Keep Original
+                    </button>
+                    <button onclick="resolveScoreConflict('replace')" style="flex: 1; padding: 14px; border-radius: 10px; border: none; background: var(--accent-purple); color: white; font-size: 1rem; font-weight: 600; cursor: pointer;">
+                        Replace
+                    </button>
                 </div>
             </div>
         </div>
@@ -20426,6 +20471,184 @@ Made with ❤️ for puzzle enthusiasts`;
         function showTapToPasteButton() {
             const btn = document.getElementById('tap-to-paste-btn');
             if (btn) btn.style.display = 'flex';
+        }
+        
+        // ============ STREAMLINED RECORD GAME (v1.2.8) ============
+        // Single-button clipboard capture with auto-detection
+        async function handleRecordGame() {
+            try {
+                // Check clipboard API availability
+                if (!navigator.clipboard || !navigator.clipboard.readText) {
+                    // Fallback to manual entry
+                    openLogSheet();
+                    return;
+                }
+                
+                // Read clipboard
+                const text = await navigator.clipboard.readText();
+                
+                if (!text || text.trim().length === 0) {
+                    showToast('📋 Nothing to paste - copy results first', 'info');
+                    return;
+                }
+                
+                // Parse results from clipboard
+                const results = parseMultipleGames(text);
+                
+                if (results.length === 0) {
+                    // No game detected - show toast and offer manual
+                    showToast('❓ Couldn\'t recognize game content', 'info');
+                    setTimeout(() => openLogSheet(), 500);
+                    return;
+                }
+                
+                // Process the results
+                const todayHistory = getTodayHistory();
+                const outcomes = [];
+                
+                for (const result of results) {
+                    const gameInfo = GAMES[result.gameId];
+                    const existing = todayHistory[result.gameId];
+                    
+                    if (existing) {
+                        // Already logged today
+                        if (existing.score === result.score) {
+                            outcomes.push({ 
+                                gameId: result.gameId, 
+                                action: 'skip', 
+                                reason: 'duplicate' 
+                            });
+                        } else {
+                            // Score conflict - save for modal
+                            outcomes.push({ 
+                                gameId: result.gameId, 
+                                action: 'conflict', 
+                                existing: existing.score, 
+                                new: result.score,
+                                result: result
+                            });
+                        }
+                    } else {
+                        // New result - auto-log
+                        if (logGame(result, 'record-game')) {
+                            outcomes.push({ 
+                                gameId: result.gameId, 
+                                action: 'logged', 
+                                score: result.score,
+                                icon: gameInfo?.icon || '🎮',
+                                name: gameInfo?.name || result.gameId
+                            });
+                        }
+                    }
+                }
+                
+                // Handle conflicts first (show modal for first one)
+                const conflicts = outcomes.filter(o => o.action === 'conflict');
+                if (conflicts.length > 0) {
+                    showScoreConflictModal(conflicts[0]);
+                    return;
+                }
+                
+                // Show summary toast
+                const logged = outcomes.filter(o => o.action === 'logged');
+                const skipped = outcomes.filter(o => o.action === 'skip');
+                
+                if (logged.length === 1) {
+                    // Single game logged
+                    const g = logged[0];
+                    showToast(`✓ ${g.icon} ${g.name} ${g.score}`, 'success');
+                    renderAll();
+                } else if (logged.length > 1) {
+                    // Multiple games logged
+                    showToast(`✓ ${logged.length} games logged`, 'success');
+                    renderAll();
+                } else if (skipped.length > 0) {
+                    // All already recorded
+                    showToast('✓ Already recorded', 'info');
+                } else {
+                    showToast('No new results to log', 'info');
+                }
+                
+            } catch (e) {
+                console.log('📋 Record game error:', e.message);
+                if (e.name === 'NotAllowedError') {
+                    showToast('📋 Clipboard access denied', 'error');
+                } else {
+                    showToast('📋 Could not read clipboard', 'error');
+                }
+                // Offer fallback
+                setTimeout(() => openLogSheet(), 800);
+            }
+        }
+        
+        // Show conflict modal when logged score differs from clipboard
+        function showScoreConflictModal(conflict) {
+            const gameInfo = GAMES[conflict.gameId];
+            const modal = document.getElementById('score-conflict-modal');
+            if (!modal) {
+                // Fallback if modal doesn't exist
+                console.warn('Score conflict modal not found');
+                showToast(`${gameInfo?.name}: already logged as ${conflict.existing}`, 'info');
+                return;
+            }
+            
+            document.getElementById('conflict-game-icon').textContent = gameInfo?.icon || '🎮';
+            document.getElementById('conflict-game-name').textContent = gameInfo?.name || conflict.gameId;
+            document.getElementById('conflict-old-score').textContent = conflict.existing;
+            document.getElementById('conflict-new-score').textContent = conflict.new;
+            
+            // Store conflict data for resolution
+            modal.dataset.gameId = conflict.gameId;
+            modal.dataset.newScore = JSON.stringify(conflict.result);
+            
+            modal.classList.add('active');
+        }
+        
+        function resolveScoreConflict(action) {
+            const modal = document.getElementById('score-conflict-modal');
+            if (!modal) return;
+            
+            if (action === 'replace') {
+                const gameId = modal.dataset.gameId;
+                const result = JSON.parse(modal.dataset.newScore);
+                
+                // Update today's history with new score
+                const today = getTodayString();
+                if (appData.history[today] && appData.history[today][gameId]) {
+                    appData.history[today][gameId] = {
+                        score: result.score,
+                        won: result.won,
+                        numericScore: result.numericScore || 0,
+                        time: new Date().toISOString()
+                    };
+                    saveData();
+                    syncToCloud();
+                    renderAll();
+                    
+                    const gameInfo = GAMES[gameId];
+                    showToast(`✓ Updated to ${result.score}`, 'success');
+                }
+            } else {
+                showToast('✓ Kept original', 'info');
+            }
+            
+            modal.classList.remove('active');
+        }
+        
+        // Long-press handler for manual entry fallback
+        let recordButtonTimer = null;
+        function handleRecordButtonDown() {
+            recordButtonTimer = setTimeout(() => {
+                openLogSheet();
+                recordButtonTimer = null;
+            }, 600);
+        }
+        function handleRecordButtonUp() {
+            if (recordButtonTimer) {
+                clearTimeout(recordButtonTimer);
+                recordButtonTimer = null;
+                handleRecordGame();
+            }
         }
         
         function closeLogSheet(e) {
