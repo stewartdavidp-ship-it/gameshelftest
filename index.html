@@ -19321,6 +19321,11 @@ Made with ❤️ for puzzle enthusiasts`;
             if (sheet) sheet.classList.remove('active');
         }
         
+        // Alias for convenience
+        function showGenericSheet(options) {
+            showBottomSheet(options.title, options.content);
+        }
+        
         function selectLaunchPref(pref) {
             if (!pendingLaunchGame) return;
             
