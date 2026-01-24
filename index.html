@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.8">
+    <meta name="version" content="1.2.9">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7368,7 +7368,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.7.6</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.9</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7613,7 +7613,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.7.6</div>
+            <div class="settings-version">Game Shelf PWA v1.2.9</div>
         </div>
     </div>
     
@@ -8644,7 +8644,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.8) -->
+    <!-- Score Conflict Modal (v1.2.9) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -8674,6 +8674,47 @@ Wordle 1,234 3/6
                     </button>
                     <button onclick="resolveScoreConflict('replace')" style="flex: 1; padding: 14px; border-radius: 10px; border: none; background: var(--accent-purple); color: white; font-size: 1rem; font-weight: 600; cursor: pointer;">
                         Replace
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Streak Conflict Modal (v1.2.9 Phase 2) -->
+    <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
+            <div class="bottom-sheet-handle"></div>
+            <div class="bottom-sheet-header">
+                <span id="streak-conflict-game-icon">🎮</span>
+                <span id="streak-conflict-game-name">Game</span>
+                <span style="color: var(--accent-orange);"> - Streak Mismatch</span>
+            </div>
+            <div style="padding: 20px; text-align: center;">
+                <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                    Your stats show a lower streak than Game Shelf
+                </p>
+                <div style="display: flex; justify-content: center; gap: 24px; margin-bottom: 24px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Game Shelf</div>
+                        <div id="streak-conflict-gs-value" style="font-size: 2rem; font-weight: 700; color: var(--accent-green);">52</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">day streak</div>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--text-muted); align-self: center;">vs</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Stats Page</div>
+                        <div id="streak-conflict-stats-value" style="font-size: 2rem; font-weight: 700; color: var(--accent-orange);">12</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">day streak</div>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">
+                    This could mean your streak was broken, or the screenshot is from an older session.
+                </p>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="resolveStreakConflict('keep')" style="flex: 1; padding: 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary); font-size: 1rem; cursor: pointer;">
+                        Keep Higher
+                    </button>
+                    <button onclick="resolveStreakConflict('reset')" style="flex: 1; padding: 14px; border-radius: 10px; border: none; background: var(--accent-orange); color: white; font-size: 1rem; font-weight: 600; cursor: pointer;">
+                        Reset to Stats
                     </button>
                 </div>
             </div>
@@ -15686,7 +15727,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.7.6';
+            const version = '1.2.9';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18276,7 +18317,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.7.6'
+                    appVersion: '1.2.9'
                 }
             };
             
@@ -20473,101 +20514,63 @@ Made with ❤️ for puzzle enthusiasts`;
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.8) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.9) ============
         // Single-button clipboard capture with auto-detection
+        // Phase 2: Supports both share text AND stats screenshots via OCR
+        
+        let ocrWorker = null; // Tesseract worker instance
+        
         async function handleRecordGame() {
             try {
-                // Check clipboard API availability
-                if (!navigator.clipboard || !navigator.clipboard.readText) {
-                    // Fallback to manual entry
-                    openLogSheet();
-                    return;
+                // Try the modern clipboard API first (supports images)
+                if (navigator.clipboard && navigator.clipboard.read) {
+                    try {
+                        const clipboardItems = await navigator.clipboard.read();
+                        
+                        for (const item of clipboardItems) {
+                            // Check for image first
+                            if (item.types.includes('image/png') || item.types.includes('image/jpeg')) {
+                                const imageType = item.types.find(t => t.startsWith('image/'));
+                                const blob = await item.getType(imageType);
+                                showToast('📷 Reading screenshot...', 'info');
+                                await processScreenshot(blob);
+                                return;
+                            }
+                            
+                            // Check for text
+                            if (item.types.includes('text/plain')) {
+                                const blob = await item.getType('text/plain');
+                                const text = await blob.text();
+                                if (text && text.trim().length > 0) {
+                                    await processShareText(text);
+                                    return;
+                                }
+                            }
+                        }
+                        
+                        // No usable content found
+                        showToast('📋 Nothing to paste - copy results or screenshot', 'info');
+                        return;
+                        
+                    } catch (readErr) {
+                        // clipboard.read() failed, try fallback to readText
+                        console.log('clipboard.read() failed, trying readText:', readErr.message);
+                    }
                 }
                 
-                // Read clipboard
-                const text = await navigator.clipboard.readText();
-                
-                if (!text || text.trim().length === 0) {
+                // Fallback to text-only clipboard
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    const text = await navigator.clipboard.readText();
+                    if (text && text.trim().length > 0) {
+                        await processShareText(text);
+                        return;
+                    }
                     showToast('📋 Nothing to paste - copy results first', 'info');
                     return;
                 }
                 
-                // Parse results from clipboard
-                const results = parseMultipleGames(text);
-                
-                if (results.length === 0) {
-                    // No game detected - show toast and offer manual
-                    showToast('❓ Couldn\'t recognize game content', 'info');
-                    setTimeout(() => openLogSheet(), 500);
-                    return;
-                }
-                
-                // Process the results
-                const todayHistory = getTodayHistory();
-                const outcomes = [];
-                
-                for (const result of results) {
-                    const gameInfo = GAMES[result.gameId];
-                    const existing = todayHistory[result.gameId];
-                    
-                    if (existing) {
-                        // Already logged today
-                        if (existing.score === result.score) {
-                            outcomes.push({ 
-                                gameId: result.gameId, 
-                                action: 'skip', 
-                                reason: 'duplicate' 
-                            });
-                        } else {
-                            // Score conflict - save for modal
-                            outcomes.push({ 
-                                gameId: result.gameId, 
-                                action: 'conflict', 
-                                existing: existing.score, 
-                                new: result.score,
-                                result: result
-                            });
-                        }
-                    } else {
-                        // New result - auto-log
-                        if (logGame(result, 'record-game')) {
-                            outcomes.push({ 
-                                gameId: result.gameId, 
-                                action: 'logged', 
-                                score: result.score,
-                                icon: gameInfo?.icon || '🎮',
-                                name: gameInfo?.name || result.gameId
-                            });
-                        }
-                    }
-                }
-                
-                // Handle conflicts first (show modal for first one)
-                const conflicts = outcomes.filter(o => o.action === 'conflict');
-                if (conflicts.length > 0) {
-                    showScoreConflictModal(conflicts[0]);
-                    return;
-                }
-                
-                // Show summary toast
-                const logged = outcomes.filter(o => o.action === 'logged');
-                const skipped = outcomes.filter(o => o.action === 'skip');
-                
-                if (logged.length === 1) {
-                    // Single game logged
-                    const g = logged[0];
-                    showToast(`✓ ${g.icon} ${g.name} ${g.score}`, 'success');
-                    renderAll();
-                } else if (logged.length > 1) {
-                    // Multiple games logged
-                    showToast(`✓ ${logged.length} games logged`, 'success');
-                    renderAll();
-                } else if (skipped.length > 0) {
-                    // All already recorded
-                    showToast('✓ Already recorded', 'info');
-                } else {
-                    showToast('No new results to log', 'info');
-                }
+                // No clipboard API available
+                openLogSheet();
                 
             } catch (e) {
                 console.log('📋 Record game error:', e.message);
@@ -20576,8 +20579,396 @@ Made with ❤️ for puzzle enthusiasts`;
                 } else {
                     showToast('📋 Could not read clipboard', 'error');
                 }
-                // Offer fallback
                 setTimeout(() => openLogSheet(), 800);
+            }
+        }
+        
+        // Process share text from clipboard
+        async function processShareText(text) {
+            const results = parseMultipleGames(text);
+            
+            if (results.length === 0) {
+                showToast('❓ Couldn\'t recognize game content', 'info');
+                setTimeout(() => openLogSheet(), 500);
+                return;
+            }
+            
+            const todayHistory = getTodayHistory();
+            const outcomes = [];
+            
+            for (const result of results) {
+                const gameInfo = GAMES[result.gameId];
+                const existing = todayHistory[result.gameId];
+                
+                if (existing) {
+                    if (existing.score === result.score) {
+                        outcomes.push({ gameId: result.gameId, action: 'skip', reason: 'duplicate' });
+                    } else {
+                        outcomes.push({ 
+                            gameId: result.gameId, 
+                            action: 'conflict', 
+                            existing: existing.score, 
+                            new: result.score,
+                            result: result
+                        });
+                    }
+                } else {
+                    if (logGame(result, 'record-game')) {
+                        outcomes.push({ 
+                            gameId: result.gameId, 
+                            action: 'logged', 
+                            score: result.score,
+                            icon: gameInfo?.icon || '🎮',
+                            name: gameInfo?.name || result.gameId
+                        });
+                    }
+                }
+            }
+            
+            // Handle conflicts
+            const conflicts = outcomes.filter(o => o.action === 'conflict');
+            if (conflicts.length > 0) {
+                showScoreConflictModal(conflicts[0]);
+                return;
+            }
+            
+            // Show summary
+            const logged = outcomes.filter(o => o.action === 'logged');
+            const skipped = outcomes.filter(o => o.action === 'skip');
+            
+            if (logged.length === 1) {
+                const g = logged[0];
+                showToast(`✓ ${g.icon} ${g.name} ${g.score}`, 'success');
+                renderAll();
+            } else if (logged.length > 1) {
+                showToast(`✓ ${logged.length} games logged`, 'success');
+                renderAll();
+            } else if (skipped.length > 0) {
+                showToast('✓ Already recorded', 'info');
+            } else {
+                showToast('No new results to log', 'info');
+            }
+        }
+        
+        // ============ PHASE 2: OCR STATS IMPORT ============
+        
+        // Process screenshot from clipboard
+        async function processScreenshot(blob) {
+            try {
+                // Initialize Tesseract worker if needed
+                if (!ocrWorker) {
+                    showToast('🔄 Loading OCR engine...', 'info');
+                    ocrWorker = await Tesseract.createWorker('eng');
+                }
+                
+                // Run OCR
+                const imageUrl = URL.createObjectURL(blob);
+                const { data } = await ocrWorker.recognize(imageUrl);
+                URL.revokeObjectURL(imageUrl);
+                
+                const ocrText = data.text;
+                console.log('📷 OCR Result:', ocrText);
+                
+                if (!ocrText || ocrText.trim().length < 10) {
+                    showToast('📷 Couldn\'t read text from image', 'error');
+                    return;
+                }
+                
+                // Try to parse as stats
+                const stats = parseStatsFromOCR(ocrText);
+                
+                if (stats) {
+                    await processStatsImport(stats);
+                    return;
+                }
+                
+                // Maybe it's a share result screenshot? Try game parsers
+                const results = parseMultipleGames(ocrText);
+                if (results.length > 0) {
+                    await processShareText(ocrText);
+                    return;
+                }
+                
+                showToast('📷 Couldn\'t recognize stats or results', 'info');
+                console.log('OCR text that failed to parse:', ocrText);
+                
+            } catch (e) {
+                console.error('OCR error:', e);
+                showToast('📷 Error reading screenshot', 'error');
+            }
+        }
+        
+        // Parse stats from OCR text
+        function parseStatsFromOCR(text) {
+            // Normalize whitespace
+            const normalized = text.replace(/\s+/g, ' ').trim();
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            
+            console.log('📊 Parsing stats from:', normalized.substring(0, 200));
+            
+            // Detect game type by keywords
+            let gameType = null;
+            
+            if (/GUESS\s*DISTRIBUTION/i.test(normalized) || 
+                (/Statistics/i.test(normalized) && /Played/i.test(normalized) && /Streak/i.test(normalized) && !/(MISTAKE|Perfect\s*Puzzles)/i.test(normalized))) {
+                gameType = 'wordle';
+            } else if (/MISTAKE\s*DISTRIBUTION/i.test(normalized) || /Perfect\s*Puzzles/i.test(normalized)) {
+                gameType = 'connections';
+            } else if (/Tango\s*#?\d+/i.test(normalized)) {
+                gameType = 'tango';
+            } else if (/Queens\s*#?\d+/i.test(normalized)) {
+                gameType = 'queens';
+            } else if (/Pinpoint\s*#?\d+/i.test(normalized)) {
+                gameType = 'pinpoint';
+            } else if (/Crossclimb\s*#?\d+/i.test(normalized)) {
+                gameType = 'crossclimb';
+            }
+            
+            if (!gameType) {
+                console.log('📊 Could not identify game type from OCR');
+                return null;
+            }
+            
+            console.log('📊 Detected game type:', gameType);
+            
+            // Extract numbers - look for the stats row pattern
+            // Stats pages typically have: [large number] [percentage] [streak] [max streak]
+            // Often with labels below: Played/Completed, Win %, Current Streak, Max Streak
+            
+            // Find all numbers in the text
+            const allNumbers = normalized.match(/\d+/g)?.map(n => parseInt(n)) || [];
+            console.log('📊 Found numbers:', allNumbers);
+            
+            // Try to find the 4-stat pattern
+            // Look for sequences like: "1361 98 14 115" or similar
+            let stats = null;
+            
+            // Method 1: Look for labeled values
+            const playedMatch = normalized.match(/(\d{1,5})\s*(?:Played|Completed|Plays)/i);
+            const winMatch = normalized.match(/(\d{1,3})\s*(?:Win\s*%|%)/i);
+            const currentStreakMatch = normalized.match(/(\d{1,4})\s*(?:Current|Day)?\s*Streak/i) || 
+                                       normalized.match(/Current\s*Streak\s*(\d{1,4})/i);
+            const maxStreakMatch = normalized.match(/(\d{1,4})\s*Max\s*(?:Streak)?/i) ||
+                                   normalized.match(/Max\s*(?:Streak)?\s*(\d{1,4})/i);
+            
+            // Method 2: Look for 4 numbers in a row at the start (common stats layout)
+            // Pattern: Stats pages often show 4 numbers on one line
+            const fourNumberPattern = normalized.match(/(\d{1,5})\s+(\d{1,3})\s+(\d{1,4})\s+(\d{1,4})/);
+            
+            if (playedMatch || currentStreakMatch) {
+                stats = {
+                    type: 'stats',
+                    game: gameType,
+                    gamesPlayed: playedMatch ? parseInt(playedMatch[1]) : null,
+                    winPercent: winMatch ? parseInt(winMatch[1]) : null,
+                    currentStreak: currentStreakMatch ? parseInt(currentStreakMatch[1]) : null,
+                    maxStreak: maxStreakMatch ? parseInt(maxStreakMatch[1]) : null
+                };
+            } else if (fourNumberPattern) {
+                stats = {
+                    type: 'stats',
+                    game: gameType,
+                    gamesPlayed: parseInt(fourNumberPattern[1]),
+                    winPercent: parseInt(fourNumberPattern[2]),
+                    currentStreak: parseInt(fourNumberPattern[3]),
+                    maxStreak: parseInt(fourNumberPattern[4])
+                };
+            }
+            
+            // Validate - at minimum need game and current streak
+            if (stats && stats.currentStreak !== null) {
+                console.log('📊 Parsed stats:', stats);
+                return stats;
+            }
+            
+            // Fallback: Try to find just streak numbers
+            const streakOnly = normalized.match(/(\d{1,4})\s*(?:day)?\s*(?:win\s*)?streak/i);
+            if (streakOnly) {
+                return {
+                    type: 'stats',
+                    game: gameType,
+                    gamesPlayed: null,
+                    winPercent: null,
+                    currentStreak: parseInt(streakOnly[1]),
+                    maxStreak: null
+                };
+            }
+            
+            console.log('📊 Could not extract stats values');
+            return null;
+        }
+        
+        // Process imported stats - compare with GS and update
+        async function processStatsImport(stats) {
+            const { game, currentStreak, maxStreak, gamesPlayed, winPercent } = stats;
+            const gameInfo = GAMES[game];
+            
+            if (!gameInfo) {
+                showToast(`❓ Unknown game: ${game}`, 'error');
+                return;
+            }
+            
+            // Check if game is tracked
+            const isTracked = appData.games.some(g => g.id === game);
+            if (!isTracked) {
+                // Offer to add game with stats
+                showAddGameWithStatsModal(stats);
+                return;
+            }
+            
+            // Get current GS stats
+            const gsStats = appData.stats[game] || { currentStreak: 0, maxStreak: 0, gamesPlayed: 0 };
+            const loggedToday = !!getTodayHistory()[game];
+            
+            console.log('📊 Comparing stats:', { 
+                gs: gsStats, 
+                imported: stats, 
+                loggedToday 
+            });
+            
+            // Adjust GS streak for "just logged today" offset
+            // If user logged today, their GS streak is 1 higher than what stats page would show
+            // (because stats page was screenshot before today's play was reflected)
+            const adjustedGSStreak = loggedToday ? gsStats.currentStreak - 1 : gsStats.currentStreak;
+            
+            // Compare current streaks
+            if (currentStreak === null) {
+                showToast('📊 Couldn\'t read streak from screenshot', 'info');
+                return;
+            }
+            
+            let changes = [];
+            
+            // Current streak comparison
+            if (currentStreak === adjustedGSStreak) {
+                // Match!
+                changes.push('streak matches');
+            } else if (currentStreak > adjustedGSStreak) {
+                // Stats show higher streak - auto-update
+                const newStreak = loggedToday ? currentStreak + 1 : currentStreak;
+                const oldStreak = gsStats.currentStreak;
+                
+                if (!appData.stats[game]) {
+                    appData.stats[game] = { currentStreak: 0, maxStreak: 0, gamesPlayed: 0, gamesWon: 0 };
+                }
+                appData.stats[game].currentStreak = newStreak;
+                changes.push(`streak ${oldStreak} → ${newStreak}`);
+            } else {
+                // Stats show lower streak - need to ask user
+                showStreakConflictModal({
+                    game: game,
+                    gameInfo: gameInfo,
+                    gsStreak: gsStats.currentStreak,
+                    statsStreak: currentStreak,
+                    loggedToday: loggedToday
+                });
+                return;
+            }
+            
+            // Max streak - always update if higher
+            if (maxStreak !== null && maxStreak > (gsStats.maxStreak || 0)) {
+                const oldMax = gsStats.maxStreak || 0;
+                appData.stats[game].maxStreak = maxStreak;
+                changes.push(`max ${oldMax} → ${maxStreak}`);
+            }
+            
+            // Games played - update if higher
+            if (gamesPlayed !== null && gamesPlayed > (gsStats.gamesPlayed || 0)) {
+                appData.stats[game].gamesPlayed = gamesPlayed;
+            }
+            
+            // Win percent - can derive games won if we have played count
+            if (winPercent !== null && gamesPlayed !== null) {
+                const gamesWon = Math.round(gamesPlayed * winPercent / 100);
+                if (gamesWon > (gsStats.gamesWon || 0)) {
+                    appData.stats[game].gamesWon = gamesWon;
+                }
+            }
+            
+            saveData();
+            syncToCloud();
+            renderAll();
+            
+            // Show result
+            if (changes.length > 0 && !changes.every(c => c === 'streak matches')) {
+                showToast(`✓ ${gameInfo.icon} ${gameInfo.name}: ${changes.join(', ')}`, 'success');
+            } else {
+                showToast(`✓ ${gameInfo.icon} ${gameInfo.name} stats match!`, 'success');
+            }
+        }
+        
+        // Show modal when stats show lower streak than GS
+        function showStreakConflictModal(data) {
+            const modal = document.getElementById('streak-conflict-modal');
+            if (!modal) {
+                console.warn('Streak conflict modal not found');
+                showToast(`${data.gameInfo.name}: streak mismatch (GS: ${data.gsStreak}, stats: ${data.statsStreak})`, 'info');
+                return;
+            }
+            
+            document.getElementById('streak-conflict-game-icon').textContent = data.gameInfo.icon;
+            document.getElementById('streak-conflict-game-name').textContent = data.gameInfo.name;
+            document.getElementById('streak-conflict-gs-value').textContent = data.gsStreak;
+            document.getElementById('streak-conflict-stats-value').textContent = data.statsStreak;
+            
+            modal.dataset.gameId = data.game;
+            modal.dataset.newStreak = data.statsStreak;
+            
+            modal.classList.add('active');
+        }
+        
+        function resolveStreakConflict(action) {
+            const modal = document.getElementById('streak-conflict-modal');
+            if (!modal) return;
+            
+            const gameId = modal.dataset.gameId;
+            const newStreak = parseInt(modal.dataset.newStreak);
+            
+            if (action === 'reset') {
+                if (!appData.stats[gameId]) {
+                    appData.stats[gameId] = { currentStreak: 0, maxStreak: 0, gamesPlayed: 0, gamesWon: 0 };
+                }
+                appData.stats[gameId].currentStreak = newStreak;
+                saveData();
+                syncToCloud();
+                renderAll();
+                
+                const gameInfo = GAMES[gameId];
+                showToast(`✓ ${gameInfo?.icon} Streak reset to ${newStreak}`, 'success');
+            } else {
+                showToast('✓ Kept current streak', 'info');
+            }
+            
+            modal.classList.remove('active');
+        }
+        
+        // Show modal to add untracked game with stats
+        function showAddGameWithStatsModal(stats) {
+            const gameInfo = GAMES[stats.game];
+            if (!gameInfo) return;
+            
+            // Simple confirm for now
+            if (confirm(`Add ${gameInfo.name} to your shelf with imported stats?\n\nStreak: ${stats.currentStreak || '?'}\nMax: ${stats.maxStreak || '?'}\nPlayed: ${stats.gamesPlayed || '?'}`)) {
+                // Add game to shelf
+                if (!appData.games.find(g => g.id === stats.game)) {
+                    appData.games.push({ id: stats.game, addedAt: new Date().toISOString() });
+                }
+                
+                // Set stats
+                appData.stats[stats.game] = {
+                    currentStreak: stats.currentStreak || 0,
+                    maxStreak: stats.maxStreak || 0,
+                    gamesPlayed: stats.gamesPlayed || 0,
+                    gamesWon: stats.winPercent && stats.gamesPlayed ? 
+                        Math.round(stats.gamesPlayed * stats.winPercent / 100) : 0,
+                    lastPlayed: null
+                };
+                
+                saveData();
+                syncToCloud();
+                renderAll();
+                
+                showToast(`✓ Added ${gameInfo.icon} ${gameInfo.name} with stats!`, 'success');
             }
         }
         
@@ -24785,7 +25176,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.7.6 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.9 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
