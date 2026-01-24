@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.9">
+    <meta name="version" content="1.2.10">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7368,7 +7368,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.9</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.10</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7613,7 +7613,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.9</div>
+            <div class="settings-version">Game Shelf PWA v1.2.10</div>
         </div>
     </div>
     
@@ -7812,6 +7812,29 @@
                 <div class="games-grid" id="search-results-grid">
                     <!-- Populated by JS -->
                 </div>
+            </div>
+        </div>
+        
+        <!-- Stats Screen (v1.2.10) -->
+        <div class="screen" id="screen-stats">
+            <div class="section-header" style="margin-bottom: 16px;">
+                <span class="section-title">📊 Your Stats</span>
+                <button class="see-all" onclick="handleRecordGame()" style="background: var(--accent-purple); color: white; border-radius: 8px; padding: 6px 12px;">
+                    📷 Import Stats
+                </button>
+            </div>
+            
+            <!-- Stats Summary Cards -->
+            <div id="stats-summary" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+                <!-- Populated by JS -->
+            </div>
+            
+            <!-- Per-Game Stats List -->
+            <div class="section-header" style="margin-bottom: 12px;">
+                <span class="section-title">Game Details</span>
+            </div>
+            <div id="stats-game-list" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Populated by JS -->
             </div>
         </div>
         
@@ -8113,6 +8136,10 @@
         <button class="nav-tab" data-tab="games" onclick="switchTab('games')">
             <span class="nav-icon">🧩</span>
             <span class="nav-label">Games</span>
+        </button>
+        <button class="nav-tab" data-tab="stats" onclick="switchTab('stats')">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Stats</span>
         </button>
         <button class="nav-tab" data-tab="social" onclick="switchTab('social')">
             <span class="nav-icon">⚔️</span>
@@ -8644,7 +8671,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.9) -->
+    <!-- Score Conflict Modal (v1.2.10) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -8680,7 +8707,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.9 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.10 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9171,6 +9198,7 @@ Wordle 1,234 3/6
             <div class="confirm-modal-message" id="confirm-modal-message">This action cannot be undone.</div>
             <div class="confirm-modal-buttons">
                 <button class="confirm-modal-btn cancel" onclick="closeConfirmModal()">Cancel</button>
+                <button class="confirm-modal-btn secondary" id="confirm-modal-third" onclick="confirmModalThirdAction()" style="display: none;">Third</button>
                 <button class="confirm-modal-btn secondary" id="confirm-modal-alt" onclick="confirmModalAltAction()" style="display: none;">Alt</button>
                 <button class="confirm-modal-btn danger" id="confirm-modal-action" onclick="confirmModalAction()">Confirm</button>
             </div>
@@ -15607,11 +15635,11 @@ Wordle 1,234 3/6
         
         // Confirmation Modal Functions
         let confirmModalCallback = null;
-        
         let confirmModalAltCallback = null;
+        let confirmModalThirdCallback = null;
         
         function showConfirmModal(options) {
-            const { icon, title, message, confirmText, confirmStyle, onConfirm, altText, altStyle, onAlt } = options;
+            const { icon, title, message, confirmText, confirmStyle, onConfirm, altText, altStyle, onAlt, thirdText, thirdStyle, onThird } = options;
             
             document.getElementById('confirm-modal-icon').textContent = icon || '⚠️';
             document.getElementById('confirm-modal-title').textContent = title || 'Are you sure?';
@@ -15633,6 +15661,18 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
+            // v1.2.10: Optional third button (for View Stats)
+            const thirdBtn = document.getElementById('confirm-modal-third');
+            if (thirdText && onThird) {
+                thirdBtn.textContent = thirdText;
+                thirdBtn.className = 'confirm-modal-btn ' + (thirdStyle || 'secondary');
+                thirdBtn.style.display = 'block';
+                confirmModalThirdCallback = onThird;
+            } else {
+                thirdBtn.style.display = 'none';
+                confirmModalThirdCallback = null;
+            }
+            
             confirmModalCallback = onConfirm;
             document.getElementById('confirm-modal-overlay').classList.add('active');
         }
@@ -15641,6 +15681,7 @@ Wordle 1,234 3/6
             document.getElementById('confirm-modal-overlay').classList.remove('active');
             confirmModalCallback = null;
             confirmModalAltCallback = null;
+            confirmModalThirdCallback = null;
         }
         
         function confirmModalAction() {
@@ -15653,6 +15694,13 @@ Wordle 1,234 3/6
         function confirmModalAltAction() {
             if (confirmModalAltCallback) {
                 confirmModalAltCallback();
+            }
+            closeConfirmModal();
+        }
+        
+        function confirmModalThirdAction() {
+            if (confirmModalThirdCallback) {
+                confirmModalThirdCallback();
             }
             closeConfirmModal();
         }
@@ -15727,7 +15775,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.9';
+            const version = '1.2.10';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17907,6 +17955,186 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
+        // ============ STATS SCREEN (v1.2.10) ============
+        function renderStatsScreen() {
+            const summaryContainer = document.getElementById('stats-summary');
+            const listContainer = document.getElementById('stats-game-list');
+            if (!summaryContainer || !listContainer) return;
+            
+            // Calculate summary stats
+            const totalGames = appData.games.length;
+            const todayPlayed = getGamesPlayedToday();
+            const totalPlayed = Object.values(appData.stats).reduce((sum, s) => sum + (s.gamesPlayed || 0), 0);
+            const maxStreak = getMaxStreak();
+            const totalWins = Object.values(appData.stats).reduce((sum, s) => sum + (s.gamesWon || 0), 0);
+            const overallWinRate = totalPlayed > 0 ? Math.round((totalWins / totalPlayed) * 100) : 0;
+            
+            // Render summary cards
+            summaryContainer.innerHTML = `
+                <div style="background: var(--bg-secondary); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--accent-purple);">${todayPlayed}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Today</div>
+                </div>
+                <div style="background: var(--bg-secondary); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--accent-orange);">🔥 ${maxStreak}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Best Streak</div>
+                </div>
+                <div style="background: var(--bg-secondary); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--accent-green);">${totalPlayed}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Total Played</div>
+                </div>
+                <div style="background: var(--bg-secondary); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary);">${overallWinRate}%</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Win Rate</div>
+                </div>
+            `;
+            
+            // Render per-game stats
+            const gamesWithStats = appData.games
+                .map(g => {
+                    const game = GAMES[g.id];
+                    const stats = appData.stats[g.id] || {};
+                    return {
+                        id: g.id,
+                        game: game,
+                        stats: stats,
+                        currentStreak: stats.currentStreak || 0,
+                        maxStreak: stats.maxStreak || 0,
+                        gamesPlayed: stats.gamesPlayed || 0,
+                        gamesWon: stats.gamesWon || 0
+                    };
+                })
+                .filter(g => g.game) // Filter out invalid games
+                .sort((a, b) => b.currentStreak - a.currentStreak); // Sort by current streak
+            
+            if (gamesWithStats.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                        <div style="font-size: 3rem; margin-bottom: 16px;">📊</div>
+                        <div style="font-size: 1rem; margin-bottom: 8px;">No stats yet</div>
+                        <div style="font-size: 0.85rem;">Play some games or import stats from screenshots!</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            listContainer.innerHTML = gamesWithStats.map(g => {
+                const winRate = g.gamesPlayed > 0 ? Math.round((g.gamesWon / g.gamesPlayed) * 100) : 0;
+                const todayResult = getTodayHistory()[g.id];
+                
+                return `
+                    <div class="stats-game-row" onclick="showGameStatsDetail('${g.id}')" style="
+                        background: var(--bg-secondary);
+                        border-radius: 12px;
+                        padding: 14px 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 14px;
+                        cursor: pointer;
+                        transition: background 0.2s;
+                    ">
+                        <div style="font-size: 1.8rem; width: 44px; text-align: center;">${g.game.icon}</div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                                ${g.game.name}
+                                ${todayResult ? '<span style="font-size: 0.7rem; background: var(--accent-green); color: white; padding: 2px 6px; border-radius: 4px;">Today ✓</span>' : ''}
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                                ${g.gamesPlayed} played • ${winRate}% wins
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.1rem; font-weight: 700; color: ${g.currentStreak > 0 ? 'var(--accent-orange)' : 'var(--text-muted)'};">
+                                ${g.currentStreak > 0 ? '🔥 ' + g.currentStreak : '—'}
+                            </div>
+                            <div style="font-size: 0.65rem; color: var(--text-muted);">
+                                ${g.currentStreak > 0 ? 'streak' : 'no streak'}
+                            </div>
+                        </div>
+                        <div style="color: var(--text-muted); font-size: 0.8rem;">›</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Show detailed stats for a single game
+        function showGameStatsDetail(gameId) {
+            const game = GAMES[gameId];
+            const stats = appData.stats[gameId] || {};
+            const todayResult = getTodayHistory()[gameId];
+            
+            if (!game) return;
+            
+            const winRate = stats.gamesPlayed > 0 ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100) : 0;
+            
+            showGenericSheet({
+                title: `${game.icon} ${game.name} Stats`,
+                content: `
+                    <div style="padding: 20px;">
+                        <!-- Current Status -->
+                        ${todayResult ? `
+                            <div style="background: var(--accent-green); color: white; padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
+                                ✓ Played today: <strong>${todayResult.score}</strong>
+                            </div>
+                        ` : `
+                            <div style="background: var(--bg-tertiary); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 20px; color: var(--text-muted);">
+                                Not played today
+                            </div>
+                        `}
+                        
+                        <!-- Stats Grid -->
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+                            <div style="background: var(--bg-tertiary); border-radius: 10px; padding: 16px; text-align: center;">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent-orange);">🔥 ${stats.currentStreak || 0}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Current Streak</div>
+                            </div>
+                            <div style="background: var(--bg-tertiary); border-radius: 10px; padding: 16px; text-align: center;">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent-purple);">🏆 ${stats.maxStreak || 0}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Best Streak</div>
+                            </div>
+                            <div style="background: var(--bg-tertiary); border-radius: 10px; padding: 16px; text-align: center;">
+                                <div style="font-size: 1.8rem; font-weight: 700;">${stats.gamesPlayed || 0}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Games Played</div>
+                            </div>
+                            <div style="background: var(--bg-tertiary); border-radius: 10px; padding: 16px; text-align: center;">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent-green);">${winRate}%</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Win Rate</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button onclick="closeGenericSheet(); playGame('${gameId}')" style="
+                                width: 100%;
+                                padding: 14px;
+                                background: var(--accent-purple);
+                                border: none;
+                                border-radius: 10px;
+                                color: white;
+                                font-size: 1rem;
+                                font-weight: 600;
+                                cursor: pointer;
+                            ">
+                                ${todayResult ? '🔄 Play Again' : '▶️ Play Now'}
+                            </button>
+                            <button onclick="closeGenericSheet(); handleRecordGame()" style="
+                                width: 100%;
+                                padding: 14px;
+                                background: var(--bg-tertiary);
+                                border: 1px solid var(--border);
+                                border-radius: 10px;
+                                color: var(--text-primary);
+                                font-size: 1rem;
+                                cursor: pointer;
+                            ">
+                                📷 Import Stats from Screenshot
+                            </button>
+                        </div>
+                    </div>
+                `
+            });
+        }
+        
         function renderQuickGames() {
             const container = document.getElementById('quick-games');
             const shelf = appData.games.slice(0, 6);
@@ -18317,7 +18545,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.9'
+                    appVersion: '1.2.10'
                 }
             };
             
@@ -18674,11 +18902,11 @@ Made with ❤️ for puzzle enthusiasts`;
             
             const todayHistory = getTodayHistory();
             if (todayHistory[gameId] && !forceVisit) {
-                // Game already played - ask if they want to visit anyway or adjust recording
+                // Game already played - ask if they want to visit anyway, adjust recording, or view stats
                 showConfirmModal({
                     icon: '✅',
                     title: 'Already Played!',
-                    message: `You've already logged ${game.name} today. Want to revisit or adjust your recording?`,
+                    message: `You've already logged ${game.name} today. What would you like to do?`,
                     confirmText: 'Visit Anyway',
                     confirmStyle: 'primary',
                     onConfirm: () => {
@@ -18689,6 +18917,11 @@ Made with ❤️ for puzzle enthusiasts`;
                     onAlt: () => {
                         // Remove the recording and open log sheet
                         adjustRecordingFromModal(gameId);
+                    },
+                    thirdText: '📊 Stats',
+                    thirdStyle: 'secondary',
+                    onThird: () => {
+                        showGameStatsDetail(gameId);
                     }
                 });
                 return;
@@ -20399,6 +20632,11 @@ Made with ❤️ for puzzle enthusiasts`;
             if (tab === 'share') {
                 populateShareScreen();
             }
+            
+            // Populate Stats screen when selected
+            if (tab === 'stats') {
+                renderStatsScreen();
+            }
         }
         
         // ============ LOG SHEET ============
@@ -20514,7 +20752,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.9) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.10) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -25176,7 +25414,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.9 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.10 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
