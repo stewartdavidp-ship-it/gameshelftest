@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.10">
+    <meta name="version" content="1.2.11">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7368,7 +7368,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.10</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.11</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7613,7 +7613,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.10</div>
+            <div class="settings-version">Game Shelf PWA v1.2.11</div>
         </div>
     </div>
     
@@ -7815,7 +7815,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.10) -->
+        <!-- Stats Screen (v1.2.11) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -8671,7 +8671,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.10) -->
+    <!-- Score Conflict Modal (v1.2.11) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -8707,7 +8707,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.10 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.11 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -15661,7 +15661,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.10: Optional third button (for View Stats)
+            // v1.2.11: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -15775,7 +15775,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.10';
+            const version = '1.2.11';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17955,7 +17955,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.10) ============
+        // ============ STATS SCREEN (v1.2.11) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -18545,7 +18545,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.10'
+                    appVersion: '1.2.11'
                 }
             };
             
@@ -18902,27 +18902,72 @@ Made with ❤️ for puzzle enthusiasts`;
             
             const todayHistory = getTodayHistory();
             if (todayHistory[gameId] && !forceVisit) {
-                // Game already played - ask if they want to visit anyway, adjust recording, or view stats
-                showConfirmModal({
-                    icon: '✅',
-                    title: 'Already Played!',
-                    message: `You've already logged ${game.name} today. What would you like to do?`,
-                    confirmText: 'Visit Anyway',
-                    confirmStyle: 'primary',
-                    onConfirm: () => {
-                        playGame(gameId, true);
-                    },
-                    altText: 'Adjust',
-                    altStyle: 'secondary',
-                    onAlt: () => {
-                        // Remove the recording and open log sheet
-                        adjustRecordingFromModal(gameId);
-                    },
-                    thirdText: '📊 Stats',
-                    thirdStyle: 'secondary',
-                    onThird: () => {
-                        showGameStatsDetail(gameId);
-                    }
+                // Game already played - show options sheet
+                const todayScore = todayHistory[gameId].score;
+                showGenericSheet({
+                    title: `✅ ${game.name} - Already Played`,
+                    content: `
+                        <div style="padding: 16px;">
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <div style="font-size: 2.5rem; margin-bottom: 8px;">${game.icon}</div>
+                                <div style="font-size: 1.1rem; font-weight: 600; color: var(--accent-green);">Today: ${todayScore}</div>
+                            </div>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <button onclick="closeGenericSheet(); playGame('${gameId}', true)" style="
+                                    width: 100%;
+                                    padding: 14px;
+                                    background: var(--accent-purple);
+                                    border: none;
+                                    border-radius: 10px;
+                                    color: white;
+                                    font-size: 1rem;
+                                    font-weight: 600;
+                                    cursor: pointer;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 8px;
+                                ">
+                                    <span>🎮</span> Visit Game Anyway
+                                </button>
+                                
+                                <button onclick="closeGenericSheet(); showGameStatsDetail('${gameId}')" style="
+                                    width: 100%;
+                                    padding: 14px;
+                                    background: var(--bg-tertiary);
+                                    border: 1px solid var(--border);
+                                    border-radius: 10px;
+                                    color: var(--text-primary);
+                                    font-size: 1rem;
+                                    cursor: pointer;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 8px;
+                                ">
+                                    <span>📊</span> View Stats
+                                </button>
+                                
+                                <button onclick="closeGenericSheet(); adjustRecordingFromModal('${gameId}')" style="
+                                    width: 100%;
+                                    padding: 14px;
+                                    background: var(--bg-tertiary);
+                                    border: 1px solid var(--border);
+                                    border-radius: 10px;
+                                    color: var(--text-primary);
+                                    font-size: 1rem;
+                                    cursor: pointer;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 8px;
+                                ">
+                                    <span>✏️</span> Adjust Recording
+                                </button>
+                            </div>
+                        </div>
+                    `
                 });
                 return;
             }
@@ -20752,7 +20797,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.10) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.11) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -25414,7 +25459,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.10 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.11 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
