@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.17">
+    <meta name="version" content="1.2.18">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -70,6 +70,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
     
     <!-- Tesseract.js for OCR -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -7821,7 +7822,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.17</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.18</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -8066,7 +8067,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.17</div>
+            <div class="settings-version">Game Shelf PWA v1.2.18</div>
         </div>
     </div>
     
@@ -8268,7 +8269,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.17) -->
+        <!-- Stats Screen (v1.2.18) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9124,7 +9125,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.17) -->
+    <!-- Score Conflict Modal (v1.2.18) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9160,7 +9161,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.17 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.18 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -16234,7 +16235,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.17: Optional third button (for View Stats)
+            // v1.2.18: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16348,7 +16349,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.17';
+            const version = '1.2.18';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18528,7 +18529,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.17) ============
+        // ============ STATS SCREEN (v1.2.18) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19118,7 +19119,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.17'
+                    appVersion: '1.2.18'
                 }
             };
             
@@ -20588,6 +20589,12 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('hint-result').style.display = 'none';
             document.getElementById('hint-error').style.display = 'none';
             document.getElementById('hint-get-btn').style.display = 'block';
+            
+            // Show sign-in prompt if not logged in
+            if (!currentUser) {
+                document.getElementById('hint-error').innerHTML = '🔐 <strong>Sign in required</strong><br>AI hints require a Game Shelf account. <a href="#" onclick="closeHintSheet(); switchTab(\'social\'); return false;" style="color: var(--accent-purple);">Sign in →</a>';
+                document.getElementById('hint-error').style.display = 'block';
+            }
         }
         
         function closeHintSheet() {
@@ -20694,6 +20701,13 @@ Made with ❤️ for puzzle enthusiasts`;
         async function getHint(level = hintLevel) {
             if (!hintCurrentGame || hintLoading) return;
             
+            // Check if user is signed in
+            if (!currentUser) {
+                document.getElementById('hint-error').textContent = 'Please sign in to use AI hints.';
+                document.getElementById('hint-error').style.display = 'block';
+                return;
+            }
+            
             const game = hintCurrentGame;
             const userInput = document.getElementById('hint-input').value.trim();
             
@@ -20707,7 +20721,7 @@ Made with ❤️ for puzzle enthusiasts`;
             hintLoading = true;
             const btn = document.getElementById('hint-get-btn');
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Searching...';
+            btn.innerHTML = '<span class="spinner"></span> Getting hint...';
             document.getElementById('hint-error').style.display = 'none';
             
             try {
@@ -20743,24 +20757,16 @@ Made with ❤️ for puzzle enthusiasts`;
                     userPrompt += `\nPrevious hints given:\n${hintHistory.map(h => `- Lvl ${h.level}: "${h.hint.substring(0, 60)}"`).join('\n')}\nGive a NEW different hint.`;
                 }
                 
-                const response = await fetch('https://api.anthropic.com/v1/messages', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: 'claude-sonnet-4-20250514',
-                        max_tokens: 500,
-                        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-                        system: game.systemPrompt,
-                        messages: [{ role: 'user', content: userPrompt }]
-                    })
+                // Call Firebase Function
+                const getHintFunction = firebase.functions().httpsCallable('getHint');
+                const result = await getHintFunction({
+                    gameId: game.id,
+                    level: level,
+                    prompt: userPrompt,
+                    systemPrompt: game.systemPrompt
                 });
                 
-                const data = await response.json();
-                
-                const hint = data.content
-                    ?.filter(block => block.type === 'text')
-                    ?.map(block => block.text)
-                    ?.join('\n') || 'Unable to generate hint. Please try again.';
+                const hint = result.data.hint || 'Unable to generate hint. Please try again.';
                 
                 // Show result
                 hintLevel = level;
@@ -20771,6 +20777,12 @@ Made with ❤️ for puzzle enthusiasts`;
                 document.getElementById('hint-result-text').textContent = hint;
                 document.getElementById('hint-result').style.display = 'block';
                 document.getElementById('hint-get-btn').style.display = 'none';
+                
+                // Show usage info if available
+                if (result.data.usage) {
+                    const usage = result.data.usage;
+                    console.log(`Hint usage: ${usage.hourCount}/${usage.hourLimit} this hour, ${usage.dayCount}/${usage.dayLimit} today`);
+                }
                 
                 // Update history display
                 if (hintHistory.length > 1) {
@@ -20783,7 +20795,20 @@ Made with ❤️ for puzzle enthusiasts`;
                 
             } catch (err) {
                 console.error('Hint error:', err);
-                document.getElementById('hint-error').textContent = 'Failed to get hint. Please try again.';
+                
+                // Handle specific error types
+                let errorMsg = 'Failed to get hint. Please try again.';
+                if (err.code === 'unauthenticated') {
+                    errorMsg = 'Please sign in to use AI hints.';
+                } else if (err.code === 'resource-exhausted') {
+                    errorMsg = err.message || 'Rate limit reached. Try again later.';
+                } else if (err.code === 'failed-precondition') {
+                    errorMsg = 'AI hints are temporarily unavailable.';
+                } else if (err.message) {
+                    errorMsg = err.message;
+                }
+                
+                document.getElementById('hint-error').textContent = errorMsg;
                 document.getElementById('hint-error').style.display = 'block';
             } finally {
                 hintLoading = false;
@@ -22081,7 +22106,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.17) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.18) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -24290,7 +24315,7 @@ Made with ❤️ for puzzle enthusiasts`;
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.17) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.18) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -26804,7 +26829,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.17 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.18 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

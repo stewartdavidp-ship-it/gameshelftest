@@ -1,34 +1,29 @@
-Game Shelf v1.2.17
+Game Shelf v1.2.18
 ==================
 Release Date: January 25, 2026
 
-AI HINT HELPER (NEW FEATURE!)
------------------------------
-- 💡 Floating Action Button (FAB) appears when hint data is available
+AI HINT HELPER WITH FIREBASE BACKEND
+------------------------------------
+- 💡 Floating Action Button (FAB) appears when hint data available
 - Bottom sheet UI for getting AI-powered hints
-- Integrated with Game Shelf original games (Quotle, Rungs, Slate)
-- Auto-detects puzzle data from localStorage
-- 10-level hint system (Whisper → Answer)
-- "Still Stuck" auto-escalates to next hint level
-- Supports NYT games via web search:
-  - Connections, Wordle, Strands
-  - Spelling Bee, Mini Crossword
-- Hint history tracking per session
-- Game selector chips for switching games
+- 🔐 Requires sign-in (Firebase Auth)
+- 🚦 Rate limited: 20 hints/hour, 50 hints/day per user
+- Secure: API key stored server-side via Firebase Functions
 
-HOW IT WORKS
-------------
-1. Play a Game Shelf game (Quotle, Rungs, or Slate)
-2. Game stores puzzle data to localStorage
-3. Return to Game Shelf
-4. 💡 FAB appears (bottom right)
-5. Tap FAB → Select hint level → Get AI hint
-6. Still stuck? Tap "Still Stuck" for stronger hint
-
-TECHNICAL NOTES
+SUPPORTED GAMES
 ---------------
-- Games now call storeHintData() on load
-- Data stored as gameshelf_hint_data key
-- FAB visibility based on data recency (24h)
-- Uses Claude API with web search for NYT games
-- Respects puzzle integrity (only hints, no spoilers at low levels)
+Game Shelf originals (auto-detect from localStorage):
+- Quotle, Rungs, Slate
+
+NYT Games (via web search):
+- Connections, Wordle, Strands
+- Spelling Bee, Mini Crossword
+
+FIREBASE FUNCTIONS SETUP REQUIRED
+---------------------------------
+1. Deploy the Cloud Function (see firebase-functions package)
+2. Set Anthropic API key:
+   firebase functions:config:set anthropic.api_key="sk-ant-..."
+3. Deploy: firebase deploy --only functions
+
+See firebase-functions/README.md for full instructions.
