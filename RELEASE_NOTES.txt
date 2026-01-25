@@ -1,16 +1,34 @@
-Game Shelf v1.2.0.29
-====================
-Release Date: January 23, 2025
+Game Shelf v1.2.17
+==================
+Release Date: January 25, 2026
 
-Includes:
-- PWA icons with G+S puzzle piece branding
-- apple-touch-icon.png for iOS
-- Deep link support (?tab=, ?game=, ?play=)
-- PWA shortcuts for Log, Share, Play Wordle
+AI HINT HELPER (NEW FEATURE!)
+-----------------------------
+- 💡 Floating Action Button (FAB) appears when hint data is available
+- Bottom sheet UI for getting AI-powered hints
+- Integrated with Game Shelf original games (Quotle, Rungs, Slate)
+- Auto-detects puzzle data from localStorage
+- 10-level hint system (Whisper → Answer)
+- "Still Stuck" auto-escalates to next hint level
+- Supports NYT games via web search:
+  - Connections, Wordle, Strands
+  - Spelling Bee, Mini Crossword
+- Hint history tracking per session
+- Game selector chips for switching games
 
-UAT MODE DEFAULT ON
--------------------
-Changed UAT mode to be ON by default for new users.
-- Feedback button visible by default
-- UAT badge shows in header
-- Users can turn it off in settings if desired
+HOW IT WORKS
+------------
+1. Play a Game Shelf game (Quotle, Rungs, or Slate)
+2. Game stores puzzle data to localStorage
+3. Return to Game Shelf
+4. 💡 FAB appears (bottom right)
+5. Tap FAB → Select hint level → Get AI hint
+6. Still stuck? Tap "Still Stuck" for stronger hint
+
+TECHNICAL NOTES
+---------------
+- Games now call storeHintData() on load
+- Data stored as gameshelf_hint_data key
+- FAB visibility based on data recency (24h)
+- Uses Claude API with web search for NYT games
+- Respects puzzle integrity (only hints, no spoilers at low levels)
