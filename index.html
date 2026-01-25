@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.18">
+    <meta name="version" content="1.2.19">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -3354,11 +3354,10 @@
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
             z-index: 99;
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             transition: transform 0.2s, box-shadow 0.2s;
-            animation: hint-fab-pulse 2s ease-in-out infinite;
         }
         
         .hint-fab:hover {
@@ -3370,8 +3369,8 @@
             transform: scale(0.95);
         }
         
-        .hint-fab.visible {
-            display: flex;
+        .hint-fab.has-data {
+            animation: hint-fab-pulse 2s ease-in-out infinite;
         }
         
         @keyframes hint-fab-pulse {
@@ -7822,7 +7821,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.18</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.19</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -8067,7 +8066,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.18</div>
+            <div class="settings-version">Game Shelf PWA v1.2.19</div>
         </div>
     </div>
     
@@ -8269,7 +8268,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.18) -->
+        <!-- Stats Screen (v1.2.19) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9125,7 +9124,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.18) -->
+    <!-- Score Conflict Modal (v1.2.19) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9161,7 +9160,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.18 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.19 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -16235,7 +16234,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.18: Optional third button (for View Stats)
+            // v1.2.19: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16349,7 +16348,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.18';
+            const version = '1.2.19';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18529,7 +18528,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.18) ============
+        // ============ STATS SCREEN (v1.2.19) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19119,7 +19118,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.18'
+                    appVersion: '1.2.19'
                 }
             };
             
@@ -20541,21 +20540,24 @@ Made with ❤️ for puzzle enthusiasts`;
             try {
                 const stored = localStorage.getItem('gameshelf_hint_data');
                 if (!stored) {
-                    document.getElementById('hint-fab').classList.remove('visible');
+                    document.getElementById('hint-fab').classList.remove('has-data');
+                    document.getElementById('hint-fab-badge').style.display = 'none';
                     return null;
                 }
                 
                 const data = JSON.parse(stored);
                 const age = Date.now() - data.timestamp;
                 
-                // Show FAB if data is recent (within 24 hours)
+                // Add pulse animation if data is recent (within 24 hours)
                 if (age < 24 * 60 * 60 * 1000) {
-                    document.getElementById('hint-fab').classList.add('visible');
+                    document.getElementById('hint-fab').classList.add('has-data');
+                    document.getElementById('hint-fab-badge').style.display = 'block';
                     hintLocalData = data;
                     return data;
                 }
                 
-                document.getElementById('hint-fab').classList.remove('visible');
+                document.getElementById('hint-fab').classList.remove('has-data');
+                document.getElementById('hint-fab-badge').style.display = 'none';
                 return null;
             } catch (e) {
                 console.warn('Could not read hint data:', e);
@@ -22106,7 +22108,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.18) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.19) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -24315,7 +24317,7 @@ Made with ❤️ for puzzle enthusiasts`;
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.18) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.19) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -26829,7 +26831,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.18 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.19 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
