@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.12">
+    <meta name="version" content="1.2.13">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7345,6 +7345,57 @@
             color: var(--text-primary);
         }
 
+        /* Clipboard Nudge Banner (iOS gesture-deferred) */
+        .clipboard-nudge {
+            position: fixed;
+            bottom: calc(70px + var(--safe-bottom));
+            left: 16px;
+            right: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 500;
+            animation: slideUpNudge 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .clipboard-nudge-text {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        
+        .clipboard-nudge-record {
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .clipboard-nudge-dismiss {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            padding: 4px 8px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        
+        @keyframes slideUpNudge {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
     </style>
 </head>
 <body>
@@ -7368,7 +7419,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.12</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.13</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -7613,7 +7664,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.12</div>
+            <div class="settings-version">Game Shelf PWA v1.2.13</div>
         </div>
     </div>
     
@@ -7815,7 +7866,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.12) -->
+        <!-- Stats Screen (v1.2.13) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -8671,7 +8722,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.12) -->
+    <!-- Score Conflict Modal (v1.2.13) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -8707,7 +8758,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.12 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.13 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -8933,6 +8984,13 @@ Wordle 1,234 3/6
             <div class="tap-to-log-arrow">→</div>
         </div>
         <button class="tap-to-log-dismiss" onclick="dismissTapToLog(event)">✕</button>
+    </div>
+    
+    <!-- CLIPBOARD NUDGE - Subtle banner for iOS gesture-deferred clipboard check -->
+    <div class="clipboard-nudge" id="clipboard-nudge">
+        <span class="clipboard-nudge-text" id="clipboard-nudge-text">🎯 Wordle result ready</span>
+        <button class="clipboard-nudge-record" onclick="acceptClipboardNudge()">Record</button>
+        <button class="clipboard-nudge-dismiss" onclick="dismissClipboardNudge()">✕</button>
     </div>
     
     <!-- BIG SUCCESS CELEBRATION - Full screen, impossible to miss -->
@@ -14471,6 +14529,11 @@ Wordle 1,234 3/6
             const overlay = document.getElementById('settings-overlay');
             const isOpening = !menu.classList.contains('active');
             
+            // iOS gesture-deferred clipboard check (subtle nudge) - only on open
+            if (isOpening) {
+                checkClipboardOnGesture('settings-open');
+            }
+            
             // Refresh auth UI every time menu is opened
             if (isOpening) {
                 // Check current Firebase auth state directly
@@ -15661,7 +15724,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.12: Optional third button (for View Stats)
+            // v1.2.13: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -15775,7 +15838,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.12';
+            const version = '1.2.13';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17955,7 +18018,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.12) ============
+        // ============ STATS SCREEN (v1.2.13) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -18545,7 +18608,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.12'
+                    appVersion: '1.2.13'
                 }
             };
             
@@ -18896,9 +18959,20 @@ Made with ❤️ for puzzle enthusiasts`;
         let pendingLaunchGame = null;
         let pendingTutorialGame = null; // Game waiting for tutorial completion
         
-        function playGame(gameId, forceVisit = false) {
+        async function playGame(gameId, forceVisit = false) {
             const game = GAMES[gameId];
             if (!game) return;
+            
+            // Hard gate: Check clipboard before launching (both iOS and Android)
+            // This catches: iOS deferred check, clipboard copied AFTER return, dismissed prompts
+            if (!forceVisit) {
+                try {
+                    const shouldProceed = await checkClipboardBeforeLaunch(gameId);
+                    if (!shouldProceed) return; // Modal is handling the flow
+                } catch (e) {
+                    console.log('Clipboard check error, proceeding:', e.message);
+                }
+            }
             
             const todayHistory = getTodayHistory();
             if (todayHistory[gameId] && !forceVisit) {
@@ -19836,6 +19910,273 @@ Made with ❤️ for puzzle enthusiasts`;
         let tapToLogDismissed = false;
         let lastCelebrationGame = null;
         
+        // ============ iOS GESTURE-DEFERRED CLIPBOARD CHECK ============
+        // On iOS, we can't read clipboard without a gesture. Instead of guessing,
+        // we wait for a gesture then check. Different gestures get different responses:
+        // - Browsing gestures (tab switch, settings): subtle nudge
+        // - Game card tap: hard gate - must decide before launching
+        let pendingClipboardCheck = false;
+        let clipboardCheckCompletedThisReturn = false;
+        let lastCheckedClipboardHash = null;
+        let pendingNudgeResult = null; // Stores parsed result for nudge accept
+        let pendingNudgeText = null;   // Stores clipboard text for nudge accept
+        
+        // Hash clipboard content to avoid re-prompting for same content
+        function hashClipboard(text) {
+            if (!text) return null;
+            let hash = 0;
+            for (let i = 0; i < Math.min(text.length, 100); i++) {
+                hash = ((hash << 5) - hash) + text.charCodeAt(i);
+                hash |= 0;
+            }
+            return hash.toString(36);
+        }
+        
+        // Called on non-game gestures (tab switch, settings open) - shows subtle nudge
+        async function checkClipboardOnGesture(gestureType) {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            
+            // Only applies when we have a pending check
+            if (!pendingClipboardCheck || clipboardCheckCompletedThisReturn) {
+                return;
+            }
+            
+            // Mark as completed so we only check once per return
+            clipboardCheckCompletedThisReturn = true;
+            pendingClipboardCheck = false;
+            
+            console.log(`📱 Gesture check (${gestureType}): Reading clipboard...`);
+            
+            try {
+                const text = await navigator.clipboard.readText();
+                const result = parseShareText(text);
+                
+                if (!result) {
+                    console.log('📱 Gesture check: No game result in clipboard');
+                    return;
+                }
+                
+                // Check if we already offered this exact content
+                const clipboardHash = hashClipboard(text);
+                if (clipboardHash === lastCheckedClipboardHash) {
+                    console.log('📱 Gesture check: Already offered this clipboard content');
+                    return;
+                }
+                
+                // Check if already logged
+                if (getTodayHistory()[result.gameId]) {
+                    console.log(`📱 Gesture check: ${result.gameId} already logged`);
+                    return;
+                }
+                
+                // Check if already processed
+                if (text === lastProcessedClipboard) {
+                    console.log('📱 Gesture check: Clipboard already processed');
+                    return;
+                }
+                
+                lastCheckedClipboardHash = clipboardHash;
+                const game = GAMES[result.gameId];
+                
+                // Show subtle nudge banner
+                showClipboardNudge(game, result, text);
+                
+            } catch (e) {
+                console.log('📱 Gesture check: Clipboard read failed:', e.message);
+            }
+        }
+        
+        // Show subtle nudge banner (non-blocking)
+        function showClipboardNudge(game, result, clipboardText) {
+            // Store for accept handler
+            pendingNudgeResult = result;
+            pendingNudgeText = clipboardText;
+            
+            const nudge = document.getElementById('clipboard-nudge');
+            if (!nudge) return;
+            
+            const textEl = document.getElementById('clipboard-nudge-text');
+            if (textEl) {
+                textEl.textContent = `${game?.icon || '🎮'} ${game?.name || 'Game'} result ready`;
+            }
+            
+            nudge.style.display = 'flex';
+            console.log(`📱 Showing nudge for ${game?.name}`);
+            
+            // Auto-hide after 8 seconds
+            setTimeout(() => {
+                if (nudge.style.display !== 'none') {
+                    nudge.style.display = 'none';
+                    console.log('📱 Nudge auto-hidden');
+                }
+            }, 8000);
+        }
+        
+        function acceptClipboardNudge() {
+            const nudge = document.getElementById('clipboard-nudge');
+            if (nudge) nudge.style.display = 'none';
+            
+            if (pendingNudgeResult) {
+                const game = GAMES[pendingNudgeResult.gameId];
+                if (logGame(pendingNudgeResult, 'nudge')) {
+                    lastProcessedClipboard = pendingNudgeText;
+                    renderAll();
+                    showCelebration(game, pendingNudgeResult);
+                }
+            }
+            pendingNudgeResult = null;
+            pendingNudgeText = null;
+        }
+        
+        function dismissClipboardNudge() {
+            const nudge = document.getElementById('clipboard-nudge');
+            if (nudge) nudge.style.display = 'none';
+            pendingNudgeResult = null;
+            pendingNudgeText = null;
+            console.log('📱 Nudge dismissed');
+        }
+        
+        // Called on game card tap - hard gate that blocks until decision
+        // Returns: true = proceed with launch, false = blocked (modal handles flow)
+        async function checkClipboardBeforeLaunch(targetGameId) {
+            // Mark as completed
+            clipboardCheckCompletedThisReturn = true;
+            pendingClipboardCheck = false;
+            
+            // Hide any existing nudge
+            const nudge = document.getElementById('clipboard-nudge');
+            if (nudge) nudge.style.display = 'none';
+            
+            try {
+                const text = await navigator.clipboard.readText();
+                const result = parseShareText(text);
+                
+                if (!result) {
+                    console.log('📱 Launch check: No game result in clipboard');
+                    return true; // Proceed normally
+                }
+                
+                // Already logged?
+                if (getTodayHistory()[result.gameId]) {
+                    console.log(`📱 Launch check: ${result.gameId} already logged`);
+                    return true;
+                }
+                
+                // Already processed this clipboard?
+                if (text === lastProcessedClipboard) {
+                    console.log('📱 Launch check: Clipboard already processed');
+                    return true;
+                }
+                
+                const sourceGame = GAMES[result.gameId];
+                
+                // SAME GAME - high confidence, auto-record
+                if (result.gameId === targetGameId) {
+                    console.log(`📱 Launch check: Same game match! Auto-recording ${sourceGame?.name}`);
+                    if (logGame(result, 'auto-match')) {
+                        lastProcessedClipboard = text;
+                        showToast(`${sourceGame?.icon || '🎮'} ${sourceGame?.name} recorded!`, 'success');
+                        renderAll();
+                    }
+                    return true; // Proceed - playGame will see it's logged and show "Already Played"
+                }
+                
+                // DIFFERENT GAME - intercept with modal
+                const targetGame = GAMES[targetGameId];
+                console.log(`📱 Launch check: Different game - showing intercept modal`);
+                console.log(`   Source: ${sourceGame?.name}, Target: ${targetGame?.name}`);
+                
+                return new Promise((resolve) => {
+                    showRecordBeforeLaunchModal(sourceGame, targetGame, result, text, targetGameId, resolve);
+                });
+                
+            } catch (e) {
+                console.log('📱 Launch check: Clipboard read failed:', e.message);
+                return true; // Proceed on error
+            }
+        }
+        
+        // Context for modal button handlers
+        let pendingLaunchContext = null;
+        
+        function showRecordBeforeLaunchModal(sourceGame, targetGame, result, clipboardText, targetGameId, resolve) {
+            // Store context for button handlers
+            pendingLaunchContext = { result, clipboardText, targetGameId, resolve };
+            
+            showGenericSheet({
+                title: `📋 Record ${sourceGame?.name || 'Game'} First?`,
+                content: `
+                    <div style="padding: 16px; text-align: center;">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px;">${sourceGame?.icon || '🎮'}</div>
+                        <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                            You have <strong>${sourceGame?.name}</strong> results ready to record.
+                        </p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button onclick="recordAndLaunch()" style="
+                                width: 100%;
+                                padding: 14px;
+                                background: var(--accent-purple);
+                                border: none;
+                                border-radius: 10px;
+                                color: white;
+                                font-size: 1rem;
+                                font-weight: 600;
+                                cursor: pointer;
+                            ">
+                                ✓ Record & Play ${targetGame?.name || 'Game'}
+                            </button>
+                            
+                            <button onclick="skipRecordAndLaunch()" style="
+                                width: 100%;
+                                padding: 14px;
+                                background: var(--bg-tertiary);
+                                border: 1px solid var(--border);
+                                border-radius: 10px;
+                                color: var(--text-secondary);
+                                font-size: 1rem;
+                                cursor: pointer;
+                            ">
+                                Skip for now
+                            </button>
+                        </div>
+                    </div>
+                `,
+                onClose: () => {
+                    // If they dismiss by tapping overlay, proceed to game
+                    if (pendingLaunchContext) {
+                        pendingLaunchContext.resolve(true);
+                        pendingLaunchContext = null;
+                    }
+                }
+            });
+        }
+        
+        function recordAndLaunch() {
+            const ctx = pendingLaunchContext;
+            if (ctx?.result) {
+                const game = GAMES[ctx.result.gameId];
+                if (logGame(ctx.result, 'intercept')) {
+                    lastProcessedClipboard = ctx.clipboardText;
+                    showToast(`${game?.icon || '🎮'} ${game?.name} recorded!`, 'success');
+                    renderAll();
+                }
+            }
+            closeGenericSheet();
+            if (ctx) {
+                ctx.resolve(true); // Proceed to target game
+                pendingLaunchContext = null;
+            }
+        }
+        
+        function skipRecordAndLaunch() {
+            closeGenericSheet();
+            if (pendingLaunchContext) {
+                pendingLaunchContext.resolve(true); // Proceed to target game
+                pendingLaunchContext = null;
+            }
+        }
+        
         // Show the tap-to-log card when user returns to app
         function showTapToLogCard(game = null) {
             const card = document.getElementById('tap-to-log-card');
@@ -20064,11 +20405,18 @@ Made with ❤️ for puzzle enthusiasts`;
         async function checkClipboardOnReturn() {
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             
-            // On iOS, we need a user gesture to read clipboard
-            // So we show tap-to-log card and let that handle the comparison
+            // On iOS, we can't read clipboard without a user gesture
+            // Instead of guessing (showing tap-to-log), defer until a gesture occurs
+            // The gesture will either be a game card tap (hard gate) or browsing (subtle nudge)
             if (isIOS) {
-                console.log('📋 Return (iOS): Showing tap-to-log for user gesture');
-                showTapToLogCardForClipboardCheck();
+                // Only set pending if we have a launched game context
+                if (lastLaunchedGame && !getTodayHistory()[lastLaunchedGame]) {
+                    pendingClipboardCheck = true;
+                    clipboardCheckCompletedThisReturn = false;
+                    console.log('📋 Return (iOS): Deferring clipboard check until gesture');
+                } else {
+                    console.log('📋 Return (iOS): No pending game or already logged, skipping');
+                }
                 return;
             }
             
@@ -20672,6 +21020,9 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function switchTab(tab) {
+            // iOS gesture-deferred clipboard check (subtle nudge)
+            checkClipboardOnGesture('tab-switch');
+            
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.nav-tab[data-tab="${tab}"]`).classList.add('active');
             
@@ -20802,7 +21153,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.12) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.13) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -23011,7 +23362,7 @@ Made with ❤️ for puzzle enthusiasts`;
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.12) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.13) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -25469,10 +25820,17 @@ Made with ❤️ for puzzle enthusiasts`;
                     // This lets us detect if user copied something new while away
                     captureClipboardOnLeave();
                     
+                    // Reset iOS gesture-deferred clipboard check flags
+                    pendingClipboardCheck = false;
+                    clipboardCheckCompletedThisReturn = false;
+                    
                     // Stop clipboard monitoring when app goes to background
                     stopClipboardMonitor();
                     // Hide tap-to-log when leaving
                     hideTapToLogCard();
+                    // Also hide clipboard nudge
+                    const nudge = document.getElementById('clipboard-nudge');
+                    if (nudge) nudge.style.display = 'none';
                 }
             });
             
@@ -25517,7 +25875,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.12 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.13 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
