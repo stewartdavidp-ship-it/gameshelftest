@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.25">
+    <meta name="version" content="1.2.26">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7821,7 +7821,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.25</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.26</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -8066,7 +8066,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.25</div>
+            <div class="settings-version">Game Shelf PWA v1.2.26</div>
         </div>
     </div>
     
@@ -8268,7 +8268,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.25) -->
+        <!-- Stats Screen (v1.2.26) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9124,7 +9124,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.25) -->
+    <!-- Score Conflict Modal (v1.2.26) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9160,7 +9160,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.25 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.26 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -16229,7 +16229,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.25: Optional third button (for View Stats)
+            // v1.2.26: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16343,7 +16343,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.25';
+            const version = '1.2.26';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18523,7 +18523,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.25) ============
+        // ============ STATS SCREEN (v1.2.26) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19113,7 +19113,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.25'
+                    appVersion: '1.2.26'
                 }
             };
             
@@ -22144,13 +22144,15 @@ Slate hint levels (5-letter word for each row):
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.25) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.26) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
         let ocrWorker = null; // Tesseract worker instance
         
         async function handleRecordGame() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            
             try {
                 // Try the modern clipboard API first (supports images)
                 if (navigator.clipboard && navigator.clipboard.read) {
@@ -22183,12 +22185,19 @@ Slate hint levels (5-letter word for each row):
                         return;
                         
                     } catch (readErr) {
-                        // clipboard.read() failed, try fallback to readText
+                        // clipboard.read() failed
+                        // On iOS, user already saw paste popup, don't trigger another with readText
+                        if (isIOS) {
+                            console.log('clipboard.read() failed on iOS, not retrying:', readErr.message);
+                            showToast('📋 Could not read clipboard', 'error');
+                            setTimeout(() => openLogSheet(), 800);
+                            return;
+                        }
                         console.log('clipboard.read() failed, trying readText:', readErr.message);
                     }
                 }
                 
-                // Fallback to text-only clipboard
+                // Fallback to text-only clipboard (non-iOS only, or if read() not supported)
                 if (navigator.clipboard && navigator.clipboard.readText) {
                     const text = await navigator.clipboard.readText();
                     if (text && text.trim().length > 0) {
@@ -24353,7 +24362,7 @@ Slate hint levels (5-letter word for each row):
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.25) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.26) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -26867,7 +26876,7 @@ Slate hint levels (5-letter word for each row):
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.25 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.26 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
