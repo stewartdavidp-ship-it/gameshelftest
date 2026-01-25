@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.42">
+    <meta name="version" content="1.2.43">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8000,7 +8000,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.42</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.43</span>
             </div>
         </div>
         <div class="header-right">
@@ -8252,7 +8252,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.42</div>
+            <div class="settings-version">Game Shelf PWA v1.2.43</div>
         </div>
     </div>
     
@@ -8454,7 +8454,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.42) -->
+        <!-- Stats Screen (v1.2.43) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9310,7 +9310,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.42) -->
+    <!-- Score Conflict Modal (v1.2.43) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9346,7 +9346,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.42 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.43 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -16468,7 +16468,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.42: Optional third button (for View Stats)
+            // v1.2.43: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16582,7 +16582,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.42';
+            const version = '1.2.43';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18758,11 +18758,13 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function renderWallet() {
-            document.getElementById('token-count').textContent = appData.wallet.tokens || 0;
-            document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
+            const tokenEl = document.getElementById('token-count');
+            const coinEl = document.getElementById('coin-count');
+            if (tokenEl) tokenEl.textContent = appData.wallet.tokens || 0;
+            if (coinEl) coinEl.textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.42) ============
+        // ============ STATS SCREEN (v1.2.43) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19370,7 +19372,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.42'
+                    appVersion: '1.2.43'
                 }
             };
             
@@ -23158,7 +23160,7 @@ Hint levels:
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.42) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.43) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -25376,7 +25378,7 @@ Hint levels:
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.42) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.43) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -27890,7 +27892,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.42 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.43 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
