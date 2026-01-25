@@ -1,29 +1,26 @@
-Game Shelf v1.2.31
+Game Shelf v1.2.36
 ==================
 Release Date: January 25, 2026
 
-EXPANDED HINT SUPPORT - 17 GAMES!
----------------------------------
-Added hint support for 9 more games:
+UI REDESIGN - CLEANER LAYOUT
+-----------------------------
+Removed floating action buttons, added action bar:
 
-NYT:
-- Letterboxed 📦
+Before:
+- Floating hint button (FAB) - cluttering UI
+- Floating share button (FAB) - cluttering UI  
+- Tokens/coins in header - crowded
 
-LinkedIn (all 5):
-- Queens 👑
-- Tango 💃
-- Pinpoint 📍
-- Crossclimb 🧗
-- Zip ⚡
+After:
+- Clean action bar below header with:
+  • 📤 Share button (badge shows games played today)
+  • 💡 Hints button (pulses when game data available)
+  • 💎🪙 Wallet display (inline, clean)
 
-Other Popular:
-- Quordle 4️⃣
-- Contexto 🎯
+Benefits:
+- Less visual clutter
+- Easier to find actions
+- More modern look
+- Better mobile experience
 
-Total games with hints: 17 (was 8)
-
-Previous: v1.2.30
-- Fixed AI hint output (no more reasoning/thinking shown)
-
-Previous: v1.2.29
-- Fixed hint game detection priority
+Previous: v1.2.35 - Hint UI categories, scrollable picker

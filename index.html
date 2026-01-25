@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.31">
+    <meta name="version" content="1.2.36">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -154,14 +154,105 @@
         }
         
         .wallet-display {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.8rem;
+            display: none; /* Moved to menu */
         }
         
         .tokens { color: var(--accent-purple); }
         .coins { color: var(--accent-gold); }
+        
+        /* Quick Action Bar - below header */
+        .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            gap: 8px;
+        }
+        
+        .action-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .action-btn:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent-purple);
+        }
+        
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+        
+        .action-btn.highlight {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(102, 126, 234, 0.2));
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
+        }
+        
+        .action-btn.highlight.pulse {
+            animation: action-btn-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes action-btn-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(139, 92, 246, 0); }
+        }
+        
+        .action-btn-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--accent-green);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        
+        .action-btn-badge.hint {
+            background: var(--accent-orange);
+        }
+        
+        .wallet-inline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
         
         .menu-btn {
             background: none;
@@ -697,6 +788,7 @@
         
         /* Floating Action Button for Share */
         .share-fab {
+            display: none !important; /* Replaced by action bar button */
             position: fixed;
             bottom: 90px;
             right: 20px;
@@ -710,14 +802,13 @@
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
             z-index: 100;
-            display: none;
             align-items: center;
             justify-content: center;
             transition: transform 0.2s, box-shadow 0.2s;
         }
         
         .share-fab.visible {
-            display: flex;
+            display: none !important; /* Replaced by action bar button */
         }
         
         .share-fab:active {
@@ -3341,6 +3432,7 @@
         
         /* ============ HINT FAB & SHEET ============ */
         .hint-fab {
+            display: none; /* Replaced by action bar button */
             position: fixed;
             bottom: calc(160px + var(--safe-bottom));
             right: 20px;
@@ -3354,7 +3446,6 @@
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
             z-index: 100;
-            display: flex;
             align-items: center;
             justify-content: center;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -3680,6 +3771,26 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
+            align-items: center;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        .hint-chip-category {
+            width: 100%;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .hint-chip-category:first-child {
+            margin-top: 0;
         }
         
         .hint-game-chip {
@@ -7850,16 +7961,32 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.31</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.36</span>
         </div>
         <div class="header-right">
-            <div class="wallet-display">
-                <span class="tokens">💎 <span id="token-count">0</span></span>
-                <span class="coins">🪙 <span id="coin-count">0</span></span>
-            </div>
             <button class="menu-btn" onclick="toggleSettingsMenu()">☰</button>
         </div>
     </header>
+    
+    <!-- Quick Action Bar -->
+    <div class="action-bar" id="action-bar">
+        <div class="action-bar-left">
+            <button class="action-btn" id="share-action-btn" onclick="quickShareRecap()" title="Share Today's Results">
+                📤 Share
+                <span class="action-btn-badge" id="share-action-badge" style="display: none;">0</span>
+            </button>
+            <button class="action-btn" id="hint-action-btn" onclick="openHintSheet()" title="Get AI Hints">
+                💡 Hints
+                <span class="action-btn-badge hint" id="hint-action-badge" style="display: none;">!</span>
+            </button>
+        </div>
+        <div class="action-bar-right">
+            <div class="wallet-inline">
+                <span class="tokens">💎 <span id="token-count">0</span></span>
+                <span class="coins">🪙 <span id="coin-count">0</span></span>
+            </div>
+        </div>
+    </div>
     
     <!-- Settings Overlay -->
     <div class="settings-overlay" id="settings-overlay" onclick="toggleSettingsMenu()"></div>
@@ -8095,7 +8222,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.31</div>
+            <div class="settings-version">Game Shelf PWA v1.2.36</div>
         </div>
     </div>
     
@@ -8297,7 +8424,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.31) -->
+        <!-- Stats Screen (v1.2.36) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9153,7 +9280,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.31) -->
+    <!-- Score Conflict Modal (v1.2.36) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9189,7 +9316,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.31 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.36 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9453,19 +9580,54 @@ Wordle 1,234 3/6
             <div class="hint-other-games">
                 <div class="hint-other-games-title">Or get hints for other games:</div>
                 <div class="hint-game-chips" id="hint-game-chips">
+                    <!-- NYT Games -->
+                    <div class="hint-chip-category">NYT</div>
                     <div class="hint-game-chip" onclick="selectHintGame('connections')">🔗 Connections</div>
                     <div class="hint-game-chip" onclick="selectHintGame('wordle')">🟩 Wordle</div>
                     <div class="hint-game-chip" onclick="selectHintGame('strands')">🔵 Strands</div>
                     <div class="hint-game-chip" onclick="selectHintGame('spellingbee')">🐝 Spelling Bee</div>
                     <div class="hint-game-chip" onclick="selectHintGame('mini')">📰 Mini</div>
                     <div class="hint-game-chip" onclick="selectHintGame('letterboxed')">📦 Letterboxed</div>
+                    <!-- LinkedIn Games -->
+                    <div class="hint-chip-category">LinkedIn</div>
                     <div class="hint-game-chip" onclick="selectHintGame('queens')">👑 Queens</div>
                     <div class="hint-game-chip" onclick="selectHintGame('tango')">💃 Tango</div>
                     <div class="hint-game-chip" onclick="selectHintGame('pinpoint')">📍 Pinpoint</div>
                     <div class="hint-game-chip" onclick="selectHintGame('crossclimb')">🧗 Crossclimb</div>
                     <div class="hint-game-chip" onclick="selectHintGame('zip')">⚡ Zip</div>
+                    <!-- Wordle Variants -->
+                    <div class="hint-chip-category">Wordle+</div>
                     <div class="hint-game-chip" onclick="selectHintGame('quordle')">4️⃣ Quordle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('octordle')">8️⃣ Octordle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('dordle')">2️⃣ Dordle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('waffle')">🧇 Waffle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('nerdle')">🧮 Nerdle</div>
+                    <!-- Geography -->
+                    <div class="hint-chip-category">Geography</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('worldle')">🌍 Worldle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('globle')">🌎 Globle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('tradle')">🚢 Tradle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('travle')">✈️ Travle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('wheretaken')">📸 WhereTaken</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('foodguessr')">🍕 FoodGuessr</div>
+                    <!-- Entertainment -->
+                    <div class="hint-chip-category">Movies & Music</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('framed')">🎬 Framed</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('actorle')">🎭 Actorle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('moviedle')">🎥 Moviedle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('heardle')">🎵 Heardle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('bandle')">🎸 Bandle</div>
+                    <!-- Word/Semantic -->
+                    <div class="hint-chip-category">Word Games</div>
                     <div class="hint-game-chip" onclick="selectHintGame('contexto')">🎯 Contexto</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('redactle')">█ Redactle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('semantle')">🧠 Semantle</div>
+                    <!-- Other -->
+                    <div class="hint-chip-category">Other</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('immaculate-grid')">⚾ Immaculate Grid</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('costcodle')">🛒 Costcodle</div>
+                    <!-- GS Originals -->
+                    <div class="hint-chip-category">Game Shelf</div>
                     <div class="hint-game-chip" onclick="selectHintGame('quotle')">💬 Quotle</div>
                     <div class="hint-game-chip" onclick="selectHintGame('rungs')">🪜 Rungs</div>
                     <div class="hint-game-chip" onclick="selectHintGame('slate')">📝 Slate</div>
@@ -16270,7 +16432,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.31: Optional third button (for View Stats)
+            // v1.2.36: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16384,7 +16546,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.31';
+            const version = '1.2.36';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18564,7 +18726,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.31) ============
+        // ============ STATS SCREEN (v1.2.36) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -18775,12 +18937,26 @@ Made with ❤️ for puzzle enthusiasts`;
                 shareBtn.style.display = played > 0 ? 'flex' : 'none';
             }
             
-            // Show/hide floating share button (FAB)
+            // Show/hide floating share button (FAB) - deprecated, now using action bar
             const fab = document.getElementById('share-fab');
             const fabBadge = document.getElementById('share-fab-badge');
             if (fab) {
                 fab.classList.toggle('visible', played > 0);
                 if (fabBadge) fabBadge.textContent = played;
+            }
+            
+            // Update action bar share button
+            const shareActionBtn = document.getElementById('share-action-btn');
+            const shareActionBadge = document.getElementById('share-action-badge');
+            if (shareActionBtn && shareActionBadge) {
+                if (played > 0) {
+                    shareActionBadge.textContent = played;
+                    shareActionBadge.style.display = 'flex';
+                    shareActionBtn.classList.add('highlight');
+                } else {
+                    shareActionBadge.style.display = 'none';
+                    shareActionBtn.classList.remove('highlight');
+                }
             }
             
             if (played === 0) {
@@ -19154,7 +19330,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.31'
+                    appVersion: '1.2.36'
                 }
             };
             
@@ -20499,12 +20675,16 @@ Keep levels 1-4 under 15 words.`
 3. NO explanations, NO reasoning, NO preamble
 4. Start your response with the hint directly
 
-Wordle hint levels (5-letter word):
+Wordle: Guess the 5-letter word in 6 tries.
+
+Hint levels:
 1-2: Vague. Example: "Common everyday word"
 3-4: Category. Example: "Related to cooking"
-5-6: Letter structure. Example: "Has double letters" or "Starts with vowel"
+5-6: Letter structure. Example: "Has double letters, starts with vowel"
 7-8: Specific letters. Example: "Contains A and R, ends in E"
-9-10: The word itself`
+9-10: The word itself
+
+Keep levels 1-4 under 8 words.`
             },
             strands: {
                 id: 'strands', name: 'Strands', icon: '🔵',
@@ -20517,12 +20697,16 @@ Wordle hint levels (5-letter word):
 3. NO explanations, NO reasoning, NO preamble
 4. Start your response with the hint directly
 
-Strands hint levels:
+Strands: Find themed words in a letter grid, plus one spangram.
+
+Hint levels:
 1-2: Vague theme. Example: "Things you find outdoors"
-3-4: Specific theme. Example: "Garden tools"
-5-6: Spangram hint. Example: "Two-word compound about planting"
-7-8: Spangram + some words
-9-10: Full solution with all words`
+3-4: Specific theme. Example: "Garden tools and equipment"
+5-6: Spangram hint. Example: "Spangram is two words about planting"
+7-8: Spangram + some words. Example: "GREENTHUMB, plus RAKE, SHOVEL"
+9-10: Full solution with all words
+
+Keep levels 1-4 under 10 words.`
             },
             spellingbee: {
                 id: 'spellingbee', name: 'Spelling Bee', icon: '🐝',
@@ -20536,12 +20720,16 @@ Strands hint levels:
 3. NO explanations, NO reasoning, NO preamble
 4. Start your response with the hint directly
 
-Spelling Bee hint levels:
+Spelling Bee: Make words using 7 letters, must include center letter.
+
+Hint levels:
 1-2: Word count only. Example: "42 words total, 1 pangram"
 3-4: Pangram theme. Example: "Pangram relates to weather"
-5-6: The pangram word(s)
-7-8: Hard words starting with specific letter
-9-10: Full word list`
+5-6: The pangram word(s). Example: "Pangram is THUNDERSTORM"
+7-8: Hard words for a letter. Example: "T words: TORRENT, THROAT, TOOT"
+9-10: Full word list
+
+Keep levels 1-4 under 10 words.`
             },
             mini: {
                 id: 'mini', name: 'Mini Crossword', icon: '📰',
@@ -20555,10 +20743,16 @@ Spelling Bee hint levels:
 3. NO explanations, NO reasoning, NO preamble
 4. Start your response with the hint directly
 
-Mini Crossword hint levels:
-1-4: Category hint. Example: "Think geography"
-5-7: Letter hints. Example: "5 letters, starts with M"
-8-10: The answer`
+Mini Crossword: 5x5 crossword with simple clues.
+
+Hint levels:
+1-2: Vague category. Example: "Think geography"
+3-4: Specific category. Example: "A European capital"
+5-6: Letter count + hint. Example: "5 letters, starts with P"
+7-8: More letters. Example: "P_R_S"
+9-10: The answer
+
+Keep levels 1-4 under 10 words.`
             },
             quotle: {
                 id: 'quotle', name: 'Quotle', icon: '💬',
@@ -20570,12 +20764,16 @@ Mini Crossword hint levels:
 3. NO explanations, NO reasoning, NO preamble
 4. Start your response with the hint directly
 
-Quotle hint levels (guess who said the quote):
+Quotle: Guess who said a famous quote.
+
+Hint levels:
 1-2: Era. Example: "Said in the 20th century"
-3-4: Field. Example: "From politics"
+3-4: Field. Example: "From the world of politics"
 5-6: Nationality/gender. Example: "American woman"
-7-8: First name or initials hint
-9-10: Full name`
+7-8: Name hint. Example: "First name starts with E, last name R"
+9-10: Full name
+
+Keep levels 1-4 under 8 words.`
             },
             rungs: {
                 id: 'rungs', name: 'Rungs', icon: '🪜',
@@ -20609,10 +20807,16 @@ NEVER give pairs at levels 1-6. Max 15 words for levels 1-4.`
 3. NO explanations, NO reasoning, NO preamble
 4. Start your response with the hint directly
 
-Slate hint levels (5-letter word):
-1-4: Category. Example: "Think animals"
-5-7: Letter hints. Example: "Starts with B, has double letter"
-8-10: The word`
+Slate: Guess 5-letter words for each row based on clues.
+
+Hint levels:
+1-2: Vague category. Example: "Think animals"
+3-4: Specific category. Example: "A farm animal"
+5-6: Letter structure. Example: "Starts with H, 5 letters"
+7-8: More letters. Example: "H_R_E"
+9-10: The word
+
+Keep levels 1-4 under 10 words.`
             },
             // === NYT ADDITIONAL ===
             letterboxed: {
@@ -20629,11 +20833,13 @@ Slate hint levels (5-letter word):
 Letterboxed: Use all 12 letters, alternating sides, in fewest words.
 
 Hint levels:
-1-2: General strategy. Example: "Look for a long word using uncommon letters"
-3-4: Letter focus. Example: "Start with the Q or X"
-5-6: First word hint. Example: "First word starts with QU"
-7-8: First word revealed
-9-10: Complete solution (both/all words)`
+1-2: General strategy. Example: "Look for long words with uncommon letters"
+3-4: Letter focus. Example: "Try starting with Q or X"
+5-6: First word hint. Example: "First word starts with QU, 7 letters"
+7-8: First word revealed. Example: "Start with SEQUOIA"
+9-10: Complete solution with all words
+
+Keep levels 1-4 under 12 words.`
             },
             // === LINKEDIN GAMES ===
             queens: {
@@ -20651,10 +20857,12 @@ Queens: Place queens so each row, column, and color region has exactly one.
 
 Hint levels:
 1-2: Strategy. Example: "Start with the smallest color region"
-3-4: Region hint. Example: "The pink region's queen goes in row 3"
-5-6: Two specific placements
-7-8: Half the board solved
-9-10: Full solution`
+3-4: Region hint. Example: "Pink region's queen goes in row 3"
+5-6: Two placements. Example: "Pink: row 3, col 2. Blue: row 1, col 5"
+7-8: Half the board. Example: "Pink R3C2, Blue R1C5, Green R4C1, Yellow R2C4"
+9-10: Full solution with all placements
+
+Keep levels 1-4 under 12 words.`
             },
             tango: {
                 id: 'tango', name: 'Tango', icon: '💃',
@@ -20670,11 +20878,13 @@ Hint levels:
 Tango: Fill grid with suns/moons - no 3 in a row, equal per row/column.
 
 Hint levels:
-1-2: Strategy. Example: "Look for rows that already have 2 suns together"
+1-2: Strategy. Example: "Look for rows with 2 suns already together"
 3-4: Specific cell. Example: "Row 2, Column 4 must be a moon"
-5-6: Full row or column
-7-8: Half the grid
-9-10: Full solution`
+5-6: Full row. Example: "Row 1: sun, moon, sun, moon, sun, moon"
+7-8: Half the grid. Example: "Rows 1-3 complete: [pattern]"
+9-10: Full solution
+
+Keep levels 1-4 under 12 words.`
             },
             pinpoint: {
                 id: 'pinpoint', name: 'Pinpoint', icon: '📍',
@@ -20779,6 +20989,403 @@ Hint levels:
 5-6: Specific category. Example: "Part of a house"
 7-8: Very close. Example: "Where you sleep"
 9-10: The answer`
+            },
+            // === MORE WORDLE VARIANTS ===
+            octordle: {
+                id: 'octordle', name: 'Octordle', icon: '8️⃣',
+                startDate: '2022-01-01', needsInput: true,
+                inputLabel: "Which board? (1-8)", inputPlaceholder: "e.g., 5",
+                searchQuery: (date) => `Octordle ${date} answers`,
+                hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answers" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Octordle: Solve 8 Wordles simultaneously in 13 guesses.
+
+Hint levels:
+1-2: Vague. Example: "Board 5 is a common verb"
+3-4: Category. Example: "Board 5 relates to movement"
+5-6: Letter structure. Example: "Board 5 has double letters"
+7-8: Specific letters. Example: "Board 5 starts with W, ends in K"
+9-10: The word`
+            },
+            dordle: {
+                id: 'dordle', name: 'Dordle', icon: '2️⃣',
+                startDate: '2022-01-01', needsInput: true,
+                inputLabel: "Which side? (left/right)", inputPlaceholder: "e.g., left",
+                searchQuery: (date) => `Dordle ${date} answers`,
+                hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answers" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Dordle: Solve 2 Wordles simultaneously in 7 guesses.
+
+Hint levels:
+1-2: Vague. Example: "Left word is a noun"
+3-4: Category. Example: "Left word is an animal"
+5-6: Letter structure. Example: "Left word starts with vowel"
+7-8: Specific letters. Example: "Left word is _A_ER"
+9-10: The word`
+            },
+            waffle: {
+                id: 'waffle', name: 'Waffle', icon: '🧇',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Waffle game ${date} answers`,
+                hintDescs: { low: "Word hints", mid: "Swap hints", high: "Solution" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Waffle: Swap letters to form 6 words in a grid (3 horizontal, 3 vertical).
+
+Hint levels:
+1-2: One word hint. Example: "Top row is a color"
+3-4: Two word hints. Example: "Top row: color. Middle row: animal"
+5-6: Specific swap. Example: "Swap A in row 1, col 3 with E in row 3, col 3"
+7-8: Multiple swaps. Example: "Swap A↔E (r1c3, r3c3), swap O↔I (r2c1, r2c5)"
+9-10: All 6 words
+
+Keep levels 1-4 under 12 words.`
+            },
+            nerdle: {
+                id: 'nerdle', name: 'Nerdle', icon: '🧮',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Nerdle ${date} answer equation`,
+                hintDescs: { low: "Operation hints", mid: "Number hints", high: "Equation" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Nerdle: Guess the 8-character math equation in 6 tries.
+
+Hint levels:
+1-2: Operation hint. Example: "Uses multiplication"
+3-4: Structure hint. Example: "Two-digit times one-digit"
+5-6: Partial numbers. Example: "Starts with 1, result is two digits"
+7-8: Most of equation. Example: "1? * 7 = ??"
+9-10: Full equation`
+            },
+            // === GEOGRAPHY GAMES ===
+            worldle: {
+                id: 'worldle', name: 'Worldle', icon: '🌍',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Worldle ${date} answer country`,
+                hintDescs: { low: "Region hints", mid: "Continent hints", high: "Country" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Worldle: Guess the country from its silhouette shape.
+
+Hint levels:
+1-2: Hemisphere. Example: "Northern hemisphere"
+3-4: Continent. Example: "In Africa"
+5-6: Region. Example: "West African coast"
+7-8: Neighbors. Example: "Borders Nigeria and Benin"
+9-10: The country
+
+Keep levels 1-4 under 6 words.`
+            },
+            globle: {
+                id: 'globle', name: 'Globle', icon: '🌎',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Globle ${date} answer country`,
+                hintDescs: { low: "Region hints", mid: "Proximity hints", high: "Country" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Globle: Guess the country using proximity clues (warmer = closer).
+
+Hint levels:
+1-2: Hemisphere. Example: "Southern hemisphere"
+3-4: Continent. Example: "In South America"
+5-6: Region. Example: "Southern cone region"
+7-8: Specific area. Example: "Between Chile and Brazil"
+9-10: The country
+
+Keep levels 1-4 under 6 words.`
+            },
+            tradle: {
+                id: 'tradle', name: 'Tradle', icon: '🚢',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Tradle ${date} answer country exports`,
+                hintDescs: { low: "Economy hints", mid: "Region hints", high: "Country" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Tradle: Guess the country from its export treemap.
+
+Hint levels:
+1-2: Economy type. Example: "Oil-based economy"
+3-4: Region. Example: "Middle Eastern country"
+5-6: Specific hint. Example: "Persian Gulf nation"
+7-8: Narrowed down. Example: "Small gulf state, not Saudi"
+9-10: The country`
+            },
+            travle: {
+                id: 'travle', name: 'Travle', icon: '✈️',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Travle ${date} answer path countries`,
+                hintDescs: { low: "Region hints", mid: "Path hints", high: "Solution" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Travle: Find the shortest path between two countries through bordering nations.
+
+Hint levels:
+1-2: General direction. Example: "Path goes through Europe"
+3-4: Key country. Example: "You must pass through Germany"
+5-6: Two countries. Example: "Path includes Germany and Poland"
+7-8: Most of path. Example: "France → Germany → Poland → ?"
+9-10: Complete optimal path
+
+Keep levels 1-4 under 10 words.`
+            },
+            // === ENTERTAINMENT ===
+            framed: {
+                id: 'framed', name: 'Framed', icon: '🎬',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Framed game ${date} answer movie`,
+                hintDescs: { low: "Genre hints", mid: "Era/actor hints", high: "Movie" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Framed: Guess the movie from still frames (6 guesses, more frames revealed).
+
+Hint levels:
+1-2: Genre. Example: "It's a sci-fi film"
+3-4: Era/decade. Example: "Released in the 2010s"
+5-6: Actor/director. Example: "Stars Tom Hanks"
+7-8: Plot hint. Example: "About a stranded astronaut"
+9-10: The movie title
+
+Keep levels 1-4 under 8 words.`
+9-10: The movie title`
+            },
+            actorle: {
+                id: 'actorle', name: 'Actorle', icon: '🎭',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Actorle ${date} answer actor`,
+                hintDescs: { low: "Era hints", mid: "Genre/role hints", high: "Actor" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Actorle: Guess the actor from their filmography clues.
+
+Hint levels:
+1-2: Era. Example: "Active since the 1990s"
+3-4: Genre. Example: "Known for action movies"
+5-6: Famous role hint. Example: "Played a superhero"
+7-8: Specific movie. Example: "Starred in The Matrix"
+9-10: The actor's name`
+            },
+            moviedle: {
+                id: 'moviedle', name: 'Moviedle', icon: '🎥',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Moviedle ${date} answer movie`,
+                hintDescs: { low: "Genre hints", mid: "Era/cast hints", high: "Movie" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Moviedle: Guess the movie from a sped-up version of the entire film.
+
+Hint levels:
+1-2: Genre. Example: "It's a comedy"
+3-4: Era. Example: "From the 2000s"
+5-6: Cast hint. Example: "Features Will Ferrell"
+7-8: Plot hint. Example: "About a news anchor"
+9-10: The movie title`
+            },
+            heardle: {
+                id: 'heardle', name: 'Heardle', icon: '🎵',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Heardle ${date} answer song`,
+                hintDescs: { low: "Genre hints", mid: "Era/artist hints", high: "Song" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Heardle: Guess the song from its intro (more seconds revealed each guess).
+
+Hint levels:
+1-2: Genre. Example: "It's a pop song"
+3-4: Era. Example: "From the 1980s"
+5-6: Artist hint. Example: "By a British band"
+7-8: Artist name. Example: "By Queen"
+9-10: Full song title and artist`
+            },
+            bandle: {
+                id: 'bandle', name: 'Bandle', icon: '🎸',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Bandle ${date} answer song`,
+                hintDescs: { low: "Genre hints", mid: "Band hints", high: "Song" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Bandle: Guess the song as instruments are added one by one.
+
+Hint levels:
+1-2: Genre. Example: "It's a rock song"
+3-4: Era. Example: "Released in the 2010s"
+5-6: Band hint. Example: "By an American band"
+7-8: Band name. Example: "By Imagine Dragons"
+9-10: Full song title`
+            },
+            redactle: {
+                id: 'redactle', name: 'Redactle', icon: '█',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Redactle ${date} answer wikipedia article`,
+                hintDescs: { low: "Category hints", mid: "Topic hints", high: "Article" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Redactle: Guess words to reveal a redacted Wikipedia article.
+
+Hint levels:
+1-2: Broad category. Example: "It's about a person"
+3-4: Specific category. Example: "A historical figure"
+5-6: Field/era. Example: "A 20th century scientist"
+7-8: Narrowed down. Example: "Nobel Prize winner in physics"
+9-10: The article subject`
+            },
+            semantle: {
+                id: 'semantle', name: 'Semantle', icon: '🧠',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Semantle ${date} answer word`,
+                hintDescs: { low: "Category hints", mid: "Semantic hints", high: "Word" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Semantle: Guess the word using semantic similarity scores (like Contexto).
+
+Hint levels:
+1-2: Part of speech. Example: "It's a noun"
+3-4: Broad category. Example: "Related to nature"
+5-6: Specific category. Example: "A type of plant"
+7-8: Very close. Example: "Grows in forests, has bark"
+9-10: The word`
+            },
+            wheretaken: {
+                id: 'wheretaken', name: 'WhereTaken', icon: '📸',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `WhereTaken ${date} answer country location`,
+                hintDescs: { low: "Region hints", mid: "Country hints", high: "Location" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+WhereTaken: Guess where a photo was taken (country/location).
+
+Hint levels:
+1-2: Continent. Example: "Somewhere in Europe"
+3-4: Region. Example: "Western Europe"
+5-6: Country hint. Example: "A Mediterranean country"
+7-8: Country. Example: "It's in Italy"
+9-10: Specific location`
+            },
+            foodguessr: {
+                id: 'foodguessr', name: 'FoodGuessr', icon: '🍕',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `FoodGuessr ${date} answer food country`,
+                hintDescs: { low: "Cuisine hints", mid: "Region hints", high: "Dish/Country" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+FoodGuessr: Guess the origin of a food dish.
+
+Hint levels:
+1-2: Cuisine type. Example: "Asian cuisine"
+3-4: Region. Example: "Southeast Asian"
+5-6: Country hint. Example: "Uses fish sauce, rice noodles"
+7-8: Country. Example: "It's from Vietnam"
+9-10: The dish name and country`
+            },
+            'immaculate-grid': {
+                id: 'immaculate-grid', name: 'Immaculate Grid', icon: '⚾',
+                startDate: '2023-01-01', needsInput: true,
+                inputLabel: "Which cell? (e.g., Row1-Col2)", inputPlaceholder: "e.g., 1-2",
+                searchQuery: (date) => `Immaculate Grid baseball ${date} answers`,
+                hintDescs: { low: "Team/stat hints", mid: "Era hints", high: "Player" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Immaculate Grid: Name MLB players matching row/column criteria.
+
+Hint levels:
+1-2: Era hint. Example: "Look for players from the 2000s"
+3-4: Position hint. Example: "Consider pitchers"
+5-6: Team hint. Example: "Played for both Yankees and Red Sox"
+7-8: Narrowed. Example: "All-Star pitcher, 2010s, both teams"
+9-10: A valid player name`
+            },
+            costcodle: {
+                id: 'costcodle', name: 'Costcodle', icon: '🛒',
+                startDate: '2023-01-01', needsInput: false,
+                searchQuery: (date) => `Costcodle ${date} answer price`,
+                hintDescs: { low: "Category hints", mid: "Price range", high: "Price" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Costcodle: Guess the Costco price of a product.
+
+Hint levels:
+1-2: Category. Example: "It's an electronics item"
+3-4: Price range. Example: "Between $50 and $200"
+5-6: Narrower range. Example: "Around $100-$150"
+7-8: Very close. Example: "Within $20 of the answer"
+9-10: The exact price`
             }
         };
         
@@ -20793,13 +21400,20 @@ Hint levels:
         let hintLocalData = null;
         let hintLoading = false;
         
-        // Check for hint data and show/hide FAB
+        // Check for hint data and show/hide badges
         function checkHintData() {
             try {
                 const stored = localStorage.getItem('gameshelf_hint_data');
+                const hintFab = document.getElementById('hint-fab');
+                const hintFabBadge = document.getElementById('hint-fab-badge');
+                const hintActionBtn = document.getElementById('hint-action-btn');
+                const hintActionBadge = document.getElementById('hint-action-badge');
+                
                 if (!stored) {
-                    document.getElementById('hint-fab').classList.remove('has-data');
-                    document.getElementById('hint-fab-badge').style.display = 'none';
+                    if (hintFab) hintFab.classList.remove('has-data');
+                    if (hintFabBadge) hintFabBadge.style.display = 'none';
+                    if (hintActionBtn) hintActionBtn.classList.remove('highlight', 'pulse');
+                    if (hintActionBadge) hintActionBadge.style.display = 'none';
                     return null;
                 }
                 
@@ -20808,14 +21422,18 @@ Hint levels:
                 
                 // Add pulse animation if data is recent (within 24 hours)
                 if (age < 24 * 60 * 60 * 1000) {
-                    document.getElementById('hint-fab').classList.add('has-data');
-                    document.getElementById('hint-fab-badge').style.display = 'block';
+                    if (hintFab) hintFab.classList.add('has-data');
+                    if (hintFabBadge) hintFabBadge.style.display = 'block';
+                    if (hintActionBtn) hintActionBtn.classList.add('highlight', 'pulse');
+                    if (hintActionBadge) hintActionBadge.style.display = 'flex';
                     hintLocalData = data;
                     return data;
                 }
                 
-                document.getElementById('hint-fab').classList.remove('has-data');
-                document.getElementById('hint-fab-badge').style.display = 'none';
+                if (hintFab) hintFab.classList.remove('has-data');
+                if (hintFabBadge) hintFabBadge.style.display = 'none';
+                if (hintActionBtn) hintActionBtn.classList.remove('highlight', 'pulse');
+                if (hintActionBadge) hintActionBadge.style.display = 'none';
                 return null;
             } catch (e) {
                 console.warn('Could not read hint data:', e);
@@ -20863,9 +21481,31 @@ Hint levels:
                 'quotle': 'quotle',
                 'rungs': 'rungs',
                 'slate': 'slate',
-                // Other popular
+                // Wordle variants
                 'quordle': 'quordle',
-                'contexto': 'contexto'
+                'octordle': 'octordle',
+                'dordle': 'dordle',
+                'waffle': 'waffle',
+                'nerdle': 'nerdle',
+                // Geography
+                'worldle': 'worldle',
+                'globle': 'globle',
+                'tradle': 'tradle',
+                'travle': 'travle',
+                'wheretaken': 'wheretaken',
+                'foodguessr': 'foodguessr',
+                // Entertainment
+                'framed': 'framed',
+                'actorle': 'actorle',
+                'moviedle': 'moviedle',
+                'heardle': 'heardle',
+                'bandle': 'bandle',
+                // Other
+                'contexto': 'contexto',
+                'redactle': 'redactle',
+                'semantle': 'semantle',
+                'immaculate-grid': 'immaculate-grid',
+                'costcodle': 'costcodle'
             };
             
             // Determine the hint game based on priority:
@@ -22490,7 +23130,7 @@ Hint levels:
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.31) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.36) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -24708,7 +25348,7 @@ Hint levels:
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.31) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.36) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -27222,7 +27862,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.31 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.36 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
