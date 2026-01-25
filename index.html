@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.27">
+    <meta name="version" content="1.2.31">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -3578,6 +3578,35 @@
         
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        
+        .hint-get-btn.loading {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            animation: hint-btn-pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes hint-btn-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(0.98); }
+        }
+        
+        .hint-loading-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .hint-loading-dots::after {
+            content: '';
+            animation: hint-dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes hint-dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
         }
         
         .hint-result {
@@ -7821,7 +7850,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.27</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.31</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -8066,7 +8095,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.27</div>
+            <div class="settings-version">Game Shelf PWA v1.2.31</div>
         </div>
     </div>
     
@@ -8268,7 +8297,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.27) -->
+        <!-- Stats Screen (v1.2.31) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9124,7 +9153,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.27) -->
+    <!-- Score Conflict Modal (v1.2.31) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9160,7 +9189,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.27 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.31 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9429,6 +9458,14 @@ Wordle 1,234 3/6
                     <div class="hint-game-chip" onclick="selectHintGame('strands')">🔵 Strands</div>
                     <div class="hint-game-chip" onclick="selectHintGame('spellingbee')">🐝 Spelling Bee</div>
                     <div class="hint-game-chip" onclick="selectHintGame('mini')">📰 Mini</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('letterboxed')">📦 Letterboxed</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('queens')">👑 Queens</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('tango')">💃 Tango</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('pinpoint')">📍 Pinpoint</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('crossclimb')">🧗 Crossclimb</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('zip')">⚡ Zip</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('quordle')">4️⃣ Quordle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('contexto')">🎯 Contexto</div>
                     <div class="hint-game-chip" onclick="selectHintGame('quotle')">💬 Quotle</div>
                     <div class="hint-game-chip" onclick="selectHintGame('rungs')">🪜 Rungs</div>
                     <div class="hint-game-chip" onclick="selectHintGame('slate')">📝 Slate</div>
@@ -16233,7 +16270,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.27: Optional third button (for View Stats)
+            // v1.2.31: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16347,7 +16384,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.27';
+            const version = '1.2.31';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18527,7 +18564,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.27) ============
+        // ============ STATS SCREEN (v1.2.31) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19117,7 +19154,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.27'
+                    appVersion: '1.2.31'
                 }
             };
             
@@ -20434,30 +20471,39 @@ Made with ❤️ for puzzle enthusiasts`;
                 startDate: '2023-06-12', needsInput: false,
                 searchQuery: (date) => `NYT Connections ${date} puzzle answers`,
                 hintDescs: { low: "Vague category hints", mid: "Theme + partial words", high: "Full categories" },
-                systemPrompt: `CRITICAL: Give ONLY the hint. NO preamble. NO "I found". NO explanations. Just the hint.
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
 
 Connections: Group 16 words into 4 categories of 4.
 
-STRICT hint levels:
-1-2: Ultra vague, ONE category. Example: "One relates to nature" (under 10 words)
-3-4: General theme for ONE category. Example: "Think about dance styles" (under 12 words)
+Hint levels:
+1-2: Ultra vague, ONE category. Example: "One group relates to nature" (under 10 words)
+3-4: Theme for ONE category. Example: "Think about dance styles" (under 12 words)
 5-6: Category name revealed. Example: "One category is BREAD TYPES"
 7-8: Category + 3 of 4 words. Example: "RYE, WHEAT, SOURDOUGH are breads"
 9-10: All four categories with all words
 
-Keep levels 1-4 under 15 words total.`
+Keep levels 1-4 under 15 words.`
             },
             wordle: {
                 id: 'wordle', name: 'Wordle', icon: '🟩',
                 startDate: '2021-06-19', needsInput: false,
                 searchQuery: (date) => `NYT Wordle ${date} answer`,
                 hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answer" },
-                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
 Wordle hint levels (5-letter word):
-1-2: Vague ("Common everyday word")
-3-4: Category ("Related to cooking")
-5-6: Letter structure ("Has double letters" or "Starts with vowel")
-7-8: Specific letters ("Contains A and R, ends in E")
+1-2: Vague. Example: "Common everyday word"
+3-4: Category. Example: "Related to cooking"
+5-6: Letter structure. Example: "Has double letters" or "Starts with vowel"
+7-8: Specific letters. Example: "Contains A and R, ends in E"
 9-10: The word itself`
             },
             strands: {
@@ -20465,11 +20511,16 @@ Wordle hint levels (5-letter word):
                 startDate: '2024-03-04', needsInput: false,
                 searchQuery: (date) => `NYT Strands ${date} theme spangram answers`,
                 hintDescs: { low: "Theme hints", mid: "Spangram hints", high: "Word reveals" },
-                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
 Strands hint levels:
-1-2: Vague theme ("Things you find outdoors")
-3-4: Specific theme ("Garden tools")
-5-6: Spangram hint ("Two-word compound")
+1-2: Vague theme. Example: "Things you find outdoors"
+3-4: Specific theme. Example: "Garden tools"
+5-6: Spangram hint. Example: "Two-word compound about planting"
 7-8: Spangram + some words
 9-10: Full solution with all words`
             },
@@ -20479,11 +20530,16 @@ Strands hint levels:
                 inputLabel: "Stuck on letter? (optional)", inputPlaceholder: "e.g., P",
                 searchQuery: (date) => `NYT Spelling Bee ${date} pangram answers`,
                 hintDescs: { low: "Pangram hints", mid: "Letter hints", high: "Word reveals" },
-                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
 Spelling Bee hint levels:
-1-2: Word count ("There are 42 words total")
-3-4: Pangram theme ("Pangram relates to weather")
-5-6: Pangram itself
+1-2: Word count only. Example: "42 words total, 1 pangram"
+3-4: Pangram theme. Example: "Pangram relates to weather"
+5-6: The pangram word(s)
 7-8: Hard words starting with specific letter
 9-10: Full word list`
             },
@@ -20493,21 +20549,31 @@ Spelling Bee hint levels:
                 inputLabel: "Which clue?", inputPlaceholder: "e.g., 1-Across",
                 searchQuery: (date) => `NYT Mini Crossword ${date} answers`,
                 hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answer" },
-                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
 Mini Crossword hint levels:
-1-4: Category hint ("Think geography")
-5-7: Letter hints ("5 letters, starts with M")
+1-4: Category hint. Example: "Think geography"
+5-7: Letter hints. Example: "5 letters, starts with M"
 8-10: The answer`
             },
             quotle: {
                 id: 'quotle', name: 'Quotle', icon: '💬',
                 hasLocalData: true, needsInput: false,
                 hintDescs: { low: "Era/field hints", mid: "Nationality hints", high: "Name hints" },
-                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
 Quotle hint levels (guess who said the quote):
-1-2: Era ("Said in the 20th century")
-3-4: Field ("From politics")
-5-6: Nationality/gender ("American woman")
+1-2: Era. Example: "Said in the 20th century"
+3-4: Field. Example: "From politics"
+5-6: Nationality/gender. Example: "American woman"
 7-8: First name or initials hint
 9-10: Full name`
             },
@@ -20515,29 +20581,204 @@ Quotle hint levels (guess who said the quote):
                 id: 'rungs', name: 'Rungs', icon: '🪜',
                 hasLocalData: true, needsInput: false,
                 hintDescs: { low: "Theme hints", mid: "Pairing hints", high: "Pair reveals" },
-                systemPrompt: `CRITICAL: Give ONLY a brief hint. NO solving. NO listing pairs. NO explanations.
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at", "The items"
+3. NO explanations, NO reasoning, NO preamble, NO analysis
+4. Start your response with the hint directly
 
 Rungs: Match 8 items into 4 pairs, order least→most.
 
-STRICT hint levels:
+Hint levels:
 1-2: ONE word theme only. Example: "Exercise"
-3-4: Theme + ordering type. Example: "Workout phases, beginning to end" (DO NOT reveal pairs)
-5-6: Hint for ONE pair only. Example: "Two words combine to mean 'prepare for exercise'"
+3-4: Theme + ordering. Example: "Workout phases, beginning to end" (NO pairs)
+5-6: ONE pair hint. Example: "Two words mean 'prepare for exercise'"
 7-8: Reveal 2 pairs explicitly
 9-10: Full solution
 
-NEVER give pairs at levels 1-6. Keep response under 15 words for levels 1-4.`
+NEVER give pairs at levels 1-6. Max 15 words for levels 1-4.`
             },
             slate: {
                 id: 'slate', name: 'Slate', icon: '📝',
                 hasLocalData: true, needsInput: true,
                 inputLabel: "Which row? (1-5)", inputPlaceholder: "e.g., 3",
                 hintDescs: { low: "Row theme", mid: "Letter hints", high: "Word reveal" },
-                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
-Slate hint levels (5-letter word for each row):
-1-4: Category ("Think animals")
-5-7: Letter hints ("Starts with B, has double letter")
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Slate hint levels (5-letter word):
+1-4: Category. Example: "Think animals"
+5-7: Letter hints. Example: "Starts with B, has double letter"
 8-10: The word`
+            },
+            // === NYT ADDITIONAL ===
+            letterboxed: {
+                id: 'letterboxed', name: 'Letterboxed', icon: '📦',
+                startDate: '2018-01-01', needsInput: false,
+                searchQuery: (date) => `NYT Letterboxed ${date} solution`,
+                hintDescs: { low: "Strategy hints", mid: "Starting word", high: "Solution" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Letterboxed: Use all 12 letters, alternating sides, in fewest words.
+
+Hint levels:
+1-2: General strategy. Example: "Look for a long word using uncommon letters"
+3-4: Letter focus. Example: "Start with the Q or X"
+5-6: First word hint. Example: "First word starts with QU"
+7-8: First word revealed
+9-10: Complete solution (both/all words)`
+            },
+            // === LINKEDIN GAMES ===
+            queens: {
+                id: 'queens', name: 'Queens', icon: '👑',
+                startDate: '2024-01-01', needsInput: false,
+                searchQuery: (date) => `LinkedIn Queens puzzle ${date} solution`,
+                hintDescs: { low: "Region hints", mid: "Placement hints", high: "Solution" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Queens: Place queens so each row, column, and color region has exactly one.
+
+Hint levels:
+1-2: Strategy. Example: "Start with the smallest color region"
+3-4: Region hint. Example: "The pink region's queen goes in row 3"
+5-6: Two specific placements
+7-8: Half the board solved
+9-10: Full solution`
+            },
+            tango: {
+                id: 'tango', name: 'Tango', icon: '💃',
+                startDate: '2024-01-01', needsInput: false,
+                searchQuery: (date) => `LinkedIn Tango puzzle ${date} solution`,
+                hintDescs: { low: "Pattern hints", mid: "Row/column hints", high: "Solution" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Tango: Fill grid with suns/moons - no 3 in a row, equal per row/column.
+
+Hint levels:
+1-2: Strategy. Example: "Look for rows that already have 2 suns together"
+3-4: Specific cell. Example: "Row 2, Column 4 must be a moon"
+5-6: Full row or column
+7-8: Half the grid
+9-10: Full solution`
+            },
+            pinpoint: {
+                id: 'pinpoint', name: 'Pinpoint', icon: '📍',
+                startDate: '2024-01-01', needsInput: true,
+                inputLabel: "Clue # stuck on? (1-5)", inputPlaceholder: "e.g., 3",
+                searchQuery: (date) => `LinkedIn Pinpoint ${date} answer category`,
+                hintDescs: { low: "Clue hints", mid: "Category hints", high: "Answer" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Pinpoint: Guess the category connecting 5 clues. Fewer clues = better score.
+
+Hint levels:
+1-2: Vague direction. Example: "Think about things in a home"
+3-4: Narrower category. Example: "Kitchen-related"
+5-6: Very specific. Example: "Things that heat food"
+7-8: Almost there. Example: "Kitchen appliances that..."
+9-10: The answer`
+            },
+            crossclimb: {
+                id: 'crossclimb', name: 'Crossclimb', icon: '🧗',
+                startDate: '2024-01-01', needsInput: true,
+                inputLabel: "Which rung? (1-5)", inputPlaceholder: "e.g., 2",
+                searchQuery: (date) => `LinkedIn Crossclimb ${date} answers`,
+                hintDescs: { low: "Theme hints", mid: "Word hints", high: "Answers" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Crossclimb: Solve clues, arrange by word length to climb the ladder.
+
+Hint levels:
+1-2: Theme hint. Example: "Clues relate to weather"
+3-4: Specific clue hint. Example: "The 4-letter word means precipitation"
+5-6: Letter hints. Example: "4-letter word starts with R"
+7-8: Reveal 2-3 words
+9-10: All answers in order`
+            },
+            zip: {
+                id: 'zip', name: 'Zip', icon: '⚡',
+                startDate: '2024-01-01', needsInput: false,
+                searchQuery: (date) => `LinkedIn Zip puzzle ${date} solution`,
+                hintDescs: { low: "Path hints", mid: "Number hints", high: "Solution" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Zip: Draw paths connecting matching numbers, filling every cell.
+
+Hint levels:
+1-2: Strategy. Example: "Start with numbers in corners"
+3-4: Specific path. Example: "The 1s connect along the top edge"
+5-6: Two complete paths described
+7-8: Most paths revealed
+9-10: Full solution`
+            },
+            // === OTHER POPULAR GAMES ===
+            quordle: {
+                id: 'quordle', name: 'Quordle', icon: '4️⃣',
+                startDate: '2022-01-01', needsInput: true,
+                inputLabel: "Which quadrant? (1-4)", inputPlaceholder: "e.g., 3",
+                searchQuery: (date) => `Quordle ${date} answers`,
+                hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answers" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Quordle: Solve 4 Wordles simultaneously in 9 guesses.
+
+Hint levels:
+1-2: Vague. Example: "One word is a common noun"
+3-4: Category. Example: "Quadrant 3 relates to food"
+5-6: Letter structure. Example: "Quadrant 3 has double letters"
+7-8: Specific letters. Example: "Quadrant 3 starts with BR"
+9-10: The word(s)`
+            },
+            contexto: {
+                id: 'contexto', name: 'Contexto', icon: '🎯',
+                startDate: '2022-01-01', needsInput: false,
+                searchQuery: (date) => `Contexto ${date} answer`,
+                hintDescs: { low: "Field hints", mid: "Category hints", high: "Answer" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
+3. NO explanations, NO reasoning, NO preamble
+4. Start your response with the hint directly
+
+Contexto: Guess the secret word using semantic similarity rankings.
+
+Hint levels:
+1-2: Very vague field. Example: "Think concrete nouns"
+3-4: General category. Example: "Related to buildings"
+5-6: Specific category. Example: "Part of a house"
+7-8: Very close. Example: "Where you sleep"
+9-10: The answer`
             }
         };
         
@@ -20595,37 +20836,70 @@ Slate hint levels (5-letter word for each row):
         }
         
         function openHintSheet() {
-            const data = checkHintData();
+            const localData = checkHintData();
             
-            if (data && HINT_GAMES[data.gameId]) {
-                // Use detected local data from Game Shelf games
-                selectHintGame(data.gameId, data);
-            } else if (lastLaunchedGame && HINT_GAMES[lastLaunchedGame]) {
-                // Default to last launched game if it's supported
-                selectHintGame(lastLaunchedGame);
-            } else if (lastLaunchedGame) {
-                // Map Game Shelf game IDs to hint game IDs
-                const gameIdMap = {
-                    'nyt-connections': 'connections',
-                    'nyt-wordle': 'wordle',
-                    'nyt-strands': 'strands',
-                    'nyt-spelling-bee': 'spellingbee',
-                    'nyt-mini': 'mini',
-                    'quotle': 'quotle',
-                    'rungs': 'rungs',
-                    'slate': 'slate'
-                };
-                const mappedId = gameIdMap[lastLaunchedGame];
-                if (mappedId && HINT_GAMES[mappedId]) {
-                    selectHintGame(mappedId);
-                } else {
-                    selectHintGame('connections');
+            // Map Game Shelf game IDs to hint game IDs
+            const gameIdMap = {
+                // NYT Games
+                'nyt-connections': 'connections',
+                'connections': 'connections',
+                'nyt-wordle': 'wordle',
+                'wordle': 'wordle',
+                'nyt-strands': 'strands',
+                'strands': 'strands',
+                'nyt-spelling-bee': 'spellingbee',
+                'spelling-bee': 'spellingbee',
+                'nyt-mini': 'mini',
+                'mini': 'mini',
+                'nyt-letterboxed': 'letterboxed',
+                'letterboxed': 'letterboxed',
+                // LinkedIn Games
+                'queens': 'queens',
+                'tango': 'tango',
+                'pinpoint': 'pinpoint',
+                'crossclimb': 'crossclimb',
+                'zip': 'zip',
+                // GS Originals
+                'quotle': 'quotle',
+                'rungs': 'rungs',
+                'slate': 'slate',
+                // Other popular
+                'quordle': 'quordle',
+                'contexto': 'contexto'
+            };
+            
+            // Determine the hint game based on priority:
+            // 1. lastLaunchedGame (most recent user action)
+            // 2. localStorage hint data (if matches a GS Original and no game launched)
+            // 3. Fallback to connections
+            
+            let selectedGameId = null;
+            let selectedLocalData = null;
+            
+            if (lastLaunchedGame) {
+                // User launched a game - use that
+                const mappedId = gameIdMap[lastLaunchedGame] || lastLaunchedGame;
+                if (HINT_GAMES[mappedId]) {
+                    selectedGameId = mappedId;
+                    // Only use local data if it matches the launched game
+                    if (localData && localData.gameId === mappedId) {
+                        selectedLocalData = localData;
+                    }
                 }
-            } else {
-                // Fallback to connections
-                selectHintGame('connections');
             }
             
+            // If no game launched, check localStorage for GS Originals
+            if (!selectedGameId && localData && HINT_GAMES[localData.gameId]) {
+                selectedGameId = localData.gameId;
+                selectedLocalData = localData;
+            }
+            
+            // Fallback to connections
+            if (!selectedGameId) {
+                selectedGameId = 'connections';
+            }
+            
+            selectHintGame(selectedGameId, selectedLocalData);
             document.getElementById('hint-sheet-overlay').classList.add('active');
             document.getElementById('hint-result').style.display = 'none';
             document.getElementById('hint-error').style.display = 'none';
@@ -20769,107 +21043,158 @@ Slate hint levels (5-letter word for each row):
             hintLoading = true;
             const btn = document.getElementById('hint-get-btn');
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Getting hint...';
+            btn.classList.add('loading');
             document.getElementById('hint-error').style.display = 'none';
             
-            try {
-                const today = new Date();
-                const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-                
-                // Build prompt based on game type
-                let userPrompt = `Today is ${dateStr}.\n`;
-                
-                if (hintLocalData && game.hasLocalData) {
-                    // Use local data from Game Shelf games
-                    if (game.id === 'quotle' && hintLocalData.data?.quote) {
-                        userPrompt += `User is playing Quotle #${hintLocalData.puzzleNumber}.\nQuote: "${hintLocalData.data.quote}"\n`;
-                        if (hintLocalData.data.category) userPrompt += `Category: ${hintLocalData.data.category}, Period: ${hintLocalData.data.period}\n`;
-                        userPrompt += `Search for who said this quote, then give a LEVEL ${level}/10 hint.`;
-                    } else if (game.id === 'rungs' && hintLocalData.data?.items) {
-                        userPrompt += `User is playing Rungs #${hintLocalData.puzzleNumber}.\nItems: ${hintLocalData.data.items.join(', ')}\n`;
-                        // Level-appropriate prompting - don't ask for analysis at low levels
-                        if (level <= 4) {
-                            userPrompt += `Give ONLY a LEVEL ${level}/10 thematic hint. DO NOT reveal any pairs or the solution.`;
-                        } else if (level <= 6) {
-                            userPrompt += `Give a LEVEL ${level}/10 hint. You may hint at ONE pair only.`;
-                        } else {
-                            userPrompt += `Give a LEVEL ${level}/10 hint with pairs revealed.`;
+            // Animated loading states
+            const loadingMessages = game.hasLocalData && !game.id.includes('quotle')
+                ? ['🤔 Thinking', '💭 Analyzing', '✨ Generating']
+                : ['🔍 Searching', '🤔 Thinking', '✨ Generating'];
+            let msgIndex = 0;
+            
+            const updateLoadingText = () => {
+                btn.innerHTML = `<span class="hint-loading-text"><span class="spinner"></span>${loadingMessages[msgIndex]}<span class="hint-loading-dots"></span></span>`;
+                msgIndex = (msgIndex + 1) % loadingMessages.length;
+            };
+            updateLoadingText();
+            const loadingInterval = setInterval(updateLoadingText, 1500);
+            
+            // Retry logic
+            const maxRetries = 2;
+            let lastError = null;
+            
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    const today = new Date();
+                    const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+                    
+                    // Build prompt based on game type
+                    let userPrompt = `Today is ${dateStr}.\n`;
+                    let needsWebSearch = true; // Default to needing web search
+                    
+                    if (hintLocalData && game.hasLocalData) {
+                        // Use local data from Game Shelf games
+                        if (game.id === 'quotle' && hintLocalData.data?.quote) {
+                            userPrompt += `User is playing Quotle #${hintLocalData.puzzleNumber}.\nQuote: "${hintLocalData.data.quote}"\n`;
+                            if (hintLocalData.data.category) userPrompt += `Category: ${hintLocalData.data.category}, Period: ${hintLocalData.data.period}\n`;
+                            userPrompt += `Search for who said this quote, then give a LEVEL ${level}/10 hint.`;
+                            needsWebSearch = true; // Quotle needs search to find author
+                        } else if (game.id === 'rungs' && hintLocalData.data?.items) {
+                            userPrompt += `User is playing Rungs #${hintLocalData.puzzleNumber}.\nItems: ${hintLocalData.data.items.join(', ')}\n`;
+                            // Level-appropriate prompting - don't ask for analysis at low levels
+                            if (level <= 4) {
+                                userPrompt += `Give ONLY a LEVEL ${level}/10 thematic hint. DO NOT reveal any pairs or the solution.`;
+                            } else if (level <= 6) {
+                                userPrompt += `Give a LEVEL ${level}/10 hint. You may hint at ONE pair only.`;
+                            } else {
+                                userPrompt += `Give a LEVEL ${level}/10 hint with pairs revealed.`;
+                            }
+                            needsWebSearch = false; // Rungs has all data locally
+                        } else if (game.id === 'slate') {
+                            userPrompt += `User is playing Slate #${hintLocalData.puzzleNumber}.\n`;
+                            userPrompt += `Progress: ${hintLocalData.data?.wordsCompleted || 0}/5 words, stuck on row ${userInput || hintLocalData.data?.currentRow || '?'}\n`;
+                            userPrompt += `Give a LEVEL ${level}/10 hint for a 5-letter word.`;
+                            needsWebSearch = false; // Slate has all data locally
                         }
-                    } else if (game.id === 'slate') {
-                        userPrompt += `User is playing Slate #${hintLocalData.puzzleNumber}.\n`;
-                        userPrompt += `Progress: ${hintLocalData.data?.wordsCompleted || 0}/5 words, stuck on row ${userInput || hintLocalData.data?.currentRow || '?'}\n`;
-                        userPrompt += `Give a LEVEL ${level}/10 hint for a 5-letter word.`;
+                    } else {
+                        // Use web search for NYT games
+                        userPrompt += `Search for today's ${game.name} puzzle and give a LEVEL ${level}/10 hint.\n`;
+                        if (userInput) {
+                            userPrompt += `User is stuck on: ${userInput}\n`;
+                        }
+                        needsWebSearch = true;
                     }
-                } else {
-                    // Use web search for NYT games
-                    userPrompt += `Search for today's ${game.name} puzzle and give a LEVEL ${level}/10 hint.\n`;
-                    if (userInput) {
-                        userPrompt += `User is stuck on: ${userInput}\n`;
+                    
+                    if (hintHistory.length > 0) {
+                        userPrompt += `\nPrevious hints given:\n${hintHistory.map(h => `- Lvl ${h.level}: "${h.hint.substring(0, 60)}"`).join('\n')}\nGive a NEW different hint.`;
+                    }
+                    
+                    // Call Firebase Function
+                    const getHintFunction = firebase.functions().httpsCallable('getHint');
+                    const result = await getHintFunction({
+                        gameId: game.id,
+                        level: level,
+                        prompt: userPrompt,
+                        systemPrompt: game.systemPrompt,
+                        needsWebSearch: needsWebSearch
+                    });
+                    
+                    const hint = result.data.hint || 'Unable to generate hint. Please try again.';
+                    
+                    // Success! Clear loading and show result
+                    clearInterval(loadingInterval);
+                    
+                    hintLevel = level;
+                    updateHintLevel(level);
+                    hintHistory.push({ level, hint });
+                    
+                    document.getElementById('hint-result-level').textContent = `Level ${level} Hint • ${game.name}`;
+                    document.getElementById('hint-result-text').textContent = hint;
+                    document.getElementById('hint-result').style.display = 'block';
+                    document.getElementById('hint-get-btn').style.display = 'none';
+                    
+                    // Show usage info if available
+                    if (result.data.usage) {
+                        const usage = result.data.usage;
+                        console.log(`Hint usage: ${usage.hourCount}/${usage.hourLimit} this hour, ${usage.dayCount}/${usage.dayLimit} today`);
+                    }
+                    
+                    // Update history display
+                    if (hintHistory.length > 1) {
+                        const historyList = document.getElementById('hint-history-list');
+                        historyList.innerHTML = hintHistory.slice(0, -1).map(h => 
+                            `<div class="hint-history-item"><strong>Lvl ${h.level}:</strong> ${h.hint.substring(0, 60)}...</div>`
+                        ).join('');
+                        document.getElementById('hint-history').style.display = 'block';
+                    }
+                    
+                    // Success - exit retry loop
+                    hintLoading = false;
+                    btn.disabled = false;
+                    btn.classList.remove('loading');
+                    btn.innerHTML = `🆘 Get Level <span id="hint-btn-level">${hintLevel}</span> Hint`;
+                    return;
+                    
+                } catch (err) {
+                    lastError = err;
+                    console.warn(`Hint attempt ${attempt}/${maxRetries} failed:`, err.code || err.message);
+                    
+                    // Don't retry auth or rate limit errors
+                    if (err.code === 'unauthenticated' || err.code === 'resource-exhausted') {
+                        break;
+                    }
+                    
+                    // Wait before retry (exponential backoff)
+                    if (attempt < maxRetries) {
+                        btn.innerHTML = `<span class="hint-loading-text"><span class="spinner"></span>Retrying<span class="hint-loading-dots"></span></span>`;
+                        await new Promise(r => setTimeout(r, 1000 * attempt));
                     }
                 }
-                
-                if (hintHistory.length > 0) {
-                    userPrompt += `\nPrevious hints given:\n${hintHistory.map(h => `- Lvl ${h.level}: "${h.hint.substring(0, 60)}"`).join('\n')}\nGive a NEW different hint.`;
-                }
-                
-                // Call Firebase Function
-                const getHintFunction = firebase.functions().httpsCallable('getHint');
-                const result = await getHintFunction({
-                    gameId: game.id,
-                    level: level,
-                    prompt: userPrompt,
-                    systemPrompt: game.systemPrompt
-                });
-                
-                const hint = result.data.hint || 'Unable to generate hint. Please try again.';
-                
-                // Show result
-                hintLevel = level;
-                updateHintLevel(level);
-                hintHistory.push({ level, hint });
-                
-                document.getElementById('hint-result-level').textContent = `Level ${level} Hint • ${game.name}`;
-                document.getElementById('hint-result-text').textContent = hint;
-                document.getElementById('hint-result').style.display = 'block';
-                document.getElementById('hint-get-btn').style.display = 'none';
-                
-                // Show usage info if available
-                if (result.data.usage) {
-                    const usage = result.data.usage;
-                    console.log(`Hint usage: ${usage.hourCount}/${usage.hourLimit} this hour, ${usage.dayCount}/${usage.dayLimit} today`);
-                }
-                
-                // Update history display
-                if (hintHistory.length > 1) {
-                    const historyList = document.getElementById('hint-history-list');
-                    historyList.innerHTML = hintHistory.slice(0, -1).map(h => 
-                        `<div class="hint-history-item"><strong>Lvl ${h.level}:</strong> ${h.hint.substring(0, 60)}...</div>`
-                    ).join('');
-                    document.getElementById('hint-history').style.display = 'block';
-                }
-                
-            } catch (err) {
-                console.error('Hint error:', err);
-                
-                // Handle specific error types
-                let errorMsg = 'Failed to get hint. Please try again.';
-                if (err.code === 'unauthenticated') {
-                    errorMsg = 'Please sign in to use AI hints.';
-                } else if (err.code === 'resource-exhausted') {
-                    errorMsg = err.message || 'Rate limit reached. Try again later.';
-                } else if (err.code === 'failed-precondition') {
-                    errorMsg = 'AI hints are temporarily unavailable.';
-                } else if (err.message) {
-                    errorMsg = err.message;
-                }
-                
-                document.getElementById('hint-error').textContent = errorMsg;
-                document.getElementById('hint-error').style.display = 'block';
-            } finally {
-                hintLoading = false;
-                btn.disabled = false;
-                btn.innerHTML = `🆘 Get Level <span id="hint-btn-level">${hintLevel}</span> Hint`;
             }
+            
+            // All retries failed
+            clearInterval(loadingInterval);
+            console.error('Hint error after retries:', lastError);
+            
+            // Handle specific error types
+            let errorMsg = 'Failed to get hint. Please try again.';
+            if (lastError?.code === 'unauthenticated') {
+                errorMsg = 'Please sign in to use AI hints.';
+            } else if (lastError?.code === 'resource-exhausted') {
+                errorMsg = lastError.message || 'Rate limit reached. Try again later.';
+            } else if (lastError?.code === 'failed-precondition') {
+                errorMsg = 'AI hints are temporarily unavailable.';
+            } else if (lastError?.message) {
+                errorMsg = lastError.message;
+            }
+            
+            document.getElementById('hint-error').textContent = errorMsg;
+            document.getElementById('hint-error').style.display = 'block';
+            
+            hintLoading = false;
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.innerHTML = `🆘 Get Level <span id="hint-btn-level">${hintLevel}</span> Hint`;
         }
         
         function hintStillStuck() {
@@ -22165,7 +22490,7 @@ Slate hint levels (5-letter word for each row):
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.27) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.31) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -24383,7 +24708,7 @@ Slate hint levels (5-letter word for each row):
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.27) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.31) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -26897,7 +27222,7 @@ Slate hint levels (5-letter word for each row):
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.27 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.31 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

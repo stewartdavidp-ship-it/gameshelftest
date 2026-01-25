@@ -1,29 +1,29 @@
-Game Shelf v1.2.18
+Game Shelf v1.2.31
 ==================
 Release Date: January 25, 2026
 
-AI HINT HELPER WITH FIREBASE BACKEND
-------------------------------------
-- 💡 Floating Action Button (FAB) appears when hint data available
-- Bottom sheet UI for getting AI-powered hints
-- 🔐 Requires sign-in (Firebase Auth)
-- 🚦 Rate limited: 20 hints/hour, 50 hints/day per user
-- Secure: API key stored server-side via Firebase Functions
-
-SUPPORTED GAMES
----------------
-Game Shelf originals (auto-detect from localStorage):
-- Quotle, Rungs, Slate
-
-NYT Games (via web search):
-- Connections, Wordle, Strands
-- Spelling Bee, Mini Crossword
-
-FIREBASE FUNCTIONS SETUP REQUIRED
+EXPANDED HINT SUPPORT - 17 GAMES!
 ---------------------------------
-1. Deploy the Cloud Function (see firebase-functions package)
-2. Set Anthropic API key:
-   firebase functions:config:set anthropic.api_key="sk-ant-..."
-3. Deploy: firebase deploy --only functions
+Added hint support for 9 more games:
 
-See firebase-functions/README.md for full instructions.
+NYT:
+- Letterboxed 📦
+
+LinkedIn (all 5):
+- Queens 👑
+- Tango 💃
+- Pinpoint 📍
+- Crossclimb 🧗
+- Zip ⚡
+
+Other Popular:
+- Quordle 4️⃣
+- Contexto 🎯
+
+Total games with hints: 17 (was 8)
+
+Previous: v1.2.30
+- Fixed AI hint output (no more reasoning/thinking shown)
+
+Previous: v1.2.29
+- Fixed hint game detection priority
