@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.44">
+    <meta name="version" content="1.2.45">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8000,7 +8000,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.44</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.45</span>
             </div>
         </div>
         <div class="header-right">
@@ -8252,7 +8252,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.44</div>
+            <div class="settings-version">Game Shelf PWA v1.2.45</div>
         </div>
     </div>
     
@@ -8454,7 +8454,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.44) -->
+        <!-- Stats Screen (v1.2.45) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9310,7 +9310,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.44) -->
+    <!-- Score Conflict Modal (v1.2.45) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9346,7 +9346,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.44 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.45 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -16468,7 +16468,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.44: Optional third button (for View Stats)
+            // v1.2.45: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16582,7 +16582,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.44';
+            const version = '1.2.45';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18764,7 +18764,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (coinEl) coinEl.textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.44) ============
+        // ============ STATS SCREEN (v1.2.45) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19372,7 +19372,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.44'
+                    appVersion: '1.2.45'
                 }
             };
             
@@ -20691,8 +20691,8 @@ Made with ❤️ for puzzle enthusiasts`;
                 hintDescs: { low: "Vague category hints", mid: "Theme + partial words", high: "Full categories" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Connections: Group 16 words into 4 categories of 4.
@@ -20713,8 +20713,8 @@ Keep levels 1-4 under 15 words.`
                 hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answer" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Wordle: Guess the 5-letter word in 6 tries.
@@ -20735,8 +20735,8 @@ Keep levels 1-4 under 8 words.`
                 hintDescs: { low: "Theme hints", mid: "Spangram hints", high: "Word reveals" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Strands: Find themed words in a letter grid, plus one spangram.
@@ -20758,8 +20758,8 @@ Keep levels 1-4 under 10 words.`
                 hintDescs: { low: "Pangram hints", mid: "Letter hints", high: "Word reveals" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Spelling Bee: Make words using 7 letters, must include center letter.
@@ -20781,8 +20781,8 @@ Keep levels 1-4 under 10 words.`
                 hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answer" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Mini Crossword: 5x5 crossword with simple clues.
@@ -20802,8 +20802,8 @@ Keep levels 1-4 under 10 words.`
                 hintDescs: { low: "Era/field hints", mid: "Nationality hints", high: "Name hints" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Quotle: Guess who said a famous quote.
@@ -20823,8 +20823,8 @@ Keep levels 1-4 under 8 words.`
                 hintDescs: { low: "Theme hints", mid: "Pairing hints", high: "Pair reveals" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at", "The items"
-3. NO explanations, NO reasoning, NO preamble, NO analysis
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to", "The items"
+3. NO explanations, NO meta-commentary about search results, NO preamble, NO analysis
 4. Start your response with the hint directly
 
 Rungs: Match 8 items into 4 pairs, order least→most.
@@ -20845,8 +20845,8 @@ NEVER give pairs at levels 1-6. Max 15 words for levels 1-4.`
                 hintDescs: { low: "Row theme", mid: "Letter hints", high: "Word reveal" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Slate: Guess 5-letter words for each row based on clues.
@@ -20868,8 +20868,8 @@ Keep levels 1-4 under 10 words.`
                 hintDescs: { low: "Strategy hints", mid: "Starting word", high: "Solution" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Letterboxed: Use all 12 letters, alternating sides, in fewest words.
@@ -20891,8 +20891,8 @@ Keep levels 1-4 under 12 words.`
                 hintDescs: { low: "Region hints", mid: "Placement hints", high: "Solution" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Queens: Place queens so each row, column, and color region has exactly one.
@@ -20913,8 +20913,8 @@ Keep levels 1-4 under 12 words.`
                 hintDescs: { low: "Pattern hints", mid: "Row/column hints", high: "Solution" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Tango: Fill grid with suns/moons - no 3 in a row, equal per row/column.
@@ -20936,8 +20936,8 @@ Keep levels 1-4 under 12 words.`
                 hintDescs: { low: "Clue hints", mid: "Category hints", high: "Answer" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Pinpoint: Guess the category connecting 5 clues. Fewer clues = better score.
@@ -20957,8 +20957,8 @@ Hint levels:
                 hintDescs: { low: "Theme hints", mid: "Word hints", high: "Answers" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Crossclimb: Solve clues, arrange by word length to climb the ladder.
@@ -20977,8 +20977,8 @@ Hint levels:
                 hintDescs: { low: "Path hints", mid: "Number hints", high: "Solution" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Zip: Draw paths connecting matching numbers, filling every cell.
@@ -20999,8 +20999,8 @@ Hint levels:
                 hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answers" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Quordle: Solve 4 Wordles simultaneously in 9 guesses.
@@ -21019,8 +21019,8 @@ Hint levels:
                 hintDescs: { low: "Field hints", mid: "Category hints", high: "Answer" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Contexto: Guess the secret word using semantic similarity rankings.
@@ -21041,8 +21041,8 @@ Hint levels:
                 hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answers" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Octordle: Solve 8 Wordles simultaneously in 13 guesses.
@@ -21062,8 +21062,8 @@ Hint levels:
                 hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answers" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Dordle: Solve 2 Wordles simultaneously in 7 guesses.
@@ -21082,8 +21082,8 @@ Hint levels:
                 hintDescs: { low: "Word hints", mid: "Swap hints", high: "Solution" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Waffle: Swap letters to form 6 words in a grid (3 horizontal, 3 vertical).
@@ -21104,8 +21104,8 @@ Keep levels 1-4 under 12 words.`
                 hintDescs: { low: "Operation hints", mid: "Number hints", high: "Equation" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Nerdle: Guess the 8-character math equation in 6 tries.
@@ -21125,8 +21125,8 @@ Hint levels:
                 hintDescs: { low: "Region hints", mid: "Continent hints", high: "Country" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Worldle: Guess the country from its silhouette shape.
@@ -21147,8 +21147,8 @@ Keep levels 1-4 under 6 words.`
                 hintDescs: { low: "Region hints", mid: "Proximity hints", high: "Country" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Globle: Guess the country using proximity clues (warmer = closer).
@@ -21169,8 +21169,8 @@ Keep levels 1-4 under 6 words.`
                 hintDescs: { low: "Economy hints", mid: "Region hints", high: "Country" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Tradle: Guess the country from its export treemap.
@@ -21189,8 +21189,8 @@ Hint levels:
                 hintDescs: { low: "Region hints", mid: "Path hints", high: "Solution" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Travle: Find the shortest path between two countries through bordering nations.
@@ -21212,8 +21212,8 @@ Keep levels 1-4 under 10 words.`
                 hintDescs: { low: "Genre hints", mid: "Era/actor hints", high: "Movie" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Framed: Guess the movie from still frames (6 guesses, more frames revealed).
@@ -21234,8 +21234,8 @@ Keep levels 1-4 under 8 words.`
                 hintDescs: { low: "Era hints", mid: "Genre/role hints", high: "Actor" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Actorle: Guess the actor from their filmography clues.
@@ -21254,8 +21254,8 @@ Hint levels:
                 hintDescs: { low: "Genre hints", mid: "Era/cast hints", high: "Movie" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Moviedle: Guess the movie from a sped-up version of the entire film.
@@ -21274,8 +21274,8 @@ Hint levels:
                 hintDescs: { low: "Genre hints", mid: "Era/artist hints", high: "Song" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Heardle: Guess the song from its intro (more seconds revealed each guess).
@@ -21294,8 +21294,8 @@ Hint levels:
                 hintDescs: { low: "Genre hints", mid: "Band hints", high: "Song" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Bandle: Guess the song as instruments are added one by one.
@@ -21314,8 +21314,8 @@ Hint levels:
                 hintDescs: { low: "Category hints", mid: "Topic hints", high: "Article" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Redactle: Guess words to reveal a redacted Wikipedia article.
@@ -21334,8 +21334,8 @@ Hint levels:
                 hintDescs: { low: "Category hints", mid: "Semantic hints", high: "Word" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Semantle: Guess the word using semantic similarity scores (like Contexto).
@@ -21354,8 +21354,8 @@ Hint levels:
                 hintDescs: { low: "Region hints", mid: "Country hints", high: "Location" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 WhereTaken: Guess where a photo was taken (country/location).
@@ -21374,8 +21374,8 @@ Hint levels:
                 hintDescs: { low: "Cuisine hints", mid: "Region hints", high: "Dish/Country" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 FoodGuessr: Guess the origin of a food dish.
@@ -21395,8 +21395,8 @@ Hint levels:
                 hintDescs: { low: "Team/stat hints", mid: "Era hints", high: "Player" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Immaculate Grid: Name MLB players matching row/column criteria.
@@ -21415,8 +21415,8 @@ Hint levels:
                 hintDescs: { low: "Category hints", mid: "Price range", high: "Price" },
                 systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
 1. Output ONLY the hint itself - nothing else
-2. FORBIDDEN phrases: "I can see", "I found", "From the search", "Let me", "Based on", "Looking at"
-3. NO explanations, NO reasoning, NO preamble
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
 4. Start your response with the hint directly
 
 Costcodle: Guess the Costco price of a product.
@@ -23159,7 +23159,7 @@ Hint levels:
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.44) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.45) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -25377,7 +25377,7 @@ Hint levels:
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.44) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.45) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -27891,7 +27891,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.44 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.45 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
