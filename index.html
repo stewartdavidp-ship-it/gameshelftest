@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.24">
+    <meta name="version" content="1.2.25">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7821,7 +7821,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.24</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.25</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -8066,7 +8066,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.24</div>
+            <div class="settings-version">Game Shelf PWA v1.2.25</div>
         </div>
     </div>
     
@@ -8268,7 +8268,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.24) -->
+        <!-- Stats Screen (v1.2.25) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9124,7 +9124,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.24) -->
+    <!-- Score Conflict Modal (v1.2.25) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9160,7 +9160,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.24 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.25 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -16229,7 +16229,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.24: Optional third button (for View Stats)
+            // v1.2.25: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16343,7 +16343,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.24';
+            const version = '1.2.25';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18523,7 +18523,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.24) ============
+        // ============ STATS SCREEN (v1.2.25) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19113,7 +19113,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.24'
+                    appVersion: '1.2.25'
                 }
             };
             
@@ -20430,36 +20430,39 @@ Made with ❤️ for puzzle enthusiasts`;
                 startDate: '2023-06-12', needsInput: false,
                 searchQuery: (date) => `NYT Connections ${date} puzzle answers`,
                 hintDescs: { low: "Vague category hints", mid: "Theme + partial words", high: "Full categories" },
-                systemPrompt: `You are a hint assistant for NYT Connections. Give hints based on level:
+                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+Connections hint levels:
 1-2: Ultra vague ("One category relates to nature")
-3-4: General area ("Think about types of dances") 
-5-6: Clear theme ("One category is BREAD TYPES")
-7-8: Theme + 3 words ("RYE, WHEAT, SOUR are breads - find 4th")
-9-10: Full categories. Be concise.`
+3-4: General theme ("Think about types of dances") 
+5-6: Clear category name ("One category is BREAD TYPES")
+7-8: Category + 3 words ("RYE, WHEAT, SOURDOUGH are breads - find the 4th")
+9-10: All four categories with words`
             },
             wordle: {
                 id: 'wordle', name: 'Wordle', icon: '🟩',
                 startDate: '2021-06-19', needsInput: false,
                 searchQuery: (date) => `NYT Wordle ${date} answer`,
                 hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answer" },
-                systemPrompt: `You are a hint assistant for Wordle (5-letter word). Give hints based on level:
-1-2: Vague ("Common word")
-3-4: Category ("Related to nature")
-5-6: Letter structure ("Has 2 vowels")
-7-8: Specific letters ("Contains O and R")
-9-10: The word. Keep hints SHORT.`
+                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+Wordle hint levels (5-letter word):
+1-2: Vague ("Common everyday word")
+3-4: Category ("Related to cooking")
+5-6: Letter structure ("Has double letters" or "Starts with vowel")
+7-8: Specific letters ("Contains A and R, ends in E")
+9-10: The word itself`
             },
             strands: {
                 id: 'strands', name: 'Strands', icon: '🔵',
                 startDate: '2024-03-04', needsInput: false,
                 searchQuery: (date) => `NYT Strands ${date} theme spangram answers`,
                 hintDescs: { low: "Theme hints", mid: "Spangram hints", high: "Word reveals" },
-                systemPrompt: `You are a hint assistant for NYT Strands. Give hints based on level:
-1-2: Vague theme ("Things outdoors")
-3-4: Theme category ("Gardening tools")
-5-6: Spangram hint ("Compound word")
-7-8: Spangram + words
-9-10: Full solution. Be concise.`
+                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+Strands hint levels:
+1-2: Vague theme ("Things you find outdoors")
+3-4: Specific theme ("Garden tools")
+5-6: Spangram hint ("Two-word compound")
+7-8: Spangram + some words
+9-10: Full solution with all words`
             },
             spellingbee: {
                 id: 'spellingbee', name: 'Spelling Bee', icon: '🐝',
@@ -20467,12 +20470,13 @@ Made with ❤️ for puzzle enthusiasts`;
                 inputLabel: "Stuck on letter? (optional)", inputPlaceholder: "e.g., P",
                 searchQuery: (date) => `NYT Spelling Bee ${date} pangram answers`,
                 hintDescs: { low: "Pangram hints", mid: "Letter hints", high: "Word reveals" },
-                systemPrompt: `You are a hint assistant for NYT Spelling Bee. Give hints based on level:
-1-2: Word count info
-3-4: Pangram theme
-5-6: Pangram reveal
-7-8: Hard words by letter
-9-10: Full word list. Focus on user's stuck letter if provided.`
+                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+Spelling Bee hint levels:
+1-2: Word count ("There are 42 words total")
+3-4: Pangram theme ("Pangram relates to weather")
+5-6: Pangram itself
+7-8: Hard words starting with specific letter
+9-10: Full word list`
             },
             mini: {
                 id: 'mini', name: 'Mini Crossword', icon: '📰',
@@ -20480,42 +20484,46 @@ Made with ❤️ for puzzle enthusiasts`;
                 inputLabel: "Which clue?", inputPlaceholder: "e.g., 1-Across",
                 searchQuery: (date) => `NYT Mini Crossword ${date} answers`,
                 hintDescs: { low: "Category hints", mid: "Letter hints", high: "Answer" },
-                systemPrompt: `You are a hint assistant for NYT Mini Crossword. User specifies a clue. Give hints:
-1-4: Category hint
-5-7: Letter hints
-8-10: Answer. Be concise.`
+                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+Mini Crossword hint levels:
+1-4: Category hint ("Think geography")
+5-7: Letter hints ("5 letters, starts with M")
+8-10: The answer`
             },
             quotle: {
                 id: 'quotle', name: 'Quotle', icon: '💬',
                 hasLocalData: true, needsInput: false,
                 hintDescs: { low: "Era/field hints", mid: "Nationality hints", high: "Name hints" },
-                systemPrompt: `You are a hint assistant for Quotle (guess who said a quote). Give hints:
-1-2: Era ("20th century")
-3-4: Field ("Politics")
-5-6: Nationality/gender
-7-8: First name hint
-9-10: Full name. Search for who said the quote.`
+                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+Quotle hint levels (guess who said the quote):
+1-2: Era ("Said in the 20th century")
+3-4: Field ("From politics")
+5-6: Nationality/gender ("American woman")
+7-8: First name or initials hint
+9-10: Full name`
             },
             rungs: {
                 id: 'rungs', name: 'Rungs', icon: '🪜',
                 hasLocalData: true, needsInput: false,
                 hintDescs: { low: "Theme hints", mid: "Pairing hints", high: "Pair reveals" },
-                systemPrompt: `You are a hint assistant for Rungs (match 8 items into 4 pairs, order least to most). Give hints:
-1-2: General theme
-3-4: Theme type ("sizes", "time periods")
-5-6: One pair hint
-7-8: Multiple pairs
-9-10: Full solution with ordering.`
+                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+Rungs hint levels (match 8 items into 4 pairs, order least to most):
+1-2: General theme ("Think about sizes")
+3-4: Theme type ("Time periods from shortest to longest")
+5-6: One pair hint ("Two of these are types of dogs")
+7-8: Multiple pairs revealed
+9-10: Full solution with ordering`
             },
             slate: {
                 id: 'slate', name: 'Slate', icon: '📝',
                 hasLocalData: true, needsInput: true,
                 inputLabel: "Which row? (1-5)", inputPlaceholder: "e.g., 3",
                 hintDescs: { low: "Row theme", mid: "Letter hints", high: "Word reveal" },
-                systemPrompt: `You are a hint assistant for Slate (5x5 word grid, each row is a 5-letter word). Give hints:
-1-4: Category for the row
-5-7: Letter hints
-8-10: The word. Slate is a Game Shelf original - give strategic hints.`
+                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
+Slate hint levels (5-letter word for each row):
+1-4: Category ("Think animals")
+5-7: Letter hints ("Starts with B, has double letter")
+8-10: The word`
             }
         };
         
@@ -22136,7 +22144,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.24) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.25) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -24345,7 +24353,7 @@ Made with ❤️ for puzzle enthusiasts`;
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.24) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.25) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -26859,7 +26867,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.24 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.25 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
