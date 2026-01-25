@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.40">
+    <meta name="version" content="1.2.42">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -126,15 +126,6 @@
             left: 0;
             right: 0;
             bottom: 0;
-            touch-action: manipulation;
-            -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        /* Ensure all interactive elements are clickable */
-        button, a, [onclick], .nav-tab, .game-card, .action-btn, .menu-btn {
-            pointer-events: auto !important;
-            cursor: pointer;
         }
         
         /* Header */
@@ -146,9 +137,6 @@
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
             flex-shrink: 0;
-            position: relative;
-            z-index: 50;
-            pointer-events: auto;
         }
         
         .logo {
@@ -162,7 +150,51 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
+        }
+        
+        .header-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .header-btn:active {
+            transform: scale(0.95);
+            background: var(--bg-primary);
+        }
+        
+        .header-btn.has-badge::after {
+            content: attr(data-badge);
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--accent-green);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+        }
+        
+        .header-btn.hint-btn.has-badge::after {
+            background: var(--accent-orange);
+            content: "!";
         }
         
         .wallet-display {
@@ -172,19 +204,9 @@
         .tokens { color: var(--accent-purple); }
         .coins { color: var(--accent-gold); }
         
-        /* Quick Action Bar - below header */
+        /* Quick Action Bar - DISABLED, reverted to FABs */
         .action-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 16px;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            gap: 8px;
-            position: relative;
-            z-index: 50;
-            flex-shrink: 0;
-            pointer-events: auto;
+            display: none !important;
         }
         
         .action-bar-left {
@@ -660,9 +682,6 @@
             overflow-x: hidden;
             padding-bottom: calc(70px + var(--safe-bottom));
             -webkit-overflow-scrolling: touch;
-            position: relative;
-            z-index: 1;
-            pointer-events: auto;
         }
         
         /* Screens */
@@ -805,9 +824,9 @@
             transform: scale(0.98);
         }
         
-        /* Floating Action Button for Share */
+        /* Floating Action Button for Share - MOVED TO HEADER */
         .share-fab {
-            display: none !important; /* Replaced by action bar button */
+            display: none !important; /* Moved to header */
             position: fixed;
             bottom: 90px;
             right: 20px;
@@ -827,7 +846,7 @@
         }
         
         .share-fab.visible {
-            display: none !important; /* Replaced by action bar button */
+            display: none !important; /* Moved to header */
         }
         
         .share-fab:active {
@@ -2980,7 +2999,6 @@
             border-top: 1px solid var(--border);
             padding: 8px 0 calc(8px + var(--safe-bottom));
             z-index: 100;
-            pointer-events: auto;
         }
         
         .nav-tab {
@@ -3452,7 +3470,7 @@
         
         /* ============ HINT FAB & SHEET ============ */
         .hint-fab {
-            display: none; /* Replaced by action bar button */
+            display: none; /* Moved to header */
             position: fixed;
             bottom: calc(160px + var(--safe-bottom));
             right: 20px;
@@ -7980,33 +7998,17 @@
                 <g transform="rotate(10, 75, 40)"><rect x="55" y="10" width="48" height="55" rx="6" fill="url(#gsLogoS)"/><circle cx="55" cy="37" r="10" fill="var(--bg-primary, #1a1a2e)"/><text x="80" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">S</text></g>
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
-            <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.40</span>
+            <div style="display: flex; flex-direction: column; line-height: 1.2;">
+                <span>Game Shelf</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.42</span>
+            </div>
         </div>
         <div class="header-right">
+            <button class="header-btn" id="header-share-btn" onclick="quickShareRecap()" title="Share Today's Results">📤</button>
+            <button class="header-btn hint-btn" id="header-hint-btn" onclick="openHintSheet()" title="Get AI Hints">💡</button>
             <button class="menu-btn" onclick="toggleSettingsMenu()">☰</button>
         </div>
     </header>
-    
-    <!-- Quick Action Bar -->
-    <div class="action-bar" id="action-bar">
-        <div class="action-bar-left">
-            <button class="action-btn" id="share-action-btn" onclick="quickShareRecap()" title="Share Today's Results">
-                📤 Share
-                <span class="action-btn-badge" id="share-action-badge" style="display: none;">0</span>
-            </button>
-            <button class="action-btn" id="hint-action-btn" onclick="openHintSheet()" title="Get AI Hints">
-                💡 Hints
-                <span class="action-btn-badge hint" id="hint-action-badge" style="display: none;">!</span>
-            </button>
-        </div>
-        <div class="action-bar-right">
-            <div class="wallet-inline">
-                <span class="tokens">💎 <span id="token-count">0</span></span>
-                <span class="coins">🪙 <span id="coin-count">0</span></span>
-            </div>
-        </div>
-    </div>
     
     <!-- Settings Overlay -->
     <div class="settings-overlay" id="settings-overlay" onclick="toggleSettingsMenu()"></div>
@@ -8018,6 +8020,14 @@
             <button class="settings-close" onclick="toggleSettingsMenu()">✕</button>
         </div>
         <div class="settings-body">
+            <!-- Wallet Display - at top of menu -->
+            <div class="settings-section" style="padding: 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border-radius: 12px; margin: 0 16px 16px;">
+                <div style="display: flex; justify-content: center; gap: 24px; font-size: 1.1rem;">
+                    <span class="tokens" style="display: flex; align-items: center; gap: 6px;">💎 <span id="token-count" style="font-weight: 700;">0</span></span>
+                    <span class="coins" style="display: flex; align-items: center; gap: 6px;">🪙 <span id="coin-count" style="font-weight: 700;">0</span></span>
+                </div>
+            </div>
+            
             <!-- Settings Submenu Toggle - NOW AT TOP -->
             <div class="settings-section" style="padding-bottom: 0;">
                 <div class="settings-submenu-toggle" id="settings-submenu-toggle" onclick="toggleSettingsSubmenu()">
@@ -8242,7 +8252,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.40</div>
+            <div class="settings-version">Game Shelf PWA v1.2.42</div>
         </div>
     </div>
     
@@ -8444,7 +8454,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.40) -->
+        <!-- Stats Screen (v1.2.42) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9300,7 +9310,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.40) -->
+    <!-- Score Conflict Modal (v1.2.42) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9336,7 +9346,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.40 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.42 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -13571,12 +13581,8 @@ Wordle 1,234 3/6
         function loadData() {
             try {
                 const stored = localStorage.getItem('gameShelfData');
-                console.log('📦 loadData: stored exists?', !!stored);
-                
                 if (stored) {
                     const parsed = JSON.parse(stored);
-                    console.log('📦 loadData: parsed.games?', parsed.games?.length || 0);
-                    
                     // Merge with defaults to ensure all fields exist
                     const defaults = createDefaultData();
                     appData = {
@@ -13597,14 +13603,10 @@ Wordle 1,234 3/6
                     
                     // Safeguard: if games is empty, populate with defaults
                     if (!appData.games || appData.games.length === 0) {
-                        console.log('🔧 Empty games shelf - populating with defaults');
                         appData.games = DEFAULT_SHELF.map(id => ({ id, addedAt: new Date().toISOString() }));
                         saveData();
                     }
-                    
-                    console.log('📦 loadData: final games count', appData.games.length);
                 } else {
-                    console.log('📦 loadData: no stored data, creating defaults');
                     appData = createDefaultData();
                     saveData();
                 }
@@ -16466,7 +16468,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.40: Optional third button (for View Stats)
+            // v1.2.42: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16580,7 +16582,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.40';
+            const version = '1.2.42';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18760,7 +18762,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.40) ============
+        // ============ STATS SCREEN (v1.2.42) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -18971,25 +18973,14 @@ Made with ❤️ for puzzle enthusiasts`;
                 shareBtn.style.display = played > 0 ? 'flex' : 'none';
             }
             
-            // Show/hide floating share button (FAB) - deprecated, now using action bar
-            const fab = document.getElementById('share-fab');
-            const fabBadge = document.getElementById('share-fab-badge');
-            if (fab) {
-                fab.classList.toggle('visible', played > 0);
-                if (fabBadge) fabBadge.textContent = played;
-            }
-            
-            // Update action bar share button
-            const shareActionBtn = document.getElementById('share-action-btn');
-            const shareActionBadge = document.getElementById('share-action-badge');
-            if (shareActionBtn && shareActionBadge) {
+            // Update header share button badge
+            const headerShareBtn = document.getElementById('header-share-btn');
+            if (headerShareBtn) {
                 if (played > 0) {
-                    shareActionBadge.textContent = played;
-                    shareActionBadge.style.display = 'flex';
-                    shareActionBtn.classList.add('highlight');
+                    headerShareBtn.classList.add('has-badge');
+                    headerShareBtn.setAttribute('data-badge', played);
                 } else {
-                    shareActionBadge.style.display = 'none';
-                    shareActionBtn.classList.remove('highlight');
+                    headerShareBtn.classList.remove('has-badge');
                 }
             }
             
@@ -19004,15 +18995,10 @@ Made with ❤️ for puzzle enthusiasts`;
         
         function renderHomeGames() {
             const container = document.getElementById('home-games-grid');
-            if (!container) {
-                console.error('❌ home-games-grid container not found');
-                return;
-            }
+            if (!container) return;
             
             const shelf = appData.games.slice(0, 6);
             const todayHistory = getTodayHistory();
-            
-            console.log('🎮 renderHomeGames:', { gamesCount: appData.games.length, shelf: shelf.map(g => g.id) });
             
             // Update header to show if there are more games on shelf
             const totalGamesCount = document.getElementById('total-games-count');
@@ -19040,10 +19026,7 @@ Made with ❤️ for puzzle enthusiasts`;
             
             container.innerHTML = shelf.map(g => {
                 const game = GAMES[g.id];
-                if (!game) {
-                    console.warn('⚠️ Game not found:', g.id);
-                    return '';
-                }
+                if (!game) return '';
                 const done = todayHistory[g.id];
                 const stats = appData.stats[g.id];
                 const streak = stats?.currentStreak || 0;
@@ -19387,7 +19370,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.40'
+                    appVersion: '1.2.42'
                 }
             };
             
@@ -21461,36 +21444,24 @@ Hint levels:
         function checkHintData() {
             try {
                 const stored = localStorage.getItem('gameshelf_hint_data');
-                const hintFab = document.getElementById('hint-fab');
-                const hintFabBadge = document.getElementById('hint-fab-badge');
-                const hintActionBtn = document.getElementById('hint-action-btn');
-                const hintActionBadge = document.getElementById('hint-action-badge');
+                const headerHintBtn = document.getElementById('header-hint-btn');
                 
                 if (!stored) {
-                    if (hintFab) hintFab.classList.remove('has-data');
-                    if (hintFabBadge) hintFabBadge.style.display = 'none';
-                    if (hintActionBtn) hintActionBtn.classList.remove('highlight', 'pulse');
-                    if (hintActionBadge) hintActionBadge.style.display = 'none';
+                    if (headerHintBtn) headerHintBtn.classList.remove('has-badge');
                     return null;
                 }
                 
                 const data = JSON.parse(stored);
                 const age = Date.now() - data.timestamp;
                 
-                // Add pulse animation if data is recent (within 24 hours)
+                // Add badge if data is recent (within 24 hours)
                 if (age < 24 * 60 * 60 * 1000) {
-                    if (hintFab) hintFab.classList.add('has-data');
-                    if (hintFabBadge) hintFabBadge.style.display = 'block';
-                    if (hintActionBtn) hintActionBtn.classList.add('highlight', 'pulse');
-                    if (hintActionBadge) hintActionBadge.style.display = 'flex';
+                    if (headerHintBtn) headerHintBtn.classList.add('has-badge');
                     hintLocalData = data;
                     return data;
                 }
                 
-                if (hintFab) hintFab.classList.remove('has-data');
-                if (hintFabBadge) hintFabBadge.style.display = 'none';
-                if (hintActionBtn) hintActionBtn.classList.remove('highlight', 'pulse');
-                if (hintActionBadge) hintActionBadge.style.display = 'none';
+                if (headerHintBtn) headerHintBtn.classList.remove('has-badge');
                 return null;
             } catch (e) {
                 console.warn('Could not read hint data:', e);
@@ -23187,7 +23158,7 @@ Hint levels:
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.40) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.42) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -25405,7 +25376,7 @@ Hint levels:
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.40) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.42) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -27757,16 +27728,7 @@ Hint levels:
         
         // ============ INIT ============
         function init() {
-            console.log('🚀 Init starting...');
-            
-            // Force-close any stuck overlays (defensive fix for touch issues)
-            document.querySelectorAll('.settings-overlay, .bottom-sheet-overlay, .modal-overlay, .celebration-overlay, .recording-tutorial-overlay, .launch-pref-overlay, .launch-verify-overlay, .launch-fix-overlay, .custom-url-overlay').forEach(el => {
-                el.classList.remove('active');
-            });
-            console.log('✅ Overlays cleared');
-            
             loadData();
-            console.log('✅ Data loaded, games:', appData.games?.length || 0);
             
             // Restore active game state from localStorage (survives app restarts)
             restoreActiveGameState();
@@ -27928,7 +27890,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.40 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.42 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
