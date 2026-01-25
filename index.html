@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.36">
+    <meta name="version" content="1.2.37">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7961,7 +7961,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.36</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.37</span>
         </div>
         <div class="header-right">
             <button class="menu-btn" onclick="toggleSettingsMenu()">☰</button>
@@ -8222,7 +8222,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.36</div>
+            <div class="settings-version">Game Shelf PWA v1.2.37</div>
         </div>
     </div>
     
@@ -8424,7 +8424,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.36) -->
+        <!-- Stats Screen (v1.2.37) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9280,7 +9280,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.36) -->
+    <!-- Score Conflict Modal (v1.2.37) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9316,7 +9316,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.36 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.37 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -13570,6 +13570,13 @@ Wordle 1,234 3/6
                         activityLog: parsed.activityLog || [],
                         friends: parsed.friends || []
                     };
+                    
+                    // Safeguard: if games is empty, populate with defaults
+                    if (!appData.games || appData.games.length === 0) {
+                        console.log('🔧 Empty games shelf - populating with defaults');
+                        appData.games = DEFAULT_SHELF.map(id => ({ id, addedAt: new Date().toISOString() }));
+                        saveData();
+                    }
                 } else {
                     appData = createDefaultData();
                     saveData();
@@ -16432,7 +16439,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.36: Optional third button (for View Stats)
+            // v1.2.37: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16546,7 +16553,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.36';
+            const version = '1.2.37';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18726,7 +18733,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.36) ============
+        // ============ STATS SCREEN (v1.2.37) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19330,7 +19337,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.36'
+                    appVersion: '1.2.37'
                 }
             };
             
@@ -23130,7 +23137,7 @@ Hint levels:
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.36) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.37) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -25348,7 +25355,7 @@ Hint levels:
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.36) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.37) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -27862,7 +27869,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.36 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.37 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

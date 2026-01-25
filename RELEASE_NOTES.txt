@@ -1,26 +1,15 @@
-Game Shelf v1.2.36
+Game Shelf v1.2.37
 ==================
 Release Date: January 25, 2026
 
-UI REDESIGN - CLEANER LAYOUT
------------------------------
-Removed floating action buttons, added action bar:
+BUG FIXES
+---------
+- Fixed service worker version mismatch causing stale cache
+- Added safeguard: empty games shelf now auto-populates with defaults
+- Ensures new/returning users always have games to play
 
-Before:
-- Floating hint button (FAB) - cluttering UI
-- Floating share button (FAB) - cluttering UI  
-- Tokens/coins in header - crowded
+Service Worker:
+- Updated CACHE_VERSION to v1.2.37 (was stuck at v1.2.27)
+- Forces cache refresh on all PWA installations
 
-After:
-- Clean action bar below header with:
-  • 📤 Share button (badge shows games played today)
-  • 💡 Hints button (pulses when game data available)
-  • 💎🪙 Wallet display (inline, clean)
-
-Benefits:
-- Less visual clutter
-- Easier to find actions
-- More modern look
-- Better mobile experience
-
-Previous: v1.2.35 - Hint UI categories, scrollable picker
+Previous: v1.2.36 - Action bar replaces floating buttons
