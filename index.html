@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.26">
+    <meta name="version" content="1.2.27">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7821,7 +7821,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.26</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.27</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -8066,7 +8066,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.26</div>
+            <div class="settings-version">Game Shelf PWA v1.2.27</div>
         </div>
     </div>
     
@@ -8268,7 +8268,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.26) -->
+        <!-- Stats Screen (v1.2.27) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9124,7 +9124,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.26) -->
+    <!-- Score Conflict Modal (v1.2.27) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9160,7 +9160,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.26 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.27 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9424,10 +9424,14 @@ Wordle 1,234 3/6
             <div class="hint-other-games">
                 <div class="hint-other-games-title">Or get hints for other games:</div>
                 <div class="hint-game-chips" id="hint-game-chips">
-                    <div class="hint-game-chip" onclick="selectHintGame('wordle')">🟩 Wordle</div>
                     <div class="hint-game-chip" onclick="selectHintGame('connections')">🔗 Connections</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('wordle')">🟩 Wordle</div>
                     <div class="hint-game-chip" onclick="selectHintGame('strands')">🔵 Strands</div>
                     <div class="hint-game-chip" onclick="selectHintGame('spellingbee')">🐝 Spelling Bee</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('mini')">📰 Mini</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('quotle')">💬 Quotle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('rungs')">🪜 Rungs</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('slate')">📝 Slate</div>
                 </div>
             </div>
         </div>
@@ -16229,7 +16233,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.26: Optional third button (for View Stats)
+            // v1.2.27: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16343,7 +16347,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.26';
+            const version = '1.2.27';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18523,7 +18527,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.26) ============
+        // ============ STATS SCREEN (v1.2.27) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19113,7 +19117,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.26'
+                    appVersion: '1.2.27'
                 }
             };
             
@@ -20430,13 +20434,18 @@ Made with ❤️ for puzzle enthusiasts`;
                 startDate: '2023-06-12', needsInput: false,
                 searchQuery: (date) => `NYT Connections ${date} puzzle answers`,
                 hintDescs: { low: "Vague category hints", mid: "Theme + partial words", high: "Full categories" },
-                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
-Connections hint levels:
-1-2: Ultra vague ("One category relates to nature")
-3-4: General theme ("Think about types of dances") 
-5-6: Clear category name ("One category is BREAD TYPES")
-7-8: Category + 3 words ("RYE, WHEAT, SOURDOUGH are breads - find the 4th")
-9-10: All four categories with words`
+                systemPrompt: `CRITICAL: Give ONLY the hint. NO preamble. NO "I found". NO explanations. Just the hint.
+
+Connections: Group 16 words into 4 categories of 4.
+
+STRICT hint levels:
+1-2: Ultra vague, ONE category. Example: "One relates to nature" (under 10 words)
+3-4: General theme for ONE category. Example: "Think about dance styles" (under 12 words)
+5-6: Category name revealed. Example: "One category is BREAD TYPES"
+7-8: Category + 3 of 4 words. Example: "RYE, WHEAT, SOURDOUGH are breads"
+9-10: All four categories with all words
+
+Keep levels 1-4 under 15 words total.`
             },
             wordle: {
                 id: 'wordle', name: 'Wordle', icon: '🟩',
@@ -20506,13 +20515,18 @@ Quotle hint levels (guess who said the quote):
                 id: 'rungs', name: 'Rungs', icon: '🪜',
                 hasLocalData: true, needsInput: false,
                 hintDescs: { low: "Theme hints", mid: "Pairing hints", high: "Pair reveals" },
-                systemPrompt: `Give ONLY the hint. No preamble, no "I found", no explanation. Just the hint itself.
-Rungs hint levels (match 8 items into 4 pairs, order least to most):
-1-2: General theme ("Think about sizes")
-3-4: Theme type ("Time periods from shortest to longest")
-5-6: One pair hint ("Two of these are types of dogs")
-7-8: Multiple pairs revealed
-9-10: Full solution with ordering`
+                systemPrompt: `CRITICAL: Give ONLY a brief hint. NO solving. NO listing pairs. NO explanations.
+
+Rungs: Match 8 items into 4 pairs, order least→most.
+
+STRICT hint levels:
+1-2: ONE word theme only. Example: "Exercise"
+3-4: Theme + ordering type. Example: "Workout phases, beginning to end" (DO NOT reveal pairs)
+5-6: Hint for ONE pair only. Example: "Two words combine to mean 'prepare for exercise'"
+7-8: Reveal 2 pairs explicitly
+9-10: Full solution
+
+NEVER give pairs at levels 1-6. Keep response under 15 words for levels 1-4.`
             },
             slate: {
                 id: 'slate', name: 'Slate', icon: '📝',
@@ -20773,7 +20787,14 @@ Slate hint levels (5-letter word for each row):
                         userPrompt += `Search for who said this quote, then give a LEVEL ${level}/10 hint.`;
                     } else if (game.id === 'rungs' && hintLocalData.data?.items) {
                         userPrompt += `User is playing Rungs #${hintLocalData.puzzleNumber}.\nItems: ${hintLocalData.data.items.join(', ')}\n`;
-                        userPrompt += `Analyze these to find 4 pairs and ordering, then give a LEVEL ${level}/10 hint.`;
+                        // Level-appropriate prompting - don't ask for analysis at low levels
+                        if (level <= 4) {
+                            userPrompt += `Give ONLY a LEVEL ${level}/10 thematic hint. DO NOT reveal any pairs or the solution.`;
+                        } else if (level <= 6) {
+                            userPrompt += `Give a LEVEL ${level}/10 hint. You may hint at ONE pair only.`;
+                        } else {
+                            userPrompt += `Give a LEVEL ${level}/10 hint with pairs revealed.`;
+                        }
                     } else if (game.id === 'slate') {
                         userPrompt += `User is playing Slate #${hintLocalData.puzzleNumber}.\n`;
                         userPrompt += `Progress: ${hintLocalData.data?.wordsCompleted || 0}/5 words, stuck on row ${userInput || hintLocalData.data?.currentRow || '?'}\n`;
@@ -22144,7 +22165,7 @@ Slate hint levels (5-letter word for each row):
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.26) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.27) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -24362,7 +24383,7 @@ Slate hint levels (5-letter word for each row):
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.26) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.27) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -26876,7 +26897,7 @@ Slate hint levels (5-letter word for each row):
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.26 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.27 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
