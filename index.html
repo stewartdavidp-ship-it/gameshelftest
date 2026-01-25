@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.19">
+    <meta name="version" content="1.2.21">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7821,7 +7821,7 @@
                 <g transform="rotate(-10, 35, 40)"><rect x="5" y="10" width="48" height="55" rx="6" fill="url(#gsLogoG)"/><circle cx="53" cy="37" r="10" fill="url(#gsLogoG)"/><text x="28" y="48" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text></g>
             </svg>
             <span>Game Shelf</span>
-            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.19</span>
+            <span style="font-size: 0.6rem; color: var(--accent-orange); margin-left: 4px; font-weight: bold;">v1.2.21</span>
         </div>
         <div class="header-right">
             <div class="wallet-display">
@@ -8066,7 +8066,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.19</div>
+            <div class="settings-version">Game Shelf PWA v1.2.21</div>
         </div>
     </div>
     
@@ -8268,7 +8268,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.19) -->
+        <!-- Stats Screen (v1.2.21) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9124,7 +9124,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.19) -->
+    <!-- Score Conflict Modal (v1.2.21) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9160,7 +9160,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.19 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.21 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -15039,11 +15039,6 @@ Wordle 1,234 3/6
             const overlay = document.getElementById('settings-overlay');
             const isOpening = !menu.classList.contains('active');
             
-            // iOS gesture-deferred clipboard check (subtle nudge) - only on open
-            if (isOpening) {
-                checkClipboardOnGesture('settings-open');
-            }
-            
             // Refresh auth UI every time menu is opened
             if (isOpening) {
                 // Check current Firebase auth state directly
@@ -16234,7 +16229,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.19: Optional third button (for View Stats)
+            // v1.2.21: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16348,7 +16343,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.19';
+            const version = '1.2.21';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18528,7 +18523,7 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('coin-count').textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.19) ============
+        // ============ STATS SCREEN (v1.2.21) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19118,7 +19113,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.19'
+                    appVersion: '1.2.21'
                 }
             };
             
@@ -20581,9 +20576,31 @@ Made with ❤️ for puzzle enthusiasts`;
             const data = checkHintData();
             
             if (data && HINT_GAMES[data.gameId]) {
+                // Use detected local data from Game Shelf games
                 selectHintGame(data.gameId, data);
+            } else if (lastLaunchedGame && HINT_GAMES[lastLaunchedGame]) {
+                // Default to last launched game if it's supported
+                selectHintGame(lastLaunchedGame);
+            } else if (lastLaunchedGame) {
+                // Map Game Shelf game IDs to hint game IDs
+                const gameIdMap = {
+                    'nyt-connections': 'connections',
+                    'nyt-wordle': 'wordle',
+                    'nyt-strands': 'strands',
+                    'nyt-spelling-bee': 'spellingbee',
+                    'nyt-mini': 'mini',
+                    'quotle': 'quotle',
+                    'rungs': 'rungs',
+                    'slate': 'slate'
+                };
+                const mappedId = gameIdMap[lastLaunchedGame];
+                if (mappedId && HINT_GAMES[mappedId]) {
+                    selectHintGame(mappedId);
+                } else {
+                    selectHintGame('connections');
+                }
             } else {
-                // Default to connections if no local data
+                // Fallback to connections
                 selectHintGame('connections');
             }
             
@@ -21677,8 +21694,15 @@ Made with ❤️ for puzzle enthusiasts`;
             }
         }
         
-        // Clipboard++ Mode - Continuous monitoring
+        // Clipboard++ Mode - Continuous monitoring (non-iOS only)
         function startClipboardMonitor() {
+            // iOS shows paste popup on every read - don't use continuous monitoring
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS) {
+                console.log('📋 Clipboard++ mode skipped (iOS)');
+                return;
+            }
+            
             if (clipboardPlusInterval) return; // Already running
             
             console.log('📋 Clipboard++ mode started');
@@ -21975,9 +21999,6 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function switchTab(tab) {
-            // iOS gesture-deferred clipboard check (subtle nudge)
-            checkClipboardOnGesture('tab-switch');
-            
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.nav-tab[data-tab="${tab}"]`).classList.add('active');
             
@@ -22108,7 +22129,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.19) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.21) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -24317,7 +24338,7 @@ Made with ❤️ for puzzle enthusiasts`;
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.19) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.21) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -26831,7 +26852,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.19 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.21 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
