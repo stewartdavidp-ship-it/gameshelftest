@@ -3523,6 +3523,32 @@
         .hint-sheet {
             max-height: 85vh;
             overflow-y: auto;
+            position: relative;
+        }
+        
+        .hint-sheet-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .hint-sheet-close:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
         }
         
         .hint-sheet-header {
@@ -9521,6 +9547,7 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="hint-sheet-overlay" onclick="closeHintSheet()">
         <div class="bottom-sheet hint-sheet" onclick="event.stopPropagation()">
             <div class="bottom-sheet-handle"></div>
+            <button class="hint-sheet-close" onclick="closeHintSheet()" aria-label="Close hint sheet">×</button>
             
             <div class="hint-sheet-header">
                 <div class="hint-sheet-icon">💡</div>
@@ -28018,7 +28045,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.47 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.48 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

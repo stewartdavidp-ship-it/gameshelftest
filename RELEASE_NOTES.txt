@@ -13,6 +13,10 @@ TUTORIAL & DEEP LINK FIXES
   - ?action=shop now opens Rewards Store (was placeholder)
   - ?action=contacts now opens Contact Finder (was placeholder)
 
+• Fixed hint sheet dismissal:
+  - Added X close button to hint sheet header
+  - Users can now dismiss hint sheet without tapping overlay
+
 Previous version:
 - v1.2.47: Comprehensive battle scoring rebalance
 
