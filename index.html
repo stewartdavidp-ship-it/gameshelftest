@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.57">
+    <meta name="version" content="1.2.61">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.57</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.61</span>
             </div>
         </div>
         <div class="header-right">
@@ -8279,7 +8279,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.57</div>
+            <div class="settings-version">Game Shelf PWA v1.2.61</div>
         </div>
     </div>
     
@@ -13789,9 +13789,41 @@ Wordle 1,234 3/6
         
         function saveData() {
             try {
+                // Prune old grids before saving (keep last 30 days)
+                pruneOldGrids();
                 localStorage.setItem('gameShelfData', JSON.stringify(appData));
             } catch (e) {
                 console.error('Save error:', e);
+            }
+        }
+        
+        // Remove grid data from entries older than 31 days to save storage
+        function pruneOldGrids() {
+            if (!appData.history) return;
+            
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - 31);
+            const cutoffStr = cutoffDate.toISOString().split('T')[0];
+            
+            let pruned = 0;
+            for (const dateStr of Object.keys(appData.history)) {
+                if (dateStr < cutoffStr) {
+                    // Remove grid and shareText from old entries
+                    for (const gameId of Object.keys(appData.history[dateStr])) {
+                        const entry = appData.history[dateStr][gameId];
+                        if (entry.grid) {
+                            delete entry.grid;
+                            pruned++;
+                        }
+                        if (entry.shareText) {
+                            delete entry.shareText;
+                        }
+                    }
+                }
+            }
+            
+            if (pruned > 0) {
+                console.log(`[STORAGE] Pruned ${pruned} old grids (>31 days)`);
             }
         }
         
@@ -14999,7 +15031,9 @@ Wordle 1,234 3/6
                 score: result.score,
                 won: result.won,
                 numericScore: result.numericScore || 0,
-                time: new Date().toISOString()
+                time: new Date().toISOString(),
+                grid: result.grid || null,  // Save the emoji grid for sharing
+                shareText: result.shareText || null  // Save original share text if available
             };
             
             // Update stats
@@ -16740,7 +16774,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.57';
+            const version = '1.2.61';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -19047,11 +19081,11 @@ Made with ❤️ for puzzle enthusiasts`;
                         <div style="margin-bottom: 16px;">
                             <strong>Coin Purchases</strong>
                             <ul style="margin: 8px 0; padding-left: 20px; color: var(--text-secondary);">
+                                <li>Coins cost $1 USD each</li>
                                 <li>Minimum purchase: 10 coins ($10 USD)</li>
-                                <li>Available tiers: 10, 25, or 50 coins</li>
                                 <li>All purchases are processed securely via Stripe</li>
                                 <li>Coins are non-refundable once purchased</li>
-                                <li>Daily purchase limit: $50 USD</li>
+                                <li>Weekly purchase limit: $50 USD</li>
                             </ul>
                         </div>
                         
@@ -20076,7 +20110,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.57'
+                    appVersion: '1.2.61'
                 }
             };
             
@@ -25026,63 +25060,36 @@ Hint levels:
             
             let lines = [];
             
-            // Header with game count
-            const gameCount = gameIds.length;
-            lines.push(`🧩 Daily Puzzle Recap • ${gameCount} game${gameCount !== 1 ? 's' : ''}`);
+            // Header with date
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            lines.push(`🧩 My Puzzle Results • ${dateStr}`);
             lines.push('');
             
-            // List games with scores
-            let totalPoints = 0;
-            let perfectCount = 0;
+            // Show each game with its grid (the actual pasted results)
             for (const gameId of gameIds) {
                 const game = GAMES[gameId];
                 const entry = todayHistory[gameId];
                 if (game) {
-                    const score = entry.score || '✓';
-                    lines.push(`${game.icon} ${game.name}: ${score}`);
-                    totalPoints += entry.numericScore || 0;
+                    // Game header with score
+                    lines.push(`${game.icon} ${game.name} ${entry.score}`);
                     
-                    // Check for perfects
-                    if (score.includes('1/') || score.includes('Perfect') || score.includes('🎯')) {
-                        perfectCount++;
+                    // Include the grid if we have it
+                    if (entry.grid) {
+                        lines.push(entry.grid);
                     }
+                    lines.push('');
                 }
             }
             
-            lines.push('');
-            
-            // Cross-game insights
-            let insights = [];
-            
-            // Perfect count
-            if (perfectCount > 0) {
-                insights.push(`⭐ ${perfectCount} perfect${perfectCount !== 1 ? 's' : ''}`);
-            }
-            
-            // Total points
-            if (totalPoints > 0) {
-                insights.push(`💎 ${totalPoints} pts`);
-            }
-            
-            // Friend comparison
-            const friendComparison = getFriendComparisonStats(gameIds);
-            if (friendComparison.total > 0 && friendComparison.beat > 0) {
-                insights.push(`👑 Beat ${friendComparison.beat}/${friendComparison.total} friend${friendComparison.total !== 1 ? 's' : ''}`);
-            }
-            
-            if (insights.length > 0) {
-                lines.push(insights.join(' • '));
-                lines.push('');
-            }
-            
-            // Best streak across all games
+            // Current streak if notable
             const maxStreak = getMaxStreak(appData);
             if (maxStreak > 1) {
-                lines.push(`🔥 Best streak: ${maxStreak} days`);
+                lines.push(`🔥 ${maxStreak}-day streak`);
                 lines.push('');
             }
             
-            lines.push('via Game Shelf 🧩');
+            lines.push('Track your puzzles: gameshelf.app 🧩');
             
             return lines.join('\n');
         }
@@ -28717,7 +28724,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.57 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.61 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
