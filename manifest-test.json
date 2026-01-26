@@ -1,11 +1,11 @@
 {
   "name": "Game Shelf TEST",
   "short_name": "GS Test",
-  "description": "Track your daily puzzle games - TEST BUILD",
+  "description": "Track your daily puzzle games (TEST BUILD)",
   "start_url": "./index.html",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
-  "background_color": "#1a0a00",
+  "background_color": "#0a0a0f",
   "theme_color": "#ff9900",
   "orientation": "portrait-primary",
   "scope": "./",

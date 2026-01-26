@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.47">
+    <meta name="version" content="1.2.48">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8000,7 +8000,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.47</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.48</span>
             </div>
         </div>
         <div class="header-right">
@@ -8252,7 +8252,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.47</div>
+            <div class="settings-version">Game Shelf PWA v1.2.48</div>
         </div>
     </div>
     
@@ -12156,17 +12156,15 @@ Wordle 1,234 3/6
                         }, 200);
                         break;
                     
-                    // Shop/Rewards (placeholder)
+                    // Shop/Rewards
                     case 'shop':
-                        // TODO: Implement rewards shop
-                        showToast('Shop coming soon');
+                        showMerchStore();
                         break;
                     
-                    // Contacts finder (placeholder)
+                    // Contacts finder
                     case 'contacts':
                         switchTab('social');
-                        // TODO: Open contacts finder modal
-                        showToast('Contact finder coming soon');
+                        setTimeout(() => findFriendsFromContacts(), 300);
                         break;
                     
                     // Privacy settings (placeholder)
@@ -16700,7 +16698,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.47';
+            const version = '1.2.48';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -19490,7 +19488,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.47'
+                    appVersion: '1.2.48'
                 }
             };
             
@@ -27600,6 +27598,17 @@ Hint levels:
                     if (fab) fab.classList.add('visible');
                 },
                 tip: '💡 The badge shows your logged game count'
+            },
+            {
+                id: 'hint-fab',
+                title: '💡 AI Hint Helper',
+                content: 'Stuck on a puzzle? Tap the <strong>hint button</strong> for AI-powered help! Choose from 10 hint levels - from subtle nudges to full answers.',
+                target: '#hint-fab',
+                position: 'left',
+                action: () => {
+                    switchTab('home');
+                },
+                tip: '🎯 Works with NYT Games, LinkedIn Games, and GS Originals - sign in to use hints'
             },
             {
                 id: 'nav-games',

@@ -1,3 +1,23 @@
+Game Shelf v1.2.48
+==================
+Release Date: January 26, 2026
+
+TUTORIAL & DEEP LINK FIXES
+--------------------------
+• Added AI Hint Helper to app tutorial
+  - New tutorial step introduces the hint FAB
+  - Explains 10 hint levels and sign-in requirement
+  - Tips for NYT Games, LinkedIn Games, and GS Originals
+
+• Fixed deep link routing:
+  - ?action=shop now opens Rewards Store (was placeholder)
+  - ?action=contacts now opens Contact Finder (was placeholder)
+
+Previous version:
+- v1.2.47: Comprehensive battle scoring rebalance
+
+---
+
 Game Shelf v1.2.47
 ==================
 Release Date: January 25, 2026

@@ -1,11 +1,11 @@
 /**
- * Game Shelf PWA Service Worker v1.2.47
+ * Game Shelf PWA Service Worker v1.2.48
  * 
  * ⚠️ IMPORTANT: CACHE_VERSION must match app version!
  * Update this on EVERY release to force PWA update.
  */
 
-const CACHE_VERSION = 'v1.2.47';
+const CACHE_VERSION = 'v1.2.48';
 const CACHE_NAME = `gameshelf-pwa-${CACHE_VERSION}`;
 
 // Install - skip waiting immediately to activate new SW
