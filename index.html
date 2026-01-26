@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.45">
+    <meta name="version" content="1.2.47">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8000,7 +8000,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.45</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.47</span>
             </div>
         </div>
         <div class="header-right">
@@ -8252,7 +8252,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.45</div>
+            <div class="settings-version">Game Shelf PWA v1.2.47</div>
         </div>
     </div>
     
@@ -8454,7 +8454,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.45) -->
+        <!-- Stats Screen (v1.2.47) -->
         <div class="screen" id="screen-stats">
             <div class="section-header" style="margin-bottom: 16px;">
                 <span class="section-title">📊 Your Stats</span>
@@ -9310,7 +9310,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Score Conflict Modal (v1.2.45) -->
+    <!-- Score Conflict Modal (v1.2.47) -->
     <div class="bottom-sheet-overlay" id="score-conflict-modal" onclick="resolveScoreConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -9346,7 +9346,7 @@ Wordle 1,234 3/6
         </div>
     </div>
     
-    <!-- Streak Conflict Modal (v1.2.45 Phase 2) -->
+    <!-- Streak Conflict Modal (v1.2.47 Phase 2) -->
     <div class="bottom-sheet-overlay" id="streak-conflict-modal" onclick="resolveStreakConflict('keep')">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 60vh;">
             <div class="bottom-sheet-handle"></div>
@@ -12606,14 +12606,20 @@ Wordle 1,234 3/6
                     // Count colored squares for grid info
                     const greenCount = (text.match(/🟩/g) || []).length;
                     const yellowCount = (text.match(/🟨/g) || []).length;
+                    
+                    // Battle scoring: 1/6 is "hole in one" rare moment
+                    // Above average (3) beats average (4) clearly
+                    const scoreMap = { '1': 50, '2': 30, '3': 22, '4': 15, '5': 10, '6': 6 };
+                    const numericScore = guesses === 'X' ? 0 : (scoreMap[guesses] || 15);
+                    
                     return {
                         gameId: 'wordle',
                         puzzleNumber: parseInt(puzzleNum),
                         score: guesses + '/6',
                         won: guesses !== 'X',
-                        numericScore: guesses === 'X' ? 0 : (7 - parseInt(guesses)) * 5,
+                        numericScore,
                         grid: text.match(/[⬛⬜🟨🟩]+/g)?.join('\n') || '',
-                        meta: { greens: greenCount, yellows: yellowCount }
+                        meta: { greens: greenCount, yellows: yellowCount, perfect: guesses === '1' }
                     };
                 }
             },
@@ -12636,12 +12642,18 @@ Wordle 1,234 3/6
                         }).length;
                     // Perfect = no mistakes in 4 guesses
                     const perfect = solved && mistakes === 0 && lines.length === 4;
+                    
+                    // Battle scoring: gradual penalty per mistake
+                    // Perfect: 30, 1 miss: 24, 2 miss: 18, 3 miss: 12
+                    // Failed: partial credit per group found
+                    const numericScore = solved ? (30 - mistakes * 6) : (lines.length * 4);
+                    
                     return {
                         gameId: 'connections',
                         puzzleNumber: parseInt(puzzleNum),
-                        score: perfect ? 'Perfect! 🎯' : (solved ? 'Solved!' : `${lines.length}/4`),
+                        score: perfect ? 'Perfect! 🎯' : (solved ? (mistakes > 0 ? `${mistakes} mistake${mistakes > 1 ? 's' : ''}` : 'Solved!') : `${lines.length}/4`),
                         won: solved,
-                        numericScore: perfect ? 35 : (solved ? 25 : lines.length * 5),
+                        numericScore,
                         grid: lines.join('\n'),
                         meta: { mistakes, perfect }
                     };
@@ -12658,13 +12670,18 @@ Wordle 1,234 3/6
                     const spanagram = text.includes('🟡');
                     const blueCount = (text.match(/🔵/g) || []).length;
                     const perfect = hints === 0;
+                    
+                    // Battle scoring: softer hint penalty
+                    // 0 hints: 28, 1 hint: 25, 2 hints: 22, 3 hints: 19, 4+ hints: min 10
+                    const numericScore = perfect ? 28 : Math.max(25 - hints * 3, 10);
+                    
                     return {
                         gameId: 'strands',
                         puzzleNumber: parseInt(puzzleNum),
                         score: perfect ? 'Perfect! 🎯' : (hints > 0 ? `${hints} hint${hints > 1 ? 's' : ''}` : 'No hints!'),
                         won: true,
-                        numericScore: perfect ? 30 : Math.max(20 - hints * 4, 5),
-                        meta: { hints, spanagram, themeWords: blueCount }
+                        numericScore,
+                        meta: { hints, spanagram, themeWords: blueCount, perfect }
                     };
                 }
             },
@@ -12680,16 +12697,21 @@ Wordle 1,234 3/6
                         const mins = parseInt(timeMatch[1]);
                         const secs = parseInt(timeMatch[2]);
                         const totalSecs = mins * 60 + secs;
-                        // Under 30s is excellent, under 1min is good
+                        
+                        // Battle scoring: slower decay, reasonable floor
+                        // <45s: 28, 1 min: 24, 2 min: 20, 3 min: 16, 4+ min: 12
+                        const fast = totalSecs <= 45;
+                        const numericScore = fast ? 28 : Math.max(25 - Math.floor(totalSecs / 15), 12);
+                        
                         let score = `${mins}:${secs.toString().padStart(2, '0')}`;
-                        let numericScore = Math.max(35 - Math.floor(totalSecs / 10), 5);
-                        if (totalSecs <= 30) score += ' ⚡';
+                        if (fast) score += ' ⚡';
+                        
                         return {
                             gameId: 'mini',
                             score,
                             won: true,
                             numericScore,
-                            meta: { seconds: totalSecs, fast: totalSecs <= 60 }
+                            meta: { seconds: totalSecs, fast }
                         };
                     }
                     return { gameId: 'mini', score: 'Done', won: true, numericScore: 15 };
@@ -12818,14 +12840,19 @@ Wordle 1,234 3/6
                 extract: (match, text) => {
                     const puzzleNum = match[1];
                     const guesses = match[2];
-                    // Count distance hints
                     const perfect = guesses === '1';
+                    
+                    // Battle scoring: match Wordle philosophy
+                    // 1=35 (rare!), 2=28, 3=22, 4=16, 5=10, 6=6
+                    const scoreMap = { '1': 35, '2': 28, '3': 22, '4': 16, '5': 10, '6': 6 };
+                    const numericScore = guesses === 'X' ? 0 : (scoreMap[guesses] || 15);
+                    
                     return {
                         gameId: 'worldle',
                         puzzleNumber: parseInt(puzzleNum),
                         score: perfect ? '1/6 🎯' : (guesses + '/6'),
                         won: guesses !== 'X',
-                        numericScore: guesses === 'X' ? 0 : (perfect ? 30 : (7 - parseInt(guesses)) * 4),
+                        numericScore,
                         meta: { perfect }
                     };
                 }
@@ -12838,11 +12865,22 @@ Wordle 1,234 3/6
                     // Count guesses from colored squares
                     const guesses = (text.match(/[🟩🟨🟧🟥⬜]/g) || []).length;
                     const perfect = guesses <= 3;
+                    const great = guesses <= 6;
+                    
+                    // Battle scoring: reward low guesses more
+                    // 1-3: 35, 4-6: 28, 7-10: 22, 11-15: 16, 16-20: 12, 20+: 10
+                    let numericScore = 10;
+                    if (guesses <= 3) numericScore = 35;
+                    else if (guesses <= 6) numericScore = 28;
+                    else if (guesses <= 10) numericScore = 22;
+                    else if (guesses <= 15) numericScore = 16;
+                    else if (guesses <= 20) numericScore = 12;
+                    
                     return {
                         gameId: 'globle',
                         score: guesses > 0 ? (perfect ? `${guesses} 🎯` : `${guesses} guesses`) : 'Completed',
                         won: true,
-                        numericScore: guesses > 0 ? Math.max(25 - guesses, 5) : 15,
+                        numericScore: guesses > 0 ? numericScore : 15,
                         meta: { guesses, perfect }
                     };
                 }
@@ -12855,12 +12893,17 @@ Wordle 1,234 3/6
                     const puzzleNum = match[1];
                     const guesses = match[2];
                     const perfect = guesses === '1';
+                    
+                    // Battle scoring: match Wordle philosophy
+                    const scoreMap = { '1': 35, '2': 28, '3': 22, '4': 16, '5': 10, '6': 6 };
+                    const numericScore = guesses === 'X' ? 0 : (scoreMap[guesses] || 15);
+                    
                     return {
                         gameId: 'tradle',
                         puzzleNumber: parseInt(puzzleNum),
                         score: perfect ? '1/6 🎯' : (guesses + '/6'),
                         won: guesses !== 'X',
-                        numericScore: guesses === 'X' ? 0 : (perfect ? 30 : (7 - parseInt(guesses)) * 4),
+                        numericScore,
                         meta: { perfect }
                     };
                 }
@@ -12916,12 +12959,22 @@ Wordle 1,234 3/6
                     const guesses = parseInt(match[2]);
                     const perfect = guesses <= 10;
                     const great = guesses <= 25;
+                    const good = guesses <= 50;
+                    
+                    // Battle scoring: tiered by guess count
+                    // <10: 35 (amazing), 10-25: 28, 26-50: 22, 51-100: 16, 100+: 10
+                    let numericScore = 10;
+                    if (guesses <= 10) numericScore = 35;
+                    else if (guesses <= 25) numericScore = 28;
+                    else if (guesses <= 50) numericScore = 22;
+                    else if (guesses <= 100) numericScore = 16;
+                    
                     return {
                         gameId: 'contexto',
                         puzzleNumber: parseInt(puzzleNum),
                         score: perfect ? `${guesses} 🎯` : `${guesses} guesses`,
                         won: true,
-                        numericScore: perfect ? 30 : (great ? 25 : Math.max(20 - Math.floor(guesses / 10), 5)),
+                        numericScore,
                         meta: { guesses, perfect }
                     };
                 }
@@ -12940,12 +12993,16 @@ Wordle 1,234 3/6
                     // Count position (1-6)
                     const guessCount = won ? (frames.slice(0, greenPos).match(/[🟥⬛]/g) || []).length + 1 : 6;
                     const perfect = guessCount === 1;
+                    // Battle scoring: match Wordle philosophy
+                    const scoreMap = { 1: 35, 2: 28, 3: 22, 4: 16, 5: 10, 6: 6 };
+                    const numericScore = won ? (scoreMap[guessCount] || 15) : 0;
+                    
                     return {
                         gameId: 'framed',
                         puzzleNumber: parseInt(puzzleNum),
                         score: won ? (perfect ? '1/6 🎯' : `${guessCount}/6`) : 'X/6',
                         won,
-                        numericScore: won ? (perfect ? 30 : (7 - guessCount) * 4) : 0,
+                        numericScore,
                         meta: { guessCount, perfect }
                     };
                 }
@@ -12958,12 +13015,18 @@ Wordle 1,234 3/6
                     const puzzleNum = match[1];
                     const guesses = match[2];
                     const perfect = guesses === '1';
+                    
+                    // Battle scoring: 8-guess scale
+                    // 1=35, 2=30, 3=25, 4=20, 5=16, 6=12, 7=8, 8=5
+                    const scoreMap = { '1': 35, '2': 30, '3': 25, '4': 20, '5': 16, '6': 12, '7': 8, '8': 5 };
+                    const numericScore = guesses === 'X' ? 0 : (scoreMap[guesses] || 15);
+                    
                     return {
                         gameId: 'actorle',
                         puzzleNumber: parseInt(puzzleNum),
                         score: perfect ? '1/8 🎯' : (guesses + '/8'),
                         won: guesses !== 'X',
-                        numericScore: guesses === 'X' ? 0 : (perfect ? 30 : (9 - parseInt(guesses)) * 3),
+                        numericScore,
                         meta: { perfect }
                     };
                 }
@@ -12979,12 +13042,16 @@ Wordle 1,234 3/6
                     const guesses = guessMatch ? guessMatch[1] : null;
                     const perfect = guesses === '1';
                     if (guesses) {
+                        // Battle scoring: match Wordle philosophy
+                        const scoreMap = { '1': 35, '2': 28, '3': 22, '4': 16, '5': 10, '6': 6 };
+                        const numericScore = guesses === 'X' ? 0 : (scoreMap[guesses] || 15);
+                        
                         return {
                             gameId: 'moviedle',
                             puzzleNumber: parseInt(puzzleNum),
                             score: perfect ? '1/6 🎯' : (guesses + '/6'),
                             won: guesses !== 'X',
-                            numericScore: guesses === 'X' ? 0 : (perfect ? 30 : (7 - parseInt(guesses)) * 4),
+                            numericScore,
                             meta: { perfect }
                         };
                     }
@@ -13004,12 +13071,17 @@ Wordle 1,234 3/6
                     const won = greenPos !== -1;
                     const guesses = won ? (resultLine.slice(0, greenPos).match(/[🟥⬜⬛]/g) || []).length + 1 : 6;
                     const perfect = guesses === 1;
+                    
+                    // Battle scoring: match Wordle philosophy
+                    const scoreMap = { 1: 35, 2: 28, 3: 22, 4: 16, 5: 10, 6: 6 };
+                    const numericScore = won ? (scoreMap[guesses] || 15) : 0;
+                    
                     return {
                         gameId: 'heardle',
                         puzzleNumber: puzzleNum ? parseInt(puzzleNum) : null,
                         score: won ? (perfect ? '1/6 🎯' : `${guesses}/6`) : 'X/6',
                         won,
-                        numericScore: won ? (perfect ? 30 : (7 - guesses) * 4) : 0,
+                        numericScore,
                         meta: { guesses, perfect }
                     };
                 }
@@ -13022,12 +13094,17 @@ Wordle 1,234 3/6
                     const puzzleNum = match[1];
                     const guesses = match[2];
                     const perfect = guesses === '1';
+                    
+                    // Battle scoring: match Wordle philosophy
+                    const scoreMap = { '1': 35, '2': 28, '3': 22, '4': 16, '5': 10, '6': 6 };
+                    const numericScore = guesses === 'X' ? 0 : (scoreMap[guesses] || 15);
+                    
                     return {
                         gameId: 'bandle',
                         puzzleNumber: parseInt(puzzleNum),
                         score: perfect ? '1/6 🎯' : (guesses + '/6'),
                         won: guesses !== 'X',
-                        numericScore: guesses === 'X' ? 0 : (perfect ? 30 : (7 - parseInt(guesses)) * 4),
+                        numericScore,
                         meta: { perfect }
                     };
                 }
@@ -13043,12 +13120,16 @@ Wordle 1,234 3/6
                     const guesses = guessMatch ? guessMatch[1] : null;
                     const perfect = guesses === '1';
                     if (guesses) {
+                        // Battle scoring: match Wordle philosophy
+                        const scoreMap = { '1': 35, '2': 28, '3': 22, '4': 16, '5': 10, '6': 6 };
+                        const numericScore = guesses === 'X' ? 0 : (scoreMap[guesses] || 15);
+                        
                         return {
                             gameId: 'nerdle',
                             puzzleNumber: parseInt(puzzleNum),
                             score: perfect ? '1/6 🎯' : (guesses + '/6'),
                             won: guesses !== 'X',
-                            numericScore: guesses === 'X' ? 0 : (perfect ? 30 : (7 - parseInt(guesses)) * 4),
+                            numericScore,
                             meta: { perfect }
                         };
                     }
@@ -13067,13 +13148,18 @@ Wordle 1,234 3/6
                         const mins = parseInt(timeMatch[1]);
                         const secs = parseInt(timeMatch[2]);
                         const totalSecs = mins * 60 + secs;
-                        const fast = totalSecs <= 60;
+                        
+                        // Battle scoring: smoother time curve
+                        // <30s: 30, <1min: 26, <2min: 22, <3min: 18, <5min: 14, 5+min: 10
+                        const fast = totalSecs <= 30;
+                        const numericScore = fast ? 30 : Math.max(28 - Math.floor(totalSecs / 20), 10);
+                        
                         return {
                             gameId: 'queens',
                             puzzleNumber: puzzleNum ? parseInt(puzzleNum) : null,
                             score: fast ? `${mins}:${secs.toString().padStart(2, '0')} ⚡` : `${mins}:${secs.toString().padStart(2, '0')}`,
                             won: true,
-                            numericScore: fast ? 25 : Math.max(20 - Math.floor(totalSecs / 30), 10),
+                            numericScore,
                             meta: { seconds: totalSecs, fast }
                         };
                     }
@@ -13090,13 +13176,18 @@ Wordle 1,234 3/6
                         const mins = parseInt(timeMatch[1]);
                         const secs = parseInt(timeMatch[2]);
                         const totalSecs = mins * 60 + secs;
-                        const fast = totalSecs <= 90;
+                        
+                        // Battle scoring: smoother time curve (Tango is slightly longer)
+                        // <45s: 30, <1.5min: 26, <2.5min: 22, <4min: 18, 4+min: 12
+                        const fast = totalSecs <= 45;
+                        const numericScore = fast ? 30 : Math.max(28 - Math.floor(totalSecs / 25), 12);
+                        
                         return {
                             gameId: 'tango',
                             puzzleNumber: puzzleNum ? parseInt(puzzleNum) : null,
                             score: fast ? `${mins}:${secs.toString().padStart(2, '0')} ⚡` : `${mins}:${secs.toString().padStart(2, '0')}`,
                             won: true,
-                            numericScore: fast ? 25 : Math.max(20 - Math.floor(totalSecs / 30), 10),
+                            numericScore,
                             meta: { seconds: totalSecs, fast }
                         };
                     }
@@ -13112,12 +13203,18 @@ Wordle 1,234 3/6
                     if (guessMatch) {
                         const guesses = parseInt(guessMatch[1]);
                         const perfect = guesses === 1;
+                        
+                        // Battle scoring: 5 clues, softer penalty
+                        // 1 guess: 35, 2: 28, 3: 22, 4: 16, 5: 10
+                        const scoreMap = { 1: 35, 2: 28, 3: 22, 4: 16, 5: 10 };
+                        const numericScore = scoreMap[guesses] || Math.max(10 - (guesses - 5) * 2, 5);
+                        
                         return {
                             gameId: 'pinpoint',
                             puzzleNumber: puzzleNum ? parseInt(puzzleNum) : null,
                             score: perfect ? '1 guess 🎯' : `${guesses} guesses`,
                             won: true,
-                            numericScore: perfect ? 30 : Math.max(25 - guesses * 4, 5),
+                            numericScore,
                             meta: { guesses, perfect }
                         };
                     }
@@ -13134,13 +13231,18 @@ Wordle 1,234 3/6
                         const mins = parseInt(timeMatch[1]);
                         const secs = parseInt(timeMatch[2]);
                         const totalSecs = mins * 60 + secs;
-                        const fast = totalSecs <= 120;
+                        
+                        // Battle scoring: Crossclimb is longer puzzle
+                        // <1min: 30, <2min: 26, <3min: 22, <5min: 16, 5+min: 12
+                        const fast = totalSecs <= 60;
+                        const numericScore = fast ? 30 : Math.max(28 - Math.floor(totalSecs / 30), 12);
+                        
                         return {
                             gameId: 'crossclimb',
                             puzzleNumber: puzzleNum ? parseInt(puzzleNum) : null,
                             score: fast ? `${mins}:${secs.toString().padStart(2, '0')} ⚡` : `${mins}:${secs.toString().padStart(2, '0')}`,
                             won: true,
-                            numericScore: fast ? 25 : Math.max(20 - Math.floor(totalSecs / 60), 10),
+                            numericScore,
                             meta: { seconds: totalSecs, fast }
                         };
                     }
@@ -13158,13 +13260,18 @@ Wordle 1,234 3/6
                         const mins = parseInt(timeMatch[1]);
                         const secs = parseInt(timeMatch[2]);
                         const totalSecs = mins * 60 + secs;
-                        const fast = totalSecs <= 30;
+                        
+                        // Battle scoring: Zip is quick puzzle
+                        // <15s: 30, <30s: 26, <45s: 22, <1min: 18, 1+min: 12
+                        const fast = totalSecs <= 15;
+                        const numericScore = fast ? 30 : Math.max(28 - Math.floor(totalSecs / 8), 12);
+                        
                         return {
                             gameId: 'zip',
                             puzzleNumber: puzzleNum ? parseInt(puzzleNum) : null,
                             score: fast ? `${mins}:${secs.toString().padStart(2, '0')} ⚡` : `${mins}:${secs.toString().padStart(2, '0')}`,
                             won: true,
-                            numericScore: fast ? 25 : Math.max(20 - Math.floor(totalSecs / 15), 10),
+                            numericScore,
                             meta: { seconds: totalSecs, fast }
                         };
                     }
@@ -13301,6 +13408,11 @@ Wordle 1,234 3/6
                 regex: /Quotle\s*#?(\d+)?/i,
                 extract: (match, text) => {
                     const puzzleNum = match[1];
+                    
+                    // Battle scoring: 4-guess format with hole-in-one
+                    // 1/4: 50 (rare!), 2/4: 30, 3/4: 20, 4/4: 12
+                    const scoreMap = { '1': 50, '2': 30, '3': 20, '4': 12 };
+                    
                     // Check for perfect first (1/4)
                     if (text.includes('1/4') && text.includes('🟩')) {
                         return {
@@ -13308,7 +13420,7 @@ Wordle 1,234 3/6
                             puzzleNumber: puzzleNum ? parseInt(puzzleNum) : null,
                             score: '1/4 🎯',
                             won: true,
-                            numericScore: 40,
+                            numericScore: 50,
                             meta: { perfect: true }
                         };
                     }
@@ -13318,12 +13430,14 @@ Wordle 1,234 3/6
                         const guesses = scoreMatch[1];
                         const won = guesses !== 'X';
                         const great = won && parseInt(guesses) <= 2;
+                        const numericScore = won ? (scoreMap[guesses] || 15) : 0;
+                        
                         return {
                             gameId: 'quotle',
                             puzzleNumber: puzzleNum ? parseInt(puzzleNum) : null,
                             score: great ? `${guesses}/4 ⭐` : `${guesses}/4`,
                             won,
-                            numericScore: won ? (5 - parseInt(guesses)) * 10 : 0,
+                            numericScore,
                             meta: { guesses: won ? parseInt(guesses) : 4, great }
                         };
                     }
@@ -13416,12 +13530,16 @@ Wordle 1,234 3/6
                         else if (hasBonus) displayScore += ' ⭐';
                         else if (great) displayScore += ' ⭐';
                         
+                        // Battle scoring: softer penalty per attempt
+                        // Perfect: 35, 2 attempts: 28, 3 attempts: 21, 4 attempts: 14
+                        const numericScore = perfect ? 35 : (won ? Math.max(28 - (attempts - 1) * 7, 10) : 0);
+                        
                         return {
                             gameId: 'rungs',
                             puzzleNumber: puzzleNum ? parseInt(puzzleNum) : null,
                             score: displayScore,
                             won,
-                            numericScore: perfect ? 40 : (won ? Math.max(35 - (attempts - 1) * 8, 10) : 0),
+                            numericScore,
                             meta: { attempts, perfect, hasBonus }
                         };
                     }
@@ -16468,7 +16586,7 @@ Wordle 1,234 3/6
                 confirmModalAltCallback = null;
             }
             
-            // v1.2.45: Optional third button (for View Stats)
+            // v1.2.47: Optional third button (for View Stats)
             const thirdBtn = document.getElementById('confirm-modal-third');
             if (thirdText && onThird) {
                 thirdBtn.textContent = thirdText;
@@ -16582,7 +16700,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.45';
+            const version = '1.2.47';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18764,7 +18882,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (coinEl) coinEl.textContent = appData.wallet.coins || 0;
         }
         
-        // ============ STATS SCREEN (v1.2.45) ============
+        // ============ STATS SCREEN (v1.2.47) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
@@ -19372,7 +19490,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.45'
+                    appVersion: '1.2.47'
                 }
             };
             
@@ -23159,7 +23277,7 @@ Hint levels:
             if (btn) btn.style.display = 'flex';
         }
         
-        // ============ STREAMLINED RECORD GAME (v1.2.45) ============
+        // ============ STREAMLINED RECORD GAME (v1.2.47) ============
         // Single-button clipboard capture with auto-detection
         // Phase 2: Supports both share text AND stats screenshots via OCR
         
@@ -25377,7 +25495,7 @@ Hint levels:
             return textarea ? textarea.value : '';
         }
         
-        // ============ SMART HASHTAG DISCOVERY (v1.2.45) ============
+        // ============ SMART HASHTAG DISCOVERY (v1.2.47) ============
         // Platform-specific hashtags for better discoverability
         const PLATFORM_HASHTAGS = {
             twitter: ['#Wordle', '#Connections', '#DailyPuzzles', '#NYTGames'],
@@ -27891,7 +28009,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.45 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.47 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

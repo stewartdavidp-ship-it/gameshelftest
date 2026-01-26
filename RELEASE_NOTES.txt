@@ -1,15 +1,38 @@
-Game Shelf v1.2.37
+Game Shelf v1.2.47
 ==================
 Release Date: January 25, 2026
 
-BUG FIXES
----------
-- Fixed service worker version mismatch causing stale cache
-- Added safeguard: empty games shelf now auto-populates with defaults
-- Ensures new/returning users always have games to play
+COMPREHENSIVE BATTLE SCORING REBALANCE
+--------------------------------------
+Philosophy: Above-average play wins battles, rare achievements feel special.
 
-Service Worker:
-- Updated CACHE_VERSION to v1.2.37 (was stuck at v1.2.27)
-- Forces cache refresh on all PWA installations
+CORE NYT GAMES:
+• Wordle: 1/6=50 (hole-in-one!), 2/6=30, 3/6=22, 4/6=15, 5/6=10, 6/6=6
+• Connections: 0 mistakes=30, 1=24, 2=18, 3=12 (gradual penalty)
+• Strands: 0 hints=28, 1=25, 2=22, 3=19 (softer penalty)
+• Mini: <45s=28, smoother decay to floor of 12
 
-Previous: v1.2.36 - Action bar replaces floating buttons
+6-GUESS GAMES (Worldle, Tradle, Framed, Moviedle, Heardle, Bandle, Nerdle):
+• 1/6=35, 2/6=28, 3/6=22, 4/6=16, 5/6=10, 6/6=6
+• Consistent scoring across all X/6 format games
+
+8-GUESS GAMES (Actorle):
+• 1/8=35, 2/8=30, 3/8=25, scaling down to 8/8=5
+
+LINKEDIN GAMES (smoother time curves):
+• Queens: <30s=30, smoother decay to floor of 10
+• Tango: <45s=30, smoother decay to floor of 12  
+• Crossclimb: <1min=30, smoother decay to floor of 12
+• Zip: <15s=30, smoother decay to floor of 12
+• Pinpoint: 1 guess=35, 2=28, 3=22, 4=16, 5=10
+
+GEOGRAPHY GAMES:
+• Globle: 1-3 guesses=35, 4-6=28, 7-10=22, 11-15=16, 16-20=12
+• Contexto: <10 guesses=35, 10-25=28, 26-50=22, 51-100=16
+
+GS ORIGINALS:
+• Quotle: 1/4=50 (hole-in-one!), 2/4=30, 3/4=20, 4/4=12
+• Rungs: Perfect=35, 2 attempts=28, 3=21, 4=14
+
+Previous version:
+- v1.2.46: Initial battle scoring rebalance
