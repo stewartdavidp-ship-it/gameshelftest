@@ -1,13 +1,25 @@
-Game Shelf v1.2.50
+Game Shelf v1.2.51
 ==================
 Release Date: January 26, 2026
 
-PWA FIX
--------
-• Fixed hint sheet close button (X) being covered by status bar/notch in PWA mode
-  - Added safe-area-inset padding for iOS
-  - Increased button size (40px) for better tap target
-  - Increased z-index to ensure visibility
+WALLET IMPROVEMENTS
+-------------------
+• Tappable wallet display in menu
+  - Shows current tokens and coins
+  - Quick access to Buy Coins, Convert Coins, and Invite Friends
+  - Links to Terms & Conditions
+
+• Added Terms & Conditions sheet
+  - Account requirements (Google sign-in)
+  - Coin purchase terms (10 coin minimum, $50/day limit)
+  - Token/hint pricing (5 tokens per hint)
+  - Referral program details
+
+• Fixed "Buys Coin" → "Buys Coins" (plural) everywhere
+
+PWA FIX (from v1.2.50)
+----------------------
+• Fixed hint sheet close button (X) being covered by status bar/notch
 
 Previous version:
 - v1.2.49: Token economy, Stripe integration, engagement rewards

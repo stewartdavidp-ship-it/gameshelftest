@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.50">
+    <meta name="version" content="1.2.51">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.50</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.51</span>
             </div>
         </div>
         <div class="header-right">
@@ -8046,12 +8046,13 @@
             <button class="settings-close" onclick="toggleSettingsMenu()">✕</button>
         </div>
         <div class="settings-body">
-            <!-- Wallet Display - at top of menu -->
-            <div class="settings-section" style="padding: 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border-radius: 12px; margin: 0 16px 16px;">
+            <!-- Wallet Display - at top of menu (tappable) -->
+            <div class="settings-section" style="padding: 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border-radius: 12px; margin: 0 16px 16px; cursor: pointer;" onclick="showWalletOptionsSheet()">
                 <div style="display: flex; justify-content: center; gap: 24px; font-size: 1.1rem;">
                     <span class="tokens" style="display: flex; align-items: center; gap: 6px;">💎 <span id="token-count" style="font-weight: 700;">0</span></span>
                     <span class="coins" style="display: flex; align-items: center; gap: 6px;">🪙 <span id="coin-count" style="font-weight: 700;">0</span></span>
                 </div>
+                <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Tap to manage wallet</div>
             </div>
             
             <!-- Settings Submenu Toggle - NOW AT TOP -->
@@ -8278,7 +8279,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.50</div>
+            <div class="settings-version">Game Shelf PWA v1.2.51</div>
         </div>
     </div>
     
@@ -10612,7 +10613,7 @@ Wordle 1,234 3/6
                 <div class="referral-tier">
                     <div class="referral-tier-icon">⭐</div>
                     <div class="referral-tier-info">
-                        <div class="referral-tier-name">Friend Buys Coin</div>
+                        <div class="referral-tier-name">Friend Buys Coins</div>
                         <div class="referral-tier-desc">They make their first purchase</div>
                     </div>
                     <div class="referral-tier-reward">+100 🎟️</div>
@@ -16729,7 +16730,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.50';
+            const version = '1.2.51';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18917,7 +18918,116 @@ Made with ❤️ for puzzle enthusiasts`;
             if (coinEl) coinEl.textContent = appData.wallet.coins || 0;
         }
         
+        // Show wallet options when tapping on wallet display
+        function showWalletOptionsSheet() {
+            toggleSettingsMenu(); // Close menu first
+            const tokens = appData.wallet?.tokens || 0;
+            const coins = appData.wallet?.coins || 0;
+            
+            showGenericSheet({
+                title: '💎 Your Wallet',
+                content: `
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="display: flex; justify-content: center; gap: 32px; margin-bottom: 24px;">
+                            <div>
+                                <div style="font-size: 2.5rem;">💎</div>
+                                <div style="font-size: 1.5rem; font-weight: 700;">${tokens}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Tokens</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2.5rem;">🪙</div>
+                                <div style="font-size: 1.5rem; font-weight: 700;">${coins}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Coins</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: left;">
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">
+                                <div style="margin-bottom: 8px;">💎 <strong>Tokens</strong> = Used for AI hints (5 per hint)</div>
+                                <div>🪙 <strong>Coins</strong> = Convert to tokens (1 coin = 100 tokens)</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="btn-primary" style="width: 100%; padding: 14px;" onclick="showBuyCoinsSheet();">
+                                💰 Buy Coins
+                            </button>
+                            ${coins > 0 ? `
+                            <button class="btn-secondary" style="width: 100%; padding: 14px;" onclick="showConvertCoinsSheet();">
+                                🔄 Convert Coins to Tokens
+                            </button>
+                            ` : ''}
+                            <button class="btn-secondary" style="width: 100%; padding: 14px;" onclick="showReferralSheet(); closeGenericSheet();">
+                                📧 Invite Friends for Tokens
+                            </button>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+                            <a href="#" onclick="showTermsSheet(); return false;" style="font-size: 0.8rem; color: var(--text-muted);">
+                                Terms & Conditions
+                            </a>
+                        </div>
+                    </div>
+                `
+            });
+        }
+        
         // ============ TOKEN/COIN MANAGEMENT ============
+        
+        // Show Terms & Conditions
+        function showTermsSheet() {
+            closeGenericSheet();
+            showGenericSheet({
+                title: '📋 Terms & Conditions',
+                content: `
+                    <div style="padding: 16px; font-size: 0.9rem; line-height: 1.6;">
+                        <h4 style="margin: 0 0 12px; color: var(--text-primary);">Game Shelf Token & Coin System</h4>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <strong>Account Requirements</strong>
+                            <ul style="margin: 8px 0; padding-left: 20px; color: var(--text-secondary);">
+                                <li>A Google account is required to use Game Shelf features including AI hints, battles, and purchases</li>
+                                <li>You must be signed in to earn or spend tokens</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <strong>Coin Purchases</strong>
+                            <ul style="margin: 8px 0; padding-left: 20px; color: var(--text-secondary);">
+                                <li>Minimum purchase: 10 coins ($10 USD)</li>
+                                <li>Available tiers: 10, 25, or 50 coins</li>
+                                <li>All purchases are processed securely via Stripe</li>
+                                <li>Coins are non-refundable once purchased</li>
+                                <li>Daily purchase limit: $50 USD</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <strong>Tokens & Hints</strong>
+                            <ul style="margin: 8px 0; padding-left: 20px; color: var(--text-secondary);">
+                                <li>AI hints cost 5 tokens each</li>
+                                <li>1 coin converts to 100 tokens</li>
+                                <li>New users receive 50 bonus tokens</li>
+                                <li>Tokens can be earned through referrals</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <strong>Referral Program</strong>
+                            <ul style="margin: 8px 0; padding-left: 20px; color: var(--text-secondary);">
+                                <li>Send invite: +10 tokens</li>
+                                <li>Friend signs up: +50 tokens</li>
+                                <li>Friend makes first purchase: +100 tokens</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--border);">
+                            By using Game Shelf, you agree to these terms. Terms may be updated periodically.
+                        </div>
+                    </div>
+                `
+            });
+        }
         
         function showInsufficientTokensSheet(current, needed) {
             const coinsAvailable = appData.wallet?.coins || 0;
@@ -18945,7 +19055,7 @@ Made with ❤️ for puzzle enthusiasts`;
                                     <strong style="color: var(--accent-purple);">+50</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between;">
-                                    <span>💰 Friend buys coin</span>
+                                    <span>💰 Friend buys coins</span>
                                     <strong style="color: var(--accent-purple);">+100</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-color);">
@@ -19879,7 +19989,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.50'
+                    appVersion: '1.2.51'
                 }
             };
             
@@ -28429,7 +28539,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.50 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.51 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
