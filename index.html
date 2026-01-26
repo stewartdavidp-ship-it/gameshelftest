@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.56">
+    <meta name="version" content="1.2.57">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.56</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.57</span>
             </div>
         </div>
         <div class="header-right">
@@ -8279,7 +8279,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.56</div>
+            <div class="settings-version">Game Shelf PWA v1.2.57</div>
         </div>
     </div>
     
@@ -16740,7 +16740,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.56';
+            const version = '1.2.57';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -20076,7 +20076,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.56'
+                    appVersion: '1.2.57'
                 }
             };
             
@@ -20427,22 +20427,26 @@ Made with ❤️ for puzzle enthusiasts`;
         let pendingLaunchGame = null;
         let pendingTutorialGame = null; // Game waiting for tutorial completion
         
-        async function playGame(gameId, forceVisit = false) {
+        async function playGame(gameId, forceVisit = false, skipUnrecordedCheck = false) {
             const game = GAMES[gameId];
             if (!game) return;
             
-            // Hard gate: Check clipboard before launching
-            // Only check if user returned from a game (has pending context)
-            // This prevents clipboard permission popup on fresh app open
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            const hasPendingContext = isIOS ? pendingClipboardCheck : (lastLaunchedGame && !clipboardCheckCompletedThisReturn);
-            
-            if (!forceVisit && hasPendingContext) {
-                try {
-                    const shouldProceed = await checkClipboardBeforeLaunch(gameId);
-                    if (!shouldProceed) return; // Modal is handling the flow
-                } catch (e) {
-                    console.log('Clipboard check error, proceeding:', e.message);
+            // Check if user has an unrecorded game from a previous visit
+            // Only check if:
+            // 1. Not forcing visit
+            // 2. Not skipping this check (user chose "go to new game")
+            // 3. There's a lastLaunchedGame that's different from current game
+            // 4. The lastLaunchedGame wasn't recorded today
+            if (!forceVisit && !skipUnrecordedCheck && lastLaunchedGame && lastLaunchedGame !== gameId) {
+                const todayHistory = getTodayHistory();
+                if (!todayHistory[lastLaunchedGame]) {
+                    // Check if enough time passed (at least 30 seconds)
+                    const elapsed = Date.now() - (lastLaunchTime || 0);
+                    if (elapsed > 30000) {
+                        // Show unrecorded game prompt
+                        showUnrecordedGamePrompt(lastLaunchedGame, gameId);
+                        return;
+                    }
                 }
             }
             
@@ -21255,16 +21259,8 @@ Made with ❤️ for puzzle enthusiasts`;
             setTimeout(() => playGame(gameId), 500);
         }
         
-        // Return-from-game detection
+        // Return-from-game detection - only restores state, prompting happens when clicking new game
         function checkReturnFromGame() {
-            // iOS: Skip this flow - we use gesture-deferred clipboard check instead
-            // The game card tap will check clipboard and show appropriate modal
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            if (isIOS) {
-                console.log('🎮 iOS: Skipping return prompt (using gesture-deferred flow)');
-                return;
-            }
-            
             // Restore from localStorage if memory state is empty (e.g., after app restart)
             if (!lastLaunchedGame || !lastLaunchTime) {
                 const activeGame = getActiveGame();
@@ -21277,7 +21273,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 }
             }
             
-            // Don't show if launch was more than 30 minutes ago (stale)
+            // Clear if launch was more than 30 minutes ago (stale)
             const elapsed = Date.now() - lastLaunchTime;
             if (elapsed > 30 * 60 * 1000) {
                 console.log('🎮 Clearing stale active game (>30min old)');
@@ -21285,34 +21281,17 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // Don't show if prompt was dismissed for this game
-            if (returnPromptDismissedFor === lastLaunchedGame) return;
-            
-            // Don't show if it's been less than 30 seconds (they didn't really play)
-            if (elapsed < 30000) return;
-            
-            // Don't show if game was already logged (use fresh data from appData)
+            // Clear if game was already logged today
             const todayHistory = appData.history[getTodayString()] || {};
             if (todayHistory[lastLaunchedGame]) {
-                console.log(`🎮 Game ${lastLaunchedGame} already logged, skipping return prompt`);
+                console.log(`🎮 Game ${lastLaunchedGame} already logged, clearing active game`);
                 clearActiveGame();
                 return;
             }
             
-            // Don't show if clipboard already detected this game
-            if (detectedClipboard?.result?.gameId === lastLaunchedGame) return;
-            
-            // Don't show if return prompt is already visible
-            const prompt = document.getElementById('return-prompt');
-            if (prompt && prompt.classList.contains('visible')) {
-                console.log('🎮 Return prompt already visible, skipping');
-                return;
-            }
-            
-            const game = GAMES[lastLaunchedGame];
-            if (!game) return;
-            
-            showReturnPrompt(game);
+            // Note: We no longer show automatic return prompt here
+            // Instead, user will be prompted when they click on a different game
+            console.log(`🎮 User returned from ${lastLaunchedGame}, will prompt on next game click`);
         }
         
         function showReturnPrompt(game) {
@@ -21369,6 +21348,122 @@ Made with ❤️ for puzzle enthusiasts`;
             dismissReturnPrompt();
             // Open log sheet with this game pre-selected
             openLogSheetForGame(lastLaunchedGame);
+        }
+        
+        // Track pending game for unrecorded prompt
+        let pendingUnrecordedTargetGame = null;
+        
+        function showUnrecordedGamePrompt(unrecordedGameId, targetGameId) {
+            const unrecordedGame = GAMES[unrecordedGameId];
+            const targetGame = GAMES[targetGameId];
+            if (!unrecordedGame || !targetGame) {
+                // Fallback - just launch the new game
+                clearActiveGame();
+                playGame(targetGameId, false, true);
+                return;
+            }
+            
+            pendingUnrecordedTargetGame = targetGameId;
+            
+            showGenericSheet({
+                title: '📋 Record Previous Game?',
+                content: `
+                    <div style="padding: 20px; text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 12px;">${unrecordedGame.icon}</div>
+                        <p style="color: var(--text-secondary); margin-bottom: 8px; font-size: 1rem;">
+                            You visited <strong>${unrecordedGame.name}</strong> but didn't record your result.
+                        </p>
+                        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.85rem;">
+                            If you finished playing, record it now. Otherwise, continue to your next game.
+                        </p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <button onclick="handleUnrecordedRecord()" style="
+                                width: 100%;
+                                padding: 16px;
+                                background: linear-gradient(135deg, var(--accent-purple), #764ba2);
+                                border: none;
+                                border-radius: 12px;
+                                color: white;
+                                font-size: 1rem;
+                                font-weight: 600;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                            ">
+                                📝 Record ${unrecordedGame.name}
+                            </button>
+                            
+                            <button onclick="handleUnrecordedSkip()" style="
+                                width: 100%;
+                                padding: 16px;
+                                background: var(--bg-tertiary);
+                                border: 1px solid var(--border);
+                                border-radius: 12px;
+                                color: var(--text-primary);
+                                font-size: 1rem;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                            ">
+                                🎮 Go to ${targetGame.name}
+                            </button>
+                        </div>
+                    </div>
+                `
+            });
+        }
+        
+        async function handleUnrecordedRecord() {
+            closeGenericSheet();
+            
+            // Try to read clipboard and auto-record
+            try {
+                const text = await navigator.clipboard.readText();
+                const result = parseShareText(text);
+                
+                if (result && result.gameId === lastLaunchedGame) {
+                    // Clipboard has the right game - auto-record it
+                    if (logGame(result, 'unrecorded-prompt')) {
+                        const game = GAMES[result.gameId];
+                        showToast(`${game?.icon || '🎮'} ${game?.name} recorded!`, 'success');
+                        renderAll();
+                        clearActiveGame();
+                        
+                        // Now launch the target game
+                        if (pendingUnrecordedTargetGame) {
+                            setTimeout(() => playGame(pendingUnrecordedTargetGame, false, true), 500);
+                        }
+                        pendingUnrecordedTargetGame = null;
+                        return;
+                    }
+                }
+                
+                // No matching result in clipboard - open log sheet for manual entry
+                openLogSheetForGame(lastLaunchedGame);
+                pendingUnrecordedTargetGame = null;
+                
+            } catch (e) {
+                console.log('Clipboard read failed, opening manual log:', e.message);
+                // Clipboard read failed - open log sheet for manual entry
+                openLogSheetForGame(lastLaunchedGame);
+                pendingUnrecordedTargetGame = null;
+            }
+        }
+        
+        function handleUnrecordedSkip() {
+            closeGenericSheet();
+            const targetGame = pendingUnrecordedTargetGame;
+            clearActiveGame();
+            pendingUnrecordedTargetGame = null;
+            
+            if (targetGame) {
+                playGame(targetGame, false, true);
+            }
         }
         
         function openLogSheetForGame(gameId) {
@@ -28541,11 +28636,7 @@ Hint levels:
                 if (document.visibilityState === 'visible') {
                     console.log('📱 App became visible');
                     
-                    // Use new clipboard diff detection
-                    // This compares clipboard now vs when we left
-                    setTimeout(checkClipboardOnReturn, 500);
-                    
-                    // Then check if user returned from a game (for non-clipboard flows)
+                    // Check if user returned from a game (for prompting on next game click)
                     setTimeout(checkReturnFromGame, 1500);
                     
                     // Check if we need to verify a first-time launch worked
@@ -28626,7 +28717,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.56 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.57 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

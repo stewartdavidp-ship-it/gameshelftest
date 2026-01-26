@@ -1,29 +1,31 @@
-Game Shelf v1.2.52
+Game Shelf v1.2.57
 ==================
 Release Date: January 26, 2026
 
-WALLET & COIN PURCHASE REDESIGN
--------------------------------
-• Simplified coin pricing: $1 per coin, any amount 10-100
-  - Removed tiered pricing (10/25/50)
-  - User can select exact coin amount with +/- buttons
-  - Live preview shows cost, coins, and tokens
+GAME RECORDING UX REDESIGN
+--------------------------
+• Removed automatic clipboard pop-up on returning from games
+  - No more confusing "paste" prompts from iOS
+  
+• New flow: "Record Previous Game?" prompt
+  - Only appears when you click a NEW game
+  - If you visited a game but didn't record it
+  - Two clear options:
+    1. "Record [Game]" - checks clipboard, records result
+    2. "Go to [New Game]" - skips recording, launches new game
+  
+• Users learn to hit "Record Game" button on main screen
+• Cleaner, less intrusive experience
 
-• Colorful wallet buttons with consistent design:
-  - Buy Coins: Gold gradient
-  - Convert Coins: Green gradient  
-  - Invite Friends: Purple gradient
-
-• Design scheme standardized:
-  - Gold (#ffd700) = Coins/purchases
-  - Purple (#667eea) = Tokens/primary actions
-  - Green (#48bb78) = Conversions/positive
-  - All buttons use gradient styling
+WALLET SYNC FIX (from v1.2.56)
+------------------------------
+• Fixed wallet not loading from Firebase on app open
+• Coins from purchases now appear correctly
 
 Previous versions:
-- v1.2.51: Tappable wallet, Terms & Conditions
-- v1.2.50: X button fix for PWA
-- v1.2.49: Token economy, Stripe integration
+- v1.2.55: Wallet explanations include battles
+- v1.2.54: Buy Coins page simplified
+- v1.2.53: Better purchase error messages
 
 ---
 
