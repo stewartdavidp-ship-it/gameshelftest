@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.53">
+    <meta name="version" content="1.2.56">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.53</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.56</span>
             </div>
         </div>
         <div class="header-right">
@@ -8279,7 +8279,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.53</div>
+            <div class="settings-version">Game Shelf PWA v1.2.56</div>
         </div>
     </div>
     
@@ -15157,6 +15157,16 @@ Wordle 1,234 3/6
                         }
                     });
                     
+                    // CRITICAL: Merge wallet from cloud (cloud wins for coins since server adds them)
+                    if (cloudData.wallet) {
+                        if (!appData.wallet) appData.wallet = { tokens: 0, coins: 0 };
+                        // Cloud wins for coins (purchases happen server-side)
+                        appData.wallet.coins = cloudData.wallet.coins || 0;
+                        // For tokens, take the higher value (could be earned locally or from cloud)
+                        appData.wallet.tokens = Math.max(appData.wallet.tokens || 0, cloudData.wallet.tokens || 0);
+                        console.log('[SYNC] Wallet synced from cloud:', appData.wallet);
+                    }
+                    
                     console.log('[SYNC] Merge complete. Saving...');
                     saveData();
                     
@@ -16730,7 +16740,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.53';
+            const version = '1.2.56';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18943,8 +18953,9 @@ Made with ❤️ for puzzle enthusiasts`;
                         
                         <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: left;">
                             <div style="font-size: 0.85rem; color: var(--text-muted);">
-                                <div style="margin-bottom: 8px;">💎 <strong>Tokens</strong> = Used for AI hints (5 per hint)</div>
-                                <div>🪙 <strong>Coins</strong> = Convert to tokens (1 coin = 100 tokens)</div>
+                                <div style="margin-bottom: 8px;">💎 <strong>Tokens</strong> = AI hints (5 per hint) & battles</div>
+                                <div style="margin-bottom: 8px;">🪙 <strong>Coins</strong> = Convert to tokens or wager in battles</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">⚔️ Battle wagers: up to 5 coins or 500 tokens per battle</div>
                             </div>
                         </div>
                         
@@ -19132,12 +19143,9 @@ Made with ❤️ for puzzle enthusiasts`;
                 content: `
                     <div style="padding: 20px;">
                         <div style="text-align: center; margin-bottom: 24px;">
-                            <div style="font-size: 2.5rem;">🪙</div>
-                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--accent-gold); margin-top: 8px;">
+                            <div style="font-size: 3rem;">🪙</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-gold); margin-top: 8px;">
                                 $1 per coin
-                            </div>
-                            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">
-                                1 coin = 100 tokens = 20 hints
                             </div>
                         </div>
                         
@@ -19145,52 +19153,40 @@ Made with ❤️ for puzzle enthusiasts`;
                             <label style="display: block; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-secondary);">How many coins?</label>
                             <div style="display: flex; align-items: center; gap: 12px;">
                                 <button onclick="adjustCoinAmount(-10)" style="
-                                    width: 44px; height: 44px;
+                                    width: 48px; height: 48px;
                                     background: var(--bg-tertiary);
                                     border: 1px solid var(--border);
-                                    border-radius: 8px;
+                                    border-radius: 10px;
                                     color: var(--text-primary);
-                                    font-size: 1.2rem;
+                                    font-size: 1.4rem;
                                     cursor: pointer;
                                 ">−</button>
                                 <input type="number" id="buy-coins-amount" min="10" max="100" value="10" 
-                                    style="flex: 1; padding: 14px; text-align: center; font-size: 1.4rem; font-weight: 700; border-radius: 8px; border: 2px solid var(--accent-gold); background: var(--bg-tertiary); color: var(--accent-gold);"
+                                    style="flex: 1; padding: 16px; text-align: center; font-size: 1.6rem; font-weight: 700; border-radius: 10px; border: 2px solid var(--accent-gold); background: var(--bg-tertiary); color: var(--accent-gold);"
                                     onchange="updateBuyPreview()"
                                     oninput="updateBuyPreview()"
                                 >
                                 <button onclick="adjustCoinAmount(10)" style="
-                                    width: 44px; height: 44px;
+                                    width: 48px; height: 48px;
                                     background: var(--bg-tertiary);
                                     border: 1px solid var(--border);
-                                    border-radius: 8px;
+                                    border-radius: 10px;
                                     color: var(--text-primary);
-                                    font-size: 1.2rem;
+                                    font-size: 1.4rem;
                                     cursor: pointer;
                                 ">+</button>
                             </div>
-                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; text-align: center;">Minimum: 10 coins • Maximum: 100 coins</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; text-align: center;">Minimum: 10 coins</div>
                         </div>
                         
-                        <div id="buy-preview" style="padding: 16px; background: var(--bg-tertiary); border-radius: 12px; margin-bottom: 20px; text-align: center;">
-                            <div style="display: flex; justify-content: space-around;">
-                                <div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">You pay</div>
-                                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-green);">$10</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">You get</div>
-                                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-gold);">🪙 10</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">= Tokens</div>
-                                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-purple);">💎 1,000</div>
-                                </div>
-                            </div>
+                        <div id="buy-preview" style="padding: 20px; background: var(--bg-tertiary); border-radius: 12px; margin-bottom: 20px; text-align: center;">
+                            <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 4px;">Total</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-green);">$10</div>
                         </div>
                         
                         <button onclick="purchaseCoinsFromInput()" style="
                             width: 100%;
-                            padding: 16px;
+                            padding: 18px;
                             background: linear-gradient(135deg, var(--accent-gold), #e6c200);
                             border: none;
                             border-radius: 12px;
@@ -19227,24 +19223,11 @@ Made with ❤️ for puzzle enthusiasts`;
             const input = document.getElementById('buy-coins-amount');
             let amount = parseInt(input.value) || 10;
             amount = Math.max(10, Math.min(100, amount));
-            const tokens = amount * 100;
             const preview = document.getElementById('buy-preview');
             if (preview) {
                 preview.innerHTML = `
-                    <div style="display: flex; justify-content: space-around;">
-                        <div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">You pay</div>
-                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-green);">$${amount}</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">You get</div>
-                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-gold);">🪙 ${amount}</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">= Tokens</div>
-                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-purple);">💎 ${tokens.toLocaleString()}</div>
-                        </div>
-                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 4px;">Total</div>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--accent-green);">$${amount}</div>
                 `;
             }
         }
@@ -20093,7 +20076,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.53'
+                    appVersion: '1.2.56'
                 }
             };
             
@@ -28643,7 +28626,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.53 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.56 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
