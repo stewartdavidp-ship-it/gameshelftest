@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.48">
+    <meta name="version" content="1.2.49">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.48</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.49</span>
             </div>
         </div>
         <div class="header-right">
@@ -8278,7 +8278,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.48</div>
+            <div class="settings-version">Game Shelf PWA v1.2.49</div>
         </div>
     </div>
     
@@ -10565,7 +10565,7 @@ Wordle 1,234 3/6
                     </div>
                     <div class="referral-stat">
                         <span class="referral-stat-value" id="referral-friends-engaged">0</span>
-                        <span class="referral-stat-label">Engaged</span>
+                        <span class="referral-stat-label">Purchased</span>
                     </div>
                 </div>
             </div>
@@ -10612,14 +10612,14 @@ Wordle 1,234 3/6
                 <div class="referral-tier">
                     <div class="referral-tier-icon">⭐</div>
                     <div class="referral-tier-info">
-                        <div class="referral-tier-name">Friend Gets Engaged</div>
-                        <div class="referral-tier-desc">Joins Battle or shares results</div>
+                        <div class="referral-tier-name">Friend Buys Coin</div>
+                        <div class="referral-tier-desc">They make their first purchase</div>
                     </div>
-                    <div class="referral-tier-reward">+50 🎟️</div>
+                    <div class="referral-tier-reward">+100 🎟️</div>
                 </div>
                 <div class="referral-tier-total">
                     <span>Total per friend:</span>
-                    <span class="referral-tier-reward">110 🎟️</span>
+                    <span class="referral-tier-reward">160 🎟️</span>
                 </div>
             </div>
             
@@ -10950,7 +10950,7 @@ Wordle 1,234 3/6
         // Share invite link (uses referral link)
         function shareFriendLink() {
             const link = getReferralLink();
-            const message = `Join me on Game Shelf! 🎮\n\nTrack daily puzzles, compete in battles, and build streaks together.\n\n✨ You'll get 100 bonus tokens when you sign up!\n\n${link}`;
+            const message = `Join me on Game Shelf! 🎮\n\nTrack daily puzzles, compete in battles, and build streaks together.\n\n✨ You'll get 50 bonus tokens when you sign up!\n\n${link}`;
             
             if (navigator.share) {
                 navigator.share({
@@ -13765,7 +13765,7 @@ Wordle 1,234 3/6
                 games: DEFAULT_SHELF.map(id => ({ id, addedAt: new Date().toISOString() })),
                 stats: {},
                 history: {},
-                wallet: { tokens: 100, coins: 0 },
+                wallet: { tokens: 50, coins: 0 },
                 achievements: {},
                 dailyGoal: 5,
                 friends: [],
@@ -15068,6 +15068,10 @@ Wordle 1,234 3/6
             checkTimeAchievements();
             checkAndUnlockAchievements();
             
+            // Check engagement rewards (tokens)
+            checkFiveDayStreakReward();
+            checkAllGsGamesReward();
+            
             // Update battle scores if in active battle
             updateBattleScore(result.gameId, result.numericScore || 1);
             
@@ -15705,9 +15709,9 @@ Wordle 1,234 3/6
         
         // ============ REFERRAL SYSTEM ============
         const REFERRAL_REWARDS = {
-            invite: 10,      // Tier 1: Send invite
-            joined: 50,      // Tier 2: Friend signs up
-            engaged: 50      // Tier 3: Friend uses advanced feature
+            sent: 10,        // Tier 1: Send referral email
+            joined: 50,      // Tier 2: Friend creates Firebase account
+            purchased: 100   // Tier 3: Friend buys first coin
         };
         
         // Use the utility function defined in URL UTILITIES section
@@ -15893,15 +15897,15 @@ Wordle 1,234 3/6
             
             sessionStorage.setItem('lastInviteSent', now.toString());
             appData.referral.invitesSent++;
-            appData.referral.totalEarned += REFERRAL_REWARDS.invite;
-            appData.wallet.tokens += REFERRAL_REWARDS.invite;
+            appData.referral.totalEarned += REFERRAL_REWARDS.sent;
+            appData.wallet.tokens += REFERRAL_REWARDS.sent;
             
             saveData();
             renderWallet();
-            showToast(`+${REFERRAL_REWARDS.invite} 🎟️ tokens for sharing!`);
+            showToast(`+${REFERRAL_REWARDS.sent} 🎟️ tokens for sharing!`);
             
             // Log activity
-            logActivity('referral-invite', { tokens: REFERRAL_REWARDS.invite });
+            logActivity('referral-invite', { tokens: REFERRAL_REWARDS.sent });
         }
         
         function checkReferralParam() {
@@ -16008,10 +16012,10 @@ Wordle 1,234 3/6
                 }
                 appData.referral.referredBy = refCode;
                 
-                // Award new user welcome bonus
-                appData.wallet.tokens += 100;
+                // New users already get 50 tokens from default wallet
+                // Just save the referral connection
                 saveData();
-                showToast('🎉 Welcome! You got 100 bonus tokens!');
+                showToast('🎉 Welcome! You have 50 bonus tokens to get started!');
                 
                 // Update referrer's data in Firebase
                 await db.ref(`referralCodes/${refCode}/referees/${currentUser.uid}`).set({
@@ -16725,7 +16729,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.48';
+            const version = '1.2.49';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17854,6 +17858,8 @@ Made with ❤️ for puzzle enthusiasts`;
                 // Deduct entry fee
                 if (entryFee > 0) {
                     appData.wallet.coins -= entryFee;
+                    // Award tokens for coin-based battle participation
+                    awardBattleParticipationTokens(name);
                     saveData();
                     renderWallet();
                 }
@@ -18052,6 +18058,8 @@ Made with ❤️ for puzzle enthusiasts`;
                 // Deduct entry fee
                 if (entryFee > 0) {
                     appData.wallet.coins -= entryFee;
+                    // Award tokens for coin-based battle participation
+                    awardBattleParticipationTokens(battle.name);
                     saveData();
                     renderWallet();
                 }
@@ -18823,6 +18831,8 @@ Made with ❤️ for puzzle enthusiasts`;
                 // Deduct entry fee
                 if (entryFee > 0) {
                     appData.wallet.coins -= entryFee;
+                    // Award tokens for coin-based battle participation
+                    awardBattleParticipationTokens(battle.name || 'Battle');
                     saveData();
                     renderWallet();
                     
@@ -18907,6 +18917,360 @@ Made with ❤️ for puzzle enthusiasts`;
             if (coinEl) coinEl.textContent = appData.wallet.coins || 0;
         }
         
+        // ============ TOKEN/COIN MANAGEMENT ============
+        
+        function showInsufficientTokensSheet(current, needed) {
+            const coinsAvailable = appData.wallet?.coins || 0;
+            showGenericSheet({
+                title: '💎 Need More Tokens',
+                content: `
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 3rem; margin-bottom: 16px;">💎</div>
+                        <div style="font-size: 1.1rem; margin-bottom: 8px;">
+                            You have <strong>${current}</strong> tokens
+                        </div>
+                        <div style="color: var(--text-muted); margin-bottom: 24px;">
+                            Hints cost <strong>${needed}</strong> tokens each
+                        </div>
+                        
+                        <div style="text-align: left; background: var(--bg-tertiary); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; margin-bottom: 12px;">💡 Ways to get tokens:</div>
+                            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>📧 Invite a friend</span>
+                                    <strong style="color: var(--accent-purple);">+10</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>👋 Friend signs up</span>
+                                    <strong style="color: var(--accent-purple);">+50</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>💰 Friend buys coin</span>
+                                    <strong style="color: var(--accent-purple);">+100</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-color);">
+                                    <span>🔄 Convert 1 coin</span>
+                                    <strong style="color: var(--accent-gold);">= 100 tokens</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="btn-primary" style="width: 100%; padding: 14px;" onclick="showReferralSheet(); closeGenericSheet();">
+                                📧 Invite Friends
+                            </button>
+                            <button class="btn-secondary" style="width: 100%; padding: 14px;" onclick="showBuyCoinsSheet();">
+                                💰 Buy Coins
+                            </button>
+                            ${coinsAvailable > 0 ? `
+                            <button class="btn-secondary" style="width: 100%; padding: 14px;" onclick="showConvertCoinsSheet();">
+                                🔄 Convert Coins (${coinsAvailable} available)
+                            </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `
+            });
+        }
+        
+        function showBuyCoinsSheet() {
+            closeGenericSheet();
+            showGenericSheet({
+                title: '💰 Buy Coins',
+                content: `
+                    <div style="padding: 20px;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="font-size: 2rem;">💰</div>
+                            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+                                1 coin = $1.00 = 100 tokens = 20 hints
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <button onclick="purchaseCoins(10)" style="
+                                background: linear-gradient(135deg, var(--accent-purple), var(--accent-orange));
+                                border: none;
+                                border-radius: 12px;
+                                padding: 16px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                cursor: pointer;
+                                color: white;
+                                position: relative;
+                            ">
+                                <div style="position: absolute; top: -8px; right: 12px; background: var(--accent-green); color: white; font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;">STARTER</div>
+                                <div style="text-align: left;">
+                                    <div style="font-weight: 600;">10 Coins</div>
+                                    <div style="font-size: 0.8rem; opacity: 0.9;">1,000 tokens • 200 hints</div>
+                                </div>
+                                <div style="font-weight: 700;">$10.00</div>
+                            </button>
+                            
+                            <button onclick="purchaseCoins(25)" style="
+                                background: var(--bg-tertiary);
+                                border: 2px solid var(--border-color);
+                                border-radius: 12px;
+                                padding: 16px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                cursor: pointer;
+                                color: var(--text-primary);
+                            ">
+                                <div style="text-align: left;">
+                                    <div style="font-weight: 600;">25 Coins</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">2,500 tokens • 500 hints</div>
+                                </div>
+                                <div style="font-weight: 700; color: var(--accent-green);">$25.00</div>
+                            </button>
+                            
+                            <button onclick="purchaseCoins(50)" style="
+                                background: var(--bg-tertiary);
+                                border: 2px solid var(--accent-gold);
+                                border-radius: 12px;
+                                padding: 16px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                cursor: pointer;
+                                color: var(--text-primary);
+                                position: relative;
+                            ">
+                                <div style="position: absolute; top: -8px; right: 12px; background: var(--accent-gold); color: black; font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;">BEST VALUE</div>
+                                <div style="text-align: left;">
+                                    <div style="font-weight: 600;">50 Coins</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">5,000 tokens • 1,000 hints</div>
+                                </div>
+                                <div style="font-weight: 700; color: var(--accent-gold);">$50.00</div>
+                            </button>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; font-size: 0.8rem; color: var(--text-muted);">
+                            <div style="font-weight: 600; margin-bottom: 4px;">🔒 Secure Payment</div>
+                            <div>Payments processed by Stripe. We never see your card details.</div>
+                        </div>
+                    </div>
+                `
+            });
+        }
+        
+        async function purchaseCoins(amount) {
+            if (!currentUser) {
+                showToast('Please sign in to purchase coins');
+                return;
+            }
+            
+            closeGenericSheet();
+            showToast('🔄 Preparing checkout...');
+            
+            try {
+                // Call Firebase function to create Stripe checkout session
+                const createCheckout = firebase.functions().httpsCallable('createCoinCheckout');
+                const result = await createCheckout({ 
+                    coinAmount: amount,
+                    successUrl: window.location.href.split('?')[0] + '?purchase=success',
+                    cancelUrl: window.location.href.split('?')[0] + '?purchase=cancelled'
+                });
+                
+                // Redirect to Stripe checkout
+                if (result.data.checkoutUrl) {
+                    window.location.href = result.data.checkoutUrl;
+                } else {
+                    throw new Error('No checkout URL returned');
+                }
+                
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showToast('Purchase not available yet. Coming soon!', 'error');
+            }
+        }
+        
+        function showConvertCoinsSheet() {
+            const coins = appData.wallet?.coins || 0;
+            
+            if (coins === 0) {
+                showToast('No coins to convert');
+                return;
+            }
+            
+            closeGenericSheet();
+            showGenericSheet({
+                title: '🔄 Convert Coins to Tokens',
+                content: `
+                    <div style="padding: 20px; text-align: center;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">🪙 → 💎</div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="font-size: 1.2rem; font-weight: 600;">You have ${coins} coins</div>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">1 coin = 100 tokens</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-size: 0.9rem;">Convert how many coins?</label>
+                            <input type="number" id="convert-coins-amount" min="1" max="${coins}" value="1" 
+                                style="width: 80px; padding: 12px; text-align: center; font-size: 1.2rem; border-radius: 8px; border: 2px solid var(--border-color); background: var(--bg-tertiary); color: var(--text-primary);"
+                                onchange="updateConversionPreview()"
+                                oninput="updateConversionPreview()"
+                            >
+                        </div>
+                        
+                        <div id="conversion-preview" style="padding: 16px; background: var(--bg-tertiary); border-radius: 12px; margin-bottom: 20px;">
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">You'll receive</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-purple);">💎 100 tokens</div>
+                        </div>
+                        
+                        <button class="btn-primary" style="width: 100%; padding: 14px;" onclick="convertCoins()">
+                            Convert Coins
+                        </button>
+                    </div>
+                `
+            });
+        }
+        
+        function updateConversionPreview() {
+            const input = document.getElementById('convert-coins-amount');
+            const amount = parseInt(input?.value) || 0;
+            const tokens = amount * 100;
+            const preview = document.getElementById('conversion-preview');
+            if (preview) {
+                preview.innerHTML = `
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">You'll receive</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-purple);">💎 ${tokens.toLocaleString()} tokens</div>
+                `;
+            }
+        }
+        
+        async function convertCoins() {
+            const input = document.getElementById('convert-coins-amount');
+            const amount = parseInt(input?.value) || 0;
+            const coins = appData.wallet?.coins || 0;
+            
+            if (amount < 1 || amount > coins) {
+                showToast('Invalid amount', 'error');
+                return;
+            }
+            
+            // Update locally
+            appData.wallet.coins -= amount;
+            appData.wallet.tokens = (appData.wallet.tokens || 0) + (amount * 100);
+            saveData();
+            renderWallet();
+            
+            closeGenericSheet();
+            showToast(`🎉 Converted ${amount} coin${amount > 1 ? 's' : ''} to ${(amount * 100).toLocaleString()} tokens!`);
+            
+            // Sync to cloud
+            if (currentUser) {
+                await saveToCloud();
+            }
+            
+            // Log activity
+            logActivity('coins-converted', { coins: amount, tokens: amount * 100 });
+        }
+        
+        // Check for successful purchase on page load
+        function checkPurchaseResult() {
+            const params = new URLSearchParams(window.location.search);
+            const purchaseStatus = params.get('purchase');
+            
+            if (purchaseStatus === 'success') {
+                // Clear URL param
+                window.history.replaceState({}, '', window.location.pathname + window.location.hash);
+                
+                // Refresh wallet from server (Stripe webhook will have updated it)
+                setTimeout(async () => {
+                    if (currentUser) {
+                        await loadFromCloud();
+                        renderWallet();
+                    }
+                    showToast('🎉 Purchase complete! Coins added to your wallet.');
+                    
+                    // Log activity
+                    logActivity('coins-purchased', { status: 'success' });
+                }, 1000);
+            } else if (purchaseStatus === 'cancelled') {
+                window.history.replaceState({}, '', window.location.pathname + window.location.hash);
+                showToast('Purchase cancelled');
+            }
+        }
+        
+        // ============ ENGAGEMENT REWARDS ============
+        // One-time and recurring token rewards for player engagement
+        
+        const GS_ORIGINAL_GAMES = ['quotle', 'slate', 'rungs', 'wordboxing'];
+        
+        // Initialize rewards tracking if needed
+        function initRewardsTracking() {
+            if (!appData.rewards) {
+                appData.rewards = {
+                    fiveDayStreak: false,   // 50 tokens for first 5-day streak
+                    allGsGames: false       // 20 tokens for playing all 4 GS games
+                };
+            }
+        }
+        
+        // Check for 5-day streak reward (50 tokens, one-time)
+        function checkFiveDayStreakReward() {
+            initRewardsTracking();
+            
+            if (appData.rewards.fiveDayStreak) return; // Already claimed
+            
+            // Check if any game has 5+ day streak
+            const hasStreak = Object.values(appData.stats || {}).some(
+                stat => (stat.currentStreak || 0) >= 5
+            );
+            
+            if (hasStreak) {
+                appData.rewards.fiveDayStreak = true;
+                appData.wallet.tokens = (appData.wallet?.tokens || 0) + 50;
+                saveData();
+                renderWallet();
+                
+                // Show celebration
+                setTimeout(() => {
+                    showToast('🎉 +50 tokens for your first 5-day streak!');
+                    logActivity('reward-earned', { type: 'five-day-streak', tokens: 50 });
+                }, 1000);
+            }
+        }
+        
+        // Check for all GS games played reward (20 tokens, one-time)
+        function checkAllGsGamesReward() {
+            initRewardsTracking();
+            
+            if (appData.rewards.allGsGames) return; // Already claimed
+            
+            // Check if user has played all 4 GS original games
+            const playedGames = Object.keys(appData.stats || {});
+            const hasPlayedAll = GS_ORIGINAL_GAMES.every(gameId => 
+                playedGames.includes(gameId) && 
+                (appData.stats[gameId]?.gamesPlayed || 0) > 0
+            );
+            
+            if (hasPlayedAll) {
+                appData.rewards.allGsGames = true;
+                appData.wallet.tokens = (appData.wallet?.tokens || 0) + 20;
+                saveData();
+                renderWallet();
+                
+                // Show celebration
+                setTimeout(() => {
+                    showToast('🎉 +20 tokens for trying all Game Shelf originals!');
+                    logActivity('reward-earned', { type: 'all-gs-games', tokens: 20 });
+                }, 1500);
+            }
+        }
+        
+        // Award tokens for coin-based battle participation (5 tokens per battle)
+        function awardBattleParticipationTokens(battleName) {
+            appData.wallet.tokens = (appData.wallet?.tokens || 0) + 5;
+            saveData();
+            renderWallet();
+            
+            showToast('🎟️ +5 tokens for battle participation!');
+            logActivity('reward-earned', { type: 'battle-participation', tokens: 5, battle: battleName });
+        }
+
         // ============ STATS SCREEN (v1.2.47) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
@@ -19515,7 +19879,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.48'
+                    appVersion: '1.2.49'
                 }
             };
             
@@ -21842,6 +22206,16 @@ Hint levels:
                 return;
             }
             
+            // ===== Check token balance =====
+            const HINT_COST = 5;
+            const tokens = appData.wallet?.tokens || 0;
+            
+            if (tokens < HINT_COST) {
+                showInsufficientTokensSheet(tokens, HINT_COST);
+                return;
+            }
+            // ===== End token check =====
+            
             const game = hintCurrentGame;
             const userInput = document.getElementById('hint-input').value.trim();
             
@@ -21935,6 +22309,13 @@ Hint levels:
                     
                     // Success! Clear loading and show result
                     clearInterval(loadingInterval);
+                    
+                    // ===== Deduct tokens on success =====
+                    const HINT_COST = 5;
+                    appData.wallet.tokens = (appData.wallet?.tokens || 0) - HINT_COST;
+                    saveData();
+                    renderWallet();
+                    // ===== End token deduction =====
                     
                     hintLevel = level;
                     updateHintLevel(level);
@@ -27952,6 +28333,9 @@ Hint levels:
             // Check for friend/profile link in URL
             checkFriendParam();
             
+            // Check for purchase result in URL
+            checkPurchaseResult();
+            
             // Handle hash-based deep links (#log, #settings, #achievements, etc.)
             handleDeepLinks();
             
@@ -28045,7 +28429,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.48 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.49 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

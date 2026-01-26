@@ -1,3 +1,60 @@
+Game Shelf v1.2.49
+==================
+Release Date: January 26, 2026
+
+TOKEN ECONOMY & HINT COSTS
+--------------------------
+• AI Hints now cost 5 tokens each
+  - Token balance checked before hint request
+  - Tokens deducted on successful hint
+  - Insufficient tokens shows helpful UI with earning options
+
+• Updated starting balance:
+  - New users now start with 50 tokens (10 free hints)
+  - Previous: 100 tokens
+
+• Updated referral rewards:
+  - Send invite: +10 tokens
+  - Friend joins: +50 tokens  
+  - Friend buys coin: +100 tokens (NEW - replaces "engagement")
+  - Total per successful referral: 160 tokens
+
+• Added coin-to-token conversion:
+  - 1 coin = 100 tokens = 20 hints
+  - New conversion UI in wallet
+
+• Added coin purchase integration (Stripe):
+  - $10 for 10 coins (200 hints) - STARTER
+  - $25 for 25 coins (500 hints)
+  - $50 for 50 coins (1,000 hints) - BEST VALUE
+  - $10 minimum purchase (fee economics)
+
+ENGAGEMENT REWARDS (NEW)
+------------------------
+• 5-Day Streak Reward: +50 tokens (one-time)
+  - Awarded when any game reaches 5-day streak
+  - Encourages daily play habit
+
+• All GS Games Reward: +20 tokens (one-time)
+  - Awarded for playing Quotle, Slate, Rungs, and Word Boxing
+  - Encourages trying all Game Shelf originals
+
+• Coin Battle Participation: +5 tokens (unlimited)
+  - Awarded each time you create or join a coin-based battle
+  - Encourages competitive play and coin circulation
+
+SECURITY ENHANCEMENTS
+---------------------
+• Server-side token balance verification
+• Purchase limits: $50/day, $200/week
+• Chargeback webhook auto-deducts coins
+• Account flagging for fraud prevention
+
+Previous version:
+- v1.2.48: Tutorial & deep link fixes
+
+---
+
 Game Shelf v1.2.48
 ==================
 Release Date: January 26, 2026
