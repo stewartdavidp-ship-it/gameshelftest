@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.51">
+    <meta name="version" content="1.2.53">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.51</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.53</span>
             </div>
         </div>
         <div class="header-right">
@@ -8279,7 +8279,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.51</div>
+            <div class="settings-version">Game Shelf PWA v1.2.53</div>
         </div>
     </div>
     
@@ -16730,7 +16730,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.51';
+            const version = '1.2.53';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18931,12 +18931,12 @@ Made with ❤️ for puzzle enthusiasts`;
                         <div style="display: flex; justify-content: center; gap: 32px; margin-bottom: 24px;">
                             <div>
                                 <div style="font-size: 2.5rem;">💎</div>
-                                <div style="font-size: 1.5rem; font-weight: 700;">${tokens}</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-purple);">${tokens}</div>
                                 <div style="font-size: 0.8rem; color: var(--text-muted);">Tokens</div>
                             </div>
                             <div>
                                 <div style="font-size: 2.5rem;">🪙</div>
-                                <div style="font-size: 1.5rem; font-weight: 700;">${coins}</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-gold);">${coins}</div>
                                 <div style="font-size: 0.8rem; color: var(--text-muted);">Coins</div>
                             </div>
                         </div>
@@ -18948,16 +18948,58 @@ Made with ❤️ for puzzle enthusiasts`;
                             </div>
                         </div>
                         
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <button class="btn-primary" style="width: 100%; padding: 14px;" onclick="showBuyCoinsSheet();">
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <button onclick="showBuyCoinsSheet();" style="
+                                width: 100%;
+                                padding: 16px;
+                                background: linear-gradient(135deg, var(--accent-gold), #e6c200);
+                                border: none;
+                                border-radius: 12px;
+                                color: #1a1a2e;
+                                font-weight: 600;
+                                font-size: 1rem;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                            ">
                                 💰 Buy Coins
                             </button>
                             ${coins > 0 ? `
-                            <button class="btn-secondary" style="width: 100%; padding: 14px;" onclick="showConvertCoinsSheet();">
+                            <button onclick="showConvertCoinsSheet();" style="
+                                width: 100%;
+                                padding: 16px;
+                                background: linear-gradient(135deg, var(--accent-green), #38a169);
+                                border: none;
+                                border-radius: 12px;
+                                color: white;
+                                font-weight: 600;
+                                font-size: 1rem;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                            ">
                                 🔄 Convert Coins to Tokens
                             </button>
                             ` : ''}
-                            <button class="btn-secondary" style="width: 100%; padding: 14px;" onclick="showReferralSheet(); closeGenericSheet();">
+                            <button onclick="showReferralSheet(); closeGenericSheet();" style="
+                                width: 100%;
+                                padding: 16px;
+                                background: linear-gradient(135deg, var(--accent-purple), #764ba2);
+                                border: none;
+                                border-radius: 12px;
+                                color: white;
+                                font-weight: 600;
+                                font-size: 1rem;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                            ">
                                 📧 Invite Friends for Tokens
                             </button>
                         </div>
@@ -19089,85 +19131,139 @@ Made with ❤️ for puzzle enthusiasts`;
                 title: '💰 Buy Coins',
                 content: `
                     <div style="padding: 20px;">
-                        <div style="text-align: center; margin-bottom: 20px;">
-                            <div style="font-size: 2rem;">💰</div>
-                            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
-                                1 coin = $1.00 = 100 tokens = 20 hints
+                        <div style="text-align: center; margin-bottom: 24px;">
+                            <div style="font-size: 2.5rem;">🪙</div>
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--accent-gold); margin-top: 8px;">
+                                $1 per coin
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">
+                                1 coin = 100 tokens = 20 hints
                             </div>
                         </div>
                         
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                            <button onclick="purchaseCoins(10)" style="
-                                background: linear-gradient(135deg, var(--accent-purple), var(--accent-orange));
-                                border: none;
-                                border-radius: 12px;
-                                padding: 16px;
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                cursor: pointer;
-                                color: white;
-                                position: relative;
-                            ">
-                                <div style="position: absolute; top: -8px; right: 12px; background: var(--accent-green); color: white; font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;">STARTER</div>
-                                <div style="text-align: left;">
-                                    <div style="font-weight: 600;">10 Coins</div>
-                                    <div style="font-size: 0.8rem; opacity: 0.9;">1,000 tokens • 200 hints</div>
-                                </div>
-                                <div style="font-weight: 700;">$10.00</div>
-                            </button>
-                            
-                            <button onclick="purchaseCoins(25)" style="
-                                background: var(--bg-tertiary);
-                                border: 2px solid var(--border-color);
-                                border-radius: 12px;
-                                padding: 16px;
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                cursor: pointer;
-                                color: var(--text-primary);
-                            ">
-                                <div style="text-align: left;">
-                                    <div style="font-weight: 600;">25 Coins</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">2,500 tokens • 500 hints</div>
-                                </div>
-                                <div style="font-weight: 700; color: var(--accent-green);">$25.00</div>
-                            </button>
-                            
-                            <button onclick="purchaseCoins(50)" style="
-                                background: var(--bg-tertiary);
-                                border: 2px solid var(--accent-gold);
-                                border-radius: 12px;
-                                padding: 16px;
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                cursor: pointer;
-                                color: var(--text-primary);
-                                position: relative;
-                            ">
-                                <div style="position: absolute; top: -8px; right: 12px; background: var(--accent-gold); color: black; font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;">BEST VALUE</div>
-                                <div style="text-align: left;">
-                                    <div style="font-weight: 600;">50 Coins</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">5,000 tokens • 1,000 hints</div>
-                                </div>
-                                <div style="font-weight: 700; color: var(--accent-gold);">$50.00</div>
-                            </button>
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-secondary);">How many coins?</label>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <button onclick="adjustCoinAmount(-10)" style="
+                                    width: 44px; height: 44px;
+                                    background: var(--bg-tertiary);
+                                    border: 1px solid var(--border);
+                                    border-radius: 8px;
+                                    color: var(--text-primary);
+                                    font-size: 1.2rem;
+                                    cursor: pointer;
+                                ">−</button>
+                                <input type="number" id="buy-coins-amount" min="10" max="100" value="10" 
+                                    style="flex: 1; padding: 14px; text-align: center; font-size: 1.4rem; font-weight: 700; border-radius: 8px; border: 2px solid var(--accent-gold); background: var(--bg-tertiary); color: var(--accent-gold);"
+                                    onchange="updateBuyPreview()"
+                                    oninput="updateBuyPreview()"
+                                >
+                                <button onclick="adjustCoinAmount(10)" style="
+                                    width: 44px; height: 44px;
+                                    background: var(--bg-tertiary);
+                                    border: 1px solid var(--border);
+                                    border-radius: 8px;
+                                    color: var(--text-primary);
+                                    font-size: 1.2rem;
+                                    cursor: pointer;
+                                ">+</button>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; text-align: center;">Minimum: 10 coins • Maximum: 100 coins</div>
                         </div>
                         
-                        <div style="margin-top: 20px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; font-size: 0.8rem; color: var(--text-muted);">
-                            <div style="font-weight: 600; margin-bottom: 4px;">🔒 Secure Payment</div>
-                            <div>Payments processed by Stripe. We never see your card details.</div>
+                        <div id="buy-preview" style="padding: 16px; background: var(--bg-tertiary); border-radius: 12px; margin-bottom: 20px; text-align: center;">
+                            <div style="display: flex; justify-content: space-around;">
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">You pay</div>
+                                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-green);">$10</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">You get</div>
+                                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-gold);">🪙 10</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">= Tokens</div>
+                                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-purple);">💎 1,000</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="purchaseCoinsFromInput()" style="
+                            width: 100%;
+                            padding: 16px;
+                            background: linear-gradient(135deg, var(--accent-gold), #e6c200);
+                            border: none;
+                            border-radius: 12px;
+                            color: #1a1a2e;
+                            font-weight: 700;
+                            font-size: 1.1rem;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                        ">
+                            💳 Purchase Coins
+                        </button>
+                        
+                        <div style="margin-top: 16px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                            🔒 Secure payment via Stripe<br>
+                            <a href="#" onclick="showTermsSheet(); return false;" style="color: var(--accent-purple);">Terms & Conditions</a>
                         </div>
                     </div>
                 `
             });
         }
         
+        function adjustCoinAmount(delta) {
+            const input = document.getElementById('buy-coins-amount');
+            let value = parseInt(input.value) || 10;
+            value = Math.max(10, Math.min(100, value + delta));
+            input.value = value;
+            updateBuyPreview();
+        }
+        
+        function updateBuyPreview() {
+            const input = document.getElementById('buy-coins-amount');
+            let amount = parseInt(input.value) || 10;
+            amount = Math.max(10, Math.min(100, amount));
+            const tokens = amount * 100;
+            const preview = document.getElementById('buy-preview');
+            if (preview) {
+                preview.innerHTML = `
+                    <div style="display: flex; justify-content: space-around;">
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">You pay</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-green);">$${amount}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">You get</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-gold);">🪙 ${amount}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">= Tokens</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-purple);">💎 ${tokens.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function purchaseCoinsFromInput() {
+            const input = document.getElementById('buy-coins-amount');
+            let amount = parseInt(input.value) || 10;
+            amount = Math.max(10, Math.min(100, amount));
+            purchaseCoins(amount);
+        }
+        
         async function purchaseCoins(amount) {
             if (!currentUser) {
                 showToast('Please sign in to purchase coins');
+                return;
+            }
+            
+            if (amount < 10 || amount > 100) {
+                showToast('Please select 10-100 coins', 'error');
                 return;
             }
             
@@ -19192,7 +19288,15 @@ Made with ❤️ for puzzle enthusiasts`;
                 
             } catch (error) {
                 console.error('Purchase error:', error);
-                showToast('Purchase not available yet. Coming soon!', 'error');
+                // Show more specific error message
+                const message = error.message || error.details || 'Purchase failed';
+                if (message.includes('unauthenticated')) {
+                    showToast('Please sign in to purchase', 'error');
+                } else if (message.includes('internal')) {
+                    showToast('Payment service error. Try again.', 'error');
+                } else {
+                    showToast('Purchase error: ' + message, 'error');
+                }
             }
         }
         
@@ -19989,7 +20093,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.51'
+                    appVersion: '1.2.53'
                 }
             };
             
@@ -28539,7 +28643,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.51 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.53 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

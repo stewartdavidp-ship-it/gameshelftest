@@ -1,28 +1,29 @@
-Game Shelf v1.2.51
+Game Shelf v1.2.52
 ==================
 Release Date: January 26, 2026
 
-WALLET IMPROVEMENTS
--------------------
-• Tappable wallet display in menu
-  - Shows current tokens and coins
-  - Quick access to Buy Coins, Convert Coins, and Invite Friends
-  - Links to Terms & Conditions
+WALLET & COIN PURCHASE REDESIGN
+-------------------------------
+• Simplified coin pricing: $1 per coin, any amount 10-100
+  - Removed tiered pricing (10/25/50)
+  - User can select exact coin amount with +/- buttons
+  - Live preview shows cost, coins, and tokens
 
-• Added Terms & Conditions sheet
-  - Account requirements (Google sign-in)
-  - Coin purchase terms (10 coin minimum, $50/day limit)
-  - Token/hint pricing (5 tokens per hint)
-  - Referral program details
+• Colorful wallet buttons with consistent design:
+  - Buy Coins: Gold gradient
+  - Convert Coins: Green gradient  
+  - Invite Friends: Purple gradient
 
-• Fixed "Buys Coin" → "Buys Coins" (plural) everywhere
+• Design scheme standardized:
+  - Gold (#ffd700) = Coins/purchases
+  - Purple (#667eea) = Tokens/primary actions
+  - Green (#48bb78) = Conversions/positive
+  - All buttons use gradient styling
 
-PWA FIX (from v1.2.50)
-----------------------
-• Fixed hint sheet close button (X) being covered by status bar/notch
-
-Previous version:
-- v1.2.49: Token economy, Stripe integration, engagement rewards
+Previous versions:
+- v1.2.51: Tappable wallet, Terms & Conditions
+- v1.2.50: X button fix for PWA
+- v1.2.49: Token economy, Stripe integration
 
 ---
 
