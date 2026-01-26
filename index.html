@@ -3524,13 +3524,12 @@
             max-height: 85vh;
             overflow-y: auto;
             position: relative;
-            padding-top: calc(16px + env(safe-area-inset-top, 0px));
         }
         
         .hint-sheet-close {
             position: absolute;
-            top: calc(20px + env(safe-area-inset-top, 0px));
-            right: 20px;
+            top: calc(16px + env(safe-area-inset-top, 0px));
+            right: 16px;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -15268,15 +15267,6 @@ Wordle 1,234 3/6
         
         auth.onAuthStateChanged(async (user) => {
             console.log('[AUTH] onAuthStateChanged:', user ? user.email : 'null');
-            
-            // Check auto-login preference on initial load
-            if (isInitialAuthCheck && user && !getAutoLoginEnabled()) {
-                console.log('[AUTH] Auto-login disabled, signing out');
-                auth.signOut();
-                isInitialAuthCheck = false;
-                return;
-            }
-            
             currentUser = user;
             updateAuthUI();
             
@@ -15286,15 +15276,9 @@ Wordle 1,234 3/6
             }
             
             if (user) {
-                // Save user ID for session restoration hints
-                if (getAutoLoginEnabled()) {
-                    localStorage.setItem('gs_last_user', user.uid);
-                }
-                
                 // Only show toast for actual sign-ins, not page load restoration
                 if (!isInitialAuthCheck) {
                     showToast('Signed in: ' + user.email);
-                }
                 }
                 
                 await loadFromCloud();
@@ -15392,36 +15376,7 @@ Wordle 1,234 3/6
             });
         }
         
-        // Auto-login preference management
-        function getAutoLoginEnabled() {
-            const saved = localStorage.getItem('gs_auto_login');
-            // Default to true (stay signed in by default)
-            return saved === null ? true : saved === 'true';
-        }
-        
-        function toggleAutoLogin(enabled) {
-            localStorage.setItem('gs_auto_login', enabled.toString());
-            if (enabled && currentUser) {
-                // Save user ID to help with session restoration
-                localStorage.setItem('gs_last_user', currentUser.uid);
-            } else if (!enabled) {
-                localStorage.removeItem('gs_last_user');
-            }
-            showToast(enabled ? 'You\'ll stay signed in' : 'You\'ll need to sign in each visit');
-        }
-        
-        // Check auto-login preference on page load
-        function checkAutoLoginOnLoad() {
-            if (!getAutoLoginEnabled()) {
-                // User chose not to stay signed in - sign out if there's a session
-                if (auth.currentUser) {
-                    auth.signOut();
-                }
-            }
-        }
-        
         function signOut() {
-            localStorage.removeItem('gs_last_user');
             auth.signOut();
             closeAccountModal();
             showToast('Signed out');
@@ -15443,16 +15398,6 @@ Wordle 1,234 3/6
                                 <div style="font-weight: 600;">${currentUser.displayName || 'User'}</div>
                                 <div style="font-size: 0.8rem; color: var(--text-muted);">${currentUser.email || ''}</div>
                             </div>
-                        </div>
-                        <div class="settings-toggle-row" style="margin: 12px 0; padding: 8px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-                            <span style="display: flex; align-items: center; gap: 8px;">
-                                <span class="icon">🔑</span>
-                                <span>Stay signed in</span>
-                            </span>
-                            <label class="toggle">
-                                <input type="checkbox" id="auto-login-toggle" ${getAutoLoginEnabled() ? 'checked' : ''} onchange="toggleAutoLogin(this.checked)">
-                                <span class="slider"></span>
-                            </label>
                         </div>
                         <a class="settings-link" onclick="signOut(); toggleSettingsMenu();" style="color: var(--accent-red);">
                             <span class="icon">🚪</span>

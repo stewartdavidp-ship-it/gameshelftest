@@ -2,20 +2,12 @@ Game Shelf v1.2.50
 ==================
 Release Date: January 26, 2026
 
-PWA IMPROVEMENTS
-----------------
-• Fixed hint sheet close button being covered by status bar in PWA mode
-  - Added safe-area-inset padding for iOS notch/status bar
-  - Increased button size and tap target
-
-• Added "Stay signed in" toggle in settings menu
-  - Located under account info when signed in
-  - Enabled by default (auto-login)
-  - Can disable for shared devices
-
-• Improved session persistence tracking
-  - Saves user preference to localStorage
-  - Respects auto-login preference on page load
+PWA FIX
+-------
+• Fixed hint sheet close button (X) being covered by status bar/notch in PWA mode
+  - Added safe-area-inset padding for iOS
+  - Increased button size (40px) for better tap target
+  - Increased z-index to ensure visibility
 
 Previous version:
 - v1.2.49: Token economy, Stripe integration, engagement rewards
