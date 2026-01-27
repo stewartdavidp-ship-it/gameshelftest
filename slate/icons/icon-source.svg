@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Chalkboard green background -->
+  <rect width="512" height="512" rx="108" fill="#2D5A3D"/>
+  
+  <!-- Inner glow -->
+  <rect x="24" y="24" width="464" height="464" rx="84" fill="#3D6A4D" opacity="0.4"/>
+  
+  <!-- 8 letter boxes in 2 rows of 4, moved up slightly -->
+  <g transform="translate(56, 110)">
+    <!-- Top row boxes -->
+    <rect x="0" y="0" width="80" height="80" rx="12" fill="#E8E4D9" opacity="0.9"/>
+    <rect x="100" y="0" width="80" height="80" rx="12" fill="#E8E4D9" opacity="0.9"/>
+    <rect x="200" y="0" width="80" height="80" rx="12" fill="#E8E4D9" opacity="0.9"/>
+    <rect x="300" y="0" width="80" height="80" rx="12" fill="#E8E4D9" opacity="0.9"/>
+    
+    <!-- Bottom row boxes -->
+    <rect x="0" y="110" width="80" height="80" rx="12" fill="#E8E4D9" opacity="0.9"/>
+    <rect x="100" y="110" width="80" height="80" rx="12" fill="#E8E4D9" opacity="0.9"/>
+    <rect x="200" y="110" width="80" height="80" rx="12" fill="#E8E4D9" opacity="0.9"/>
+    <rect x="300" y="110" width="80" height="80" rx="12" fill="#E8E4D9" opacity="0.9"/>
+    
+    <!-- Connecting lines showing letter links -->
+    <line x1="40" y1="80" x2="140" y2="110" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
+    <line x1="140" y1="80" x2="140" y2="110" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
+    <line x1="240" y1="80" x2="340" y2="110" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
+    <line x1="340" y1="80" x2="240" y2="110" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- Small dots at connection points -->
+    <circle cx="40" cy="80" r="6" fill="#D4AF37"/>
+    <circle cx="140" cy="80" r="6" fill="#D4AF37"/>
+    <circle cx="140" cy="110" r="6" fill="#D4AF37"/>
+    <circle cx="240" cy="80" r="6" fill="#D4AF37"/>
+    <circle cx="340" cy="80" r="6" fill="#D4AF37"/>
+    <circle cx="240" cy="110" r="6" fill="#D4AF37"/>
+    <circle cx="340" cy="110" r="6" fill="#D4AF37"/>
+  </g>
+  
+  <!-- Game Shelf badge at bottom center -->
+  <g transform="translate(256, 430)">
+    <defs>
+      <linearGradient id="gPiece" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#667eea"/>
+        <stop offset="100%" style="stop-color:#5568d8"/>
+      </linearGradient>
+      <linearGradient id="sPiece" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#9061f9"/>
+        <stop offset="100%" style="stop-color:#764ba2"/>
+      </linearGradient>
+    </defs>
+    <!-- S piece (back) -->
+    <g transform="rotate(10, 18, 0)">
+      <rect x="8" y="-28" width="38" height="44" rx="5" fill="url(#sPiece)"/>
+      <circle cx="8" cy="0" r="8" fill="#2D5A3D"/>
+      <text x="27" y="8" font-family="Arial" font-size="24" font-weight="bold" fill="white" text-anchor="middle">S</text>
+    </g>
+    <!-- G piece (front) -->
+    <g transform="rotate(-10, -18, 0)">
+      <rect x="-46" y="-28" width="38" height="44" rx="5" fill="url(#gPiece)"/>
+      <circle cx="-8" cy="0" r="8" fill="url(#gPiece)"/>
+      <text x="-27" y="8" font-family="Arial" font-size="24" font-weight="bold" fill="white" text-anchor="middle">G</text>
+    </g>
+  </g>
+</svg>
