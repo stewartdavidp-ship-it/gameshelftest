@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.68">
+    <meta name="version" content="1.2.69">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.68</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.69</span>
             </div>
         </div>
         <div class="header-right">
@@ -8285,7 +8285,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.68</div>
+            <div class="settings-version">Game Shelf PWA v1.2.69</div>
         </div>
     </div>
     
@@ -10910,6 +10910,25 @@ Wordle 1,234 3/6
                 .replace(/"/g, '&quot;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;');
+        }
+        
+        // Sanitize text input - removes HTML/script tags and limits length
+        // Use for user-generated content before storing in database
+        function sanitizeTextInput(text, maxLength = 50) {
+            if (text === null || text === undefined) return '';
+            return String(text)
+                .replace(/<[^>]*>/g, '')           // Remove HTML tags
+                .replace(/[<>'"&]/g, '')           // Remove dangerous chars
+                .trim()
+                .slice(0, maxLength);
+        }
+        
+        // Validate display name - only alphanumeric, spaces, basic punctuation
+        function isValidDisplayName(name) {
+            if (!name || typeof name !== 'string') return false;
+            if (name.length < 1 || name.length > 30) return false;
+            // Allow letters, numbers, spaces, hyphens, underscores, periods
+            return /^[a-zA-Z0-9 ._-]+$/.test(name);
         }
         
         // ============ FRIENDS SYSTEM ============
@@ -16864,7 +16883,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.68';
+            const version = '1.2.69';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17895,7 +17914,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            const name = document.getElementById('battle-name-input').value.trim() || 'Brain Battle';
+            const name = sanitizeTextInput(document.getElementById('battle-name-input').value, 30) || 'Brain Battle';
             const duration = parseInt(document.getElementById('battle-duration').value);
             let entryFee = parseInt(document.getElementById('battle-entry-fee').value);
             const isPublic = document.getElementById('battle-public-toggle')?.checked || false;
@@ -18899,7 +18918,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 return `
                     <div class="public-battle-card">
                         <div class="public-battle-header">
-                            <div class="public-battle-name">${battle.name}</div>
+                            <div class="public-battle-name">${escapeHtml(battle.name)}</div>
                             <span class="public-battle-badge ${daysLeft <= 1 ? 'starting-soon' : 'open'}">
                                 ${daysLeft <= 1 ? '⚡ Ending soon' : '✓ Open'}
                             </span>
@@ -18914,7 +18933,7 @@ Made with ❤️ for puzzle enthusiasts`;
                             ${gameIcons}${moreGames}
                         </div>
                         <button class="public-battle-join-btn ${isJoined ? 'joined' : ''}" 
-                                onclick="event.stopPropagation(); ${isJoined ? `showBattleDetails('${battle.id}')` : `joinPublicBattle('${battle.id}')`}">
+                                onclick="event.stopPropagation(); ${isJoined ? `showBattleDetails('${escapeAttr(battle.id)}')` : `joinPublicBattle('${escapeAttr(battle.id)}')`}">
                             ${isJoined ? '✓ Joined - View Battle' : '⚔️ Join Battle'}
                         </button>
                     </div>
@@ -20380,7 +20399,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.68'
+                    appVersion: '1.2.69'
                 }
             };
             

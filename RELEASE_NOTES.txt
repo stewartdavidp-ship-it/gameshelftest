@@ -1,3 +1,27 @@
+Game Shelf PWA v1.2.69 Release Notes
+=====================================
+
+Release Date: January 27, 2026
+
+SECURITY FIXES:
+---------------
+* Fixed remaining XSS vulnerability in public battles display
+  - battle.name now properly escaped with escapeHtml()
+  - battle.id escaped with escapeAttr() in onclick handlers
+
+* Added input sanitization at source
+  - New sanitizeTextInput() function strips HTML tags and dangerous chars
+  - New isValidDisplayName() validator for display name format
+  - Battle names sanitized before storing in database
+
+TECHNICAL:
+----------
+* Defense in depth: escape on input AND output
+* Battle name input limited to 30 chars, HTML stripped
+* Display name validation: alphanumeric, spaces, basic punctuation only
+
+---
+
 Game Shelf PWA v1.2.68 Release Notes
 =====================================
 
