@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.65">
+    <meta name="version" content="1.2.67">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.65</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.67</span>
             </div>
         </div>
         <div class="header-right">
@@ -8198,6 +8198,12 @@
                         <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 36px;">
                             Show floating feedback button for reporting issues
                         </p>
+                        
+                        <a class="settings-link" onclick="resetPurchaseLimits(); toggleSettingsMenu();" style="margin-top: 12px;">
+                            <span class="icon">🧹</span>
+                            Reset Purchase Limits
+                        </a>
+                        <p class="settings-desc">Clear purchase history after data reset (for testing)</p>
                     </div>
                 </div>
             </div>
@@ -8279,7 +8285,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.65</div>
+            <div class="settings-version">Game Shelf PWA v1.2.67</div>
         </div>
     </div>
     
@@ -16761,6 +16767,41 @@ Wordle 1,234 3/6
             });
         }
         
+        async function resetPurchaseLimits() {
+            if (!currentUser) {
+                showToast('Sign in to reset purchase limits', 'error');
+                return;
+            }
+            
+            // Check wallet state first
+            const tokens = appData.wallet?.tokens || 0;
+            const coins = appData.wallet?.coins || 0;
+            
+            if (tokens > 50 || coins > 0) {
+                showToast('Reset your data first (wallet must be at default)', 'error');
+                return;
+            }
+            
+            showConfirmModal({
+                icon: '🧹',
+                title: 'Reset Purchase Limits?',
+                message: 'This clears your purchase history so you can test the purchase flow again. Only works after resetting your data.',
+                confirmText: 'Reset Limits',
+                confirmStyle: 'warning',
+                onConfirm: async () => {
+                    try {
+                        showToast('🔄 Resetting purchase limits...');
+                        const resetPurchaseHistory = firebase.functions().httpsCallable('resetPurchaseHistory');
+                        const result = await resetPurchaseHistory();
+                        showToast(`✅ ${result.data.message}`, 'success');
+                    } catch (e) {
+                        console.error('Reset purchase limits error:', e);
+                        showToast(e.message || 'Failed to reset limits', 'error');
+                    }
+                }
+            });
+        }
+        
         function exportData() {
             const dataStr = JSON.stringify(appData, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
@@ -16803,7 +16844,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.65';
+            const version = '1.2.67';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -19585,22 +19626,27 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // Update locally
-            appData.wallet.coins -= amount;
-            appData.wallet.tokens = (appData.wallet.tokens || 0) + (amount * 100);
-            saveData();
-            renderWallet();
-            
-            closeGenericSheet();
-            showToast(`🎉 Converted ${amount} coin${amount > 1 ? 's' : ''} to ${(amount * 100).toLocaleString()} tokens!`);
-            
-            // Sync to cloud
-            if (currentUser) {
-                await saveToCloud();
+            try {
+                // Update locally
+                appData.wallet.coins -= amount;
+                appData.wallet.tokens = (appData.wallet.tokens || 0) + (amount * 100);
+                saveData();
+                renderWallet();
+                
+                closeGenericSheet();
+                showToast(`🎉 Converted ${amount} coin${amount > 1 ? 's' : ''} to ${(amount * 100).toLocaleString()} tokens!`);
+                
+                // Sync to cloud
+                if (currentUser) {
+                    await saveToCloud();
+                }
+                
+                // Log activity
+                logActivity('coins-converted', { coins: amount, tokens: amount * 100 });
+            } catch (e) {
+                console.error('Error converting coins:', e);
+                showToast('Conversion saved locally', 'info');
             }
-            
-            // Log activity
-            logActivity('coins-converted', { coins: amount, tokens: amount * 100 });
         }
         
         // Check for successful purchase on page load
@@ -20314,7 +20360,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.65'
+                    appVersion: '1.2.67'
                 }
             };
             
@@ -26918,6 +26964,9 @@ Hint levels:
                         // No SW registered, just reload
                         window.location.reload(true);
                     }
+                }).catch(err => {
+                    console.error('getRegistration failed:', err);
+                    window.location.reload(true);
                 });
             } else {
                 window.location.reload(true);
@@ -26929,10 +26978,13 @@ Hint levels:
                 navigator.serviceWorker.getRegistrations().then(registrations => {
                     registrations.forEach(reg => reg.unregister());
                 }).then(() => {
-                    caches.keys().then(names => {
-                        names.forEach(name => caches.delete(name));
-                    });
+                    return caches.keys();
+                }).then(names => {
+                    return Promise.all(names.map(name => caches.delete(name)));
                 }).then(() => {
+                    window.location.reload(true);
+                }).catch(e => {
+                    console.error('Force refresh error:', e);
                     window.location.reload(true);
                 });
             } else {
@@ -28930,7 +28982,10 @@ Hint levels:
                     console.log('Auth state restored from Firebase');
                     currentUser = user;
                     updateAuthUI();
-                    loadFromCloud().then(() => renderAll());
+                    loadFromCloud().then(() => renderAll()).catch(e => {
+                        console.error('Error loading from cloud on auth restore:', e);
+                        renderAll(); // Render anyway with local data
+                    });
                 }
             }, 1000);
             

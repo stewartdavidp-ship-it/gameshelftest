@@ -1,5 +1,46 @@
-Game Shelf PWA v1.2.65 Release Notes
+Game Shelf PWA v1.2.67 Release Notes
 =====================================
+
+Release Date: January 27, 2026
+
+NEW FEATURES:
+-------------
+* Reset Purchase Limits - New developer option in Settings
+  - Clears purchase history after data reset
+  - Allows re-testing the coin purchase flow
+  - Only works when wallet is at default state (≤50 tokens, 0 coins)
+  - Located in Settings → Developer section
+
+FIREBASE FUNCTIONS:
+-------------------
+* Added resetPurchaseHistory Cloud Function
+  - Validates wallet state before allowing reset
+  - Logs reset actions for audit trail
+
+---
+
+v1.2.66 Release Notes
+=====================
+
+Release Date: January 27, 2026
+
+BUG FIXES:
+----------
+* Added try/catch to coin conversion for safer cloud sync
+* Fixed forceRefresh promise chain error handling
+* Fixed forceAppUpdate getRegistration error handling
+* Fixed loadFromCloud auth restore error handling
+
+TECHNICAL:
+----------
+* Error handling audit completed
+* All async operations now have proper error handling
+* Promise chains now have .catch() handlers
+
+---
+
+v1.2.65 Release Notes
+=====================
 
 Release Date: January 27, 2026
 
