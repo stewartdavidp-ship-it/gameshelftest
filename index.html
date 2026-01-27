@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.61">
+    <meta name="version" content="1.2.63">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7873,7 +7873,7 @@
             font-size: 0.85rem;
             margin-bottom: 16px;
         }
-        /* Floating Feedback Button - UAT Mode */
+        /* Floating Feedback Button */
         .uat-feedback-btn {
             position: fixed;
             bottom: 80px;
@@ -7904,7 +7904,7 @@
             display: none;
         }
         
-        /* UAT Mode Indicator */
+        /* Feedback Mode Indicator */
         .uat-mode-badge {
             position: fixed;
             top: 8px;
@@ -8005,14 +8005,14 @@
     </style>
 </head>
 <body>
-    <!-- UAT Mode Badge -->
-    <div class="uat-mode-badge" id="uat-mode-badge">🧪 UAT Mode</div>
+    <!-- Feedback Mode Badge -->
+    <div class="uat-mode-badge" id="feedback-mode-badge">💬 Feedback</div>
     
     <!-- Test Game Shelf Badge (auto-shows when on test repo) -->
     <div class="uat-mode-badge" id="test-gameshelf-badge" style="display:none; left:10px; right:auto; background: linear-gradient(135deg, #f90, #f60);">🔧 TEST BUILD</div>
     
-    <!-- Floating Feedback Button (UAT) -->
-    <button class="uat-feedback-btn hidden" id="uat-feedback-btn" onclick="openUATFeedback()" title="Send Feedback">
+    <!-- Floating Feedback Button -->
+    <button class="uat-feedback-btn hidden" id="feedback-btn" onclick="openFeedback()" title="Send Feedback">
         💬
     </button>
     
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.61</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.63</span>
             </div>
         </div>
         <div class="header-right">
@@ -8190,13 +8190,13 @@
                         
                         <div class="settings-toggle-row" style="margin-top: 12px;">
                             <label>
-                                <span class="icon">🎯</span>
-                                <span>UAT Mode</span>
+                                <span class="icon">💬</span>
+                                <span>Feedback</span>
                             </label>
-                            <input type="checkbox" id="uat-mode-toggle" onchange="toggleUATMode(this.checked)">
+                            <input type="checkbox" id="feedback-mode-toggle" onchange="toggleFeedbackMode(this.checked)">
                         </div>
                         <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 36px;">
-                            Show feedback button & capture debug info for testing
+                            Show floating feedback button for reporting issues
                         </p>
                     </div>
                 </div>
@@ -8279,7 +8279,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.61</div>
+            <div class="settings-version">Game Shelf PWA v1.2.63</div>
         </div>
     </div>
     
@@ -9473,8 +9473,8 @@ Wordle 1,234 3/6
                         <textarea id="issue-description" rows="3" placeholder="More info about what went wrong..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); font-size: 0.9rem; resize: none;"></textarea>
                     </div>
                     
-                    <!-- UAT Debug Context (visible when UAT mode is on) -->
-                    <div id="uat-debug-section" style="margin-bottom: 14px; display: none;">
+                    <!-- Feedback Debug Context (visible when Feedback mode is on) -->
+                    <div id="feedback-debug-section" style="margin-bottom: 14px; display: none;">
                         <label style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; display: block;">🔍 Debug Context (auto-captured)</label>
                         <div class="debug-log-preview" id="debug-log-preview">
                             Loading context...
@@ -12487,27 +12487,27 @@ Wordle 1,234 3/6
             // Sports & Misc (browser only)
             'immaculate-grid': { id: 'immaculate-grid', name: 'Immaculate Grid', icon: '⚾', url: 'https://www.immaculategrid.com', hasApp: false },
             costcodle: { id: 'costcodle', name: 'Costcodle', icon: '🛒', url: 'https://costcodle.com', hasApp: false },
-            // Game Shelf Originals (browser only)
-            quotle: { id: 'quotle', name: 'Quotle', icon: '💬', url: 'https://stewartdavidp-ship-it.github.io/Quotle/', hasApp: false },
-            slate: { id: 'slate', name: 'Slate', icon: '📝', url: 'https://stewartdavidp-ship-it.github.io/Slate/', hasApp: false },
-            rungs: { id: 'rungs', name: 'Rungs', icon: '🪜', url: 'https://stewartdavidp-ship-it.github.io/Rungstest/', hasApp: false },
-            wordboxing: { id: 'wordboxing', name: 'Word Boxing', icon: '🥊', url: 'https://stewartdavidp-ship-it.github.io/WordBoxing/', hasApp: false }
+            // Game Shelf Originals (browser only) - Production at gameshelf.co
+            quotle: { id: 'quotle', name: 'Quotle', icon: '💬', url: 'https://gameshelf.co/quotle/', hasApp: false },
+            slate: { id: 'slate', name: 'Slate', icon: '📝', url: 'https://gameshelf.co/slate/', hasApp: false },
+            rungs: { id: 'rungs', name: 'Rungs', icon: '🪜', url: 'https://gameshelf.co/rungs/', hasApp: false },
+            wordboxing: { id: 'wordboxing', name: 'Word Boxing', icon: '🥊', url: 'https://gameshelf.co/wordboxing/', hasApp: false }
         };
         
         // Test URLs for GS Originals (used when Test Mode is enabled)
         const GS_ORIGINALS_TEST_URLS = {
-            quotle: 'https://stewartdavidp-ship-it.github.io/quotletest/',
-            slate: 'https://stewartdavidp-ship-it.github.io/slatetest/',
-            rungs: 'https://stewartdavidp-ship-it.github.io/Rungstest/',
-            wordboxing: 'https://stewartdavidp-ship-it.github.io/wordboxingtest/'
+            quotle: 'https://stewartdavidp-ship-it.github.io/gameshelftest/quotle/',
+            slate: 'https://stewartdavidp-ship-it.github.io/gameshelftest/slate/',
+            rungs: 'https://stewartdavidp-ship-it.github.io/gameshelftest/rungs/',
+            wordboxing: 'https://stewartdavidp-ship-it.github.io/gameshelftest/wordboxing/'
         };
         
-        // Production URLs for GS Originals (default)
+        // Production URLs for GS Originals (default) - gameshelf.co
         const GS_ORIGINALS_PROD_URLS = {
-            quotle: 'https://stewartdavidp-ship-it.github.io/quotle/',
-            slate: 'https://stewartdavidp-ship-it.github.io/slate/',
-            rungs: 'https://stewartdavidp-ship-it.github.io/rungs/',
-            wordboxing: 'https://stewartdavidp-ship-it.github.io/wordboxing/'
+            quotle: 'https://gameshelf.co/quotle/',
+            slate: 'https://gameshelf.co/slate/',
+            rungs: 'https://gameshelf.co/rungs/',
+            wordboxing: 'https://gameshelf.co/wordboxing/'
         };
         
         // Check if game is a GS Original
@@ -15578,41 +15578,41 @@ Wordle 1,234 3/6
             }
         }
         
-        // ============ UAT MODE SYSTEM ============
-        let uatDebugLog = []; // Stores recent actions for debug reports
-        const UAT_LOG_MAX = 50; // Max entries to keep
+        // ============ FEEDBACK MODE SYSTEM ============
+        let feedbackDebugLog = []; // Stores recent actions for debug reports
+        const FEEDBACK_LOG_MAX = 50; // Max entries to keep
         
-        function isUATModeEnabled() {
-            // Default to ON (true) - only off if explicitly set to 'false'
-            return localStorage.getItem('gameshelf_uat_mode') !== 'false';
+        function isFeedbackModeEnabled() {
+            // Default to OFF - only on if explicitly set to 'true'
+            return localStorage.getItem('gameshelf_feedback_mode') === 'true';
         }
         
-        function toggleUATMode(enabled) {
-            localStorage.setItem('gameshelf_uat_mode', enabled ? 'true' : 'false');
+        function toggleFeedbackMode(enabled) {
+            localStorage.setItem('gameshelf_feedback_mode', enabled ? 'true' : 'false');
             
             // Update UI elements
-            const feedbackBtn = document.getElementById('uat-feedback-btn');
-            const uatBadge = document.getElementById('uat-mode-badge');
+            const feedbackBtn = document.getElementById('feedback-btn');
+            const feedbackBadge = document.getElementById('feedback-mode-badge');
             
             if (feedbackBtn) {
                 feedbackBtn.classList.toggle('hidden', !enabled);
             }
-            if (uatBadge) {
-                uatBadge.classList.toggle('active', enabled);
+            if (feedbackBadge) {
+                feedbackBadge.classList.toggle('active', enabled);
             }
             
-            showToast(enabled ? '🎯 UAT Mode ON - feedback button visible' : '🎯 UAT Mode OFF');
+            showToast(enabled ? '💬 Feedback ON - feedback button visible' : '💬 Feedback OFF');
             
             if (enabled) {
-                uatLog('UAT Mode enabled');
+                feedbackLog('Feedback Mode enabled');
             }
         }
         
-        function initUATMode() {
-            const toggle = document.getElementById('uat-mode-toggle');
-            const feedbackBtn = document.getElementById('uat-feedback-btn');
-            const uatBadge = document.getElementById('uat-mode-badge');
-            const isEnabled = isUATModeEnabled();
+        function initFeedbackMode() {
+            const toggle = document.getElementById('feedback-mode-toggle');
+            const feedbackBtn = document.getElementById('feedback-btn');
+            const feedbackBadge = document.getElementById('feedback-mode-badge');
+            const isEnabled = isFeedbackModeEnabled();
             
             if (toggle) {
                 toggle.checked = isEnabled;
@@ -15620,29 +15620,29 @@ Wordle 1,234 3/6
             if (feedbackBtn) {
                 feedbackBtn.classList.toggle('hidden', !isEnabled);
             }
-            if (uatBadge) {
-                uatBadge.classList.toggle('active', isEnabled);
+            if (feedbackBadge) {
+                feedbackBadge.classList.toggle('active', isEnabled);
             }
             
             // Start capturing console errors
             const originalError = console.error;
             console.error = function(...args) {
-                uatLog('ERROR: ' + args.join(' '));
+                feedbackLog('ERROR: ' + args.join(' '));
                 originalError.apply(console, args);
             };
         }
         
-        function uatLog(action) {
-            if (!isUATModeEnabled()) return;
+        function feedbackLog(action) {
+            if (!isFeedbackModeEnabled()) return;
             
-            uatDebugLog.unshift({
+            feedbackDebugLog.unshift({
                 time: new Date().toISOString(),
                 action: action,
                 tab: document.querySelector('.nav-tab.active')?.dataset?.tab || 'unknown'
             });
             
-            if (uatDebugLog.length > UAT_LOG_MAX) {
-                uatDebugLog = uatDebugLog.slice(0, UAT_LOG_MAX);
+            if (feedbackDebugLog.length > FEEDBACK_LOG_MAX) {
+                feedbackDebugLog = feedbackDebugLog.slice(0, FEEDBACK_LOG_MAX);
             }
         }
         
@@ -15676,11 +15676,11 @@ Wordle 1,234 3/6
                     time: new Date(a.ts).toLocaleTimeString()
                 })),
                 
-                // UAT debug log (actions captured this session)
-                debugLog: uatDebugLog.slice(0, 10),
+                // Feedback debug log (actions captured this session)
+                debugLog: feedbackDebugLog.slice(0, 10),
                 
                 // Console errors captured
-                consoleErrors: uatDebugLog.filter(l => l.action.startsWith('ERROR:')).slice(0, 5)
+                consoleErrors: feedbackDebugLog.filter(l => l.action.startsWith('ERROR:')).slice(0, 5)
             };
             
             return context;
@@ -15712,15 +15712,15 @@ Wordle 1,234 3/6
             return streak;
         }
         
-        function openUATFeedback() {
+        function openFeedback() {
             // Log the feedback open action
-            uatLog('Opened feedback form');
+            feedbackLog('Opened feedback form');
             
             // Show/populate the debug section
-            const debugSection = document.getElementById('uat-debug-section');
+            const debugSection = document.getElementById('feedback-debug-section');
             const debugPreview = document.getElementById('debug-log-preview');
             
-            if (isUATModeEnabled() && debugSection && debugPreview) {
+            if (isFeedbackModeEnabled() && debugSection && debugPreview) {
                 debugSection.style.display = 'block';
                 
                 const context = captureDebugContext();
@@ -16774,7 +16774,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.61';
+            const version = '1.2.63';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -16919,15 +16919,15 @@ Made with ❤️ for puzzle enthusiasts`;
                 source: 'pwa'
             };
             
-            // Include debug context if UAT mode is enabled and checkbox is checked
+            // Include debug context if Feedback mode is enabled and checkbox is checked
             const includeDebugLog = document.getElementById('include-debug-log')?.checked;
-            if (isUATModeEnabled() && includeDebugLog) {
+            if (isFeedbackModeEnabled() && includeDebugLog) {
                 issue.debugContext = captureDebugContext();
-                issue.source = 'pwa-uat';
+                issue.source = 'pwa-feedback';
             }
             
             // Log the submission
-            uatLog('Submitted feedback: ' + issue.type + ' - ' + issue.title);
+            feedbackLog('Submitted feedback: ' + issue.type + ' - ' + issue.title);
             
             // Try Firebase, but always acknowledge regardless of result
             try {
@@ -16947,7 +16947,7 @@ Made with ❤️ for puzzle enthusiasts`;
             issueScreenshotData = null;
             
             // Hide debug section
-            const debugSection = document.getElementById('uat-debug-section');
+            const debugSection = document.getElementById('feedback-debug-section');
             if (debugSection) debugSection.style.display = 'none';
             
             closeIssueSheet();
@@ -19047,6 +19047,23 @@ Made with ❤️ for puzzle enthusiasts`;
                             ">
                                 📧 Invite Friends for Tokens
                             </button>
+                            <button onclick="showTransactionHistorySheet();" style="
+                                width: 100%;
+                                padding: 16px;
+                                background: var(--bg-tertiary);
+                                border: 1px solid var(--border);
+                                border-radius: 12px;
+                                color: var(--text-primary);
+                                font-weight: 600;
+                                font-size: 1rem;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                            ">
+                                📜 Transaction History
+                            </button>
                         </div>
                         
                         <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
@@ -19057,6 +19074,156 @@ Made with ❤️ for puzzle enthusiasts`;
                     </div>
                 `
             });
+        }
+        
+        // Show Transaction History
+        async function showTransactionHistorySheet() {
+            closeGenericSheet();
+            
+            // Show loading state
+            showGenericSheet({
+                title: '📜 Transaction History',
+                content: `
+                    <div style="text-align: center; padding: 40px;">
+                        <div class="spinner" style="margin: 0 auto;"></div>
+                        <div style="margin-top: 16px; color: var(--text-muted);">Loading transactions...</div>
+                    </div>
+                `
+            });
+            
+            if (!window.firebaseUser) {
+                showGenericSheet({
+                    title: '📜 Transaction History',
+                    content: `
+                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <div style="font-size: 3rem; margin-bottom: 16px;">🔒</div>
+                            <p>Sign in to view your transaction history</p>
+                        </div>
+                    `
+                });
+                return;
+            }
+            
+            const userId = window.firebaseUser.uid;
+            const transactions = [];
+            
+            try {
+                // Fetch coin purchases
+                const purchasesRef = window.firebaseDB.ref(`purchases/${userId}`);
+                const purchasesSnap = await purchasesRef.orderByChild('timestamp').limitToLast(50).once('value');
+                purchasesSnap.forEach(snap => {
+                    const data = snap.val();
+                    transactions.push({
+                        type: 'purchase',
+                        icon: '💰',
+                        description: `Purchased ${data.coinAmount} coins`,
+                        amount: `+${data.coinAmount} 🪙`,
+                        cost: `$${(data.priceCents / 100).toFixed(2)}`,
+                        timestamp: data.timestamp,
+                        color: 'var(--accent-gold)'
+                    });
+                });
+                
+                // Fetch token history (hints, etc.)
+                const tokenHistoryRef = window.firebaseDB.ref(`users/${userId}/tokenHistory`);
+                const tokenHistorySnap = await tokenHistoryRef.orderByChild('timestamp').limitToLast(50).once('value');
+                tokenHistorySnap.forEach(snap => {
+                    const data = snap.val();
+                    const isDebit = data.amount < 0;
+                    transactions.push({
+                        type: data.type || 'token',
+                        icon: isDebit ? '💎' : '✨',
+                        description: data.type === 'hint' ? 'Used AI Hint' : (data.type || 'Token transaction'),
+                        amount: `${data.amount > 0 ? '+' : ''}${data.amount} 💎`,
+                        timestamp: data.timestamp,
+                        color: isDebit ? 'var(--accent-red)' : 'var(--accent-green)'
+                    });
+                });
+                
+                // Fetch gift redemptions
+                const giftsRef = window.firebaseDB.ref(`giftRedemptions/${userId}`);
+                const giftsSnap = await giftsRef.orderByChild('timestamp').limitToLast(20).once('value');
+                giftsSnap.forEach(snap => {
+                    const data = snap.val();
+                    transactions.push({
+                        type: 'gift',
+                        icon: '🎁',
+                        description: `Redeemed $${data.tierValue} gift`,
+                        amount: `-${data.tierCoins} 🪙`,
+                        timestamp: data.timestamp,
+                        color: 'var(--accent-purple)'
+                    });
+                });
+                
+                // Sort by timestamp descending (newest first)
+                transactions.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                
+                // Format the transactions
+                const formatDate = (ts) => {
+                    if (!ts) return 'Unknown date';
+                    const d = new Date(ts);
+                    const now = new Date();
+                    const isToday = d.toDateString() === now.toDateString();
+                    const isYesterday = d.toDateString() === new Date(now - 86400000).toDateString();
+                    
+                    if (isToday) return `Today ${d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
+                    if (isYesterday) return `Yesterday ${d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
+                    return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                };
+                
+                let content;
+                if (transactions.length === 0) {
+                    content = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <div style="font-size: 3rem; margin-bottom: 16px;">📭</div>
+                            <p>No transactions yet</p>
+                            <p style="font-size: 0.85rem;">Buy coins or use hints to see your history here</p>
+                        </div>
+                    `;
+                } else {
+                    content = `
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            ${transactions.map(t => `
+                                <div style="
+                                    display: flex;
+                                    align-items: center;
+                                    padding: 12px 16px;
+                                    border-bottom: 1px solid var(--border);
+                                    gap: 12px;
+                                ">
+                                    <div style="font-size: 1.5rem;">${t.icon}</div>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div style="font-weight: 500; color: var(--text-primary);">${t.description}</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">${formatDate(t.timestamp)}${t.cost ? ` • ${t.cost}` : ''}</div>
+                                    </div>
+                                    <div style="font-weight: 600; color: ${t.color}; white-space: nowrap;">${t.amount}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="padding: 12px 16px; text-align: center; color: var(--text-muted); font-size: 0.75rem;">
+                            Showing last ${transactions.length} transaction${transactions.length === 1 ? '' : 's'}
+                        </div>
+                    `;
+                }
+                
+                showGenericSheet({
+                    title: '📜 Transaction History',
+                    content: content
+                });
+                
+            } catch (error) {
+                console.error('Failed to load transaction history:', error);
+                showGenericSheet({
+                    title: '📜 Transaction History',
+                    content: `
+                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <div style="font-size: 3rem; margin-bottom: 16px;">❌</div>
+                            <p>Failed to load history</p>
+                            <p style="font-size: 0.85rem;">${error.message}</p>
+                        </div>
+                    `
+                });
+            }
         }
         
         // ============ TOKEN/COIN MANAGEMENT ============
@@ -20110,7 +20277,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.61'
+                    appVersion: '1.2.63'
                 }
             };
             
@@ -28620,8 +28787,8 @@ Hint levels:
             // Load test mode setting
             initTestModeToggle();
             
-            // Load UAT mode setting
-            initUATMode();
+            // Load Feedback mode setting
+            initFeedbackMode();
             
             // Check for referral code in URL
             checkReferralParam();
@@ -28724,7 +28891,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.61 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.2.63 initialized - Test helpers enabled');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
