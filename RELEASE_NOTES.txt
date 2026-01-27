@@ -1,3 +1,42 @@
+Game Shelf PWA v1.2.68 Release Notes
+=====================================
+
+Release Date: January 27, 2026
+
+SECURITY FIXES:
+---------------
+* Fixed XSS vulnerability in user-generated content display
+  - Added escapeHtml() and escapeAttr() sanitization functions
+  - 54 total sanitization points across the application
+  
+* User content areas patched:
+  - Contact search results and friend addition
+  - Friend cards, lists, and profiles
+  - Leaderboard entries
+  - Activity feed
+  - Profile view headers and actions
+  - Battle participants, standings, and results
+  - Recommendation cards (challenge/nudge friend)
+  - Account modal and menu account section
+  - Game search "no results" message
+  - Setup image upload preview
+  - Battle impact tips
+
+* Defense in depth applied to:
+  - All displayName renders
+  - All photoURL attributes
+  - All onclick handler parameters with user IDs
+  - Numeric values sanitized with parseInt()
+
+TECHNICAL:
+----------
+* All user-controlled strings pass through HTML entity encoding
+* URL attributes use attribute-safe encoding
+* Numbers use parseInt() before display
+* 54 escapeHtml/escapeAttr calls throughout codebase
+
+---
+
 Game Shelf PWA v1.2.67 Release Notes
 =====================================
 

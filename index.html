@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.67">
+    <meta name="version" content="1.2.68">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.67</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.68</span>
             </div>
         </div>
         <div class="header-right">
@@ -8285,7 +8285,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.67</div>
+            <div class="settings-version">Game Shelf PWA v1.2.68</div>
         </div>
     </div>
     
@@ -10892,6 +10892,26 @@ Wordle 1,234 3/6
             return base;
         }
         
+        // ============ SECURITY UTILITIES ============
+        // Escape HTML to prevent XSS attacks from user-generated content
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+        
+        // Escape for use in HTML attributes (onclick handlers, etc.)
+        function escapeAttr(text) {
+            if (text === null || text === undefined) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/'/g, '&#39;')
+                .replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+        
         // ============ FRIENDS SYSTEM ============
         let friendsData = [];
         let friendsMap = new Map(); // O(1) friend lookups by UID
@@ -11310,13 +11330,13 @@ Wordle 1,234 3/6
                         ${matches.map(m => `
                             <div class="contact-result-card" id="contact-result-${m.odataId}">
                                 <div class="contact-result-avatar">
-                                    ${m.photoURL ? `<img src="${m.photoURL}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` : (m.displayName || 'U')[0].toUpperCase()}
+                                    ${m.photoURL ? `<img src="${escapeAttr(m.photoURL)}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` : escapeHtml((m.displayName || 'U')[0].toUpperCase())}
                                 </div>
                                 <div class="contact-result-info">
-                                    <div class="contact-result-name">${m.displayName || 'Player'}</div>
+                                    <div class="contact-result-name">${escapeHtml(m.displayName || 'Player')}</div>
                                     <div class="contact-result-status">✓ On Game Shelf</div>
                                 </div>
-                                <button class="contact-result-add" onclick="addContactAsFriend('${m.odataId}', '${(m.displayName || 'Player').replace(/'/g, "\\'")}')">
+                                <button class="contact-result-add" onclick="addContactAsFriend('${escapeAttr(m.odataId)}', '${escapeAttr(m.displayName || 'Player')}')">
                                     + Add
                                 </button>
                             </div>
@@ -11380,22 +11400,22 @@ Wordle 1,234 3/6
             const profileHtml = `
                 <div class="profile-avatar">
                     ${friendData.photoURL 
-                        ? `<img src="${friendData.photoURL}" alt="">` 
-                        : (friendData.displayName || 'U')[0].toUpperCase()}
+                        ? `<img src="${escapeAttr(friendData.photoURL)}" alt="">` 
+                        : escapeHtml((friendData.displayName || 'U')[0].toUpperCase())}
                 </div>
-                <div class="profile-name">${friendData.displayName || 'Puzzle Player'}</div>
+                <div class="profile-name">${escapeHtml(friendData.displayName || 'Puzzle Player')}</div>
                 <div class="profile-subtitle">Wants to be puzzle buddies!</div>
                 <div class="profile-stats">
                     <div class="profile-stat">
-                        <div class="profile-stat-value">${friendData.gamesTracked || 0}</div>
+                        <div class="profile-stat-value">${parseInt(friendData.gamesTracked) || 0}</div>
                         <div class="profile-stat-label">Games</div>
                     </div>
                     <div class="profile-stat">
-                        <div class="profile-stat-value">${friendData.currentStreak || 0}</div>
+                        <div class="profile-stat-value">${parseInt(friendData.currentStreak) || 0}</div>
                         <div class="profile-stat-label">Day Streak</div>
                     </div>
                     <div class="profile-stat">
-                        <div class="profile-stat-value">${friendData.todayCount || 0}</div>
+                        <div class="profile-stat-value">${parseInt(friendData.todayCount) || 0}</div>
                         <div class="profile-stat-label">Today</div>
                     </div>
                 </div>
@@ -11591,18 +11611,18 @@ Wordle 1,234 3/6
                 
                 // Determine status class and text
                 let statusClass = hasPlayed ? 'played' : 'inactive';
-                let statusText = hasPlayed ? `✓ ${todayCount} games today` : '😴 Hasn\'t played yet';
+                let statusText = hasPlayed ? `✓ ${parseInt(todayCount)} games today` : '😴 Hasn\'t played yet';
                 
                 return `
-                    <div class="friend-card" onclick="showFriendProfile('${friend.odataId}')">
+                    <div class="friend-card" onclick="showFriendProfile('${escapeAttr(friend.odataId)}')">
                         <div class="friend-card-avatar">
                             ${shelfData.photoURL 
-                                ? `<img src="${shelfData.photoURL}" alt="">` 
-                                : (friend.displayName || 'U')[0].toUpperCase()}
+                                ? `<img src="${escapeAttr(shelfData.photoURL)}" alt="">` 
+                                : escapeHtml((friend.displayName || 'U')[0].toUpperCase())}
                             <div class="${hasPlayed ? 'friend-active-dot' : 'friend-inactive-dot'}"></div>
                         </div>
                         <div class="friend-card-info">
-                            <div class="friend-card-name">${friend.displayName || 'Friend'}</div>
+                            <div class="friend-card-name">${escapeHtml(friend.displayName || 'Friend')}</div>
                             <div class="friend-card-status ${statusClass}">
                                 ${statusText}
                             </div>
@@ -11610,11 +11630,11 @@ Wordle 1,234 3/6
                         <div class="friend-card-actions">
                             ${!hasPlayed ? `
                                 <button class="friend-card-nudge ${nudgeSent ? 'sent' : ''}" 
-                                        onclick="event.stopPropagation(); nudgeFriend('${friend.odataId}', '${friend.displayName || 'Friend'}')">
+                                        onclick="event.stopPropagation(); nudgeFriend('${escapeAttr(friend.odataId)}', '${escapeAttr(friend.displayName || 'Friend')}')">
                                     ${nudgeSent ? '✓ Nudged' : '👋 Nudge'}
                                 </button>
                             ` : ''}
-                            ${streak > 0 ? `<div class="friend-card-streak">🔥 ${streak}</div>` : ''}
+                            ${streak > 0 ? `<div class="friend-card-streak">🔥 ${parseInt(streak)}</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -11687,15 +11707,15 @@ Wordle 1,234 3/6
                 
                 return `
                     <div class="leaderboard-row ${entry.isYou ? 'you' : ''} ${!hasPlayed ? 'not-played' : ''}" 
-                         ${!entry.isYou ? `onclick="showFriendProfile('${entry.odataId}')"` : ''}>
+                         ${!entry.isYou ? `onclick="showFriendProfile('${escapeAttr(entry.odataId)}')"` : ''}>
                         <div class="leaderboard-rank ${rankClass}">${rank}</div>
                         <div class="leaderboard-avatar">
                             ${entry.photoURL 
-                                ? `<img src="${entry.photoURL}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` 
-                                : (entry.displayName || 'U')[0].toUpperCase()}
+                                ? `<img src="${escapeAttr(entry.photoURL)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` 
+                                : escapeHtml((entry.displayName || 'U')[0].toUpperCase())}
                         </div>
-                        <div class="leaderboard-name">${entry.displayName}${entry.streak > 0 ? ` 🔥${entry.streak}` : ''}</div>
-                        <div class="leaderboard-score">${entry.todayCount} games</div>
+                        <div class="leaderboard-name">${escapeHtml(entry.displayName)}${entry.streak > 0 ? ` 🔥${parseInt(entry.streak)}` : ''}</div>
+                        <div class="leaderboard-score">${parseInt(entry.todayCount)} games</div>
                     </div>
                 `;
             }).join('');
@@ -11721,18 +11741,18 @@ Wordle 1,234 3/6
                 const timeAgo = getTimeAgo(activity.timestamp);
                 
                 return `
-                    <div class="activity-item" onclick="showFriendProfile('${activity.odataId}')">
+                    <div class="activity-item" onclick="showFriendProfile('${escapeAttr(activity.odataId)}')">
                         <div class="activity-avatar">
                             ${activity.photoURL 
-                                ? `<img src="${activity.photoURL}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` 
-                                : (activity.displayName || 'U')[0].toUpperCase()}
+                                ? `<img src="${escapeAttr(activity.photoURL)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` 
+                                : escapeHtml((activity.displayName || 'U')[0].toUpperCase())}
                         </div>
                         <div class="activity-content">
                             <div class="activity-text">
-                                <strong>${activity.displayName}</strong> played ${game.name}
-                                ${activity.score ? `<span style="color: var(--text-muted);"> • ${activity.score}</span>` : ''}
+                                <strong>${escapeHtml(activity.displayName)}</strong> played ${escapeHtml(game.name)}
+                                ${activity.score ? `<span style="color: var(--text-muted);"> • ${escapeHtml(activity.score)}</span>` : ''}
                             </div>
-                            <div class="activity-time">${timeAgo}</div>
+                            <div class="activity-time">${escapeHtml(timeAgo)}</div>
                         </div>
                         <div class="activity-game-icon">${game.icon}</div>
                     </div>
@@ -11762,18 +11782,18 @@ Wordle 1,234 3/6
             const headerHtml = `
                 <div class="profile-avatar">
                     ${shelfData.photoURL 
-                        ? `<img src="${shelfData.photoURL}" alt="">` 
-                        : (shelfData.displayName || friend?.displayName || 'U')[0].toUpperCase()}
+                        ? `<img src="${escapeAttr(shelfData.photoURL)}" alt="">` 
+                        : escapeHtml((shelfData.displayName || friend?.displayName || 'U')[0].toUpperCase())}
                 </div>
-                <div class="profile-name">${shelfData.displayName || friend?.displayName || 'Puzzle Player'}</div>
-                <div class="profile-subtitle">🎮 ${shelfData.gamesTracked || 0} games tracked</div>
+                <div class="profile-name">${escapeHtml(shelfData.displayName || friend?.displayName || 'Puzzle Player')}</div>
+                <div class="profile-subtitle">🎮 ${parseInt(shelfData.gamesTracked) || 0} games tracked</div>
                 <div class="profile-stats">
                     <div class="profile-stat">
-                        <div class="profile-stat-value">${shelfData.todayCount || 0}</div>
+                        <div class="profile-stat-value">${parseInt(shelfData.todayCount) || 0}</div>
                         <div class="profile-stat-label">Today</div>
                     </div>
                     <div class="profile-stat">
-                        <div class="profile-stat-value">${shelfData.currentStreak || 0}</div>
+                        <div class="profile-stat-value">${parseInt(shelfData.currentStreak) || 0}</div>
                         <div class="profile-stat-label">Day Streak</div>
                     </div>
                 </div>
@@ -11789,8 +11809,8 @@ Wordle 1,234 3/6
                     <div class="activity-item" style="cursor: default;">
                         <div class="activity-game-icon">${game.icon}</div>
                         <div class="activity-content">
-                            <div class="activity-text">${game.name}</div>
-                            <div class="activity-time">${shelfData.lastActivity.score || 'Completed'} • ${getTimeAgo(shelfData.lastActivity.timestamp)}</div>
+                            <div class="activity-text">${escapeHtml(game.name)}</div>
+                            <div class="activity-time">${escapeHtml(shelfData.lastActivity.score || 'Completed')} • ${escapeHtml(getTimeAgo(shelfData.lastActivity.timestamp))}</div>
                         </div>
                     </div>
                 `;
@@ -11806,7 +11826,7 @@ Wordle 1,234 3/6
             const displayName = shelfData.displayName || friend?.displayName || 'Friend';
             
             let actionsHtml = `
-                <button class="profile-action-btn primary" onclick="startBattleWithFriend('${friendUid}', '${displayName}')">
+                <button class="profile-action-btn primary" onclick="startBattleWithFriend('${escapeAttr(friendUid)}', '${escapeAttr(displayName)}')">
                     ⚔️ Challenge to Battle
                 </button>
             `;
@@ -11815,7 +11835,7 @@ Wordle 1,234 3/6
             if (isFriend && !hasPlayedToday) {
                 actionsHtml += `
                     <button class="profile-action-btn secondary" 
-                            onclick="nudgeFriend('${friendUid}', '${displayName}')"
+                            onclick="nudgeFriend('${escapeAttr(friendUid)}', '${escapeAttr(displayName)}')"
                             ${nudgeSent ? 'disabled style="opacity: 0.5;"' : ''}>
                         ${nudgeSent ? '✓ Nudge sent today' : '👋 Nudge to Play'}
                     </button>
@@ -11823,8 +11843,8 @@ Wordle 1,234 3/6
             }
             
             actionsHtml += isFriend 
-                ? `<button class="profile-action-btn secondary" onclick="removeFriend('${friendUid}')" style="color: var(--accent-red);">Remove Friend</button>` 
-                : `<button class="profile-action-btn secondary" onclick="closeProfileView(); handleFriendLink('${friendUid}')">Add Friend</button>`;
+                ? `<button class="profile-action-btn secondary" onclick="removeFriend('${escapeAttr(friendUid)}')" style="color: var(--accent-red);">Remove Friend</button>` 
+                : `<button class="profile-action-btn secondary" onclick="closeProfileView(); handleFriendLink('${escapeAttr(friendUid)}')">Add Friend</button>`;
             
             document.getElementById('profile-view-actions').innerHTML = actionsHtml;
             
@@ -14295,10 +14315,10 @@ Wordle 1,234 3/6
                 recommendations.push({
                     type: 'challenge-friend',
                     icon: '🎯',
-                    title: `Challenge ${friend.displayName?.split(' ')[0] || 'Friend'}`,
-                    subtitle: `Played ${friend.todayGames} game${friend.todayGames > 1 ? 's' : ''} today`,
+                    title: `Challenge ${escapeHtml(friend.displayName?.split(' ')[0] || 'Friend')}`,
+                    subtitle: `Played ${parseInt(friend.todayGames)} game${friend.todayGames > 1 ? 's' : ''} today`,
                     action: 'Challenge',
-                    actionFn: `challengeFriend('${friend.odataId}')`
+                    actionFn: `challengeFriend('${escapeAttr(friend.odataId)}')`
                 });
             });
             
@@ -14352,10 +14372,10 @@ Wordle 1,234 3/6
                 recommendations.push({
                     type: 'nudge-friend',
                     icon: '👋',
-                    title: `Nudge ${friend.displayName?.split(' ')[0] || 'Friend'}`,
+                    title: `Nudge ${escapeHtml(friend.displayName?.split(' ')[0] || 'Friend')}`,
                     subtitle: "Hasn't played today yet",
                     action: 'Nudge',
-                    actionFn: `sendNudge('${friend.odataId}')`
+                    actionFn: `sendNudge('${escapeAttr(friend.odataId)}')`
                 });
             });
             
@@ -15472,11 +15492,11 @@ Wordle 1,234 3/6
                     menuAccountSection.innerHTML = `
                         <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0;">
                             <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; font-weight: 600;">
-                                ${(currentUser.displayName || currentUser.email || '?')[0].toUpperCase()}
+                                ${escapeHtml((currentUser.displayName || currentUser.email || '?')[0].toUpperCase())}
                             </div>
                             <div style="flex: 1;">
-                                <div style="font-weight: 600;">${currentUser.displayName || 'User'}</div>
-                                <div style="font-size: 0.8rem; color: var(--text-muted);">${currentUser.email || ''}</div>
+                                <div style="font-weight: 600;">${escapeHtml(currentUser.displayName || 'User')}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(currentUser.email || '')}</div>
                             </div>
                         </div>
                         <a class="settings-link" onclick="signOut(); toggleSettingsMenu();" style="color: var(--accent-red);">
@@ -16844,7 +16864,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.67';
+            const version = '1.2.68';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18383,8 +18403,8 @@ Made with ❤️ for puzzle enthusiasts`;
                     <div class="battle-results-standing-row ${isWinnerRow ? 'winner-row' : ''} ${isMe ? 'you-row' : ''}">
                         <div class="battle-results-rank">${rankEmoji}</div>
                         <div class="battle-results-player">
-                            <div class="battle-results-player-name">${p.displayName || 'Player'}${isMe ? ' (You)' : ''}</div>
-                            <div class="battle-results-player-score">${p.score || 0} pts</div>
+                            <div class="battle-results-player-name">${escapeHtml(p.displayName || 'Player')}${isMe ? ' (You)' : ''}</div>
+                            <div class="battle-results-player-score">${parseInt(p.score) || 0} pts</div>
                         </div>
                     </div>
                 `;
@@ -18629,23 +18649,23 @@ Made with ❤️ for puzzle enthusiasts`;
             const topPlayers = participants.slice(0, 3).map((p, i) => `
                 <div class="battle-leaderboard-row">
                     <div class="battle-rank">${['🥇', '🥈', '🥉'][i]}</div>
-                    <div class="battle-participant-avatar" style="background: ${getAvatarColor(p.displayName)}">${(p.displayName || 'U')[0]}</div>
-                    <div class="battle-participant-name">${p.displayName || 'Unknown'}${p.odataId === currentUser?.uid ? ' (You)' : ''}</div>
-                    <div class="battle-participant-score">${p.score || 0}</div>
+                    <div class="battle-participant-avatar" style="background: ${getAvatarColor(p.displayName)}">${escapeHtml((p.displayName || 'U')[0])}</div>
+                    <div class="battle-participant-name">${escapeHtml(p.displayName || 'Unknown')}${p.odataId === currentUser?.uid ? ' (You)' : ''}</div>
+                    <div class="battle-participant-score">${parseInt(p.score) || 0}</div>
                 </div>
             `).join('');
             
             return `
-                <div class="battle-card" onclick="showBattleDetails('${battle.id}')">
+                <div class="battle-card" onclick="showBattleDetails('${escapeAttr(battle.id)}')">
                     <div class="battle-card-header" style="${headerStyle}">
                         ⚔️ ${badge}
                     </div>
                     <div class="battle-card-content">
-                        <div class="battle-card-title">${battle.name}</div>
+                        <div class="battle-card-title">${escapeHtml(battle.name)}</div>
                         <div class="battle-stats">
-                            <span>🎮 ${battle.games?.join(', ') || '-'}</span>
-                            <span>⏱️ ${status === 'completed' ? 'Ended' : daysLeft + 'd left'}</span>
-                            ${battle.entryFee > 0 ? `<span>🪙 ${battle.entryFee * participants.length}</span>` : ''}
+                            <span>🎮 ${escapeHtml(battle.games?.join(', ') || '-')}</span>
+                            <span>⏱️ ${status === 'completed' ? 'Ended' : parseInt(daysLeft) + 'd left'}</span>
+                            ${battle.entryFee > 0 ? `<span>🪙 ${parseInt(battle.entryFee) * participants.length}</span>` : ''}
                         </div>
                         <div class="battle-leaderboard">${topPlayers}</div>
                     </div>
@@ -18726,9 +18746,9 @@ Made with ❤️ for puzzle enthusiasts`;
             document.getElementById('battle-leaderboard-display').innerHTML = participants.map((p, i) => `
                 <div class="battle-leaderboard-row" style="${p.odataId === currentUser?.uid ? 'background: rgba(102, 126, 234, 0.1);' : ''}">
                     <div class="battle-rank">${i < 3 ? ['🥇', '🥈', '🥉'][i] : (i + 1)}</div>
-                    <div class="battle-participant-avatar" style="background: ${getAvatarColor(p.displayName)}">${(p.displayName || 'U')[0]}</div>
-                    <div class="battle-participant-name">${p.displayName || 'Unknown'}${p.odataId === currentUser?.uid ? ' (You)' : ''}</div>
-                    <div class="battle-participant-score">${p.score || 0}</div>
+                    <div class="battle-participant-avatar" style="background: ${getAvatarColor(p.displayName)}">${escapeHtml((p.displayName || 'U')[0])}</div>
+                    <div class="battle-participant-name">${escapeHtml(p.displayName || 'Unknown')}${p.odataId === currentUser?.uid ? ' (You)' : ''}</div>
+                    <div class="battle-participant-score">${parseInt(p.score) || 0}</div>
                 </div>
             `).join('') || '<div style="color: var(--text-muted); text-align: center;">No participants yet</div>';
             
@@ -18808,8 +18828,8 @@ Made with ❤️ for puzzle enthusiasts`;
             const participants = Object.values(activeBattle.participants || {}).sort((a, b) => (b.score || 0) - (a.score || 0));
             document.getElementById('battle-standings').innerHTML = participants.slice(0, 3).map((p, i) => `
                 <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0;">
-                    <span>${['🥇', '🥈', '🥉'][i]} ${p.displayName || 'Unknown'}${p.odataId === currentUser?.uid ? ' (You)' : ''}</span>
-                    <span style="color: var(--accent-green);">${p.score || 0}</span>
+                    <span>${['🥇', '🥈', '🥉'][i]} ${escapeHtml(p.displayName || 'Unknown')}${p.odataId === currentUser?.uid ? ' (You)' : ''}</span>
+                    <span style="color: var(--accent-green);">${parseInt(p.score) || 0}</span>
                 </div>
             `).join('');
         }
@@ -20176,7 +20196,7 @@ Made with ❤️ for puzzle enthusiasts`;
             if (matches.length === 0) {
                 searchResults.style.display = 'block';
                 listContainer.style.display = 'none';
-                resultsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">No games found for "${query}"</div>`;
+                resultsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">No games found for "${escapeHtml(query)}"</div>`;
                 return;
             }
             
@@ -20360,7 +20380,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.67'
+                    appVersion: '1.2.68'
                 }
             };
             
@@ -22921,7 +22941,7 @@ Hint levels:
                     hintLoading = false;
                     btn.disabled = false;
                     btn.classList.remove('loading');
-                    btn.innerHTML = `🆘 Get Level <span id="hint-btn-level">${hintLevel}</span> Hint`;
+                    btn.innerHTML = `🆘 Get Level <span id="hint-btn-level">${parseInt(hintLevel)}</span> Hint`;
                     return;
                     
                 } catch (err) {
@@ -22963,7 +22983,7 @@ Hint levels:
             hintLoading = false;
             btn.disabled = false;
             btn.classList.remove('loading');
-            btn.innerHTML = `🆘 Get Level <span id="hint-btn-level">${hintLevel}</span> Hint`;
+            btn.innerHTML = `🆘 Get Level <span id="hint-btn-level">${parseInt(hintLevel)}</span> Hint`;
         }
         
         function hintStillStuck() {
@@ -25176,7 +25196,7 @@ Hint levels:
             } else if (!isLeading && daysLeft > 0) {
                 tip += ' - keep pushing!';
             }
-            tipEl.innerHTML = `<span>💡</span><span>${tip}</span>`;
+            tipEl.innerHTML = `<span>💡</span><span>${escapeHtml(tip)}</span>`;
             
             impactCard.style.display = 'block';
         }
@@ -26805,9 +26825,9 @@ Hint levels:
                 const initial = (currentUser.displayName || currentUser.email || '?')[0].toUpperCase();
                 content.innerHTML = `
                     <div class="account-info">
-                        <div class="account-avatar">${initial}</div>
-                        <div class="account-name">${currentUser.displayName || 'Player'}</div>
-                        <div class="account-email">${currentUser.email}</div>
+                        <div class="account-avatar">${escapeHtml(initial)}</div>
+                        <div class="account-name">${escapeHtml(currentUser.displayName || 'Player')}</div>
+                        <div class="account-email">${escapeHtml(currentUser.email)}</div>
                         <div class="sync-status">☁️ Synced</div>
                         <button class="signout-btn" onclick="signOut()">Sign Out</button>
                     </div>
@@ -28227,7 +28247,7 @@ Hint levels:
                 
                 const uploadArea = document.getElementById('setup-upload-area');
                 uploadArea.classList.add('has-image');
-                uploadArea.innerHTML = `<img src="${setupCurrentImage}" class="setup-upload-preview">`;
+                uploadArea.innerHTML = `<img src="${escapeAttr(setupCurrentImage)}" class="setup-upload-preview">`;
                 
                 setupGoToScreen('setup-analyzing');
                 try {
