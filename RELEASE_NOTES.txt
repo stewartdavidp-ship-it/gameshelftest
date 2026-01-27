@@ -1,7 +1,26 @@
-Game Shelf PWA v1.2.64 Release Notes
+Game Shelf PWA v1.2.65 Release Notes
 =====================================
 
 Release Date: January 27, 2026
+
+BUG FIXES:
+----------
+* Improved Firebase initialization with graceful fallback
+  - App no longer crashes if Firebase SDK blocked (e.g., ad blockers)
+  - Runs in offline mode when Firebase unavailable
+* Fixed all clipboard operations to handle errors properly
+  - All copy-to-clipboard now shows error if copy fails
+  - Share dialog fallbacks work correctly
+
+TECHNICAL:
+----------
+* Auth audit completed - all auth state checks consistent
+* Promise error handling improved throughout
+
+---
+
+v1.2.64 Release Notes
+=====================
 
 BUG FIXES:
 ----------

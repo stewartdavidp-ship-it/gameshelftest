@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.64">
+    <meta name="version" content="1.2.65">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.64</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.65</span>
             </div>
         </div>
         <div class="header-right">
@@ -8279,7 +8279,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.64</div>
+            <div class="settings-version">Game Shelf PWA v1.2.65</div>
         </div>
     </div>
     
@@ -10846,15 +10846,30 @@ Wordle 1,234 3/6
             projectId: "word-boxing"
         };
         
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
+        // Initialize Firebase with graceful fallback
+        let auth = null;
+        let db = null;
+        let firebaseAvailable = false;
         
-        // Set auth persistence for PWA
-        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(e => {
-            console.log('Auth persistence error:', e);
-        });
+        try {
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.database();
+                firebaseAvailable = true;
+                console.log('[Firebase] Initialized successfully');
+                
+                // Set auth persistence for PWA
+                auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(e => {
+                    console.log('Auth persistence error:', e);
+                });
+            } else {
+                console.warn('[Firebase] SDK not loaded - running in offline mode');
+            }
+        } catch (e) {
+            console.error('[Firebase] Initialization failed:', e);
+            console.warn('[Firebase] Running in offline mode');
+        }
         
         // ============ APP STATE ============
         let currentUser = null;
@@ -10961,11 +10976,15 @@ Wordle 1,234 3/6
                 }).catch(() => {
                     navigator.clipboard.writeText(message).then(() => {
                         showToast('📋 Invite copied!');
+                    }).catch(() => {
+                        showToast('Could not copy invite', 'error');
                     });
                 });
             } else {
                 navigator.clipboard.writeText(message).then(() => {
                     showToast('📋 Invite copied!');
+                }).catch(() => {
+                    showToast('Could not copy invite', 'error');
                 });
             }
             
@@ -14403,10 +14422,20 @@ Wordle 1,234 3/6
                     title: 'Add me on Game Shelf!',
                     text: 'Track your daily puzzles with me on Game Shelf 🎮',
                     url: profileUrl
+                }).catch(() => {
+                    // Share cancelled or failed, fall back to copy
+                    navigator.clipboard.writeText(profileUrl).then(() => {
+                        showToast('Profile link copied!', 'success');
+                    }).catch(() => {
+                        showToast('Could not copy link', 'error');
+                    });
                 });
             } else {
-                navigator.clipboard.writeText(profileUrl);
-                showToast('Profile link copied!', 'success');
+                navigator.clipboard.writeText(profileUrl).then(() => {
+                    showToast('Profile link copied!', 'success');
+                }).catch(() => {
+                    showToast('Could not copy link', 'error');
+                });
             }
         }
         
@@ -16774,7 +16803,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.64';
+            const version = '1.2.65';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18461,12 +18490,18 @@ Made with ❤️ for puzzle enthusiasts`;
             
             if (navigator.share) {
                 navigator.share({ text: shareText }).catch(() => {
-                    navigator.clipboard.writeText(shareText);
-                    showToast('Copied to clipboard!');
+                    navigator.clipboard.writeText(shareText).then(() => {
+                        showToast('Copied to clipboard!');
+                    }).catch(() => {
+                        showToast('Could not copy', 'error');
+                    });
                 });
             } else {
-                navigator.clipboard.writeText(shareText);
-                showToast('Copied to clipboard!');
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('Copied to clipboard!');
+                }).catch(() => {
+                    showToast('Could not copy', 'error');
+                });
             }
         }
         
@@ -18668,6 +18703,8 @@ Made with ❤️ for puzzle enthusiasts`;
             const code = document.getElementById('battle-code-display').textContent;
             navigator.clipboard.writeText(code).then(() => {
                 showToast('Code copied!');
+            }).catch(() => {
+                showToast('Could not copy code', 'error');
             });
         }
         
@@ -20277,7 +20314,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.64'
+                    appVersion: '1.2.65'
                 }
             };
             
@@ -25127,12 +25164,18 @@ Hint levels:
             
             if (navigator.share) {
                 navigator.share({ text: message }).catch(() => {
-                    navigator.clipboard.writeText(message);
-                    showToast('Copied to clipboard!');
+                    navigator.clipboard.writeText(message).then(() => {
+                        showToast('Copied to clipboard!');
+                    }).catch(() => {
+                        showToast('Could not copy', 'error');
+                    });
                 });
             } else {
-                navigator.clipboard.writeText(message);
-                showToast('Copied to clipboard!');
+                navigator.clipboard.writeText(message).then(() => {
+                    showToast('Copied to clipboard!');
+                }).catch(() => {
+                    showToast('Could not copy', 'error');
+                });
             }
             
             closeSuccessModal();
