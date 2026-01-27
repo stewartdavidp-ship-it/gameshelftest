@@ -1,7 +1,18 @@
-Game Shelf PWA v1.2.63 Release Notes
+Game Shelf PWA v1.2.64 Release Notes
 =====================================
 
 Release Date: January 27, 2026
+
+BUG FIXES:
+----------
+* Fixed Transaction History "Sign in required" error when already signed in
+  - Was checking wrong variable (window.firebaseUser instead of currentUser)
+  - Was using wrong database reference (window.firebaseDB instead of db)
+
+---
+
+v1.2.63 Release Notes
+=====================
 
 NEW FEATURES:
 -------------
@@ -13,10 +24,6 @@ NEW FEATURES:
   - Shows last 50 transactions
 
 * Access via: Wallet → "📜 Transaction History" button
-
-BUG FIXES:
-----------
-* None
 
 NOTES:
 ------

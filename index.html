@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.63">
+    <meta name="version" content="1.2.64">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8026,7 +8026,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.63</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.64</span>
             </div>
         </div>
         <div class="header-right">
@@ -8279,7 +8279,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.63</div>
+            <div class="settings-version">Game Shelf PWA v1.2.64</div>
         </div>
     </div>
     
@@ -16774,7 +16774,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.63';
+            const version = '1.2.64';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -19091,7 +19091,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 `
             });
             
-            if (!window.firebaseUser) {
+            if (!currentUser) {
                 showGenericSheet({
                     title: '📜 Transaction History',
                     content: `
@@ -19104,12 +19104,12 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            const userId = window.firebaseUser.uid;
+            const userId = currentUser.uid;
             const transactions = [];
             
             try {
                 // Fetch coin purchases
-                const purchasesRef = window.firebaseDB.ref(`purchases/${userId}`);
+                const purchasesRef = db.ref(`purchases/${userId}`);
                 const purchasesSnap = await purchasesRef.orderByChild('timestamp').limitToLast(50).once('value');
                 purchasesSnap.forEach(snap => {
                     const data = snap.val();
@@ -19125,7 +19125,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 });
                 
                 // Fetch token history (hints, etc.)
-                const tokenHistoryRef = window.firebaseDB.ref(`users/${userId}/tokenHistory`);
+                const tokenHistoryRef = db.ref(`users/${userId}/tokenHistory`);
                 const tokenHistorySnap = await tokenHistoryRef.orderByChild('timestamp').limitToLast(50).once('value');
                 tokenHistorySnap.forEach(snap => {
                     const data = snap.val();
@@ -19141,7 +19141,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 });
                 
                 // Fetch gift redemptions
-                const giftsRef = window.firebaseDB.ref(`giftRedemptions/${userId}`);
+                const giftsRef = db.ref(`giftRedemptions/${userId}`);
                 const giftsSnap = await giftsRef.orderByChild('timestamp').limitToLast(20).once('value');
                 giftsSnap.forEach(snap => {
                     const data = snap.val();
@@ -20277,7 +20277,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.63'
+                    appVersion: '1.2.64'
                 }
             };
             
