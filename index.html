@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.71">
+    <meta name="version" content="1.2.75">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7904,7 +7904,7 @@
             display: none;
         }
         
-        /* Feedback Mode Indicator - v1.2.71: Hidden permanently */
+        /* Feedback Mode Indicator - v1.2.75: Hidden permanently */
         .uat-mode-badge {
             display: none !important;
         }
@@ -8012,7 +8012,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.71</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.75</span>
             </div>
         </div>
         <div class="header-right">
@@ -8271,7 +8271,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.71</div>
+            <div class="settings-version">Game Shelf PWA v1.2.75</div>
         </div>
     </div>
     
@@ -14701,7 +14701,12 @@ Wordle 1,234 3/6
         }
         
         function getTodayString() {
-            return new Date().toISOString().split('T')[0];
+            // v1.2.72: Use local time, not UTC (fixes timezone bug where late-night plays recorded as next day)
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
         
         function getTodayHistory() {
@@ -16207,6 +16212,9 @@ Wordle 1,234 3/6
                     saveData();
                     renderWallet();
                     
+                    // v1.2.75: Play coin drop sound for referral rewards
+                    playSound('walletAdd');
+                    
                     showToast(`🎁 +${totalTokens} tokens from referrals!`);
                     logActivity('referral-reward', { tokens: totalTokens, friends: messages });
                     
@@ -16274,7 +16282,9 @@ Wordle 1,234 3/6
             // Sound Events - all places where sounds can play
             events: {
                 achievement: { name: 'Achievement Unlocked', icon: '🏆', description: 'When you earn an achievement' },
-                coin: { name: 'Earn Tokens', icon: '🪙', description: 'When you earn tokens or coins' },
+                coin: { name: 'Earn Tokens', icon: '🪙', description: 'When you earn tokens from games' },
+                walletAdd: { name: 'Coins to Wallet', icon: '💰', description: 'When coins are added to your wallet' },
+                hint: { name: 'Hint Received', icon: '💡', description: 'When you receive an AI hint' },
                 streak: { name: 'Streak Bonus', icon: '🔥', description: 'When your streak increases' },
                 gameComplete: { name: 'Game Complete', icon: '✅', description: 'When you complete a game' },
                 levelUp: { name: 'Level Up', icon: '⬆️', description: 'When you reach a new level' },
@@ -16295,6 +16305,7 @@ Wordle 1,234 3/6
                 
                 // Retro Game Sounds
                 coin8bit: { name: '8-bit Coin', category: 'Retro', icon: '🎮' },
+                coinDrop: { name: 'Slot Machine Coins', category: 'Retro', icon: '🎰' },
                 powerup: { name: 'Power Up', category: 'Retro', icon: '⚡' },
                 levelup8bit: { name: '8-bit Level Up', category: 'Retro', icon: '🆙' },
                 blip: { name: 'Blip', category: 'Retro', icon: '📟' },
@@ -16317,6 +16328,7 @@ Wordle 1,234 3/6
                 notify1: { name: 'Gentle Notify', category: 'Notify', icon: '📣' },
                 notify2: { name: 'Alert', category: 'Notify', icon: '⚠️' },
                 complete: { name: 'Task Complete', category: 'Notify', icon: '✅' },
+                lightbulb: { name: 'Lightbulb Moment', category: 'Notify', icon: '💡' },
                 
                 // Fun
                 sparkle: { name: 'Sparkle', category: 'Fun', icon: '✨' },
@@ -16331,6 +16343,8 @@ Wordle 1,234 3/6
             defaults: {
                 achievement: 'fanfare',
                 coin: 'coin8bit',
+                walletAdd: 'coinDrop',
+                hint: 'lightbulb',
                 streak: 'powerup',
                 gameComplete: 'complete',
                 levelUp: 'levelup8bit',
@@ -16359,7 +16373,7 @@ Wordle 1,234 3/6
                 return this.ctx;
             },
             
-            // v1.2.71: Async resume for iOS
+            // v1.2.75: Async resume for iOS
             async ensureResumed() {
                 if (!this.ctx) this.init();
                 if (this.ctx && this.ctx.state === 'suspended') {
@@ -16400,7 +16414,7 @@ Wordle 1,234 3/6
                     const ctx = this.init();
                     if (!ctx) return;
                     
-                    // v1.2.71: Must await resume on iOS
+                    // v1.2.75: Must await resume on iOS
                     if (ctx.state === 'suspended') {
                         await ctx.resume();
                     }
@@ -16441,6 +16455,34 @@ Wordle 1,234 3/6
                             this._playTone(ctx, masterGain, [
                                 { freq: 988, time: 0, dur: 0.08, type: 'square', vol: 0.3 },
                                 { freq: 1319, time: 0.08, dur: 0.15, type: 'square', vol: 0.3 }
+                            ]);
+                            break;
+                        case 'coinDrop':
+                            // Slot machine coin drop - multiple coins falling
+                            this._playTone(ctx, masterGain, [
+                                // First wave of coins
+                                { freq: 2200, time: 0, dur: 0.04, type: 'square', vol: 0.25 },
+                                { freq: 1800, time: 0.05, dur: 0.04, type: 'square', vol: 0.2 },
+                                { freq: 2400, time: 0.1, dur: 0.04, type: 'square', vol: 0.25 },
+                                { freq: 2000, time: 0.15, dur: 0.04, type: 'square', vol: 0.2 },
+                                // Second wave
+                                { freq: 2600, time: 0.2, dur: 0.04, type: 'square', vol: 0.22 },
+                                { freq: 1900, time: 0.25, dur: 0.04, type: 'square', vol: 0.18 },
+                                { freq: 2300, time: 0.3, dur: 0.04, type: 'square', vol: 0.2 },
+                                { freq: 2100, time: 0.35, dur: 0.04, type: 'square', vol: 0.18 },
+                                // Final coins settling
+                                { freq: 2500, time: 0.4, dur: 0.03, type: 'square', vol: 0.15 },
+                                { freq: 2000, time: 0.45, dur: 0.03, type: 'square', vol: 0.12 },
+                                { freq: 2200, time: 0.5, dur: 0.05, type: 'square', vol: 0.1 }
+                            ]);
+                            break;
+                        case 'lightbulb':
+                            // Lightbulb moment - bright ascending sparkle
+                            this._playTone(ctx, masterGain, [
+                                { freq: 600, time: 0, dur: 0.1, type: 'sine', vol: 0.2 },
+                                { freq: 900, time: 0.08, dur: 0.12, type: 'sine', vol: 0.25 },
+                                { freq: 1200, time: 0.18, dur: 0.15, type: 'sine', vol: 0.3 },
+                                { freq: 1600, time: 0.3, dur: 0.2, type: 'sine', vol: 0.25 }
                             ]);
                             break;
                         case 'powerup':
@@ -16654,6 +16696,12 @@ Wordle 1,234 3/6
             SoundManager.enabled = true;
             SoundManager.playSound(soundId);
             SoundManager.enabled = oldEnabled;
+            
+            // v1.2.75: Show mute reminder after a short delay
+            // (browsers can't detect hardware mute, so we remind users)
+            setTimeout(() => {
+                showToast('🔇 No sound? Check if your device is muted', 'info', 3000);
+            }, 800);
         }
         
         function showSoundCustomizer() {
@@ -16899,7 +16947,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.71';
+            const version = '1.2.75';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -18348,6 +18396,9 @@ Made with ❤️ for puzzle enthusiasts`;
                 if (myPrize > 0) {
                     saveData();
                     renderWallet();
+                    
+                    // v1.2.75: Play coin drop sound for prize
+                    playSound('walletAdd');
                 }
                 
                 // Show battle results modal
@@ -19688,6 +19739,9 @@ Made with ❤️ for puzzle enthusiasts`;
                 saveData();
                 renderWallet();
                 
+                // v1.2.75: Play coin drop sound for wallet addition
+                playSound('walletAdd');
+                
                 closeGenericSheet();
                 showToast(`🎉 Converted ${amount} coin${amount > 1 ? 's' : ''} to ${(amount * 100).toLocaleString()} tokens!`);
                 
@@ -19762,6 +19816,9 @@ Made with ❤️ for puzzle enthusiasts`;
                 saveData();
                 renderWallet();
                 
+                // v1.2.75: Play coin drop sound
+                playSound('walletAdd');
+                
                 // Show celebration
                 setTimeout(() => {
                     showToast('🎉 +50 tokens for your first 5-day streak!');
@@ -19789,6 +19846,9 @@ Made with ❤️ for puzzle enthusiasts`;
                 saveData();
                 renderWallet();
                 
+                // v1.2.75: Play coin drop sound
+                playSound('walletAdd');
+                
                 // Show celebration
                 setTimeout(() => {
                     showToast('🎉 +20 tokens for trying all Game Shelf originals!');
@@ -19802,6 +19862,9 @@ Made with ❤️ for puzzle enthusiasts`;
             appData.wallet.tokens = (appData.wallet?.tokens || 0) + 5;
             saveData();
             renderWallet();
+            
+            // v1.2.75: Play coin drop sound
+            playSound('walletAdd');
             
             showToast('🎟️ +5 tokens for battle participation!');
             logActivity('reward-earned', { type: 'battle-participation', tokens: 5, battle: battleName });
@@ -20415,7 +20478,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.71'
+                    appVersion: '1.2.75'
                 }
             };
             
@@ -21343,7 +21406,7 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function openGameUrl(launchUrl) {
-            // v1.2.71: On iOS PWA, show first-time tip about returning from games
+            // v1.2.75: On iOS PWA, show first-time tip about returning from games
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
             
@@ -22727,7 +22790,7 @@ Hint levels:
             
             // Show sign-in prompt if not logged in
             if (!currentUser) {
-                document.getElementById('hint-error').innerHTML = '🔐 <strong>Sign in required</strong><br>AI hints require a Game Shelf account. <a href="#" onclick="closeHintSheet(); switchTab(\'social\'); return false;" style="color: var(--accent-purple);">Sign in →</a>';
+                document.getElementById('hint-error').innerHTML = '🔐 <strong>Sign in required</strong><br>AI hints require a Game Shelf account. <a href="#" onclick="closeHintSheet(); signInWithGoogle(); return false;" style="color: var(--accent-purple);">Sign in →</a>';
                 document.getElementById('hint-error').style.display = 'block';
             }
         }
@@ -22845,7 +22908,7 @@ Hint levels:
             
             // Check if user is signed in
             if (!currentUser) {
-                document.getElementById('hint-error').textContent = 'Please sign in to use AI hints.';
+                document.getElementById('hint-error').innerHTML = '🔐 <a href="#" onclick="closeHintSheet(); signInWithGoogle(); return false;" style="color: var(--accent-purple);">Sign in</a> to use AI hints.';
                 document.getElementById('hint-error').style.display = 'block';
                 return;
             }
@@ -22970,6 +23033,9 @@ Hint levels:
                     document.getElementById('hint-result').style.display = 'block';
                     document.getElementById('hint-get-btn').style.display = 'none';
                     
+                    // v1.2.75: Play hint received sound
+                    playSound('hint');
+                    
                     // Show usage info if available
                     if (result.data.usage) {
                         const usage = result.data.usage;
@@ -23015,8 +23081,9 @@ Hint levels:
             
             // Handle specific error types
             let errorMsg = 'Failed to get hint. Please try again.';
+            let isSignInError = false;
             if (lastError?.code === 'unauthenticated') {
-                errorMsg = 'Please sign in to use AI hints.';
+                isSignInError = true;
             } else if (lastError?.code === 'resource-exhausted') {
                 errorMsg = lastError.message || 'Rate limit reached. Try again later.';
             } else if (lastError?.code === 'failed-precondition') {
@@ -23025,7 +23092,11 @@ Hint levels:
                 errorMsg = lastError.message;
             }
             
-            document.getElementById('hint-error').textContent = errorMsg;
+            if (isSignInError) {
+                document.getElementById('hint-error').innerHTML = '🔐 <a href="#" onclick="closeHintSheet(); signInWithGoogle(); return false;" style="color: var(--accent-purple);">Sign in</a> to use AI hints.';
+            } else {
+                document.getElementById('hint-error').textContent = errorMsg;
+            }
             document.getElementById('hint-error').style.display = 'block';
             
             hintLoading = false;
@@ -24372,7 +24443,7 @@ Hint levels:
                         // On iOS, user already saw paste popup, don't trigger another with readText
                         if (isIOS) {
                             console.log('clipboard.read() failed on iOS, not retrying:', readErr.message);
-                            // v1.2.71: Don't show error toast - clipboard often succeeds via other paths
+                            // v1.2.75: Don't show error toast - clipboard often succeeds via other paths
                             // Just silently open log sheet after delay (user can manual log if needed)
                             setTimeout(() => {
                                 // Only open log sheet if game wasn't already logged
@@ -24856,10 +24927,10 @@ Hint levels:
         
         // Long-press handler for manual entry fallback
         let recordButtonTimer = null;
-        let recordButtonHandled = false; // v1.2.71: Prevent double execution from touch+mouse
+        let recordButtonHandled = false; // v1.2.75: Prevent double execution from touch+mouse
         
         function handleRecordButtonDown(e) {
-            // v1.2.71: Prevent mouse events after touch events
+            // v1.2.75: Prevent mouse events after touch events
             if (e && e.type === 'mousedown' && recordButtonHandled) {
                 return;
             }
@@ -24871,7 +24942,7 @@ Hint levels:
             }, 600);
         }
         function handleRecordButtonUp(e) {
-            // v1.2.71: Prevent mouse events after touch events  
+            // v1.2.75: Prevent mouse events after touch events  
             if (e && e.type === 'mouseup' && recordButtonHandled) {
                 recordButtonHandled = false; // Reset for next interaction
                 return;
@@ -24883,7 +24954,7 @@ Hint levels:
                 recordButtonHandled = true; // Mark as handled
                 handleRecordGame();
                 
-                // v1.2.71: Reset after a delay to allow for next tap
+                // v1.2.75: Reset after a delay to allow for next tap
                 setTimeout(() => { recordButtonHandled = false; }, 500);
             }
         }
@@ -28959,7 +29030,7 @@ Hint levels:
                 volumeSlider.value = SoundManager.volume * 100;
             }
             
-            // v1.2.71: Fix iOS sound - AudioContext must be resumed within a user gesture
+            // v1.2.75: Fix iOS sound - AudioContext must be resumed within a user gesture
             // Add one-time listener to ensure AudioContext is ready on first interaction
             const initAudioOnGesture = async () => {
                 // Initialize if not already done

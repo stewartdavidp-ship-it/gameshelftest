@@ -1,3 +1,72 @@
+Game Shelf PWA v1.2.75 Release Notes
+=====================================
+
+Release Date: January 28, 2026
+
+SOUND SYSTEM ENHANCEMENTS:
+--------------------------
+* Added new sound events:
+  - "Coins to Wallet" (walletAdd) - plays when tokens added to wallet
+  - "Hint Received" (hint) - plays when AI hint is displayed
+
+* Added new sounds:
+  - "Slot Machine Coins" (coinDrop) - cascading coin drop sound
+  - "Lightbulb Moment" (lightbulb) - ascending sparkle for hints
+
+* Added sounds to key moments:
+  - AI hint received: plays "lightbulb" sound
+  - Coin-to-token conversion: plays "coinDrop" sound
+  - Five-day streak reward: plays "coinDrop" sound
+  - All GS games reward: plays "coinDrop" sound
+  - Battle participation tokens: plays "coinDrop" sound
+  - Battle prize winnings: plays "coinDrop" sound
+  - Referral rewards: plays "coinDrop" sound
+
+---
+
+Game Shelf PWA v1.2.74 Release Notes
+=====================================
+
+Release Date: January 28, 2026
+
+BUG FIXES:
+----------
+* Fixed hint sign-in link not working
+  - "Sign in →" link in hint sheet now properly triggers Google sign-in
+  - Previously it just navigated to the Hub tab
+  - All three sign-in prompts in hint flow now work correctly
+
+---
+
+Game Shelf PWA v1.2.73 Release Notes
+=====================================
+
+Release Date: January 28, 2026
+
+UX IMPROVEMENTS:
+----------------
+* Added mute reminder when previewing sounds
+  - Shows "No sound? Check if your device is muted" after testing
+  - Browsers cannot detect hardware mute state, so this helps users troubleshoot
+
+---
+
+Game Shelf PWA v1.2.72 Release Notes
+=====================================
+
+Release Date: January 28, 2026
+
+BUG FIXES:
+----------
+* Fixed timezone bug in "played today" tracking
+  - getTodayString() now uses local time instead of UTC
+  - Previously, playing late at night (e.g., 11 PM ET) could record 
+    the game as the next day in UTC, causing "already played" to 
+    persist incorrectly after midnight local time
+  - This affected all daily game tracking in Game Shelf
+
+---
+
 Game Shelf PWA v1.2.71 Release Notes
 =====================================
 
