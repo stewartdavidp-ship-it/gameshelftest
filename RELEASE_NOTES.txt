@@ -1,4 +1,4 @@
-Game Shelf PWA v1.2.70 Release Notes
+Game Shelf PWA v1.2.71 Release Notes
 =====================================
 
 Release Date: January 28, 2026
@@ -11,7 +11,9 @@ BUG FIXES:
   - Games now log without confusing error messages
 
 * Fixed sound not working on iOS
-  - AudioContext now properly resumed on first user interaction
+  - AudioContext now properly created and resumed on first user interaction
+  - playSound now async - awaits resume() before playing
+  - Added state logging for debugging
   - Sound should play after first tap/click on page
 
 * Improved external game launch experience on iOS PWA
@@ -22,12 +24,23 @@ BUG FIXES:
   - Banner no longer displays even when Feedback mode is on
   - Feedback button still works when mode is enabled
 
+* Fixed double clipboard permission dialog on Record Game tap
+  - Touch devices were triggering both touch and synthesized mouse events
+  - Added guard to prevent handleRecordGame() from being called twice
+
+* Menu now stays open when using functions
+  - Tapping Sound Customizer, Launch Preferences, etc. no longer closes menu
+  - Menu only closes when tapping outside or pressing X
+
 TECHNICAL:
 ----------
 * iOS clipboard handling no longer shows false error toasts
-* AudioContext resume on user gesture (touchstart/click)
+* SoundManager.playSound() and playEvent() now async
+* AudioContext created and resumed on first touchstart/click gesture
+* Added ensureResumed() method for explicit context resume
 * Standalone PWA detection for iOS return navigation tip
 * .uat-mode-badge hidden with display:none !important
+* recordButtonHandled flag prevents touch+mouse double execution
 
 ---
 
