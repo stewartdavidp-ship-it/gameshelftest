@@ -1,3 +1,36 @@
+Game Shelf PWA v1.2.70 Release Notes
+=====================================
+
+Release Date: January 28, 2026
+
+BUG FIXES:
+----------
+* Fixed clipboard error toast showing when game actually logs successfully
+  - On iOS, "Could not read clipboard" no longer shows incorrectly
+  - Clipboard read silently falls back to log sheet if needed
+  - Games now log without confusing error messages
+
+* Fixed sound not working on iOS
+  - AudioContext now properly resumed on first user interaction
+  - Sound should play after first tap/click on page
+
+* Improved external game launch experience on iOS PWA
+  - First-time tip shows how to return (tap ✕ or swipe down)
+  - Only shows once per device
+
+* Removed "Feedback" banner from top-left corner
+  - Banner no longer displays even when Feedback mode is on
+  - Feedback button still works when mode is enabled
+
+TECHNICAL:
+----------
+* iOS clipboard handling no longer shows false error toasts
+* AudioContext resume on user gesture (touchstart/click)
+* Standalone PWA detection for iOS return navigation tip
+* .uat-mode-badge hidden with display:none !important
+
+---
+
 Game Shelf PWA v1.2.69 Release Notes
 =====================================
 

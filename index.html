@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.69">
+    <meta name="version" content="1.2.70">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7904,23 +7904,9 @@
             display: none;
         }
         
-        /* Feedback Mode Indicator */
+        /* Feedback Mode Indicator - v1.2.70: Hidden permanently */
         .uat-mode-badge {
-            position: fixed;
-            top: 8px;
-            left: 8px;
-            background: linear-gradient(135deg, #f59e0b, #f97316);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            z-index: 1001;
-            display: none;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-        }
-        .uat-mode-badge.active {
-            display: block;
+            display: none !important;
         }
         
         /* Debug Log Panel */
@@ -8026,7 +8012,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.69</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.70</span>
             </div>
         </div>
         <div class="header-right">
@@ -8285,7 +8271,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.69</div>
+            <div class="settings-version">Game Shelf PWA v1.2.70</div>
         </div>
     </div>
     
@@ -16883,7 +16869,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.69';
+            const version = '1.2.70';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -20399,7 +20385,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.69'
+                    appVersion: '1.2.70'
                 }
             };
             
@@ -21327,6 +21313,19 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function openGameUrl(launchUrl) {
+            // v1.2.70: On iOS PWA, show first-time tip about returning from games
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+            
+            if (isIOS && isStandalone && launchUrl.startsWith('http')) {
+                // Check if user has seen the return tip
+                const hasSeenReturnTip = localStorage.getItem('gs_seen_return_tip');
+                if (!hasSeenReturnTip) {
+                    localStorage.setItem('gs_seen_return_tip', 'true');
+                    showToast('Tap ✕ or swipe down to return', 'info', 2500);
+                }
+            }
+            
             if (launchUrl.startsWith('http')) {
                 window.open(launchUrl, '_blank');
             } else {
@@ -24343,8 +24342,14 @@ Hint levels:
                         // On iOS, user already saw paste popup, don't trigger another with readText
                         if (isIOS) {
                             console.log('clipboard.read() failed on iOS, not retrying:', readErr.message);
-                            showToast('📋 Could not read clipboard', 'error');
-                            setTimeout(() => openLogSheet(), 800);
+                            // v1.2.70: Don't show error toast - clipboard often succeeds via other paths
+                            // Just silently open log sheet after delay (user can manual log if needed)
+                            setTimeout(() => {
+                                // Only open log sheet if game wasn't already logged
+                                if (!getTodayHistory()[lastLaunchedGame]) {
+                                    openLogSheet();
+                                }
+                            }, 800);
                             return;
                         }
                         console.log('clipboard.read() failed, trying readText:', readErr.message);
@@ -28905,6 +28910,21 @@ Hint levels:
             if (volumeSlider) {
                 volumeSlider.value = SoundManager.volume * 100;
             }
+            
+            // v1.2.70: Fix iOS sound - AudioContext must be resumed within a user gesture
+            // Add one-time listener to ensure AudioContext is ready on first interaction
+            const initAudioOnGesture = () => {
+                if (SoundManager.ctx && SoundManager.ctx.state === 'suspended') {
+                    SoundManager.ctx.resume().then(() => {
+                        console.log('🔊 AudioContext resumed on user gesture');
+                    }).catch(e => console.log('AudioContext resume failed:', e));
+                }
+                // Remove listeners after first interaction
+                document.removeEventListener('touchstart', initAudioOnGesture);
+                document.removeEventListener('click', initAudioOnGesture);
+            };
+            document.addEventListener('touchstart', initAudioOnGesture, { once: true });
+            document.addEventListener('click', initAudioOnGesture, { once: true });
             
             // Load activity summary setting
             const summaryToggle = document.getElementById('activity-summary-toggle');
