@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.77">
+    <meta name="version" content="1.3.4">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -1007,6 +1007,17 @@
         
         .friend-item.played .friend-status {
             color: var(--accent-green);
+        }
+        
+        /* v1.3.1: Show friend names in widget */
+        .friend-name {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            max-width: 56px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
         }
         
         /* Friends System - Full UI */
@@ -2595,6 +2606,14 @@
         
         .game-card:active {
             transform: scale(0.95);
+        }
+        
+        /* v1.3.1: Visual feedback during long-press */
+        .game-card.long-pressing,
+        .quick-game-btn.long-pressing {
+            transform: scale(0.92);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
         }
         
         .game-card.done {
@@ -7873,7 +7892,7 @@
             font-size: 0.85rem;
             margin-bottom: 16px;
         }
-        /* Floating Feedback Button */
+        /* Floating Help Button (was Feedback Button) */
         .uat-feedback-btn {
             position: fixed;
             bottom: 80px;
@@ -7988,18 +8007,487 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
+        /* ============ HELP SYSTEM ============ */
+        .help-sheet-content {
+            display: flex;
+            flex-direction: column;
+            height: 85vh;
+            max-height: 85vh;
+        }
+
+        .help-search-container {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .help-search-input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .help-search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .help-search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .help-search-icon {
+            position: absolute;
+            left: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+            font-size: 14px;
+        }
+
+        .help-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        /* Category Accordion */
+        .help-category {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .help-category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .help-category-header:hover {
+            background: var(--surface-hover);
+        }
+
+        .help-category-header:active {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .help-category-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .help-category-icon {
+            font-size: 18px;
+        }
+
+        .help-category-arrow {
+            color: var(--text-secondary);
+            transition: transform 0.2s;
+            font-size: 12px;
+        }
+
+        .help-category.expanded .help-category-arrow {
+            transform: rotate(90deg);
+        }
+
+        .help-category-questions {
+            display: none;
+            padding: 0 16px 12px 44px;
+        }
+
+        .help-category.expanded .help-category-questions {
+            display: block;
+        }
+
+        /* FAQ Item */
+        .help-faq-item {
+            border-radius: 8px;
+            margin-bottom: 6px;
+            overflow: hidden;
+        }
+
+        .help-faq-question {
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--surface);
+            border-radius: 8px;
+            transition: background 0.15s;
+            gap: 8px;
+        }
+
+        .help-faq-question:hover {
+            background: var(--surface-hover);
+        }
+
+        .help-faq-question span:first-child {
+            flex: 1;
+        }
+
+        .help-faq-item.expanded .help-faq-question {
+            border-radius: 8px 8px 0 0;
+            background: var(--primary);
+            color: white;
+        }
+
+        .help-faq-answer {
+            display: none;
+            padding: 12px;
+            background: var(--surface);
+            border-radius: 0 0 8px 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .help-faq-item.expanded .help-faq-answer {
+            display: block;
+        }
+
+        .help-faq-answer strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .help-faq-answer code {
+            background: var(--surface-hover);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .help-faq-answer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .help-faq-answer p {
+            margin: 0 0 12px 0;
+        }
+
+        .help-faq-answer p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Search Results */
+        .help-search-results {
+            padding: 8px 16px;
+        }
+
+        .help-search-results-header {
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .help-no-results {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--text-secondary);
+        }
+
+        .help-no-results-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* Ask AI Section */
+        .help-ask-ai {
+            margin: 16px;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            border-radius: 12px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .help-ask-ai-title {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .help-ask-ai-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .help-ask-ai-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* AI Help Sheet */
+        .ai-help-sheet-content {
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+            max-height: 70vh;
+        }
+
+        .ai-help-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            overflow: hidden;
+        }
+
+        .ai-help-intro {
+            text-align: center;
+            padding: 12px;
+            background: var(--surface);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ai-help-intro-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .ai-help-intro-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .ai-help-input-area {
+            margin-bottom: 16px;
+        }
+
+        .ai-help-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--text);
+            font-size: 15px;
+            resize: none;
+            min-height: 60px;
+            max-height: 100px;
+            font-family: inherit;
+        }
+
+        .ai-help-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .ai-help-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .ai-help-submit-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .ai-help-cost {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .ai-help-ask-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.15s, opacity 0.15s;
+        }
+
+        .ai-help-ask-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+        }
+
+        .ai-help-ask-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .ai-help-response-area {
+            flex: 1;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .ai-help-response-area.visible {
+            display: block;
+        }
+
+        .ai-help-response {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .ai-help-response-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .ai-help-response-text {
+            white-space: pre-wrap;
+        }
+
+        .ai-help-response-text strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .ai-help-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 24px;
+            color: var(--text-secondary);
+        }
+
+        .ai-help-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #ef4444;
+            font-size: 14px;
+        }
+
+        .ai-help-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .ai-help-footer-text {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .ai-help-ask-another {
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .ai-help-another-btn {
+            background: var(--surface);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .ai-help-another-btn:hover {
+            background: var(--surface-hover);
+        }
+
+        /* Bottom Actions */
+        .help-bottom-actions {
+            border-top: 1px solid var(--border);
+            padding: 8px 0;
+            flex-shrink: 0;
+        }
+
+        .help-action-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .help-action-item:hover {
+            background: var(--surface-hover);
+        }
+
+        .help-action-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .help-action-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .help-action-badge {
+            background: var(--accent-red);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Menu badge for Help */
+        .help-menu-badge {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 6px;
+        }
+
     </style>
 </head>
 <body>
-    <!-- Feedback Mode Badge -->
-    <div class="uat-mode-badge" id="feedback-mode-badge">💬 Feedback</div>
+    <!-- Floating Help Button Badge - Hidden, no longer needed -->
+    <div class="uat-mode-badge" id="feedback-mode-badge" style="display:none;">❓ Help</div>
     
     <!-- Test Game Shelf Badge (auto-shows when on test repo) -->
     <div class="uat-mode-badge" id="test-gameshelf-badge" style="display:none; left:10px; right:auto; background: linear-gradient(135deg, #f90, #f60);">🔧 TEST BUILD</div>
     
-    <!-- Floating Feedback Button -->
-    <button class="uat-feedback-btn hidden" id="feedback-btn" onclick="openFeedback()" title="Send Feedback">
-        💬
+    <!-- Floating Help Button -->
+    <button class="uat-feedback-btn hidden" id="floating-help-btn" onclick="showHelp()" title="Help">
+        ❓
     </button>
     
     <!-- Header -->
@@ -8012,7 +8500,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.77</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.4</span>
             </div>
         </div>
         <div class="header-right">
@@ -8176,13 +8664,13 @@
                         
                         <div class="settings-toggle-row" style="margin-top: 12px;">
                             <label>
-                                <span class="icon">💬</span>
-                                <span>Feedback</span>
+                                <span class="icon">❓</span>
+                                <span>Help Button</span>
                             </label>
-                            <input type="checkbox" id="feedback-mode-toggle" onchange="toggleFeedbackMode(this.checked)">
+                            <input type="checkbox" id="feedback-mode-toggle" onchange="toggleHelpButton(this.checked)">
                         </div>
                         <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 36px;">
-                            Show floating feedback button for reporting issues
+                            Show floating help button for quick access
                         </p>
                         
                         <a class="settings-link" onclick="resetPurchaseLimits()" style="margin-top: 12px;">
@@ -8194,7 +8682,7 @@
                 </div>
             </div>
             
-            <!-- Account -->
+            <!-- Account - Moved up for prominence -->
             <div class="settings-section">
                 <div class="settings-section-title">☁️ Account</div>
                 <div id="menu-account-section">
@@ -8216,16 +8704,6 @@
                 <p class="settings-desc">Change your game selection & preferences</p>
             </div>
             
-            <!-- Invite Friends -->
-            <div class="settings-section">
-                <div class="settings-section-title">🎁 Invite Friends</div>
-                <a class="settings-link" onclick="showReferralSheet()">
-                    <span class="icon">📨</span>
-                    Share & Earn Tokens
-                </a>
-                <p class="settings-desc">Get 🎟️ 110 tokens per friend + auto-connect!</p>
-            </div>
-            
             <!-- Achievements -->
             <div class="settings-section">
                 <div class="settings-section-title">🏆 Achievements</div>
@@ -8234,6 +8712,16 @@
                     View Achievements
                 </a>
                 <p class="settings-desc">Track your progress & unlock badges</p>
+            </div>
+            
+            <!-- Invite Friends -->
+            <div class="settings-section">
+                <div class="settings-section-title">🎁 Invite Friends</div>
+                <a class="settings-link" onclick="showReferralSheet()">
+                    <span class="icon">📨</span>
+                    Share & Earn Tokens
+                </a>
+                <p class="settings-desc">Get 🎟️ 110 tokens per friend + auto-connect!</p>
             </div>
             
             <!-- Rewards Shop -->
@@ -8246,32 +8734,22 @@
                 <p class="settings-desc">Use coins for rewards & gifts</p>
             </div>
             
-            <!-- Report Issue -->
+            <!-- Help -->
             <div class="settings-section">
-                <div class="settings-section-title">💬 Feedback</div>
-                <a class="settings-link" onclick="reportIssue()">
-                    <span class="icon">📝</span>
-                    Report Issue / Request Feature
+                <div class="settings-section-title">
+                    ❓ Help
+                    <span class="help-menu-badge" id="help-menu-badge" style="display: none;"></span>
+                </div>
+                <a class="settings-link" onclick="showHelp()">
+                    <span class="icon">❓</span>
+                    FAQs & Support
+                    <span id="faq-menu-badge" style="display: none; background: var(--accent-red); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: auto;">NEW</span>
                 </a>
-                <p class="settings-desc">Bug? Idea? Let us know!</p>
-            </div>
-            
-            <!-- Help & About - At bottom, always visible -->
-            <div class="settings-section">
-                <div class="settings-section-title">ℹ️ Help & About</div>
-                <a class="settings-link" onclick="startTutorial(); toggleSettingsMenu()">
-                    <span class="icon">📖</span>
-                    How to Use Game Shelf
-                </a>
-                <p class="settings-desc">Quick tour of all features</p>
-                <a class="settings-link" onclick="showAbout()">
-                    <span class="icon">🎮</span>
-                    About Game Shelf
-                </a>
+                <p class="settings-desc">Answers, tutorials, feedback & more</p>
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.77</div>
+            <div class="settings-version">Game Shelf PWA v1.3.4</div>
         </div>
     </div>
     
@@ -8443,6 +8921,7 @@
                 <!-- Your Shelf -->
                 <div class="games-category">
                     <div class="category-title">Your Shelf <span id="shelf-count" style="color: var(--text-muted); font-weight: normal;">(0)</span></div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; padding-left: 4px;">Long-press any game to remove</div>
                     <div class="games-grid" id="shelf-games-grid">
                         <!-- Populated by JS -->
                     </div>
@@ -9754,6 +10233,118 @@ Wordle 1,234 3/6
         <span class="clipboard-nudge-text" id="clipboard-nudge-text">🎯 Wordle result ready</span>
         <button class="clipboard-nudge-record" onclick="acceptClipboardNudge()">Record</button>
         <button class="clipboard-nudge-dismiss" onclick="dismissClipboardNudge()">✕</button>
+    </div>
+    
+    <!-- Help Sheet -->
+    <div class="bottom-sheet-overlay" id="help-sheet-overlay" onclick="closeHelpSheet()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 90vh;">
+            <div class="bottom-sheet-handle"></div>
+            <div class="help-sheet-content">
+                <div class="bottom-sheet-header" style="padding: 16px; border-bottom: 1px solid var(--border);">
+                    <h3 style="margin: 0; font-size: 1.1rem;">Help</h3>
+                    <button style="background: none; border: none; font-size: 24px; color: var(--text-secondary); cursor: pointer; padding: 0; line-height: 1;" onclick="closeHelpSheet()">×</button>
+                </div>
+                
+                <!-- Search -->
+                <div class="help-search-container">
+                    <span class="help-search-icon">🔍</span>
+                    <input type="text" 
+                           id="help-search-input" 
+                           class="help-search-input" 
+                           placeholder="Search FAQs..."
+                           oninput="handleHelpSearch(this.value)">
+                </div>
+                
+                <!-- Content Area -->
+                <div class="help-content" id="help-content">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Ask AI (Always Visible) -->
+                <div class="help-ask-ai">
+                    <div class="help-ask-ai-title">🤖 Can't find your answer?</div>
+                    <button class="help-ask-ai-btn" onclick="showAskAI()">Ask AI</button>
+                </div>
+                
+                <!-- Bottom Actions -->
+                <div class="help-bottom-actions">
+                    <div class="help-action-item" onclick="helpReportIssue()">
+                        <span class="help-action-icon">💬</span>
+                        <span class="help-action-text">Send Feedback</span>
+                    </div>
+                    <div class="help-action-item" onclick="helpStartTutorial()">
+                        <span class="help-action-icon">📖</span>
+                        <span class="help-action-text">How to Use Game Shelf</span>
+                    </div>
+                    <div class="help-action-item" onclick="helpShowAbout()">
+                        <span class="help-action-icon">🎮</span>
+                        <span class="help-action-text">About Game Shelf</span>
+                    </div>
+                    <div class="help-action-item" onclick="helpShowWhatsNew()">
+                        <span class="help-action-icon">🎉</span>
+                        <span class="help-action-text">What's New</span>
+                        <span class="help-action-badge" id="help-whats-new-badge" style="display: none;">NEW</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI Help Sheet -->
+    <div class="bottom-sheet-overlay" id="ai-help-sheet-overlay" onclick="closeAIHelpSheet()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh;">
+            <div class="bottom-sheet-handle"></div>
+            <div class="ai-help-sheet-content">
+                <div class="bottom-sheet-header" style="padding: 16px; border-bottom: 1px solid var(--border);">
+                    <h3 style="margin: 0; font-size: 1.1rem;">🤖 AI Help</h3>
+                    <button style="background: none; border: none; font-size: 24px; color: var(--text-secondary); cursor: pointer; padding: 0; line-height: 1;" onclick="closeAIHelpSheet()">×</button>
+                </div>
+                
+                <div class="ai-help-body">
+                    <!-- Intro -->
+                    <div class="ai-help-intro" id="ai-help-intro">
+                        <div class="ai-help-intro-icon">💬</div>
+                        <div class="ai-help-intro-text">Ask me anything about Game Shelf - how features work, troubleshooting, or tips!</div>
+                    </div>
+                    
+                    <!-- Input Area -->
+                    <div class="ai-help-input-area" id="ai-help-input-area">
+                        <textarea 
+                            id="ai-help-input" 
+                            class="ai-help-input" 
+                            placeholder="Type your question..."
+                            rows="2"
+                            onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submitAIHelp(); }"
+                        ></textarea>
+                        <div class="ai-help-submit-row">
+                            <span class="ai-help-cost" id="ai-help-cost">💎 5 tokens</span>
+                            <button class="ai-help-ask-btn" id="ai-help-submit-btn" onclick="submitAIHelp()">
+                                <span>Ask</span>
+                                <span>→</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Response Area -->
+                    <div class="ai-help-response-area" id="ai-help-response-area">
+                        <div class="ai-help-response" id="ai-help-response">
+                            <div class="ai-help-response-header">
+                                <span>🤖</span>
+                                <span>AI Assistant</span>
+                            </div>
+                            <div class="ai-help-response-text" id="ai-help-response-text"></div>
+                        </div>
+                        <div class="ai-help-ask-another">
+                            <button class="ai-help-another-btn" onclick="resetAIHelp()">Ask another question</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-help-footer">
+                    <div class="ai-help-footer-text">AI responses may not always be accurate. For bugs, use Send Feedback.</div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- BIG SUCCESS CELEBRATION - Full screen, impossible to miss -->
@@ -11563,11 +12154,11 @@ Wordle 1,234 3/6
                 const todayHistory = appData.history?.[today] || {};
                 const todayCount = Object.keys(todayHistory).length;
                 
-                // Calculate current streak
+                // Calculate current streak (v1.3.0: use local time, not UTC)
                 let streak = 0;
                 let checkDate = new Date();
                 while (true) {
-                    const dateStr = checkDate.toISOString().split('T')[0];
+                    const dateStr = getLocalDateString(checkDate);
                     if (appData.history?.[dateStr] && Object.keys(appData.history[dateStr]).length > 0) {
                         streak++;
                         checkDate.setDate(checkDate.getDate() - 1);
@@ -11681,9 +12272,10 @@ Wordle 1,234 3/6
                 const myTodayCount = Object.keys(appData.history?.[today] || {}).length;
                 let myStreak = 0;
                 let checkDate = new Date();
-                while (appData.history?.[checkDate.toISOString().split('T')[0]]?.length !== undefined || 
-                       Object.keys(appData.history?.[checkDate.toISOString().split('T')[0]] || {}).length > 0) {
-                    if (Object.keys(appData.history?.[checkDate.toISOString().split('T')[0]] || {}).length > 0) {
+                // v1.3.0: Use local time for history lookup, not UTC
+                while (appData.history?.[getLocalDateString(checkDate)]?.length !== undefined || 
+                       Object.keys(appData.history?.[getLocalDateString(checkDate)] || {}).length > 0) {
+                    if (Object.keys(appData.history?.[getLocalDateString(checkDate)] || {}).length > 0) {
                         myStreak++;
                         checkDate.setDate(checkDate.getDate() - 1);
                     } else {
@@ -11972,11 +12564,11 @@ Wordle 1,234 3/6
                 if (saved) {
                     sentNudgesToday = JSON.parse(saved);
                     
-                    // Clean up old dates
+                    // Clean up old dates (v1.3.0: use local time, not UTC)
                     const today = getTodayString();
                     const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
-                    const yesterdayStr = yesterday.toISOString().split('T')[0];
+                    const yesterdayStr = getLocalDateString(yesterday);
                     
                     // Keep only today and yesterday
                     const cleaned = {};
@@ -13936,11 +14528,12 @@ Wordle 1,234 3/6
             };
             
             // Count games and points from history (last 7 days)
+            // v1.3.0: Use local time for history lookup, not UTC
             const now = new Date();
             for (let i = 0; i < 7; i++) {
                 const d = new Date(now);
                 d.setDate(d.getDate() - i);
-                const dateStr = d.toISOString().split('T')[0];
+                const dateStr = getLocalDateString(d);
                 const dayHistory = appData.history[dateStr];
                 if (dayHistory) {
                     Object.entries(dayHistory).forEach(([gameId, data]) => {
@@ -14240,6 +14833,10 @@ Wordle 1,234 3/6
             }
             
             // Sort by priority and return top 3
+            // v1.3.0: Add slight random factor to break ties and provide variety on refresh
+            recommendations.forEach(r => {
+                r.priority += Math.random() * 0.5;
+            });
             recommendations.sort((a, b) => b.priority - a.priority);
             return recommendations.slice(0, 3);
         }
@@ -14573,8 +15170,10 @@ Wordle 1,234 3/6
         }
         
         function refreshRecommendations() {
+            // v1.3.0: Regenerate recommendations with new random factors
             renderRecommendations();
-            showToast('Recommendations refreshed!');
+            SoundManager.play('click');
+            showToast('✨ Recommendations refreshed!');
         }
         
         function shouldShowActivitySummary() {
@@ -14721,6 +15320,15 @@ Wordle 1,234 3/6
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        // v1.3.0: Helper to convert any Date to local YYYY-MM-DD string
+        // Use this instead of toISOString().split('T')[0] which returns UTC
+        function getLocalDateString(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
         
@@ -15129,21 +15737,31 @@ Wordle 1,234 3/6
             
             const stats = appData.stats[result.gameId];
             const oldStreak = stats.currentStreak;
+            const oldLastPlayed = stats.lastPlayed;  // v1.3.0: Save BEFORE updating
             stats.gamesPlayed++;
             if (result.won) stats.gamesWon++;
-            stats.lastPlayed = today;
             
-            // Streak calculation
+            // v1.3.0: Streak calculation - fixed order bug where lastPlayed was updated before check
+            // Also fixed timezone: use local time for yesterday (was using UTC)
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
             
-            if (stats.lastPlayed === yesterdayStr || stats.currentStreak === 0) {
+            if (oldLastPlayed === yesterdayStr) {
+                // Played yesterday - continue streak
                 stats.currentStreak++;
+            } else if (oldLastPlayed === today) {
+                // Already played today - don't change streak
+            } else {
+                // First play ever, or missed day(s) - start/reset streak to 1
+                stats.currentStreak = 1;
             }
+            
             if (stats.currentStreak > stats.maxStreak) {
                 stats.maxStreak = stats.currentStreak;
             }
+            
+            stats.lastPlayed = today;  // v1.3.0: Update AFTER calculation
             
             // Log activity
             logActivity('game-logged', {
@@ -15197,14 +15815,24 @@ Wordle 1,234 3/6
         }
         
         // ============ CLOUD SYNC ============
+        // v1.3.0: Track consecutive sync failures for user feedback
+        let syncFailureCount = 0;
+        
         async function syncToCloud() {
             if (!currentUser) return;
             
             try {
                 await db.ref(`users/${currentUser.uid}/shelf`).set(appData);
                 console.log('Synced to cloud');
+                syncFailureCount = 0; // Reset on success
             } catch (e) {
                 console.error('Sync error:', e);
+                syncFailureCount++;
+                
+                // v1.3.0: Show subtle feedback after repeated failures
+                if (syncFailureCount === 3) {
+                    showToast('⚠️ Sync issue - your data is saved locally', 'warning');
+                }
             }
         }
         
@@ -15662,54 +16290,56 @@ Wordle 1,234 3/6
         let feedbackDebugLog = []; // Stores recent actions for debug reports
         const FEEDBACK_LOG_MAX = 50; // Max entries to keep
         
+        // Debug logging is enabled when help button is visible (for better issue reports)
         function isFeedbackModeEnabled() {
-            // Default to OFF - only on if explicitly set to 'true'
+            // Check new key first, fall back to old key
+            const newSetting = localStorage.getItem('gameshelf_help_button');
+            if (newSetting !== null) {
+                return newSetting === 'true';
+            }
             return localStorage.getItem('gameshelf_feedback_mode') === 'true';
         }
         
-        function toggleFeedbackMode(enabled) {
-            localStorage.setItem('gameshelf_feedback_mode', enabled ? 'true' : 'false');
+        function toggleHelpButton(enabled) {
+            localStorage.setItem('gameshelf_help_button', enabled ? 'true' : 'false');
             
             // Update UI elements
-            const feedbackBtn = document.getElementById('feedback-btn');
-            const feedbackBadge = document.getElementById('feedback-mode-badge');
+            const helpBtn = document.getElementById('floating-help-btn');
             
-            if (feedbackBtn) {
-                feedbackBtn.classList.toggle('hidden', !enabled);
-            }
-            if (feedbackBadge) {
-                feedbackBadge.classList.toggle('active', enabled);
+            if (helpBtn) {
+                helpBtn.classList.toggle('hidden', !enabled);
             }
             
-            showToast(enabled ? '💬 Feedback ON - feedback button visible' : '💬 Feedback OFF');
-            
-            if (enabled) {
-                feedbackLog('Feedback Mode enabled');
-            }
+            showToast(enabled ? '❓ Help button visible' : '❓ Help button hidden');
         }
         
-        function initFeedbackMode() {
+        // Legacy alias for backwards compatibility
+        function toggleFeedbackMode(enabled) {
+            toggleHelpButton(enabled);
+        }
+        
+        function isHelpButtonEnabled() {
+            // Check new key first, fall back to old key for migration
+            const newSetting = localStorage.getItem('gameshelf_help_button');
+            if (newSetting !== null) {
+                return newSetting === 'true';
+            }
+            // Migrate from old setting
+            const oldSetting = localStorage.getItem('gameshelf_feedback_mode');
+            return oldSetting === 'true';
+        }
+        
+        function initHelpButton() {
             const toggle = document.getElementById('feedback-mode-toggle');
-            const feedbackBtn = document.getElementById('feedback-btn');
-            const feedbackBadge = document.getElementById('feedback-mode-badge');
-            const isEnabled = isFeedbackModeEnabled();
+            const helpBtn = document.getElementById('floating-help-btn');
+            const isEnabled = isHelpButtonEnabled();
             
             if (toggle) {
                 toggle.checked = isEnabled;
             }
-            if (feedbackBtn) {
-                feedbackBtn.classList.toggle('hidden', !isEnabled);
+            if (helpBtn) {
+                helpBtn.classList.toggle('hidden', !isEnabled);
             }
-            if (feedbackBadge) {
-                feedbackBadge.classList.toggle('active', isEnabled);
-            }
-            
-            // Start capturing console errors
-            const originalError = console.error;
-            console.error = function(...args) {
-                feedbackLog('ERROR: ' + args.join(' '));
-                originalError.apply(console, args);
-            };
         }
         
         function feedbackLog(action) {
@@ -15777,10 +16407,11 @@ Wordle 1,234 3/6
         }
         
         function calculateStreak() {
+            // v1.3.0: Use local time for history lookup, not UTC
             let streak = 0;
             let checkDate = new Date();
             while (true) {
-                const dateStr = checkDate.toISOString().split('T')[0];
+                const dateStr = getLocalDateString(checkDate);
                 const dayHistory = appData.history?.[dateStr];
                 if (dayHistory && Object.keys(dayHistory).length > 0) {
                     streak++;
@@ -16961,24 +17592,730 @@ Wordle 1,234 3/6
             input.click();
         }
         
-        function showAbout() {
-            const version = '1.2.77';
-            const aboutText = `🧩 Game Shelf PWA
-
-Track your daily puzzle games in one place!
-
-✨ Features:
-• Track 36+ daily puzzle games
-• Compete with friends in battles
-• Earn tokens & achievements
-• Share your victories
-
-Version: ${version}
-
-Made with ❤️ for puzzle enthusiasts`;
-            alert(aboutText);
+        // ============ WHAT'S NEW SYSTEM ============
+        const APP_VERSION = '1.3.4';
+        
+        const RELEASE_NOTES = {
+            '1.3.4': [
+                { icon: '🤖', title: 'AI Help', desc: 'Ask questions about Game Shelf and get instant answers' },
+                { icon: '💡', title: 'Smart Context', desc: 'AI knows what you searched and viewed in FAQs' },
+                { icon: '💎', title: 'Token-Powered', desc: '5 tokens per question (can be adjusted based on feedback)' }
+            ],
+            '1.3.3': [
+                { icon: '❓', title: 'Help Center', desc: 'Searchable FAQs, tutorials, and support all in one place' },
+                { icon: '🔍', title: 'Smart Search', desc: 'Find answers instantly as you type' }
+            ],
+            '1.3.2': [
+                { icon: '🎉', title: "What's New Feature", desc: "See what changed after each update" },
+                { icon: '📋', title: 'Improved Menus', desc: 'Reorganized menu for easier access' },
+                { icon: '✨', title: 'Better Modals', desc: 'Prettier dialogs throughout the app' }
+            ],
+            '1.3.1': [
+                { icon: '📱', title: 'Quick Game Long-Press', desc: 'Quick game buttons now support long-press for options' },
+                { icon: '🔥', title: 'Current Streak Display', desc: 'Progress shows your current streak, not all-time best' },
+                { icon: '✨', title: 'Visual Feedback', desc: 'Cards glow purple when holding for long-press' },
+                { icon: '👥', title: 'Friend Names', desc: 'First names shown below friend avatars' },
+                { icon: '⚔️', title: 'Battle Widget', desc: 'Shows multiple battles and better time display' }
+            ],
+            '1.3.0': [
+                { icon: '🗑️', title: 'Remove Games', desc: 'Long-press any game to remove it from your shelf' },
+                { icon: '🔍', title: 'Better Search', desc: 'Search by category, see streaks in results' },
+                { icon: '🔄', title: 'Better Recommendations', desc: 'Refresh button now provides real variety' }
+            ]
+        };
+        
+        function getLastSeenVersion() {
+            return localStorage.getItem('gs_last_seen_version') || '0.0.0';
         }
         
+        function setLastSeenVersion(version) {
+            localStorage.setItem('gs_last_seen_version', version);
+        }
+        
+        function hasUnseenUpdate() {
+            return getLastSeenVersion() !== APP_VERSION;
+        }
+        
+        function checkForWhatsNew() {
+            if (hasUnseenUpdate()) {
+                // Show badge on menu
+                updateWhatsNewBadge(true);
+                // Auto-show What's New after brief delay (let app render first)
+                setTimeout(() => {
+                    showWhatsNew(true); // true = auto-triggered
+                }, 1500);
+            }
+        }
+        
+        function updateWhatsNewBadge(show) {
+            const badge = document.getElementById('whats-new-badge');
+            const menuBadge = document.getElementById('whats-new-menu-badge');
+            if (badge) {
+                badge.style.display = show ? 'inline' : 'none';
+            }
+            if (menuBadge) {
+                menuBadge.style.display = show ? 'inline' : 'none';
+            }
+        }
+        
+        function showWhatsNew(autoTriggered = false) {
+            const lastSeen = getLastSeenVersion();
+            const notes = [];
+            
+            // Collect notes for versions newer than last seen
+            Object.keys(RELEASE_NOTES).forEach(version => {
+                if (compareVersions(version, lastSeen) > 0) {
+                    notes.push({ version, items: RELEASE_NOTES[version] });
+                }
+            });
+            
+            // Sort by version descending
+            notes.sort((a, b) => compareVersions(b.version, a.version));
+            
+            // If no new notes, show current version notes
+            if (notes.length === 0 && RELEASE_NOTES[APP_VERSION]) {
+                notes.push({ version: APP_VERSION, items: RELEASE_NOTES[APP_VERSION] });
+            }
+            
+            let content = '<div style="padding: 16px; max-height: 60vh; overflow-y: auto;">';
+            
+            notes.forEach((release, idx) => {
+                if (idx > 0) {
+                    content += '<div style="border-top: 1px solid var(--border); margin: 16px 0;"></div>';
+                }
+                content += `<div style="font-size: 0.8rem; color: var(--accent-purple); font-weight: 600; margin-bottom: 12px;">Version ${release.version}</div>`;
+                
+                release.items.forEach(item => {
+                    content += `
+                        <div style="display: flex; gap: 12px; margin-bottom: 14px;">
+                            <span style="font-size: 1.3rem;">${item.icon}</span>
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 2px;">${item.title}</div>
+                                <div style="color: var(--text-muted); font-size: 0.9rem;">${item.desc}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+            
+            content += `
+                <button onclick="markWhatsNewSeen(); closeGenericSheet();" style="
+                    width: 100%; padding: 14px; margin-top: 16px;
+                    background: var(--accent-purple); border: none; border-radius: 10px;
+                    color: white; font-weight: 600; font-size: 1rem; cursor: pointer;
+                ">
+                    ${autoTriggered ? "Let's Go!" : 'Got it'}
+                </button>
+            </div>`;
+            
+            showGenericSheet({
+                title: "🎉 What's New",
+                content: content
+            });
+        }
+        
+        function markWhatsNewSeen() {
+            setLastSeenVersion(APP_VERSION);
+            updateWhatsNewBadge(false);
+        }
+        
+        function compareVersions(a, b) {
+            const partsA = a.split('.').map(Number);
+            const partsB = b.split('.').map(Number);
+            for (let i = 0; i < 3; i++) {
+                const diff = (partsA[i] || 0) - (partsB[i] || 0);
+                if (diff !== 0) return diff;
+            }
+            return 0;
+        }
+        
+        // ============ ABOUT ============
+        function showAbout() {
+            showGenericSheet({
+                title: '🧩 About Game Shelf',
+                content: `
+                    <div style="padding: 20px; text-align: center;">
+                        <div style="font-size: 4rem; margin-bottom: 16px;">🎮</div>
+                        <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">Game Shelf</div>
+                        <div style="color: var(--text-muted); margin-bottom: 20px;">Version ${APP_VERSION}</div>
+                        
+                        <div style="text-align: left; background: var(--bg-tertiary); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; margin-bottom: 12px;">✨ Features</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                                • Track 36+ daily puzzle games<br>
+                                • Compete with friends in battles<br>
+                                • AI-powered hints when you're stuck<br>
+                                • Earn tokens & achievements<br>
+                                • Share your victories
+                            </div>
+                        </div>
+                        
+                        <div style="color: var(--text-muted); font-size: 0.85rem;">
+                            Made with ❤️ for puzzle enthusiasts
+                        </div>
+                        
+                        <button onclick="closeGenericSheet();" style="
+                            width: 100%; padding: 14px; margin-top: 20px;
+                            background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 10px;
+                            color: var(--text-primary); font-weight: 600; font-size: 1rem; cursor: pointer;
+                        ">
+                            Close
+                        </button>
+                    </div>
+                `
+            });
+        }
+        
+        // ============ HELP SYSTEM ============
+        let faqData = null;
+        let faqSearchTimeout = null;
+        let expandedCategories = new Set();
+        let expandedFaqs = new Set();
+        const FAQ_SEARCH_DEBOUNCE = 300;
+
+        function getFaqData() {
+            if (!faqData) {
+                try {
+                    const el = document.getElementById('faq-data');
+                    faqData = JSON.parse(el.textContent);
+                } catch (e) {
+                    console.error('Failed to load FAQ data:', e);
+                    faqData = { categories: [] };
+                }
+            }
+            return faqData;
+        }
+
+        // Lightweight markdown renderer
+        function renderFaqMarkdown(text) {
+            if (!text) return '';
+            return text
+                // Bold: **text**
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                // Code: `text`
+                .replace(/`(.+?)`/g, '<code>$1</code>')
+                // Links: [text](url)
+                .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+                // Paragraphs: double newline
+                .replace(/\n\n/g, '</p><p>')
+                // Line breaks: single newline
+                .replace(/\n/g, '<br>')
+                // Wrap in paragraph
+                .replace(/^(.+)$/s, '<p>$1</p>');
+        }
+
+        function showHelp() {
+            // Reset state
+            expandedFaqs.clear();
+            const searchInput = document.getElementById('help-search-input');
+            if (searchInput) searchInput.value = '';
+            
+            // Render categories
+            renderHelpCategories();
+            
+            // Update What's New badge in help sheet
+            updateHelpWhatsNewBadge();
+            
+            // Mark FAQ as seen (for badge)
+            markFaqSeen();
+            
+            // Close settings menu if open
+            const settingsEl = document.getElementById('settings-panel');
+            if (settingsEl && settingsEl.classList.contains('active')) {
+                toggleSettingsMenu();
+            }
+            
+            // Show sheet
+            document.getElementById('help-sheet-overlay').classList.add('active');
+        }
+
+        function closeHelpSheet() {
+            document.getElementById('help-sheet-overlay').classList.remove('active');
+        }
+
+        function renderHelpCategories() {
+            const data = getFaqData();
+            const container = document.getElementById('help-content');
+            if (!container) return;
+            
+            const sortedCategories = [...data.categories].sort((a, b) => a.order - b.order);
+            
+            container.innerHTML = sortedCategories.map(cat => `
+                <div class="help-category ${expandedCategories.has(cat.id) ? 'expanded' : ''}" 
+                     data-category="${cat.id}">
+                    <div class="help-category-header" onclick="toggleHelpCategory('${cat.id}')">
+                        <div class="help-category-title">
+                            <span class="help-category-icon">${cat.icon}</span>
+                            <span>${escapeHtml(cat.name)}</span>
+                        </div>
+                        <span class="help-category-arrow">▶</span>
+                    </div>
+                    <div class="help-category-questions">
+                        ${cat.questions.map(faq => renderFaqItem(faq, cat.id)).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderFaqItem(faq, categoryId) {
+            const isExpanded = expandedFaqs.has(faq.id);
+            return `
+                <div class="help-faq-item ${isExpanded ? 'expanded' : ''}" data-faq="${faq.id}">
+                    <div class="help-faq-question" onclick="toggleFaq('${faq.id}', '${categoryId}')">
+                        <span>${escapeHtml(faq.q)}</span>
+                        <span>${isExpanded ? '−' : '+'}</span>
+                    </div>
+                    <div class="help-faq-answer">
+                        ${renderFaqMarkdown(faq.a)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleHelpCategory(categoryId) {
+            if (expandedCategories.has(categoryId)) {
+                expandedCategories.delete(categoryId);
+            } else {
+                expandedCategories.add(categoryId);
+            }
+            
+            const el = document.querySelector(`.help-category[data-category="${categoryId}"]`);
+            if (el) {
+                el.classList.toggle('expanded', expandedCategories.has(categoryId));
+            }
+        }
+
+        function toggleFaq(faqId, categoryId) {
+            const wasExpanded = expandedFaqs.has(faqId);
+            
+            if (wasExpanded) {
+                expandedFaqs.delete(faqId);
+            } else {
+                expandedFaqs.add(faqId);
+                // Track view for analytics
+                trackFaqView(faqId, categoryId);
+                // Track for AI Help hybrid context
+                trackViewedFaq(faqId);
+            }
+            
+            const el = document.querySelector(`.help-faq-item[data-faq="${faqId}"]`);
+            if (el) {
+                el.classList.toggle('expanded', !wasExpanded);
+            }
+        }
+
+        function handleHelpSearch(query) {
+            clearTimeout(faqSearchTimeout);
+            
+            faqSearchTimeout = setTimeout(() => {
+                const trimmed = query.trim();
+                
+                if (trimmed.length === 0) {
+                    renderHelpCategories();
+                    return;
+                }
+                
+                if (trimmed.length < 2) {
+                    return; // Wait for more chars
+                }
+                
+                const results = searchFaq(trimmed);
+                renderSearchResults(results, trimmed);
+                
+                // Track search
+                trackFaqSearch(trimmed, results.length);
+            }, FAQ_SEARCH_DEBOUNCE);
+        }
+
+        function searchFaq(query) {
+            const data = getFaqData();
+            const q = query.toLowerCase();
+            const results = [];
+            
+            data.categories.forEach(cat => {
+                cat.questions.forEach(faq => {
+                    const score = getFaqMatchScore(faq, q);
+                    if (score > 0) {
+                        results.push({
+                            ...faq,
+                            categoryId: cat.id,
+                            categoryName: cat.name,
+                            categoryIcon: cat.icon,
+                            score
+                        });
+                    }
+                });
+            });
+            
+            return results.sort((a, b) => b.score - a.score);
+        }
+
+        function getFaqMatchScore(faq, query) {
+            let score = 0;
+            const qLower = faq.q.toLowerCase();
+            const aLower = faq.a.toLowerCase();
+            
+            // Exact phrase in question = highest
+            if (qLower.includes(query)) score += 10;
+            
+            // Exact phrase in answer = medium
+            if (aLower.includes(query)) score += 5;
+            
+            // Keyword match
+            if (faq.keywords?.some(k => k.includes(query) || query.includes(k))) {
+                score += 4;
+            }
+            
+            // Word-by-word matching
+            const words = query.split(/\s+/).filter(w => w.length > 2);
+            words.forEach(word => {
+                if (qLower.includes(word)) score += 2;
+                if (aLower.includes(word)) score += 1;
+                if (faq.keywords?.some(k => k.includes(word))) score += 1;
+            });
+            
+            return score;
+        }
+
+        function renderSearchResults(results, query) {
+            const container = document.getElementById('help-content');
+            if (!container) return;
+            
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div class="help-no-results">
+                        <div class="help-no-results-icon">🔍</div>
+                        <div>No results for "${escapeHtml(query)}"</div>
+                        <div style="margin-top:8px;font-size:13px;">Try different keywords or ask AI below</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="help-search-results">
+                    <div class="help-search-results-header">${results.length} result${results.length !== 1 ? 's' : ''}</div>
+                    ${results.map(faq => `
+                        <div class="help-faq-item ${expandedFaqs.has(faq.id) ? 'expanded' : ''}" data-faq="${faq.id}">
+                            <div class="help-faq-question" onclick="toggleFaq('${faq.id}', '${faq.categoryId}')">
+                                <span>${faq.categoryIcon} ${escapeHtml(faq.q)}</span>
+                                <span>${expandedFaqs.has(faq.id) ? '−' : '+'}</span>
+                            </div>
+                            <div class="help-faq-answer">
+                                ${renderFaqMarkdown(faq.a)}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Help sheet action handlers
+        function helpReportIssue() {
+            closeHelpSheet();
+            reportIssue();
+        }
+
+        function helpStartTutorial() {
+            closeHelpSheet();
+            startTutorial();
+        }
+
+        function helpShowAbout() {
+            closeHelpSheet();
+            showAbout();
+        }
+
+        function helpShowWhatsNew() {
+            closeHelpSheet();
+            showWhatsNew();
+        }
+
+        // ============ AI HELP SYSTEM ============
+        
+        // Track which FAQs user has viewed in this session (for hybrid context)
+        let viewedFaqIds = [];
+        let lastHelpSearchQuery = '';
+        
+        function trackViewedFaq(faqId) {
+            if (faqId && !viewedFaqIds.includes(faqId)) {
+                viewedFaqIds.push(faqId);
+                // Keep only last 5
+                if (viewedFaqIds.length > 5) {
+                    viewedFaqIds = viewedFaqIds.slice(-5);
+                }
+            }
+        }
+        
+        function showAskAI() {
+            // Get current search query if any
+            const searchInput = document.getElementById('help-search-input');
+            lastHelpSearchQuery = searchInput?.value?.trim() || '';
+            
+            // Track click
+            trackAskAIClicked(lastHelpSearchQuery);
+            
+            // Close help sheet
+            closeHelpSheet();
+            
+            // Check if signed in
+            if (!currentUser) {
+                showToast('Sign in to use AI Help', 'info');
+                setTimeout(() => showAccountSheet(), 500);
+                return;
+            }
+            
+            // Check token balance
+            const tokens = appData.wallet?.tokens || 0;
+            if (tokens < 5) {
+                showToast('Not enough tokens (need 5)', 'error');
+                return;
+            }
+            
+            // Reset AI Help sheet state
+            resetAIHelp();
+            
+            // Pre-fill with search query if present
+            if (lastHelpSearchQuery) {
+                document.getElementById('ai-help-input').value = lastHelpSearchQuery;
+            }
+            
+            // Update token display
+            updateAIHelpTokenDisplay();
+            
+            // Show sheet
+            document.getElementById('ai-help-sheet-overlay').classList.add('active');
+            
+            // Focus input
+            setTimeout(() => {
+                document.getElementById('ai-help-input').focus();
+            }, 300);
+        }
+        
+        function closeAIHelpSheet() {
+            document.getElementById('ai-help-sheet-overlay').classList.remove('active');
+        }
+        
+        function resetAIHelp() {
+            // Show input, hide response
+            document.getElementById('ai-help-intro').style.display = 'block';
+            document.getElementById('ai-help-input-area').style.display = 'block';
+            document.getElementById('ai-help-response-area').classList.remove('visible');
+            
+            // Clear input
+            document.getElementById('ai-help-input').value = '';
+            
+            // Reset button state
+            const btn = document.getElementById('ai-help-submit-btn');
+            btn.disabled = false;
+            btn.innerHTML = '<span>Ask</span><span>→</span>';
+            
+            // Update token display
+            updateAIHelpTokenDisplay();
+        }
+        
+        function updateAIHelpTokenDisplay() {
+            const tokens = appData.wallet?.tokens || 0;
+            const costEl = document.getElementById('ai-help-cost');
+            if (costEl) {
+                if (tokens < 5) {
+                    costEl.innerHTML = `<span style="color: #ef4444;">💎 ${tokens} tokens (need 5)</span>`;
+                } else {
+                    costEl.textContent = `💎 5 tokens (${tokens} available)`;
+                }
+            }
+        }
+        
+        async function submitAIHelp() {
+            const input = document.getElementById('ai-help-input');
+            const question = input.value.trim();
+            
+            if (!question) {
+                showToast('Please enter a question', 'info');
+                return;
+            }
+            
+            // Check auth again
+            if (!currentUser) {
+                showToast('Please sign in first', 'error');
+                closeAIHelpSheet();
+                return;
+            }
+            
+            // Check tokens again
+            const tokens = appData.wallet?.tokens || 0;
+            if (tokens < 5) {
+                showToast('Not enough tokens (need 5)', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const btn = document.getElementById('ai-help-submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span><span>Thinking...</span>';
+            
+            // Hide intro, show response area with loading
+            document.getElementById('ai-help-intro').style.display = 'none';
+            document.getElementById('ai-help-response-area').classList.add('visible');
+            document.getElementById('ai-help-response-text').innerHTML = '<div class="ai-help-loading"><span class="spinner"></span> Thinking...</div>';
+            
+            try {
+                // Build hybrid context
+                const hybridContext = {
+                    searchQuery: lastHelpSearchQuery || null,
+                    viewedFaqs: viewedFaqIds.length > 0 ? viewedFaqIds : null
+                };
+                
+                // Call dedicated AI Help function
+                const getAIHelpFn = firebase.functions().httpsCallable('getAIHelp');
+                const result = await getAIHelpFn({
+                    question: question,
+                    hybridContext: hybridContext
+                });
+                
+                const answer = result.data.answer || 'Sorry, I couldn\'t generate a response.';
+                
+                // Deduct tokens (client-side)
+                const HELP_COST = 5;
+                appData.wallet.tokens = (appData.wallet?.tokens || 0) - HELP_COST;
+                saveData();
+                renderWallet();
+                
+                // Show response
+                document.getElementById('ai-help-response-text').innerHTML = formatAIHelpResponse(answer);
+                
+                // Hide input area after successful response
+                document.getElementById('ai-help-input-area').style.display = 'none';
+                
+                // Play success sound
+                playSound('success');
+                
+                // Log remaining
+                if (result.data.remaining !== undefined) {
+                    console.log(`AI Help: ${result.data.remaining} requests remaining today`);
+                }
+                
+            } catch (error) {
+                console.error('AI Help error:', error);
+                
+                let errorMsg = 'Something went wrong. Please try again.';
+                if (error.code === 'unauthenticated') {
+                    errorMsg = 'Please sign in to use AI Help.';
+                } else if (error.code === 'resource-exhausted') {
+                    errorMsg = error.message || 'Daily limit reached. Try again tomorrow.';
+                } else if (error.message) {
+                    errorMsg = error.message;
+                }
+                
+                document.getElementById('ai-help-response-text').innerHTML = `<div class="ai-help-error">${escapeHtml(errorMsg)}</div>`;
+                
+                // Show input area again on error
+                document.getElementById('ai-help-input-area').style.display = 'block';
+            }
+            
+            // Reset button (but keep disabled if showing response)
+            btn.innerHTML = '<span>Ask</span><span>→</span>';
+            btn.disabled = document.getElementById('ai-help-input-area').style.display === 'none';
+        }
+        
+        function formatAIHelpResponse(text) {
+            // Simple markdown-like formatting
+            let formatted = escapeHtml(text);
+            
+            // Bold: **text**
+            formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            
+            // Bullet points at start of lines
+            formatted = formatted.replace(/^[•\-]\s+/gm, '• ');
+            
+            // Preserve line breaks
+            formatted = formatted.replace(/\n/g, '<br>');
+            
+            return formatted;
+        }
+
+        // Badge system
+        function checkFaqBadge() {
+            const data = getFaqData();
+            const lastSeenVersion = localStorage.getItem('faq_seen_version');
+            return !lastSeenVersion || lastSeenVersion !== data.version;
+        }
+
+        function markFaqSeen() {
+            const data = getFaqData();
+            localStorage.setItem('faq_seen_version', data.version);
+            updateHelpMenuBadge();
+        }
+
+        function updateHelpMenuBadge() {
+            const badge = document.getElementById('help-menu-badge');
+            const faqBadge = document.getElementById('faq-menu-badge');
+            const showBadge = checkFaqBadge();
+            if (badge) badge.style.display = showBadge ? 'inline-block' : 'none';
+            if (faqBadge) faqBadge.style.display = showBadge ? 'inline-block' : 'none';
+        }
+
+        function updateHelpWhatsNewBadge() {
+            const badge = document.getElementById('help-whats-new-badge');
+            if (badge) {
+                const hasUnseenUpdate = checkForUnseenWhatsNew();
+                badge.style.display = hasUnseenUpdate ? 'inline-block' : 'none';
+            }
+        }
+
+        function checkForUnseenWhatsNew() {
+            const lastSeen = getLastSeenVersion();
+            return !lastSeen || compareVersions(APP_VERSION, lastSeen) > 0;
+        }
+
+        // Analytics tracking
+        function trackFaqView(faqId, categoryId) {
+            if (!currentUser?.uid || !db) return;
+            
+            try {
+                const ref = db.ref(`faq-analytics/${currentUser.uid}/views`).push();
+                ref.set({
+                    faqId,
+                    categoryId,
+                    timestamp: Date.now(),
+                    appVersion: APP_VERSION
+                });
+            } catch (e) {
+                console.error('Failed to track FAQ view:', e);
+            }
+        }
+
+        function trackFaqSearch(query, resultCount) {
+            if (!currentUser?.uid || !db) return;
+            
+            try {
+                const ref = db.ref(`faq-analytics/${currentUser.uid}/searches`).push();
+                ref.set({
+                    query: query.substring(0, 100),
+                    resultCount,
+                    timestamp: Date.now(),
+                    appVersion: APP_VERSION
+                });
+            } catch (e) {
+                console.error('Failed to track FAQ search:', e);
+            }
+        }
+
+        function trackAskAIClicked(searchQuery) {
+            if (!currentUser?.uid || !db) return;
+            
+            try {
+                const ref = db.ref(`faq-analytics/${currentUser.uid}/askAI`).push();
+                ref.set({
+                    searchQuery: searchQuery?.substring(0, 100) || null,
+                    timestamp: Date.now(),
+                    appVersion: APP_VERSION
+                });
+            } catch (e) {
+                console.error('Failed to track Ask AI:', e);
+            }
+        }
+
         // ============ ISSUE REPORTING ============
         let issueScreenshotData = null;
         
@@ -17281,19 +18618,93 @@ Made with ❤️ for puzzle enthusiasts`;
             const coins = appData.wallet?.coins || 0;
             const owned = (appData.ownedMerch || []).includes(itemId);
             
+            let content = `
+                <div style="padding: 20px; text-align: center;">
+                    <div style="font-size: 4rem; margin-bottom: 12px;">${item.image}</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">${item.name}</div>
+                    <div style="color: var(--text-muted); margin-bottom: 20px;">${item.description}</div>
+            `;
+            
             if (item.category === 'virtual') {
-                alert(`${item.image} ${item.name}\n\n${item.description}\n\n${owned ? '✓ You own this!' : `Earn by: ${item.earnedBy}`}`);
-            } else {
+                // Virtual item (earned, not purchased)
                 if (owned) {
-                    alert(`${item.image} ${item.name}\n\n✓ Already redeemed!`);
-                } else if (coins >= item.price) {
-                    if (confirm(`${item.image} ${item.name}\n\n${item.description}\n\nRedeem for 🪙 ${item.price} coins?`)) {
-                        redeemMerch(itemId);
-                    }
+                    content += `
+                        <div style="background: var(--accent-green); color: white; padding: 12px; border-radius: 10px; font-weight: 600;">
+                            ✓ You own this!
+                        </div>
+                    `;
                 } else {
-                    alert(`${item.image} ${item.name}\n\nYou need 🪙 ${item.price} coins\nYou have: 🪙 ${coins}`);
+                    content += `
+                        <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; text-align: left;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">How to earn:</div>
+                            <div style="color: var(--text-muted);">${item.earnedBy}</div>
+                        </div>
+                    `;
+                }
+            } else {
+                // Physical item (purchased with coins)
+                if (owned) {
+                    content += `
+                        <div style="background: var(--accent-green); color: white; padding: 12px; border-radius: 10px; font-weight: 600;">
+                            ✓ Already redeemed!
+                        </div>
+                    `;
+                } else if (coins >= item.price) {
+                    content += `
+                        <div style="background: var(--bg-tertiary); padding: 12px; border-radius: 10px; margin-bottom: 16px;">
+                            <span style="font-size: 1.1rem;">🪙 ${item.price}</span>
+                            <span style="color: var(--text-muted); margin-left: 8px;">You have: 🪙 ${coins}</span>
+                        </div>
+                        <button onclick="closeGenericSheet(); confirmRedeemMerch('${itemId}');" style="
+                            width: 100%; padding: 14px;
+                            background: linear-gradient(135deg, var(--accent-gold), #e6c200);
+                            border: none; border-radius: 10px;
+                            color: #1a1a2e; font-weight: 600; font-size: 1rem; cursor: pointer;
+                        ">
+                            Redeem Now
+                        </button>
+                    `;
+                } else {
+                    content += `
+                        <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px;">
+                            <div style="font-size: 1.1rem; margin-bottom: 8px;">🪙 ${item.price} needed</div>
+                            <div style="color: var(--accent-red);">You have: 🪙 ${coins}</div>
+                            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+                                Need ${item.price - coins} more coins
+                            </div>
+                        </div>
+                    `;
                 }
             }
+            
+            content += `
+                <button onclick="closeGenericSheet();" style="
+                    width: 100%; padding: 12px; margin-top: 12px;
+                    background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 10px;
+                    color: var(--text-primary); font-size: 0.95rem; cursor: pointer;
+                ">
+                    Close
+                </button>
+            </div>`;
+            
+            showGenericSheet({
+                title: `${item.image} ${item.name}`,
+                content: content
+            });
+        }
+        
+        function confirmRedeemMerch(itemId) {
+            const item = MERCH_CATALOG.find(m => m.id === itemId);
+            if (!item) return;
+            
+            showConfirmModal({
+                icon: '🎁',
+                title: 'Redeem Gift?',
+                message: `Redeem ${item.name} for 🪙 ${item.price} coins?`,
+                confirmText: 'Redeem',
+                confirmStyle: 'primary',
+                onConfirm: () => redeemMerch(itemId)
+            });
         }
         
         function redeemMerch(itemId) {
@@ -17320,8 +18731,31 @@ Made with ❤️ for puzzle enthusiasts`;
             
             showToast(`🎁 Redeemed ${item.name}!`);
             
-            // In production, this would trigger Goody API
-            alert(`🎉 Gift Redeemed!\n\n${item.name}\n\nYou'll receive an email from Goody to choose your gift.\n\n(Demo mode - no actual email sent)`);
+            // Show success modal
+            showGenericSheet({
+                title: '🎉 Gift Redeemed!',
+                content: `
+                    <div style="padding: 20px; text-align: center;">
+                        <div style="font-size: 4rem; margin-bottom: 16px;">${item.image}</div>
+                        <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 16px;">${item.name}</div>
+                        
+                        <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 12px; margin-bottom: 20px; text-align: left;">
+                            <div style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
+                                📧 You'll receive an email from Goody to choose your gift.<br><br>
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">(Demo mode - no actual email sent)</span>
+                            </div>
+                        </div>
+                        
+                        <button onclick="closeGenericSheet();" style="
+                            width: 100%; padding: 14px;
+                            background: var(--accent-purple); border: none; border-radius: 10px;
+                            color: white; font-weight: 600; font-size: 1rem; cursor: pointer;
+                        ">
+                            Awesome!
+                        </button>
+                    </div>
+                `
+            });
         }
         
         // ============ UI RENDERING ============
@@ -17362,6 +18796,47 @@ Made with ❤️ for puzzle enthusiasts`;
                 if (max > maxStreak) maxStreak = max;
             });
             return isNaN(maxStreak) ? 0 : maxStreak;
+        }
+        
+        // v1.3.1: Get highest CURRENT streak (not all-time best) for home screen display
+        function getCurrentMaxStreak(data) {
+            const statsObj = data?.stats || appData?.stats || {};
+            let maxCurrent = 0;
+            Object.values(statsObj).forEach(stat => {
+                const current = Number(stat.currentStreak) || 0;
+                if (current > maxCurrent) maxCurrent = current;
+            });
+            return isNaN(maxCurrent) ? 0 : maxCurrent;
+        }
+        
+        // v1.3.0: Validate streaks on app startup
+        // Reset any streaks where the user missed a day (lastPlayed is not today or yesterday)
+        function validateStreaksOnStartup() {
+            if (!appData.stats || Object.keys(appData.stats).length === 0) return;
+            
+            const today = getTodayString();
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+            
+            let resetCount = 0;
+            
+            Object.keys(appData.stats).forEach(gameId => {
+                const stats = appData.stats[gameId];
+                if (stats.currentStreak > 0 && stats.lastPlayed) {
+                    // If lastPlayed is not today and not yesterday, streak is broken
+                    if (stats.lastPlayed !== today && stats.lastPlayed !== yesterdayStr) {
+                        console.log(`🔥 Resetting broken streak for ${gameId}: was ${stats.currentStreak}, lastPlayed ${stats.lastPlayed}`);
+                        stats.currentStreak = 0;
+                        resetCount++;
+                    }
+                }
+            });
+            
+            if (resetCount > 0) {
+                console.log(`🔥 Reset ${resetCount} broken streak(s) on startup`);
+                saveData();
+            }
         }
         
         function checkTimeAchievements() {
@@ -19067,18 +20542,40 @@ Made with ❤️ for puzzle enthusiasts`;
         
         function updateHomeBattleWidget() {
             const widget = document.getElementById('battle-widget');
-            const activeBattle = userBattles.find(b => b.status === 'active');
+            // v1.3.1: Get all active battles, not just the first one
+            const activeBattles = userBattles.filter(b => b.status === 'active');
             
-            if (!activeBattle) {
+            if (activeBattles.length === 0) {
                 widget.style.display = 'none';
                 return;
             }
             
             widget.style.display = 'block';
             
-            const daysLeft = Math.max(0, Math.ceil((activeBattle.endDate - Date.now()) / 86400000));
-            document.getElementById('battle-time-left').textContent = `${daysLeft}d`;
-            document.getElementById('battle-name').textContent = activeBattle.name;
+            // Show the most urgent battle (ending soonest)
+            const activeBattle = activeBattles.sort((a, b) => a.endDate - b.endDate)[0];
+            
+            // v1.3.1: Better time remaining display (hours if <1 day)
+            const msLeft = activeBattle.endDate - Date.now();
+            const hoursLeft = Math.ceil(msLeft / 3600000);
+            const daysLeft = Math.ceil(msLeft / 86400000);
+            let timeDisplay;
+            if (hoursLeft <= 0) {
+                timeDisplay = 'Ending!';
+            } else if (hoursLeft < 24) {
+                timeDisplay = `${hoursLeft}h`;
+            } else {
+                timeDisplay = `${daysLeft}d`;
+            }
+            
+            document.getElementById('battle-time-left').textContent = timeDisplay;
+            
+            // v1.3.1: Show battle count if multiple active battles
+            let battleTitle = activeBattle.name;
+            if (activeBattles.length > 1) {
+                battleTitle += ` (+${activeBattles.length - 1} more)`;
+            }
+            document.getElementById('battle-name').textContent = battleTitle;
             
             const participants = Object.values(activeBattle.participants || {}).sort((a, b) => (b.score || 0) - (a.score || 0));
             document.getElementById('battle-standings').innerHTML = participants.slice(0, 3).map((p, i) => `
@@ -19125,9 +20622,10 @@ Made with ❤️ for puzzle enthusiasts`;
             const reminder = document.getElementById('battle-reminder');
             if (unplayedGames.length > 0 && unplayedGames.length < battle.games.length) {
                 // Some games played, some not
+                // v1.3.1: Improved wording for readability
                 const gameNames = unplayedGames.map(g => GAMES[g]?.name || g).slice(0, 2);
                 const moreCount = unplayedGames.length - 2;
-                let text = `⚠️ Still need: ${gameNames.join(', ')}`;
+                let text = `⚠️ Still to play: ${gameNames.join(', ')}`;
                 if (moreCount > 0) text += ` +${moreCount} more`;
                 reminder.textContent = text;
                 reminder.style.display = 'block';
@@ -19404,6 +20902,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 renderPopularGames();
                 renderRecommendations();
                 restoreRecommendationsState();
+                restoreCategoryExpandedState(); // v1.3.0: Restore category accordion state
                 renderLeaderboard();
                 renderFriendsWidget();
             });
@@ -20140,14 +21639,13 @@ Made with ❤️ for puzzle enthusiasts`;
             logActivity('reward-earned', { type: 'battle-participation', tokens: 5, battle: battleName });
         }
 
-        // ============ STATS SCREEN (v1.2.47) ============
+        // ============ STATS SCREEN (v1.3.0) ============
         function renderStatsScreen() {
             const summaryContainer = document.getElementById('stats-summary');
             const listContainer = document.getElementById('stats-game-list');
             if (!summaryContainer || !listContainer) return;
             
             // Calculate summary stats
-            const totalGames = appData.games.length;
             const todayPlayed = getGamesPlayedToday();
             const totalPlayed = Object.values(appData.stats).reduce((sum, s) => sum + (s.gamesPlayed || 0), 0);
             const maxStreak = getMaxStreak();
@@ -20325,25 +21823,35 @@ Made with ❤️ for puzzle enthusiasts`;
             const shelf = appData.games.slice(0, 6);
             const todayHistory = getTodayHistory();
             
+            // v1.3.0: Quick game buttons now play the game (not open log sheet)
+            // v1.3.1: Added long-press support for consistency with game grid
             container.innerHTML = shelf.map(g => {
                 const game = GAMES[g.id];
                 if (!game) return '';
                 const done = todayHistory[g.id];
                 return `<button class="quick-game-btn ${done ? 'done' : ''}" 
-                    onclick="${done ? `showToast('${game.name} already logged!')` : 'openLogSheet()'}"
+                    data-game-id="${g.id}"
                     title="${game.name}">${game.icon}</button>`;
             }).join('');
+            
+            // v1.3.1: Setup long-press and click handlers for quick game buttons
+            container.querySelectorAll('.quick-game-btn[data-game-id]').forEach(btn => {
+                const gameId = btn.dataset.gameId;
+                btn.onclick = () => playGame(gameId);
+                setupLongPress(btn, gameId);
+            });
         }
         
         function renderProgress() {
             const played = getGamesPlayedToday() || 0;
             const goal = appData.dailyGoal || 5;
             const pct = goal > 0 ? Math.min(100, (played / goal) * 100) : 0;
-            const maxStreak = getMaxStreak() || 0;
+            // v1.3.1: Show current streak (not all-time best) - more relevant for daily motivation
+            const currentStreak = getCurrentMaxStreak() || 0;
             
             document.getElementById('progress-bar').style.width = (isNaN(pct) ? 0 : pct) + '%';
             document.getElementById('goal-display').textContent = `${played}/${goal} games`;
-            document.getElementById('streak-badge').textContent = `🔥 ${maxStreak}`;
+            document.getElementById('streak-badge').textContent = `🔥 ${currentStreak}`;
             
             // Show/hide share button based on games played
             const shareBtn = document.getElementById('share-today-btn');
@@ -20412,12 +21920,17 @@ Made with ❤️ for puzzle enthusiasts`;
                 let status = streak > 0 ? `🔥 ${streak}` : 'Play';
                 if (done) status = `✓ ${done.score}`;
                 
-                return `<div class="game-card ${done ? 'done' : ''}" onclick="playGame('${g.id}')">
+                return `<div class="game-card ${done ? 'done' : ''}" onclick="playGame('${g.id}')" data-game-id="${g.id}">
                     <div class="game-icon">${game.icon}</div>
                     <div class="game-name">${game.name}</div>
                     <div class="game-status">${status}</div>
                 </div>`;
             }).join('');
+            
+            // v1.3.0: Setup long-press for each game card
+            container.querySelectorAll('.game-card[data-game-id]').forEach(card => {
+                setupLongPress(card, card.dataset.gameId);
+            });
         }
         
         function renderShelfGames() {
@@ -20445,12 +21958,17 @@ Made with ❤️ for puzzle enthusiasts`;
                 let status = streak > 0 ? `🔥 ${streak}` : 'Play';
                 if (done) status = `✓ ${done.score}`;
                 
-                return `<div class="game-card ${done ? 'done' : ''}" onclick="playGame('${g.id}')">
+                return `<div class="game-card ${done ? 'done' : ''}" onclick="playGame('${g.id}')" data-game-id="${g.id}">
                     <div class="game-icon">${game.icon}</div>
                     <div class="game-name">${game.name}</div>
                     <div class="game-status">${status}</div>
                 </div>`;
             }).join('');
+            
+            // v1.3.0: Setup long-press for each game card
+            container.querySelectorAll('.game-card[data-game-id]').forEach(card => {
+                setupLongPress(card, card.dataset.gameId);
+            });
         }
         
         function renderPopularGames() {
@@ -20504,6 +22022,7 @@ Made with ❤️ for puzzle enthusiasts`;
             }).join('');
         }
         
+        // v1.3.0: Added confirmation dialog before bulk adding
         function addAllFromCategory(catId) {
             const category = GAME_CATEGORIES.find(c => c.id === catId);
             if (!category) return;
@@ -20516,19 +22035,30 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // Add all games
-            gamesToAdd.forEach(gameId => {
-                appData.games.push({ id: gameId, addedAt: new Date().toISOString() });
+            // v1.3.0: Show confirmation before adding multiple games
+            showConfirmModal({
+                icon: category.icon,
+                title: `Add ${gamesToAdd.length} Games?`,
+                message: `Add all ${gamesToAdd.length} ${category.name} games to your shelf?`,
+                confirmText: `Add ${gamesToAdd.length} Games`,
+                confirmStyle: 'primary',
+                onConfirm: () => {
+                    // Add all games
+                    gamesToAdd.forEach(gameId => {
+                        appData.games.push({ id: gameId, addedAt: new Date().toISOString() });
+                    });
+                    
+                    saveData();
+                    syncToCloud();
+                    renderAll();
+                    
+                    SoundManager.play('reward');
+                    showToast(`Added ${gamesToAdd.length} ${category.name} game${gamesToAdd.length > 1 ? 's' : ''}!`, 'success');
+                }
             });
-            
-            saveData();
-            syncToCloud();
-            renderAll();
-            
-            SoundManager.play('reward');
-            showToast(`Added ${gamesToAdd.length} ${category.name} game${gamesToAdd.length > 1 ? 's' : ''}!`, 'success');
         }
         
+        // v1.3.0: Save and restore category expanded state
         function toggleGameCategory(catId) {
             const header = document.getElementById('cat-header-' + catId);
             const content = document.getElementById('cat-content-' + catId);
@@ -20540,9 +22070,36 @@ Made with ❤️ for puzzle enthusiasts`;
                 content.classList.add('expanded');
                 header.classList.add('expanded');
             }
+            
+            // v1.3.0: Save expanded state to localStorage
+            saveCategoryExpandedState();
+        }
+        
+        function saveCategoryExpandedState() {
+            const expanded = [];
+            document.querySelectorAll('.game-category-content.expanded').forEach(el => {
+                const catId = el.id.replace('cat-content-', '');
+                expanded.push(catId);
+            });
+            localStorage.setItem('gs_expanded_categories', JSON.stringify(expanded));
+        }
+        
+        function restoreCategoryExpandedState() {
+            try {
+                const expanded = JSON.parse(localStorage.getItem('gs_expanded_categories') || '[]');
+                expanded.forEach(catId => {
+                    const header = document.getElementById('cat-header-' + catId);
+                    const content = document.getElementById('cat-content-' + catId);
+                    if (header) header.classList.add('expanded');
+                    if (content) content.classList.add('expanded');
+                });
+            } catch (e) {
+                console.error('Error restoring category state:', e);
+            }
         }
         
         // Search/filter games
+        // v1.3.0: Search/filter games - also searches category names and shows streaks
         function filterGames(query) {
             const searchResults = document.getElementById('games-search-results');
             const listContainer = document.getElementById('games-list-container');
@@ -20556,10 +22113,24 @@ Made with ❤️ for puzzle enthusiasts`;
             
             const q = query.toLowerCase();
             const onShelf = new Set(appData.games.map(g => g.id));
+            const todayHistory = getTodayHistory();
             
-            const matches = Object.values(GAMES).filter(game => 
+            // Find games matching name
+            let matches = Object.values(GAMES).filter(game => 
                 game.name.toLowerCase().includes(q)
             );
+            
+            // v1.3.0: Also include games from matching categories
+            GAME_CATEGORIES.forEach(cat => {
+                if (cat.name.toLowerCase().includes(q)) {
+                    cat.games.forEach(gameId => {
+                        const game = GAMES[gameId];
+                        if (game && !matches.find(m => m.id === gameId)) {
+                            matches.push(game);
+                        }
+                    });
+                }
+            });
             
             if (matches.length === 0) {
                 searchResults.style.display = 'block';
@@ -20573,13 +22144,37 @@ Made with ❤️ for puzzle enthusiasts`;
             
             resultsGrid.innerHTML = matches.map(game => {
                 const isOnShelf = onShelf.has(game.id);
-                return `<div class="game-card ${isOnShelf ? 'done' : ''}" 
-                            onclick="${isOnShelf ? `showToast('${game.name} already on shelf')` : `addToShelf('${game.id}')`}">
+                const done = todayHistory[game.id];
+                const stats = appData.stats[game.id];
+                const streak = stats?.currentStreak || 0;
+                
+                // v1.3.0: Show streaks for shelf games, or add prompt
+                let status;
+                if (isOnShelf) {
+                    if (done) {
+                        status = `✓ ${done.score}`;
+                    } else if (streak > 0) {
+                        status = `🔥 ${streak}`;
+                    } else {
+                        status = '✓ On shelf';
+                    }
+                } else {
+                    status = '+ Add';
+                }
+                
+                return `<div class="game-card ${done ? 'done' : ''}" 
+                            onclick="${isOnShelf ? `playGame('${game.id}')` : `addToShelf('${game.id}')`}"
+                            data-game-id="${game.id}">
                     <div class="game-icon">${game.icon}</div>
                     <div class="game-name">${game.name}</div>
-                    <div class="game-status">${isOnShelf ? '✓ On shelf' : '+ Add'}</div>
+                    <div class="game-status">${status}</div>
                 </div>`;
             }).join('');
+            
+            // v1.3.0: Setup long-press for search result cards
+            resultsGrid.querySelectorAll('.game-card[data-game-id]').forEach(card => {
+                setupLongPress(card, card.dataset.gameId);
+            });
         }
         
         // Suggest a game functions
@@ -20679,10 +22274,12 @@ Made with ❤️ for puzzle enthusiasts`;
             // Show up to 6 friends
             const displayFriends = friendsData.slice(0, 6);
             
+            // v1.3.1: Added friend names below avatars for better identification
             container.innerHTML = displayFriends.map(friend => {
                 const shelfData = friend.shelfData || {};
                 const hasPlayed = (shelfData.todayCount || 0) > 0;
                 const initial = (friend.displayName || 'U')[0].toUpperCase();
+                const firstName = (friend.displayName || 'Friend').split(' ')[0];
                 
                 return `
                     <div class="friend-item ${hasPlayed ? 'played' : 'waiting'}" onclick="showFriendProfile('${friend.odataId}')">
@@ -20691,6 +22288,7 @@ Made with ❤️ for puzzle enthusiasts`;
                                 ? `<img src="${shelfData.photoURL}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` 
                                 : initial}
                         </div>
+                        <div class="friend-name">${escapeHtml(firstName)}</div>
                         <div class="friend-status">${hasPlayed ? '✓' : '...'}</div>
                     </div>
                 `;
@@ -20748,7 +22346,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.77'
+                    appVersion: APP_VERSION
                 }
             };
             
@@ -24537,6 +26135,138 @@ Hint levels:
             showToast(`${GAMES[gameId].name} added!`, 'success');
         }
         
+        // v1.3.0: Remove game from shelf
+        function removeFromShelf(gameId) {
+            const game = GAMES[gameId];
+            if (!game) return;
+            
+            const index = appData.games.findIndex(g => g.id === gameId);
+            if (index === -1) {
+                showToast('Game not on your shelf');
+                return;
+            }
+            
+            // Show confirmation
+            showConfirmModal({
+                icon: game.icon,
+                title: `Remove ${game.name}?`,
+                message: 'This will remove the game from your shelf. Your stats and history will be kept.',
+                confirmText: 'Remove',
+                confirmStyle: 'danger',
+                onConfirm: () => {
+                    appData.games.splice(index, 1);
+                    saveData();
+                    syncToCloud();
+                    renderAll();
+                    showToast(`${game.name} removed from shelf`, 'info');
+                }
+            });
+        }
+        
+        // v1.3.0: Show game options (long-press menu)
+        function showGameOptions(gameId) {
+            const game = GAMES[gameId];
+            if (!game) return;
+            
+            const todayHistory = getTodayHistory();
+            const done = todayHistory[gameId];
+            const stats = appData.stats[gameId] || {};
+            const isOnShelf = appData.games.some(g => g.id === gameId);
+            
+            showGenericSheet({
+                title: `${game.icon} ${game.name}`,
+                content: `
+                    <div style="padding: 16px;">
+                        ${done ? `
+                            <div style="background: var(--accent-green); color: white; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 16px; font-size: 0.9rem;">
+                                ✓ Played today: ${done.score}
+                            </div>
+                        ` : ''}
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button onclick="closeGenericSheet(); playGame('${gameId}')" style="
+                                width: 100%; padding: 14px; background: var(--accent-purple); border: none;
+                                border-radius: 10px; color: white; font-size: 1rem; font-weight: 600; cursor: pointer;
+                                display: flex; align-items: center; justify-content: center; gap: 8px;
+                            ">
+                                <span>🎮</span> ${done ? 'Play Again' : 'Play Now'}
+                            </button>
+                            
+                            <button onclick="closeGenericSheet(); showGameStatsDetail('${gameId}')" style="
+                                width: 100%; padding: 14px; background: var(--bg-tertiary); border: 1px solid var(--border);
+                                border-radius: 10px; color: var(--text-primary); font-size: 1rem; cursor: pointer;
+                                display: flex; align-items: center; justify-content: center; gap: 8px;
+                            ">
+                                <span>📊</span> View Stats
+                            </button>
+                            
+                            ${isOnShelf ? `
+                                <button onclick="closeGenericSheet(); removeFromShelf('${gameId}')" style="
+                                    width: 100%; padding: 14px; background: var(--bg-tertiary); border: 1px solid var(--accent-red);
+                                    border-radius: 10px; color: var(--accent-red); font-size: 1rem; cursor: pointer;
+                                    display: flex; align-items: center; justify-content: center; gap: 8px;
+                                ">
+                                    <span>🗑️</span> Remove from Shelf
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `
+            });
+        }
+        
+        // v1.3.0: Long-press detection for game cards
+        // v1.3.1: Added visual feedback during long-press
+        let longPressTimer = null;
+        let longPressTarget = null;
+        let longPressElement = null;
+        
+        function setupLongPress(element, gameId) {
+            element.addEventListener('touchstart', (e) => {
+                longPressTarget = gameId;
+                longPressElement = element;
+                
+                // v1.3.1: Add visual feedback after brief delay (150ms)
+                setTimeout(() => {
+                    if (longPressTimer && longPressElement === element) {
+                        element.classList.add('long-pressing');
+                    }
+                }, 150);
+                
+                longPressTimer = setTimeout(() => {
+                    element.classList.remove('long-pressing');
+                    e.preventDefault();
+                    showGameOptions(gameId);
+                    longPressTarget = null;
+                    longPressElement = null;
+                }, 500);
+            }, { passive: false });
+            
+            element.addEventListener('touchend', () => {
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+                element.classList.remove('long-pressing');
+                longPressElement = null;
+            });
+            
+            element.addEventListener('touchmove', () => {
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+                element.classList.remove('long-pressing');
+                longPressElement = null;
+            });
+            
+            // Also support right-click on desktop
+            element.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                showGameOptions(gameId);
+            });
+        }
+        
         function switchTab(tab) {
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.nav-tab[data-tab="${tab}"]`).classList.add('active');
@@ -24734,7 +26464,8 @@ Hint levels:
                         await processShareText(text);
                         return;
                     }
-                    showToast('📋 Nothing to paste - copy results first', 'info');
+                    // v1.3.1: Consistent message with clipboard.read() path
+                    showToast('📋 Nothing to paste - copy results or screenshot', 'info');
                     return;
                 }
                 
@@ -24757,7 +26488,8 @@ Hint levels:
             const results = parseMultipleGames(text);
             
             if (results.length === 0) {
-                showToast('❓ Couldn\'t recognize game content', 'info');
+                // v1.3.1: More helpful message when content isn't recognized
+                showToast('❓ Not a game result - try copying share text', 'info');
                 setTimeout(() => openLogSheet(), 500);
                 return;
             }
@@ -25870,7 +27602,8 @@ Hint levels:
             for (let i = 0; i <= dayOfWeek; i++) {
                 const date = new Date(startOfWeek);
                 date.setDate(startOfWeek.getDate() + i);
-                const dateStr = date.toISOString().split('T')[0];
+                // v1.3.0: Use local date format to match getTodayString() (fixes timezone mismatch)
+                const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
                 const dayHistory = appData.history?.[dateStr] || {};
                 
                 const dayGames = Object.keys(dayHistory);
@@ -27147,15 +28880,15 @@ Hint levels:
                 const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                 const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
                 const icon = platformIcons[entry.platform] || '📤';
-                const preview = entry.message.split('\n')[0].substring(0, 50) + (entry.message.length > 50 ? '...' : '');
+                const rawPreview = entry.message.split('\n')[0].substring(0, 50) + (entry.message.length > 50 ? '...' : '');
                 
                 return `
-                    <div class="share-history-item" onclick="useShareFromHistory(${index})">
+                    <div class="share-history-item" onclick="useShareFromHistory(${parseInt(index)})">
                         <div class="share-history-item-header">
-                            <span class="share-history-item-platform">${icon} ${entry.platform}</span>
-                            <span class="share-history-item-date">${dateStr} ${timeStr}</span>
+                            <span class="share-history-item-platform">${icon} ${escapeHtml(entry.platform)}</span>
+                            <span class="share-history-item-date">${escapeHtml(dateStr)} ${escapeHtml(timeStr)}</span>
                         </div>
-                        <div class="share-history-item-preview">${preview}</div>
+                        <div class="share-history-item-preview">${escapeHtml(rawPreview)}</div>
                     </div>
                 `;
             }).join('');
@@ -29263,6 +30996,9 @@ Hint levels:
         function init() {
             loadData();
             
+            // v1.3.0: Validate streaks on startup (reset broken streaks)
+            validateStreaksOnStartup();
+            
             // Restore active game state from localStorage (survives app restarts)
             restoreActiveGameState();
             
@@ -29273,6 +31009,9 @@ Hint levels:
             } else {
                 // Show activity summary for returning users (delayed to let UI load)
                 setTimeout(showActivitySummary, 2000);
+                
+                // v1.3.2: Check for What's New after activity summary
+                setTimeout(checkForWhatsNew, 2500);
             }
             
             renderAll();
@@ -29342,7 +31081,7 @@ Hint levels:
             initTestModeToggle();
             
             // Load Feedback mode setting
-            initFeedbackMode();
+            initHelpButton();
             
             // Check for referral code in URL
             checkReferralParam();
@@ -29454,6 +31193,385 @@ Hint levels:
         }
         
         init();
+    </script>
+    
+    <!-- FAQ Data -->
+    <script id="faq-data" type="application/json">
+{
+  "version": "1.0",
+  "appVersion": "1.3.4",
+  "lastUpdated": "2026-01-29",
+  "categories": [
+    {
+      "id": "getting-started",
+      "name": "Getting Started",
+      "icon": "🚀",
+      "order": 1,
+      "questions": [
+        {
+          "id": "what-is-gs",
+          "q": "What is Game Shelf?",
+          "a": "Game Shelf is a **free app** that tracks all your daily puzzle games (Wordle, Connections, etc.) in one place. Instead of losing track of streaks or forgetting scores, Game Shelf keeps everything organized automatically.",
+          "keywords": ["about", "purpose", "what", "intro", "explain"]
+        },
+        {
+          "id": "how-to-start",
+          "q": "How do I get started?",
+          "a": "Three simple steps:\n\n1. **Add games** to your shelf from the Games tab\n2. **Play your games** normally\n3. **Record results** by copying share text and tapping Record Game\n\nThat's it! Game Shelf handles the rest.",
+          "keywords": ["start", "begin", "setup", "first", "new"]
+        },
+        {
+          "id": "is-free",
+          "q": "Is Game Shelf free?",
+          "a": "Yes! All core features are **completely free**: tracking, stats, streaks, friends, and battles. Optional coin purchases unlock premium rewards, but you never need to pay.",
+          "keywords": ["free", "cost", "price", "pay", "money"]
+        },
+        {
+          "id": "need-account",
+          "q": "Do I need to create an account?",
+          "a": "No account required for basic tracking. However, **signing in with Google** unlocks: sync across devices, friends, battles, AI hints, leaderboards, and automatic backup.",
+          "keywords": ["account", "sign in", "login", "register", "google"]
+        }
+      ]
+    },
+    {
+      "id": "recording",
+      "name": "Recording Games",
+      "icon": "📋",
+      "order": 2,
+      "questions": [
+        {
+          "id": "how-record",
+          "q": "How do I record a game result?",
+          "a": "After finishing a puzzle:\n\n1. Tap the game's **share button** to copy results\n2. Return to Game Shelf\n3. Tap **Record Game**\n\nGame Shelf reads your clipboard and logs automatically.",
+          "keywords": ["record", "log", "save", "add", "paste", "clipboard"]
+        },
+        {
+          "id": "manual-entry",
+          "q": "What if automatic recording doesn't work?",
+          "a": "**Long-press** (hold) the Record Game button to open manual entry. Select the game from the dropdown and enter your score manually.",
+          "keywords": ["manual", "enter", "type", "hold", "long press", "doesnt work"]
+        },
+        {
+          "id": "multiple-games",
+          "q": "Can I record multiple games at once?",
+          "a": "Yes! If you copy text containing **multiple game results** (like from a group chat), Game Shelf parses them all in one paste.",
+          "keywords": ["multiple", "several", "many", "batch", "bulk"]
+        },
+        {
+          "id": "wrong-score",
+          "q": "What if I record the wrong score?",
+          "a": "If you record the same game twice in one day, you'll be asked to **Keep** the original or **Replace** it with the new score.",
+          "keywords": ["wrong", "mistake", "error", "fix", "change", "replace", "correct"]
+        },
+        {
+          "id": "not-recognized",
+          "q": "Why doesn't Game Shelf recognize my result?",
+          "a": "Common reasons:\n\n• **Game not supported** - check our games list\n• **Modified share text** - use the original format\n• **Extra text added** - paste only the game result\n• **Clipboard empty** - copy the share text first",
+          "keywords": ["recognize", "detect", "find", "work", "fail", "error", "cant"]
+        },
+        {
+          "id": "supported-games",
+          "q": "Which games are supported?",
+          "a": "34+ games including: **Wordle**, **Connections**, **Strands**, Mini, Spelling Bee, Quordle, Queens, Tango, Worldle, Framed, and more. See Games tab → Browse for the full list.",
+          "keywords": ["supported", "games", "list", "which", "what games"]
+        }
+      ]
+    },
+    {
+      "id": "streaks",
+      "name": "Streaks & Stats",
+      "icon": "🔥",
+      "order": 3,
+      "questions": [
+        {
+          "id": "how-streaks-work",
+          "q": "How do streaks work?",
+          "a": "A **streak** counts consecutive days playing the same game. Miss a day = streak resets to 0. Each game has its own separate streak.",
+          "keywords": ["streak", "consecutive", "days", "row"]
+        },
+        {
+          "id": "streak-reset",
+          "q": "Why did my streak reset?",
+          "a": "Streaks reset if you **miss a day**. Playing at 11:59 PM still counts - it's based on calendar days in your local timezone, not 24-hour periods.",
+          "keywords": ["reset", "lost", "gone", "zero", "disappeared"]
+        },
+        {
+          "id": "streak-time",
+          "q": "What time do streaks reset?",
+          "a": "**Midnight in your local timezone.** Note: games themselves might reset at different times (Wordle resets midnight Eastern), but Game Shelf tracks YOUR play in YOUR timezone.",
+          "keywords": ["time", "midnight", "reset", "timezone", "when"]
+        },
+        {
+          "id": "view-stats",
+          "q": "Where can I see my stats?",
+          "a": "Multiple places:\n\n• **Stats tab** - overview of all games\n• **Game card** - shows streak and today's status\n• **Long-press → Stats** - detailed breakdown for one game",
+          "keywords": ["stats", "statistics", "view", "see", "find", "where"]
+        },
+        {
+          "id": "what-stats",
+          "q": "What stats does Game Shelf track?",
+          "a": "For each game: **games played**, **current streak**, **max streak**, **win rate**, **average score**, and complete play history.",
+          "keywords": ["track", "measure", "data", "what stats", "information"]
+        }
+      ]
+    },
+    {
+      "id": "hints",
+      "name": "AI Hints",
+      "icon": "💡",
+      "order": 4,
+      "questions": [
+        {
+          "id": "what-hints",
+          "q": "What are AI hints?",
+          "a": "Game Shelf can give you **AI-powered hints** for certain puzzles. Hints range from subtle nudges to direct answers - you control the level.",
+          "keywords": ["hint", "ai", "help", "clue", "assist"]
+        },
+        {
+          "id": "hint-games",
+          "q": "Which games support hints?",
+          "a": "**NYT Games**: Connections, Wordle, Strands, Spelling Bee, Mini\n**Game Shelf Originals**: Quotle, Rungs, Slate",
+          "keywords": ["which", "games", "supported", "hint games"]
+        },
+        {
+          "id": "hint-cost",
+          "q": "How much do hints cost?",
+          "a": "**5 tokens per hint.** You start with 50 free tokens and earn more through gameplay.",
+          "keywords": ["cost", "price", "tokens", "how much", "expensive"]
+        },
+        {
+          "id": "hint-levels",
+          "q": "What are hint levels?",
+          "a": "Ten levels from **Whisper** (barely helpful) to **Answer** (full solution):\n\n1-3: Vague nudges\n4-6: Clearer guidance\n7-9: Significant help\n10: Complete answer\n\nDefault is level 4 (Nudge).",
+          "keywords": ["levels", "whisper", "nudge", "answer", "spoiler", "how much help"]
+        },
+        {
+          "id": "cant-get-hints",
+          "q": "Why can't I get hints?",
+          "a": "You need:\n\n• **Signed in** with Google\n• At least **5 tokens**\n• Under rate limits (20/hour, 50/day)\n\nCheck your token balance in the Wallet.",
+          "keywords": ["cant", "unable", "not working", "error", "why"]
+        }
+      ]
+    },
+    {
+      "id": "battles",
+      "name": "Battles",
+      "icon": "⚔️",
+      "order": 5,
+      "questions": [
+        {
+          "id": "what-battles",
+          "q": "What are battles?",
+          "a": "**Brain Battles** are competitions between 2+ players over multiple days. Everyone plays the same games, and scores are compared. Winner takes the prize pool!",
+          "keywords": ["battle", "competition", "compete", "versus", "challenge"]
+        },
+        {
+          "id": "create-battle",
+          "q": "How do I create a battle?",
+          "a": "Hub tab → Battles → **Create Battle**\n\nChoose: name, games (1-8), duration (1-30 days), battle type, stakes, and visibility.",
+          "keywords": ["create", "start", "make", "new battle", "host"]
+        },
+        {
+          "id": "battle-types",
+          "q": "What battle types are there?",
+          "a": "Four types:\n\n• **Total Score** - highest combined score wins\n• **Most Wins** - each win = 1 point\n• **Perfect Hunter** - only perfect scores count\n• **Streak Challenge** - daily completion bonuses",
+          "keywords": ["types", "modes", "scoring", "total", "wins", "perfect", "streak"]
+        },
+        {
+          "id": "battle-stakes",
+          "q": "What are stakes?",
+          "a": "• **Friendly** - free, bragging rights only\n• **Coins** - 1-5 coins entry, winner takes 80%\n• **Tokens** - 1-500 tokens entry, winner takes 80%\n\nPublic battles are always friendly.",
+          "keywords": ["stakes", "bet", "wager", "coins", "tokens", "prize"]
+        },
+        {
+          "id": "join-battle",
+          "q": "How do I join a battle?",
+          "a": "Three ways:\n\n• Enter the **6-character code**\n• Click an **invite link**\n• Browse **public battles** in Hub → Battles",
+          "keywords": ["join", "enter", "code", "invite", "link"]
+        },
+        {
+          "id": "forgot-play",
+          "q": "What if I forget to play a battle game?",
+          "a": "Your Home screen shows a **reminder banner** for unplayed battle games. Missing games hurts your score but doesn't disqualify you.",
+          "keywords": ["forget", "missed", "reminder", "notification"]
+        }
+      ]
+    },
+    {
+      "id": "social",
+      "name": "Friends & Social",
+      "icon": "👥",
+      "order": 6,
+      "questions": [
+        {
+          "id": "add-friends",
+          "q": "How do I add friends?",
+          "a": "Hub → Friends → **Add Friend**\n\n• Enter their **8-character friend code**\n• Share your **friend link**\n• Use **Find Friends** to check contacts",
+          "keywords": ["add", "friend", "connect", "invite"]
+        },
+        {
+          "id": "friend-code",
+          "q": "What's my friend code?",
+          "a": "Find your unique **8-character code** in Hub → Friends. Share it so others can add you!",
+          "keywords": ["code", "my code", "friend code", "share"]
+        },
+        {
+          "id": "friends-see",
+          "q": "What can friends see?",
+          "a": "Friends can see: your **profile**, **leaderboard rankings**, and **activity status** (played today or not). They can't see your full history or detailed stats.",
+          "keywords": ["see", "view", "privacy", "visible", "private"]
+        },
+        {
+          "id": "nudge",
+          "q": "How do nudges work?",
+          "a": "If a friend hasn't played today, tap their profile → **Nudge to Play**. They'll see a notification next time they open Game Shelf.\n\nLimit: one nudge per friend per day.",
+          "keywords": ["nudge", "remind", "poke", "notification"]
+        },
+        {
+          "id": "leaderboard",
+          "q": "How do leaderboards work?",
+          "a": "Compare with friends by games played: **daily**, **weekly**, or **monthly** rankings. Access via Hub → Friends → Leaderboard.",
+          "keywords": ["leaderboard", "ranking", "compare", "score"]
+        }
+      ]
+    },
+    {
+      "id": "economy",
+      "name": "Tokens & Coins",
+      "icon": "💰",
+      "order": 7,
+      "questions": [
+        {
+          "id": "tokens-vs-coins",
+          "q": "What's the difference between tokens and coins?",
+          "a": "**Tokens** = free currency, earned through play. Use for hints and token battles.\n\n**Coins** = purchased currency. Use for coin battles and rewards shop.",
+          "keywords": ["tokens", "coins", "difference", "currency"]
+        },
+        {
+          "id": "earn-tokens",
+          "q": "How do I earn tokens?",
+          "a": "• **New account**: 50 tokens\n• **5+ games/day**: 5 tokens\n• **5-day streak**: 10 tokens\n• **All GS originals**: 5 tokens\n• **Win battles**: from prize pool\n• **Referrals**: 10-50 tokens",
+          "keywords": ["earn", "get", "free", "tokens", "how"]
+        },
+        {
+          "id": "buy-coins",
+          "q": "How do I buy coins?",
+          "a": "Hub → Wallet → **Buy Coins**. Select a package and complete purchase via Stripe. Coins never expire.",
+          "keywords": ["buy", "purchase", "coins", "money"]
+        },
+        {
+          "id": "check-balance",
+          "q": "Where do I see my balance?",
+          "a": "• **Home screen**: Wallet widget\n• **Header**: Token count\n• **Menu → Wallet**: Full details and transaction history",
+          "keywords": ["balance", "how many", "check", "wallet"]
+        }
+      ]
+    },
+    {
+      "id": "account",
+      "name": "Account & Sync",
+      "icon": "☁️",
+      "order": 8,
+      "questions": [
+        {
+          "id": "why-sign-in",
+          "q": "Why should I sign in?",
+          "a": "Signing in enables: **sync across devices**, friends, battles, AI hints, leaderboards, and **automatic backup**. Without sign-in, data only exists on your current device.",
+          "keywords": ["sign in", "login", "why", "benefit", "google"]
+        },
+        {
+          "id": "how-sign-in",
+          "q": "How do I sign in?",
+          "a": "Menu → Account → **Sign in with Google**. Select your Google account and you're done! Data syncs automatically.",
+          "keywords": ["sign in", "login", "how", "google"]
+        },
+        {
+          "id": "switch-devices",
+          "q": "Will I lose data if I switch devices?",
+          "a": "**If signed in**: No - your data syncs automatically. Just sign in on the new device.\n\n**If not signed in**: Yes - data is device-only and can't be recovered.",
+          "keywords": ["switch", "new device", "phone", "transfer", "lose"]
+        },
+        {
+          "id": "delete-account",
+          "q": "How do I delete my account?",
+          "a": "Menu → Account → **Delete Account**. This permanently removes all data from our servers. This action cannot be undone.",
+          "keywords": ["delete", "remove", "account", "data", "privacy"]
+        }
+      ]
+    },
+    {
+      "id": "troubleshooting",
+      "name": "Troubleshooting",
+      "icon": "🔧",
+      "order": 9,
+      "questions": [
+        {
+          "id": "streak-not-updating",
+          "q": "My streak didn't update!",
+          "a": "Check that the game was actually recorded (see History). If it's there, the streak should be correct. If you played close to midnight, timezone differences might have affected which day it counted.",
+          "keywords": ["streak", "update", "wrong", "not working", "didnt"]
+        },
+        {
+          "id": "clipboard-ios",
+          "q": "Clipboard paste isn't working (iOS)",
+          "a": "iOS asks permission each time. When you see **\"Allow Paste?\"**, tap **Allow**. If denied, try again or use manual entry (long-press Record Game).",
+          "keywords": ["clipboard", "paste", "ios", "iphone", "permission", "allow"]
+        },
+        {
+          "id": "app-slow",
+          "q": "The app is running slowly",
+          "a": "Try:\n\n• **Refresh** the page\n• **Clear cache**: Settings → Developer → Clear Cache\n• **Reinstall PWA**: Remove from home screen, re-add",
+          "keywords": ["slow", "laggy", "performance", "freeze", "stuck"]
+        },
+        {
+          "id": "data-disappeared",
+          "q": "My data disappeared!",
+          "a": "**If signed in**: Try signing out and back in.\n\n**If not signed in**: Local data can be lost when clearing browser data - unfortunately this can't be recovered. Always sign in for backup!",
+          "keywords": ["data", "lost", "gone", "disappeared", "missing"]
+        },
+        {
+          "id": "no-sound",
+          "q": "Sound not working",
+          "a": "Check:\n\n• **Device not muted** (check mute switch/volume)\n• **Sound enabled**: Settings → Sound Effects\n• **iOS**: Tap anywhere in app first to enable audio",
+          "keywords": ["sound", "audio", "mute", "silent", "hear"]
+        },
+        {
+          "id": "game-not-supported",
+          "q": "A game I play isn't supported",
+          "a": "Menu → Help → **Send Feedback** and let us know! Include the game name, URL, and sample share text. We add new games regularly.",
+          "keywords": ["not supported", "add game", "request", "suggest", "new game"]
+        }
+      ]
+    },
+    {
+      "id": "privacy",
+      "name": "Privacy & Data",
+      "icon": "🔒",
+      "order": 10,
+      "questions": [
+        {
+          "id": "what-data",
+          "q": "What data does Game Shelf collect?",
+          "a": "Your **puzzle results**, stats, and activity. If signed in, your Google profile info (name, email, photo) for identification. We don't track your browsing or access games directly.",
+          "keywords": ["data", "collect", "privacy", "information", "track"]
+        },
+        {
+          "id": "data-private",
+          "q": "Is my data private?",
+          "a": "Yes. Only you can see your full data. Friends only see what you share: leaderboard rankings and profile. You control your visibility.",
+          "keywords": ["private", "secure", "safe", "who can see"]
+        },
+        {
+          "id": "export-data",
+          "q": "Can I export my data?",
+          "a": "Yes! Menu → Settings & Data → **Export Data**. Download all your stats and history.",
+          "keywords": ["export", "download", "backup", "copy"]
+        }
+      ]
+    }
+  ]
+}
     </script>
 </body>
 </html>

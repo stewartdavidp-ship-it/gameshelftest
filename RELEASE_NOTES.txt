@@ -1,3 +1,273 @@
+Game Shelf PWA v1.3.4 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI HELP SYSTEM:
+---------------
+* AI-powered help assistant
+  - Ask questions about Game Shelf features, troubleshooting, tips
+  - Instant answers powered by Claude AI
+  - Conversational interface in dedicated sheet
+
+* Hybrid context (smart context awareness)
+  - AI knows what you searched for in FAQs
+  - AI knows which FAQ items you expanded
+  - More targeted answers based on your journey
+
+* Cost & limits
+  - 5 tokens per question
+  - 20 questions per day (separate from hint limits)
+
+TECHNICAL:
+----------
+* New Firebase function: getAIHelp
+  - Dedicated function with server-side system prompt
+  - Separate rate limiting from hints (20/day)
+  - Analytics in ai-help-analytics/
+
+* New Firebase paths:
+  - ai-help-usage/{userId}/requests - rate limiting
+  - ai-help-analytics/ - usage tracking
+
+* Client changes:
+  - New AI Help sheet UI with CSS
+  - submitAIHelp() calls getAIHelp function
+  - trackViewedFaq() for hybrid context
+
+DEPLOYMENT:
+-----------
+1. Upload index.js to Command Center
+2. Deploy gameshelf-deploy-v1_3_4.zip
+
+---
+
+Game Shelf PWA v1.3.3 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+HELP SYSTEM:
+------------
+* New unified Help center
+  - Searchable FAQ with 50+ questions
+  - 10 categories: Getting Started, Recording, Streaks, Hints, Battles, etc.
+  - Search-as-you-type with instant results
+  - Basic markdown formatting in answers (bold, code, links)
+
+* Menu consolidation
+  - "Help & About" and "Feedback" merged into single "Help" entry
+  - What's New, Tutorial, About, and Feedback all accessible from Help sheet
+  - Cleaner menu with fewer items
+
+* Floating Help button
+  - Former "Feedback" button now opens Help
+  - Toggle visibility in Settings → Help Button
+  - Quick access to FAQs and support
+
+* "Ask AI" preview
+  - Button visible in help sheet
+  - Full AI help integration coming in future update
+
+* Analytics
+  - FAQ views tracked for improvement insights
+  - Search queries logged to identify content gaps
+  - Ask AI clicks tracked
+
+TECHNICAL:
+----------
+* FAQ data embedded as JSON in index.html
+* Lightweight markdown renderer (no external library)
+* Badge system for new FAQ content
+* Firebase rules for faq-analytics
+
+---
+
+Game Shelf PWA v1.3.2 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+WHAT'S NEW FEATURE:
+------------------
+* Added "What's New" system
+  - Automatically shows after app updates
+  - Displays new features by version
+  - Badge indicator on menu when update unseen
+  - Access anytime via Menu → Help & About → What's New
+
+MENU IMPROVEMENTS:
+------------------
+* Reorganized menu for better UX
+  - Account section moved up for prominence
+  - Achievements before Invite Friends (reward before ask)
+  - Help & About now includes What's New
+  - Feedback moved to bottom
+
+* Better modal dialogs throughout
+  - showAbout() now uses styled bottom sheet
+  - showMerchDetails() uses styled modals (no more alert/confirm)
+  - redeemMerch() shows success modal with gift info
+  - Consistent look and feel across the app
+
+CODE QUALITY:
+-------------
+* New APP_VERSION constant for centralized version management
+* RELEASE_NOTES object stores version history
+* Version comparison utility (compareVersions)
+* localStorage tracking for seen versions
+
+---
+
+Game Shelf PWA v1.3.1 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+UX IMPROVEMENTS:
+----------------
+* Quick game buttons now support long-press
+  - Consistent with main game grid behavior
+  - Long-press quick buttons to access Play/Stats/Remove menu
+
+* Progress section shows CURRENT streak instead of all-time best
+  - More relevant for daily motivation
+  - Shows highest active streak among your games
+
+* Visual feedback during long-press
+  - Game cards now scale and glow purple when holding
+  - Users can see they're in "long-press mode"
+  - Works on both game grid and quick game buttons
+
+* Friends widget now shows names
+  - First name shown below avatar
+  - Easier to identify friends at a glance
+  - Names truncate gracefully if too long
+
+* Battle widget improvements
+  - Now handles multiple active battles (shows most urgent)
+  - Shows "(+N more)" when in multiple battles
+  - Better time display: hours if <1 day remaining
+  - Improved reminder wording: "Still to play:" instead of "Still need:"
+
+* Improved clipboard feedback messages
+  - Consistent messaging across all clipboard paths
+  - "Not a game result - try copying share text" for unrecognized content
+  - Clearer guidance for users
+
+---
+
+Game Shelf PWA v1.3.0 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+MAJOR NEW FEATURES:
+-------------------
+* Remove games from shelf
+  - Long-press (mobile) or right-click (desktop) any game card
+  - Opens game options menu with Play, Stats, and Remove options
+  - Confirmation dialog before removal
+  - Added "Long-press any game to remove" hint in Your Shelf section
+  - Stats and history are preserved when removing games
+
+* Improved game search
+  - Search now also matches category names (e.g., "geography" finds all geography games)
+  - Search results now show streaks and scores for games on shelf
+  - Clicking a shelf game in search now plays it (not just shows "on shelf")
+  - Added long-press support in search results
+
+* Better recommendations
+  - Refresh button now actually provides variety (added random factor)
+  - Sound effect when refreshing
+
+* "Add All" confirmation
+  - Bulk adding games now shows confirmation dialog
+  - Prevents accidental additions
+
+* Category accordion state persists
+  - Expanded categories are remembered across sessions
+  - Stored in localStorage
+
+BUG FIXES:
+----------
+* Quick game buttons now play the game (instead of opening log sheet)
+* Sync failure feedback - shows toast after 3 consecutive failures
+
+CODE QUALITY:
+-------------
+* Added setupLongPress() for touch and context menu handling
+* Added showGameOptions() for game card options menu
+* Added saveCategoryExpandedState() / restoreCategoryExpandedState()
+* Added syncFailureCount tracking
+
+---
+
+Game Shelf PWA v1.2.79 Release Notes
+====================================
+
+Release Date: January 29, 2026
+
+CRITICAL BUG FIXES:
+-------------------
+* Fixed streak calculation - streaks now actually increment!
+  - CRITICAL: Previous code set lastPlayed BEFORE checking if it was yesterday
+  - This caused the yesterday check to always fail (comparing today === yesterday)
+  - Result: streaks could never grow beyond 1
+  - Fix: Save oldLastPlayed before updating, use it for comparison
+  
+* Fixed timezone mismatch in streak calculation
+  - yesterdayStr was using UTC (toISOString) while today uses local time
+  - Now both use local time consistently
+  
+* Added proper streak reset logic
+  - Streaks now correctly reset to 1 when days are missed
+  - Previously there was no reset logic at all
+
+* Fixed 5 additional UTC/local timezone mismatches
+  - Added getLocalDateString() helper function for consistent date handling
+  - Fixed publishPublicProfile() streak calculation (was UTC, now local)
+  - Fixed renderFriendsLeaderboard() streak calculation (was UTC, now local)
+  - Fixed loadSentNudges() yesterday calculation (was UTC, now local)
+  - Fixed generateActivitySummary() history iteration (was UTC, now local)
+  - Fixed calculateStreak() history iteration (was UTC, now local)
+  - These bugs could cause incorrect streaks/stats near midnight for users
+    in negative UTC offsets (Americas)
+
+NEW FEATURES:
+-------------
+* Added streak validation on app startup
+  - Checks all game streaks when app loads
+  - Resets any broken streaks (where lastPlayed is not today or yesterday)
+  - Prevents stale streak data from showing in UI
+  - Logs reset count to console for debugging
+
+CODE CLEANUP:
+-------------
+* Removed unused totalGames variable from renderStatsScreen()
+
+---
+
+Game Shelf PWA v1.2.78 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+SECURITY FIXES:
+---------------
+* Fixed XSS vulnerability in Share History rendering
+  - Share history entries now properly escape platform name and message preview
+  - Also escapes date/time strings for defense in depth
+
+BUG FIXES:
+----------
+* Fixed weekly stats timezone mismatch
+  - Weekly recap now uses local dates instead of UTC
+  - Matches getTodayString() format for consistent history lookups
+  - Fixes issue where late-night plays could be missed in weekly stats
+
+---
+
 Game Shelf PWA v1.2.77 Release Notes
 =====================================
 
