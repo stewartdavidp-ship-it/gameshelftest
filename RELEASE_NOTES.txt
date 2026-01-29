@@ -1,3 +1,43 @@
+Game Shelf PWA v1.3.31 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI HELP RAG IMPROVEMENTS (Phase 5):
+-----------------------------------
+* Increased FAQ context from 3 to 5 results for better AI Help answers
+* Added synonym expansion for query matching
+  - "sync" now also matches "import", "transfer", "migrate"
+  - "balance" now also matches "wallet", "tokens", "coins"
+  - And many more common synonyms
+* Added category boosting for high-priority FAQ categories
+  - Getting Started and Troubleshooting get 2x boost
+  - Recording and Streaks get 1.5x boost
+* Overall: AI Help should now provide more accurate, relevant answers
+
+---
+
+Game Shelf PWA v1.3.30 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+SHARE TEXT IMPROVEMENTS:
+------------------------
+* Insight share now uses 🧩 emoji (matches other share footers)
+* Fixed URL to gameshelf.co (was incorrectly gameshelf.app)
+* Share format now:
+  "Today's Connections (Jan 29) was 🎯 FAIR!
+   What did you think?
+   🧩 Tracked with Game Shelf
+   gameshelf.co"
+
+ALSO FIXED:
+-----------
+* All gameshelf.app references updated to gameshelf.co throughout app
+
+---
+
 Game Shelf PWA v1.3.29 Release Notes
 =====================================
 
