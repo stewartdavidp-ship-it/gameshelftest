@@ -26871,7 +26871,7 @@ Hint levels:
         
         // Get user's shelf games that are supported by morning review
         function getMorningReviewGames() {
-            const shelfGames = Object.keys(userData?.games || {});
+            const shelfGames = appData?.games?.map(g => g.id) || [];
             const supportedGames = Object.keys(MORNING_REVIEW_GAME_CONFIG);
             
             // Map game IDs (handle nyt- prefix variations)

@@ -43,13 +43,20 @@ handling the extracted text properly in all cases.
    - Logs all number candidates found
    - Makes troubleshooting much easier
 
+MORNING REVIEW BUG FIX:
+-----------------------
+Fixed "Can't find variable: userData" error that occurred when Morning Review 
+tried to access the user's game shelf. Changed incorrect `userData` reference 
+to `appData.games.map(g => g.id)`.
+
 **Technical Details:**
 - New functions: preprocessOCRText(), findStatsNumberSequence()
 - Added Step 3c to parseStatsFromOCR() as final fallback
+- Fixed getMorningReviewGames() to use correct variable
 - Console logs now provide detailed parsing trace
 
 **Files Modified:**
-- gameshelf/index.html - OCR enhancement, v1.3.36
+- gameshelf/index.html - OCR enhancement + Morning Review fix, v1.3.36
 - gameshelf/sw.js - CACHE_VERSION to v1.3.36
 
 ---
