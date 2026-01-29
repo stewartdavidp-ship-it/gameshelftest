@@ -1,3 +1,54 @@
+Game Shelf PWA v1.3.24 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+DARK MODE VISIBILITY FIX:
+-------------------------
+* Tutorial spotlight now has strong inner glow to illuminate dark content
+* Added pulsing animation enhancement with brighter glow effect
+* Active nav tab now has visible purple background pill (15% opacity)
+* Tab background uses border-radius for softer pill shape
+
+TECHNICAL DETAILS:
+------------------
+Tutorial spotlight CSS changes:
+* Added `inset 0 0 20px 5px rgba(102, 126, 234, 0.25)` for inner illumination
+* Added stronger outer glow `0 0 30px 8px rgba(102, 126, 234, 0.5)`
+* Pulse animation enhanced with brighter 50% state glow
+
+Active nav tab CSS changes:
+* Added `background: rgba(102, 126, 234, 0.15)` to .nav-tab.active
+* Added `border-radius: 12px` and `margin: 4px 2px` for pill shape
+* Added `transition: background 0.2s` for smooth state changes
+
+---
+
+Game Shelf PWA v1.3.23 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+DESKTOP ENHANCEMENT:
+--------------------
+* Added desktop containment - app is centered in a 480px container on wide screens
+* Desktop side areas now have themed background (dark/light mode aware)
+* Added dismissible banner reminding desktop users the app is mobile-first
+* Banner only shows once per device (dismissed state saved to localStorage)
+* Uses CSS transform trick to contain all fixed-position elements within the app bounds
+* No changes to mobile experience - all changes are behind @media (min-width: 600px)
+
+TECHNICAL DETAILS:
+------------------
+* body gets max-width: 480px and transform: translateX(-50%) on desktop
+* This makes position: fixed children relative to body instead of viewport
+* html background color adjusts to match light/dark mode
+* Desktop banner CSS is display: none on mobile, flex on desktop
+* Added isDesktopScreen() helper function
+* Platform detection already tracked 'desktop' in analytics
+
+---
+
 Game Shelf PWA v1.3.22 Release Notes
 =====================================
 
