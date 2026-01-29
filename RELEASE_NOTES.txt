@@ -1,3 +1,84 @@
+Game Shelf PWA v1.3.28 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+DAILY INSIGHTS (NEW FEATURE):
+-----------------------------
+* AI-powered post-puzzle analysis for Connections
+* Shows after you log a game - tap the game card to see "View Today's Insight"
+* Analysis includes:
+  - Difficulty rating (1-5 🔥)
+  - Sneakiness level (Low/Medium/High)
+  - Category breakdown with traps/red herrings
+  - Verdict: was the puzzle fair?
+
+COMMUNITY REACTIONS:
+--------------------
+* React to insights: 🎯 Fair / 🙄 BS / 🤯 Brutal
+* See how other players voted
+* "Share Your Take" button to share your reaction
+
+TECHNICAL DETAILS:
+------------------
+* 💡 icon appears on game cards when insight is available
+* Firebase functions: getDailyInsight, submitInsightReaction, getInsightReaction
+* Cache structure: daily-insights/{date}/{gameId}/
+* Reactions stored per-user per-day
+* First request triggers AI generation (3-5 seconds)
+* Subsequent users get cached version instantly
+
+EXPANSION PLANS:
+----------------
+Currently Connections only. Can expand to other games based on user feedback.
+
+---
+
+Game Shelf PWA v1.3.27 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+EXPANDED FAQ SYSTEM:
+-------------------
+* Expanded FAQ from 48 to 136 questions across 15 categories
+* New categories added:
+  - Navigation (10 questions)
+  - Home Screen (8 questions) 
+  - Games Tab (8 questions)
+  - AI Help (7 questions)
+  - Share Tab (7 questions)
+* All existing categories expanded with additional questions
+* Improved keyword coverage for better search matching
+* All answers verified against actual app functionality
+
+FAQ CATEGORY BREAKDOWN:
+-----------------------
+1. Getting Started: 10 questions
+2. Navigation: 10 questions
+3. Home Screen: 8 questions
+4. Recording Games: 10 questions
+5. Games Tab: 8 questions
+6. Streaks & Stats: 12 questions (includes Import Stats)
+7. AI Hints: 10 questions
+8. AI Help: 7 questions
+9. Battles: 11 questions
+10. Friends & Social: 8 questions
+11. Share Tab: 7 questions
+12. Tokens & Coins: 10 questions
+13. Account & Sync: 8 questions
+14. Troubleshooting: 12 questions
+15. Privacy & Data: 5 questions
+
+TECHNICAL DETAILS:
+------------------
+* FAQ data updated from version 1.0 to 2.0
+* JSON structure unchanged (backwards compatible)
+* All questions include expanded keyword arrays
+* Part of Help Documentation Project Phase 3
+
+---
+
 Game Shelf PWA v1.3.26 Release Notes
 =====================================
 

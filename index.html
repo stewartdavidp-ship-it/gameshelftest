@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.26">
+    <meta name="version" content="1.3.28">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -4085,6 +4085,220 @@
             border-radius: 8px;
             margin-bottom: 16px;
             font-size: 0.9rem;
+        }
+        
+        /* ============ DAILY INSIGHT SHEET ============ */
+        .insight-sheet-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .insight-sheet-icon {
+            font-size: 2.5rem;
+            animation: insight-glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes insight-glow {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(168, 85, 247, 0.4)); }
+            50% { filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.7)); }
+        }
+        
+        .insight-sheet-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .insight-sheet-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .insight-loading {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .insight-loading-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            animation: insight-pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes insight-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+        
+        .insight-loading-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .insight-loading-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .insight-content {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 20px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .insight-content strong {
+            color: var(--accent-purple);
+        }
+        
+        .insight-content p {
+            margin: 0 0 12px 0;
+        }
+        
+        .insight-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .insight-content ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .insight-content li {
+            margin-bottom: 6px;
+        }
+        
+        .insight-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .insight-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--accent-purple);
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        
+        /* Insight Reactions */
+        .insight-reactions {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .insight-reactions-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .insight-reactions-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        
+        .insight-reaction-btn {
+            flex: 1;
+            max-width: 100px;
+            padding: 12px 8px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .insight-reaction-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .insight-reaction-btn.selected {
+            border-color: var(--accent-purple);
+            background: rgba(168, 85, 247, 0.15);
+        }
+        
+        .insight-reaction-btn .reaction-emoji {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .insight-reaction-btn .reaction-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        
+        .insight-reaction-btn.selected .reaction-label {
+            color: var(--accent-purple);
+        }
+        
+        .insight-reactions-summary {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+        
+        .insight-reactions-summary .reaction-count {
+            margin: 0 8px;
+        }
+        
+        /* Insight icon on game cards */
+        .game-card .insight-available {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 0.9rem;
+            filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.5));
+        }
+        
+        .game-card {
+            position: relative;
+        }
+        
+        /* Share Your Take button */
+        .insight-share-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .insight-share-btn:active {
+            transform: scale(0.98);
         }
         
         /* Quick Capture Sheet */
@@ -8908,7 +9122,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.26</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.28</span>
             </div>
         </div>
         <div class="header-right">
@@ -9162,7 +9376,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.26</div>
+            <div class="settings-version">Game Shelf PWA v1.3.28</div>
         </div>
     </div>
     
@@ -10630,6 +10844,68 @@ Wordle 1,234 3/6
                     <div class="hint-game-chip" onclick="selectHintGame('rungs')">🪜 Rungs</div>
                     <div class="hint-game-chip" onclick="selectHintGame('slate')">📝 Slate</div>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Daily Insight Sheet -->
+    <div class="bottom-sheet-overlay" id="insight-sheet-overlay" onclick="closeInsightSheet()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh;">
+            <div class="bottom-sheet-handle"></div>
+            <button class="hint-sheet-close" onclick="closeInsightSheet()" aria-label="Close insight sheet">×</button>
+            
+            <div class="insight-sheet-header">
+                <div class="insight-sheet-icon">💡</div>
+                <div>
+                    <div class="insight-sheet-title">Today's Insight <span class="insight-badge">NEW</span></div>
+                    <div class="insight-sheet-subtitle" id="insight-game-subtitle">Connections Analysis</div>
+                </div>
+            </div>
+            
+            <!-- Loading State -->
+            <div class="insight-loading" id="insight-loading">
+                <div class="insight-loading-icon">🔍</div>
+                <div class="insight-loading-title">Analyzing today's puzzle...</div>
+                <div class="insight-loading-subtitle">First one of the day! Examining categories, hunting for red herrings...</div>
+            </div>
+            
+            <!-- Content (shown after loading) -->
+            <div id="insight-main-content" style="display: none;">
+                <div class="insight-content" id="insight-content">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Reactions -->
+                <div class="insight-reactions" id="insight-reactions">
+                    <div class="insight-reactions-title">What did you think?</div>
+                    <div class="insight-reactions-buttons">
+                        <button class="insight-reaction-btn" data-reaction="fair" onclick="submitInsightReaction('fair')">
+                            <span class="reaction-emoji">🎯</span>
+                            <span class="reaction-label">Fair</span>
+                        </button>
+                        <button class="insight-reaction-btn" data-reaction="bs" onclick="submitInsightReaction('bs')">
+                            <span class="reaction-emoji">🙄</span>
+                            <span class="reaction-label">BS</span>
+                        </button>
+                        <button class="insight-reaction-btn" data-reaction="brutal" onclick="submitInsightReaction('brutal')">
+                            <span class="reaction-emoji">🤯</span>
+                            <span class="reaction-label">Brutal</span>
+                        </button>
+                    </div>
+                    <div class="insight-reactions-summary" id="insight-reactions-summary" style="display: none;">
+                        <!-- Populated by JS: "47 players: 🎯 32  🙄 8  🤯 7" -->
+                    </div>
+                </div>
+                
+                <!-- Share Your Take -->
+                <button class="insight-share-btn" id="insight-share-btn" onclick="shareInsightTake()" style="display: none;">
+                    📤 Share Your Take
+                </button>
+            </div>
+            
+            <!-- Error State -->
+            <div class="insight-error" id="insight-error" style="display: none;">
+                Something went wrong. Please try again.
             </div>
         </div>
     </div>
@@ -18316,9 +18592,15 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.26';
+        const APP_VERSION = '1.3.28';
         
         const RELEASE_NOTES = {
+            '1.3.28': [
+                { icon: '💡', title: 'Daily Insights', desc: 'Get AI-powered analysis of today\'s puzzle - was it fair? React and share your take!' }
+            ],
+            '1.3.27': [
+                { icon: '❓', title: 'Expanded FAQ', desc: 'Help system now has 136 searchable questions across 15 categories' }
+            ],
             '1.3.26': [
                 { icon: '🎓', title: 'Tutorial Fixes', desc: 'Fixed tutorial targeting hidden FABs, desktop positioning, and missing elements' }
             ],
@@ -23171,11 +23453,13 @@ Wordle 1,234 3/6
                 const done = todayHistory[g.id];
                 const stats = appData.stats[g.id];
                 const streak = stats?.currentStreak || 0;
+                const showInsightIcon = done && isInsightAvailable(g.id);
                 
                 let status = streak > 0 ? `🔥 ${streak}` : 'Play';
                 if (done) status = `✓ ${done.score}`;
                 
                 return `<div class="game-card ${done ? 'done' : ''}" onclick="playGame('${g.id}')" data-game-id="${g.id}">
+                    ${showInsightIcon ? '<span class="insight-available" title="Insight available">💡</span>' : ''}
                     <div class="game-icon">${game.icon}</div>
                     <div class="game-name">${game.name}</div>
                     <div class="game-status">${status}</div>
@@ -23209,11 +23493,13 @@ Wordle 1,234 3/6
                 const done = todayHistory[g.id];
                 const stats = appData.stats[g.id];
                 const streak = stats?.currentStreak || 0;
+                const showInsightIcon = done && isInsightAvailable(g.id);
                 
                 let status = streak > 0 ? `🔥 ${streak}` : 'Play';
                 if (done) status = `✓ ${done.score}`;
                 
                 return `<div class="game-card ${done ? 'done' : ''}" onclick="playGame('${g.id}')" data-game-id="${g.id}">
+                    ${showInsightIcon ? '<span class="insight-available" title="Insight available">💡</span>' : ''}
                     <div class="game-icon">${game.icon}</div>
                     <div class="game-name">${game.name}</div>
                     <div class="game-status">${status}</div>
@@ -25923,6 +26209,203 @@ Hint levels:
             document.getElementById('hint-sheet-overlay').classList.remove('active');
         }
         
+        // ============ DAILY INSIGHTS ============
+        // Games that support daily insights
+        const INSIGHT_GAMES_LIST = ['connections', 'nyt-connections'];
+        let currentInsightGame = null;
+        let currentInsightReaction = null;
+        
+        async function showInsightSheet(gameId) {
+            // Normalize game ID
+            const normalizedId = gameId === 'nyt-connections' ? 'connections' : gameId;
+            currentInsightGame = normalizedId;
+            
+            // Check if game supports insights
+            if (!INSIGHT_GAMES_LIST.includes(gameId) && !INSIGHT_GAMES_LIST.includes(normalizedId)) {
+                showToast('Insights not available for this game yet');
+                return;
+            }
+            
+            // Check auth
+            if (!currentUser) {
+                showToast('Sign in to view insights');
+                signInWithGoogle();
+                return;
+            }
+            
+            // Show sheet
+            document.getElementById('insight-sheet-overlay').classList.add('active');
+            
+            // Set game name in subtitle
+            const game = GAMES[gameId] || GAMES['nyt-connections'];
+            document.getElementById('insight-game-subtitle').textContent = `${game?.name || 'Connections'} Analysis`;
+            
+            // Reset UI - show loading, hide content and error
+            document.getElementById('insight-loading').style.display = 'block';
+            document.getElementById('insight-main-content').style.display = 'none';
+            document.getElementById('insight-error').style.display = 'none';
+            document.getElementById('insight-reactions-summary').style.display = 'none';
+            document.getElementById('insight-share-btn').style.display = 'none';
+            
+            // Reset reaction buttons
+            document.querySelectorAll('.insight-reaction-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            currentInsightReaction = null;
+            
+            try {
+                // Call Firebase function
+                const getDailyInsight = firebase.functions().httpsCallable('getDailyInsight');
+                const result = await getDailyInsight({ gameId: normalizedId });
+                
+                // Format and display insight
+                const formattedContent = formatInsightContent(result.data.insight);
+                document.getElementById('insight-content').innerHTML = formattedContent;
+                
+                // Show reactions if available
+                if (result.data.reactions) {
+                    updateReactionsSummary(result.data.reactions);
+                }
+                
+                // Check if user already reacted
+                try {
+                    const getReaction = firebase.functions().httpsCallable('getInsightReaction');
+                    const reactionResult = await getReaction({ gameId: normalizedId });
+                    if (reactionResult.data.userReaction) {
+                        currentInsightReaction = reactionResult.data.userReaction;
+                        const btn = document.querySelector(`.insight-reaction-btn[data-reaction="${reactionResult.data.userReaction}"]`);
+                        if (btn) btn.classList.add('selected');
+                        document.getElementById('insight-share-btn').style.display = 'block';
+                    }
+                } catch (e) {
+                    console.warn('Could not get existing reaction:', e);
+                }
+                
+                // Show content, hide loading
+                document.getElementById('insight-loading').style.display = 'none';
+                document.getElementById('insight-main-content').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Insight error:', error);
+                document.getElementById('insight-loading').style.display = 'none';
+                document.getElementById('insight-error').textContent = error.message || 'Failed to load insight. Please try again.';
+                document.getElementById('insight-error').style.display = 'block';
+            }
+        }
+        
+        function closeInsightSheet() {
+            document.getElementById('insight-sheet-overlay').classList.remove('active');
+        }
+        
+        function formatInsightContent(text) {
+            // Convert markdown-ish formatting to HTML
+            let html = text
+                // Bold
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                // Bullet points
+                .replace(/^[-•]\s+(.+)$/gm, '<li>$1</li>')
+                // Wrap consecutive <li> in <ul>
+                .replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`)
+                // Paragraphs (double newlines)
+                .replace(/\n\n/g, '</p><p>')
+                // Single newlines
+                .replace(/\n/g, '<br>');
+            
+            // Wrap in paragraph if not already
+            if (!html.startsWith('<')) {
+                html = '<p>' + html + '</p>';
+            }
+            
+            return html;
+        }
+        
+        async function submitInsightReaction(reaction) {
+            if (!currentUser || !currentInsightGame) {
+                showToast('Sign in to react');
+                return;
+            }
+            
+            // Visual feedback immediately
+            document.querySelectorAll('.insight-reaction-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            const selectedBtn = document.querySelector(`.insight-reaction-btn[data-reaction="${reaction}"]`);
+            if (selectedBtn) selectedBtn.classList.add('selected');
+            
+            try {
+                const submitReaction = firebase.functions().httpsCallable('submitInsightReaction');
+                const result = await submitReaction({ 
+                    gameId: currentInsightGame, 
+                    reaction: reaction 
+                });
+                
+                currentInsightReaction = reaction;
+                
+                // Update summary
+                if (result.data.reactions) {
+                    updateReactionsSummary(result.data.reactions);
+                }
+                
+                // Show share button
+                document.getElementById('insight-share-btn').style.display = 'block';
+                
+                showToast('Thanks for your feedback!');
+                
+            } catch (error) {
+                console.error('Reaction error:', error);
+                showToast('Could not submit reaction');
+            }
+        }
+        
+        function updateReactionsSummary(reactions) {
+            const total = (reactions.fair || 0) + (reactions.bs || 0) + (reactions.brutal || 0);
+            if (total === 0) {
+                document.getElementById('insight-reactions-summary').style.display = 'none';
+                return;
+            }
+            
+            const summary = document.getElementById('insight-reactions-summary');
+            summary.innerHTML = `${total} player${total !== 1 ? 's' : ''}: ` +
+                `<span class="reaction-count">🎯 ${reactions.fair || 0}</span>` +
+                `<span class="reaction-count">🙄 ${reactions.bs || 0}</span>` +
+                `<span class="reaction-count">🤯 ${reactions.brutal || 0}</span>`;
+            summary.style.display = 'block';
+        }
+        
+        function shareInsightTake() {
+            if (!currentInsightReaction) {
+                showToast('React first to share your take');
+                return;
+            }
+            
+            const game = GAMES[currentInsightGame] || GAMES['nyt-connections'];
+            const gameName = game?.name || 'Connections';
+            const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            
+            const reactionLabels = {
+                fair: '🎯 FAIR',
+                bs: '🙄 BS',
+                brutal: '🤯 BRUTAL'
+            };
+            
+            const shareText = `Today's ${gameName} (${today}) was ${reactionLabels[currentInsightReaction]}!\n\nWhat did you think?\n\n📊 Tracked with Game Shelf`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    text: shareText
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('Copied to clipboard!');
+                });
+            }
+        }
+        
+        // Check if insight is available for a game (used for showing icon)
+        function isInsightAvailable(gameId) {
+            return INSIGHT_GAMES_LIST.includes(gameId) || INSIGHT_GAMES_LIST.includes(gameId.replace('nyt-', ''));
+        }
+        
         function selectHintGame(gameId, localData = null) {
             const game = HINT_GAMES[gameId];
             if (!game) return;
@@ -27428,6 +27911,7 @@ Hint levels:
             const done = todayHistory[gameId];
             const stats = appData.stats[gameId] || {};
             const isOnShelf = appData.games.some(g => g.id === gameId);
+            const hasInsight = done && isInsightAvailable(gameId);
             
             showGenericSheet({
                 title: `${game.icon} ${game.name}`,
@@ -27447,6 +27931,17 @@ Hint levels:
                             ">
                                 <span>🎮</span> ${done ? 'Play Again' : 'Play Now'}
                             </button>
+                            
+                            ${hasInsight ? `
+                                <button onclick="closeGenericSheet(); showInsightSheet('${gameId}')" style="
+                                    width: 100%; padding: 14px; background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(139, 92, 246, 0.15)); 
+                                    border: 1px solid var(--accent-purple);
+                                    border-radius: 10px; color: var(--accent-purple); font-size: 1rem; font-weight: 600; cursor: pointer;
+                                    display: flex; align-items: center; justify-content: center; gap: 8px;
+                                ">
+                                    <span>💡</span> View Today's Insight
+                                </button>
+                            ` : ''}
                             
                             <button onclick="closeGenericSheet(); showGameStatsDetail('${gameId}')" style="
                                 width: 100%; padding: 14px; background: var(--bg-tertiary); border: 1px solid var(--border);
@@ -32515,8 +33010,8 @@ Hint levels:
     <!-- FAQ Data -->
     <script id="faq-data" type="application/json">
 {
-  "version": "1.0",
-  "appVersion": "1.3.26",
+  "version": "2.0",
+  "appVersion": "1.3.28",
   "lastUpdated": "2026-01-29",
   "categories": [
     {
@@ -32528,32 +33023,186 @@ Hint levels:
         {
           "id": "what-is-gs",
           "q": "What is Game Shelf?",
-          "a": "Game Shelf is a **free app** that tracks all your daily puzzle games (Wordle, Connections, etc.) in one place. Instead of losing track of streaks or forgetting scores, Game Shelf keeps everything organized automatically.",
-          "keywords": ["about", "purpose", "what", "intro", "explain"]
+          "a": "Game Shelf is a **free app** that tracks all your daily puzzle games (Wordle, Connections, Strands, and 30+ more) in one place. Instead of losing track of streaks or forgetting scores, Game Shelf keeps everything organized automatically.\n\n**Features include:** stats tracking, streak monitoring, AI hints, battles with friends, and shareable summaries.",
+          "keywords": ["about", "purpose", "what", "intro", "explain", "app", "description"]
         },
         {
           "id": "how-to-start",
           "q": "How do I get started?",
-          "a": "Three simple steps:\n\n1. **Add games** to your shelf from the Games tab\n2. **Play your games** normally\n3. **Record results** by copying share text and tapping Record Game\n\nThat's it! Game Shelf handles the rest.",
-          "keywords": ["start", "begin", "setup", "first", "new"]
+          "a": "Three simple steps:\n\n1. **Add games** to your shelf from the Games tab\n2. **Play your games** normally on their websites\n3. **Record results** by copying share text and tapping Record Game\n\nThat's it! Game Shelf handles the rest.",
+          "keywords": ["start", "begin", "setup", "first", "new", "quick"]
         },
         {
           "id": "is-free",
           "q": "Is Game Shelf free?",
           "a": "Yes! All core features are **completely free**: tracking, stats, streaks, friends, and battles. Optional coin purchases unlock premium rewards, but you never need to pay.",
-          "keywords": ["free", "cost", "price", "pay", "money"]
+          "keywords": ["free", "cost", "price", "pay", "money", "subscription"]
         },
         {
           "id": "need-account",
           "q": "Do I need to create an account?",
           "a": "No account required for basic tracking. However, **signing in with Google** unlocks: sync across devices, friends, battles, AI hints, leaderboards, and automatic backup.",
-          "keywords": ["account", "sign in", "login", "register", "google"]
+          "keywords": ["account", "sign in", "login", "register", "google", "required"]
         },
         {
-          "id": "add-game-shelf",
-          "q": "How do I add a game to my shelf?",
-          "a": "1. Go to the **Games tab**\n2. Browse categories or use **Search**\n3. Tap the **+** button on any game to add it\n\n**Quick add:** When you record a result for a game not on your shelf, Game Shelf asks if you want to add it.\n\n**Bulk add:** Tap a category header → **Add All** to add every game in that category.",
-          "keywords": ["add", "game", "shelf", "new", "browse", "find"]
+          "id": "install-app",
+          "q": "How do I install Game Shelf on my phone?",
+          "a": "Game Shelf is a **web app** (PWA) that installs directly from your browser—no App Store needed.\n\n**iPhone/iPad (Safari):**\n1. Open **gameshelf.co** in Safari\n2. Tap the **Share** button (square with arrow)\n3. Scroll down and tap **Add to Home Screen**\n4. Tap **Add**\n\n**Android (Chrome):**\n1. Open **gameshelf.co** in Chrome\n2. Tap the **three-dot menu** (top right)\n3. Tap **Add to Home Screen** or **Install App**\n4. Tap **Install**\n\n**Desktop (Chrome/Edge):**\n1. Open **gameshelf.co**\n2. Click the **install icon** in the address bar\n3. Click **Install**\n\nOnce installed, Game Shelf works like a native app with its own icon.",
+          "keywords": ["install", "download", "app", "home screen", "pwa", "add", "phone", "iphone", "android", "safari", "chrome", "how to get"]
+        },
+        {
+          "id": "supported-devices",
+          "q": "What devices and browsers work with Game Shelf?",
+          "a": "Game Shelf works on most modern devices:\n\n**Fully supported:**\n- iPhone/iPad with **Safari**\n- Android with **Chrome**\n- Desktop with **Chrome, Edge, or Firefox**\n\n**Limited support:**\n- Other browsers may work but aren't tested\n- Very old devices may have performance issues\n\n**Not supported:**\n- Internet Explorer\n- In-app browsers (open in Safari/Chrome instead)",
+          "keywords": ["device", "browser", "compatible", "work", "support", "iphone", "android", "chrome", "safari", "firefox", "edge", "requirements"]
+        },
+        {
+          "id": "offline-use",
+          "q": "Can I use Game Shelf offline?",
+          "a": "**Partially.** Game Shelf caches data for offline viewing, but some features require internet:\n\n**Works offline:**\n- Viewing your stats and history\n- Browsing your shelf\n- Seeing past results\n\n**Requires internet:**\n- Recording new games\n- AI hints\n- Battles and friends\n- Syncing across devices\n\nYour data syncs automatically when you reconnect.",
+          "keywords": ["offline", "internet", "wifi", "connection", "airplane", "no signal", "without internet"]
+        },
+        {
+          "id": "tutorial",
+          "q": "Is there a tutorial or walkthrough?",
+          "a": "Yes! First-time users see a brief **welcome tour** highlighting key features.\n\n**To replay the tutorial:**\n1. Open the **Menu** (top-left)\n2. Tap **FAQs & Support**\n3. Tap **Tutorial**\n\nYou can also tap **Ask AI** in that section to get guided answers to any question.",
+          "keywords": ["tutorial", "walkthrough", "guide", "learn", "help", "tour", "intro", "restart", "onboarding", "how to use"]
+        },
+        {
+          "id": "website-vs-app",
+          "q": "What's the difference between the website and the app?",
+          "a": "**They're the same thing!** Game Shelf is a Progressive Web App (PWA), meaning the website *becomes* the app when you install it.\n\n**Why no App Store?**\n- Faster updates (no approval delays)\n- Works on all platforms\n- No download size—it's already loaded\n\nWhether you use gameshelf.co in a browser or install it to your home screen, you get the full experience.",
+          "keywords": ["website", "app", "difference", "app store", "play store", "native", "pwa", "same", "web app"]
+        },
+        {
+          "id": "how-many-games",
+          "q": "How many games can I track?",
+          "a": "**No limit!** Add as many games to your shelf as you want.\n\nGame Shelf currently supports **36+ games** including Wordle, Connections, Strands, Mini Crossword, Spelling Bee, and many more. We add new games regularly.\n\n**To see all supported games:** Go to Games tab → Discover → Browse categories.",
+          "keywords": ["limit", "how many", "maximum", "games", "track", "shelf", "supported", "number"]
+        }
+      ]
+    },
+    {
+      "id": "navigation",
+      "name": "Navigation",
+      "icon": "🧭",
+      "order": 2,
+      "questions": [
+        {
+          "id": "nav-main-tabs",
+          "q": "What are the main tabs in Game Shelf?",
+          "a": "Game Shelf has **5 main tabs** at the bottom of the screen:\n\n| Tab | What it's for |\n|-----|---------------|\n| **Home** 🏠 | Dashboard with quick actions, daily progress, and game shortcuts |\n| **Games** 🎮 | Your game shelf and discovering new games |\n| **Stats** 📊 | Streaks, play history, and detailed statistics |\n| **Battles** ⚔️ | Competitions, friends, and activity feed |\n| **Share** 📤 | Share your results with friends |\n\nTap any tab to switch screens.",
+          "keywords": ["tabs", "navigation", "main", "bottom", "bar", "screens", "sections", "where"]
+        },
+        {
+          "id": "nav-subtabs",
+          "q": "What are subtabs?",
+          "a": "Some tabs have **subtabs** at the top that let you switch between different views:\n\n| Tab | Subtabs |\n|-----|----------|\n| **Games** | 📚 Shelf (your games) · 🔍 Discover (browse all) |\n| **Stats** | 📊 Overview (summary) · 🎮 By Game (detailed) |\n| **Battles** | ⚔️ Battles · 👥 Friends · 📰 Activity |\n| **Share** | 📅 Today · ✏️ Compose · 📜 History |\n\n**Home** has no subtabs—it's a single dashboard view.",
+          "keywords": ["subtabs", "sub tabs", "shelf", "discover", "overview", "by game", "friends", "activity", "today", "compose", "history"]
+        },
+        {
+          "id": "nav-menu",
+          "q": "How do I access the menu?",
+          "a": "Tap the **☰ hamburger icon** in the top-left corner of any screen.\n\nThe menu contains:\n- **Wallet** (tap the token/coin display at top)\n- **Account** – Sign in, manage profile\n- **My Games** – Achievements, reconfigure games\n- **Rewards** – Referrals, rewards shop\n- **Help** – FAQs, tutorials, feedback\n- **Settings** – Theme, sound, preferences (tap to expand)\n- **Advanced** – Developer options, data reset (tap to expand)",
+          "keywords": ["menu", "hamburger", "three lines", "settings", "options", "where", "find", "access"]
+        },
+        {
+          "id": "nav-wallet",
+          "q": "Where is my wallet / token balance?",
+          "a": "**Two places to see your balance:**\n\n1. **Menu** – Open menu (☰), balance shows at the top (💎 tokens, 🪙 coins)\n2. **Header** – Token count shows in the top bar on some screens\n\n**To open the full Wallet:**\nTap the balance display at the top of the menu.\n\nThe Wallet shows your balance, transaction history, and options to earn or buy more.",
+          "keywords": ["wallet", "tokens", "coins", "balance", "where", "find", "how many", "money", "currency"]
+        },
+        {
+          "id": "nav-settings",
+          "q": "Where do I find settings?",
+          "a": "1. Tap the **☰ menu** (top-left)\n2. Scroll down to **⚙️ Settings**\n3. Tap to expand\n\n**Settings include:**\n- 🎨 **Theme** – Dark or Light mode\n- 🔊 **Sound** – Effects on/off, volume, custom sounds\n- 📋 **Game Logging** – Auto-Log toggle\n- 🚀 **Game Launch** – Open games in app vs browser\n- 👋 **Activity Summary** – Show summary when returning\n- 🎯 **Daily Goal** – Set your target",
+          "keywords": ["settings", "preferences", "options", "theme", "dark mode", "light mode", "sound", "customize", "configuration"]
+        },
+        {
+          "id": "nav-achievements",
+          "q": "Where are my achievements?",
+          "a": "1. Tap the **☰ menu** (top-left)\n2. Tap **🎮 My Games**\n3. Tap **🏆 View Achievements**\n\nYou'll see all available achievements, which ones you've unlocked, and your progress toward others.",
+          "keywords": ["achievements", "badges", "trophies", "unlocks", "progress", "where", "find", "my games"]
+        },
+        {
+          "id": "nav-rewards-shop",
+          "q": "Where is the Rewards Shop?",
+          "a": "1. Tap the **☰ menu** (top-left)\n2. Tap **🎁 Rewards**\n3. Tap **🛍️ Redeem Rewards**\n\nThe shop lets you spend **coins** on rewards and gifts. Browse available items and tap to purchase.",
+          "keywords": ["rewards", "shop", "store", "redeem", "spend", "coins", "buy", "merch", "gifts", "where"]
+        },
+        {
+          "id": "nav-history",
+          "q": "Where is my play history?",
+          "a": "**Two ways to see history:**\n\n**All games:**\n1. Go to **Stats tab** (bottom bar)\n2. Tap **By Game** subtab\n3. Tap any game to expand and see all recorded plays\n\n**Single game:**\n1. Find the game card on Home or Games tab\n2. **Long-press** (hold) the card\n3. Tap **Stats** to see that game's full history",
+          "keywords": ["history", "past", "previous", "results", "plays", "records", "where", "find", "old games"]
+        },
+        {
+          "id": "nav-find-game",
+          "q": "How do I find a specific game?",
+          "a": "1. Go to **Games tab** (bottom bar)\n2. Tap **🔍 Discover** subtab\n3. Use the **Search bar** at the top to type the game name\n\nYou can also **browse by category** (NYT Games, Popular, etc.) or scroll through the full list.",
+          "keywords": ["find", "search", "game", "specific", "where", "look", "browse", "discover"]
+        },
+        {
+          "id": "nav-home",
+          "q": "How do I get back to the home screen?",
+          "a": "Tap the **🏠 Home tab** in the bottom navigation bar. It's the leftmost tab.\n\nHome shows your dashboard with:\n- Quick game buttons\n- Tap to Log card\n- Daily progress\n- Unrecorded game reminders\n- Record Game button",
+          "keywords": ["home", "back", "main", "dashboard", "return", "start", "beginning"]
+        }
+      ]
+    },
+    {
+      "id": "home-screen",
+      "name": "Home Screen",
+      "icon": "🏠",
+      "order": 3,
+      "questions": [
+        {
+          "id": "home-overview",
+          "q": "What's on the Home screen?",
+          "a": "Home is your **dashboard** showing everything at a glance:\n\n- **Your Games** – Cards for each game on your shelf\n- **Record Game** button – Log results from clipboard\n- **Quick Games** – Emoji shortcuts to launch games fast\n- **Today's Progress** – Progress bar toward your daily goal\n- **Friends Widget** – See which friends played today\n- **Battle Widget** – Shows your active battle (if any)\n\nEverything you need to play and track is one tap away.",
+          "keywords": ["home", "dashboard", "main", "screen", "overview", "what", "shows"]
+        },
+        {
+          "id": "home-record-button",
+          "q": "What does the Record Game button do?",
+          "a": "The big **📋 Record Game** button logs your puzzle results:\n\n**Tap** – Reads your clipboard and logs any game result it finds\n\n**Long-press (hold)** – Opens manual entry where you can select a game and enter your score by hand\n\nAfter playing a game, copy your share text, return to Game Shelf, and tap Record Game. That's it!",
+          "keywords": ["record", "game", "button", "log", "clipboard", "paste", "how", "tap", "hold", "long press", "manual"]
+        },
+        {
+          "id": "home-quick-games",
+          "q": "What are the Quick Games emoji buttons?",
+          "a": "The row of **emoji buttons** below Record Game are shortcuts to launch your favorite games instantly.\n\n**How they work:**\n- Each emoji represents a game (🟩 = Wordle, 🟪 = Connections, etc.)\n- Tap an emoji to open that game's website\n- After playing, copy your result and tap Record Game\n\nQuick Games show your most-played games automatically.",
+          "keywords": ["quick", "games", "emoji", "buttons", "shortcuts", "launch", "play", "icons", "row"]
+        },
+        {
+          "id": "home-progress",
+          "q": "What is Today's Progress?",
+          "a": "The **Today's Progress** section tracks how many games you've played today:\n\n- **Progress bar** – Fills as you record games\n- **Goal display** – Shows \"X/5 games\" (or your custom goal)\n- **Streak badge** – Your current overall streak (🔥)\n- **Share button** – Appears after playing; tap to share your recap\n\n**To change your daily goal:** Menu → Settings → Daily Goal",
+          "keywords": ["progress", "today", "goal", "daily", "bar", "streak", "badge", "track"]
+        },
+        {
+          "id": "home-tap-to-log",
+          "q": "What is the \"Tap to Log\" card?",
+          "a": "When Game Shelf detects a game result on your clipboard, a **Tap to Log** card appears:\n\n📋 Just played a game?\n   Tap here to log your result →\n\nTap the card to instantly record that game. Tap **✕** to dismiss it.\n\n**Note:** On iPhone, this appears after you interact with the app (iOS requires a gesture before reading clipboard).",
+          "keywords": ["tap", "log", "card", "clipboard", "detected", "just played", "automatic", "banner"]
+        },
+        {
+          "id": "home-friends-widget",
+          "q": "What is the Friends Widget?",
+          "a": "The **Friends Today** widget shows which friends have played today:\n\n- Profile pictures of friends who've recorded games\n- Quick glance at who's active\n- Tap **See All Friends →** to go to the full friends list\n\n**Requires sign-in** – You'll see \"Sign in to see friends\" until you connect your Google account.",
+          "keywords": ["friends", "widget", "today", "who played", "activity", "see", "signed in"]
+        },
+        {
+          "id": "home-battle-widget",
+          "q": "What is the Battle Widget?",
+          "a": "When you're in an **active battle**, a widget appears on Home showing:\n\n- **Battle name**\n- **Time remaining**\n- **Current standings** (who's winning)\n- **View Battle →** button\n\nThis widget only appears when you have an active battle. Otherwise it's hidden.",
+          "keywords": ["battle", "widget", "active", "standings", "competition", "score", "time"]
+        },
+        {
+          "id": "home-game-cards",
+          "q": "What can I do with game cards on Home?",
+          "a": "Each game card shows the game name, your streak, and today's status.\n\n**Tap** the card to:\n- **Play** – Opens the game\n- **Hint** – Get an AI hint (💡 button)\n- See quick stats\n\n**Long-press** (hold) the card for more options:\n- **Stats** – Detailed history\n- **Share** – Share this game's result\n- **Remove** – Take off your shelf",
+          "keywords": ["game", "card", "cards", "tap", "long press", "hold", "options", "play", "hint", "stats", "share", "remove"]
         }
       ]
     },
@@ -32561,55 +33210,123 @@ Hint levels:
       "id": "recording",
       "name": "Recording Games",
       "icon": "📋",
-      "order": 2,
+      "order": 4,
       "questions": [
         {
           "id": "how-record",
           "q": "How do I record a game result?",
-          "a": "After finishing a puzzle:\n\n1. Tap the game's **share button** to copy results\n2. Return to Game Shelf\n3. Tap **Record Game**\n\nGame Shelf reads your clipboard and logs automatically.",
-          "keywords": ["record", "log", "save", "add", "paste", "clipboard"]
+          "a": "After finishing a puzzle:\n\n1. Tap the game's **Share button** to copy your result\n2. Return to Game Shelf\n3. Tap **📋 Record Game**\n\nGame Shelf reads your clipboard and logs automatically. You'll see a preview of what was detected before confirming.\n\n**Tip:** On iPhone, you'll need to tap **Allow** when asked to paste.",
+          "keywords": ["record", "log", "save", "add", "paste", "clipboard", "how", "result"]
         },
         {
           "id": "manual-entry",
-          "q": "What if automatic recording doesn't work?",
-          "a": "**Long-press** (hold) the Record Game button to open manual entry. Select the game from the dropdown and enter your score manually.",
-          "keywords": ["manual", "enter", "type", "hold", "long press", "doesnt work"]
+          "q": "How do I manually enter a game result?",
+          "a": "If clipboard recording doesn't work, use manual entry:\n\n1. **Long-press** (hold) the Record Game button, OR\n2. Tap Record Game → tap **✏️ Manual** tab\n\nYou'll see buttons for each game on your shelf. Tap a game, then select your score (e.g., \"Solved in 3\" or \"Failed\").",
+          "keywords": ["manual", "enter", "type", "hold", "long press", "doesnt work", "by hand", "without paste"]
         },
         {
           "id": "multiple-games",
           "q": "Can I record multiple games at once?",
-          "a": "Yes! If you copy text containing **multiple game results** (like from a group chat), Game Shelf parses them all in one paste.",
-          "keywords": ["multiple", "several", "many", "batch", "bulk"]
+          "a": "Yes! If you copy text containing **multiple game results** (like from a group chat), Game Shelf parses them all in one paste.\n\nYou'll see each detected game listed. Tap **Log All Found** to record them all at once.",
+          "keywords": ["multiple", "several", "many", "batch", "bulk", "all", "together"]
         },
         {
           "id": "wrong-score",
           "q": "What if I record the wrong score?",
-          "a": "If you record the same game twice in one day, you'll be asked to **Keep** the original or **Replace** it with the new score.",
-          "keywords": ["wrong", "mistake", "error", "fix", "change", "replace", "correct"]
+          "a": "If you record the same game twice in one day, you'll see a **Score Conflict** prompt asking whether to **Keep** the original or **Replace** it with the new score.\n\n**Note:** You can only change today's score. Past results can't be edited.",
+          "keywords": ["wrong", "mistake", "error", "fix", "change", "replace", "correct", "edit"]
         },
         {
           "id": "not-recognized",
           "q": "Why doesn't Game Shelf recognize my result?",
-          "a": "Common reasons:\n\n• **Game not supported** - check our games list\n• **Modified share text** - use the original format\n• **Extra text added** - paste only the game result\n• **Clipboard empty** - copy the share text first",
-          "keywords": ["recognize", "detect", "find", "work", "fail", "error", "cant"]
+          "a": "Common reasons:\n\n- **Game not supported** – Check the full games list in Games → Discover\n- **Modified share text** – Use the exact text from the game's share button\n- **Extra text added** – Paste only the game result, not surrounding messages\n- **Clipboard empty** – Make sure you copied the share text first\n- **Unusual format** – Some games have variants we haven't added yet\n\nIf a game should work but doesn't, use **Menu → Help → Send Feedback** to report it.",
+          "keywords": ["recognize", "detect", "find", "work", "fail", "error", "cant", "not working", "parse"]
         },
         {
           "id": "supported-games",
           "q": "Which games are supported?",
-          "a": "34+ games including: **Wordle**, **Connections**, **Strands**, Mini, Spelling Bee, Quordle, Queens, Tango, Worldle, Framed, and more. See Games tab → Browse for the full list.",
-          "keywords": ["supported", "games", "list", "which", "what games"]
+          "a": "Game Shelf supports **36+ games** including:\n\n**NYT Games:** Wordle, Connections, Strands, Mini Crossword, Spelling Bee, Letterboxed, Tiles, Vertices\n\n**Popular:** Quordle, Octordle, Waffle, Worldle, Globle, Framed, Moviedle, Bandle\n\n**Game Shelf Originals:** Quotle, Slate, Rungs, Word Boxing\n\n**And more:** See the full list at **Games tab → Discover**.\n\nWe add new games regularly. Request a game via **Menu → Help → Suggest a Game**.",
+          "keywords": ["supported", "games", "list", "which", "what games", "available", "all"]
         },
         {
-          "id": "import-stats",
-          "q": "Can I import my existing streak from Wordle?",
-          "a": "Yes! You can import your stats from Wordle and other games via screenshot:\n\n1. Go to **Stats tab → By Game subtab**\n2. Tap **📷 Import Stats**\n3. Screenshot each game's stats page when prompted\n4. Upload the screenshot\n\nGame Shelf reads your **current streak**, **max streak**, **games played**, and **win percentage**.",
-          "keywords": ["import", "sync", "streak", "pull", "transfer", "existing", "wordle streak", "copy", "bring over"]
+          "id": "clipboard-detection",
+          "q": "How does clipboard detection work?",
+          "a": "When you return to Game Shelf after playing a puzzle:\n\n1. Game Shelf checks if your clipboard contains a game result\n2. If found, it shows a **Tap to Log** card or auto-fills the Record Game sheet\n3. Tap to confirm and log\n\n**On Android/Desktop:** This happens automatically in the background.\n\n**On iPhone/iPad:** iOS requires you to tap something first (for privacy), then asks permission to read clipboard.",
+          "keywords": ["clipboard", "detection", "automatic", "detect", "how", "works", "read", "paste"]
         },
         {
-          "id": "remove-game",
+          "id": "ios-paste-permission",
+          "q": "Why does iPhone keep asking to allow paste?",
+          "a": "**This is an iOS privacy feature, not a bug.**\n\nApple requires apps to ask permission every time they read your clipboard. This protects you because clipboards can contain sensitive data (passwords, addresses, etc.).\n\n**What you'll see:**\n- A popup asking **\"Allow Paste from [Game]?\"**\n- Tap **Allow** to let Game Shelf read your result\n\nThere's no way to \"remember\" this choice—iOS asks every time. It's one extra tap, but it keeps your data private.",
+          "keywords": ["ios", "iphone", "ipad", "allow", "paste", "permission", "popup", "privacy", "every time", "keeps asking"]
+        },
+        {
+          "id": "record-old-games",
+          "q": "Can I record games from previous days?",
+          "a": "**No.** Game Shelf records all games for **today's date** only.\n\nIf you forgot to log a game yesterday, that result is lost and your streak may have reset.\n\n**Why?** This keeps streaks honest—they reflect actual daily play, not backfilled data.\n\n**Tip:** Enable notifications or set a daily reminder to record your games before midnight!",
+          "keywords": ["old", "previous", "yesterday", "past", "backdate", "forgot", "days ago", "history", "earlier"]
+        },
+        {
+          "id": "auto-log",
+          "q": "What is Auto-Log?",
+          "a": "Auto-Log automatically records games when it detects a result on your clipboard—no tapping required.\n\n**To enable/disable:**\nMenu → Settings → Game Logging → **Auto-Log Results**\n\n**Note:** Auto-Log only works on **Android and Desktop**. On iPhone/iPad, iOS privacy rules prevent apps from reading the clipboard without your explicit tap.\n\nWhen Auto-Log fires, you'll see a brief confirmation toast showing what was recorded.",
+          "keywords": ["auto", "log", "automatic", "autolog", "setting", "toggle", "enable", "disable"]
+        }
+      ]
+    },
+    {
+      "id": "games-tab",
+      "name": "Games Tab",
+      "icon": "🎮",
+      "order": 5,
+      "questions": [
+        {
+          "id": "games-overview",
+          "q": "What is the Games Tab?",
+          "a": "The **Games Tab** (🎮) is where you manage which puzzles you track. It has two subtabs:\n\n- **📚 Shelf** – Your personal collection of games you're tracking\n- **🔍 Discover** – Browse all 36+ supported games and add new ones\n\nTap the subtab buttons at the top to switch between them.",
+          "keywords": ["games", "tab", "shelf", "discover", "browse", "collection", "manage"]
+        },
+        {
+          "id": "games-shelf-vs-discover",
+          "q": "What's the difference between Shelf and Discover?",
+          "a": "**📚 Shelf** shows only the games YOU'VE added. This is your personal collection—the games that appear on your Home screen and in your stats.\n\n**🔍 Discover** shows ALL supported games, organized by category. Use it to find and add new games to your shelf.\n\nThink of it like: Shelf = \"My games\" / Discover = \"Game store\"",
+          "keywords": ["shelf", "discover", "difference", "subtab", "my games", "all games", "browse"]
+        },
+        {
+          "id": "games-add-to-shelf",
+          "q": "How do I add a game to my shelf?",
+          "a": "**From Discover:**\n1. Go to **Games tab → 🔍 Discover**\n2. Browse categories or use **Search**\n3. Tap the **+** button on any game to add it\n\n**From recording:**\nWhen you record a result for a game not on your shelf, Game Shelf asks if you want to add it.\n\n**Bulk add:**\nIn Discover, tap a category header → **Add All** to add every game in that category at once.",
+          "keywords": ["add", "game", "shelf", "new", "plus", "button", "how"]
+        },
+        {
+          "id": "games-remove-from-shelf",
           "q": "How do I remove a game from my shelf?",
-          "a": "1. Find the game card on Home or Games tab\n2. **Long-press** (hold) the card until the menu appears\n3. Tap **Remove from Shelf**\n4. Confirm removal\n\n**Note:** Your stats and history are preserved - you can re-add the game anytime and your data returns.",
-          "keywords": ["remove", "delete", "hide", "game", "shelf", "unwanted"]
+          "a": "1. Go to **Games tab → 📚 Shelf**\n2. Find the game card\n3. **Long-press** (hold) until the menu appears\n4. Tap **Remove from Shelf**\n5. Confirm removal\n\n**Your stats are preserved!** If you re-add the game later, all your history and streaks come back.",
+          "keywords": ["remove", "delete", "hide", "game", "shelf", "unwanted", "long press"]
+        },
+        {
+          "id": "games-recommendations",
+          "q": "What are the Recommendations?",
+          "a": "At the top of the **Shelf subtab**, you'll see **✨ Recommended for You**—games you might like based on:\n\n- What's already on your shelf\n- What your friends play\n- Popular games you haven't added\n\nTap a recommendation to add it. Tap **🔄** to refresh suggestions. Tap the header to collapse/expand the section.",
+          "keywords": ["recommendations", "recommended", "suggested", "for you", "discover", "new games"]
+        },
+        {
+          "id": "games-browse-categories",
+          "q": "How do I browse games by category?",
+          "a": "1. Go to **Games tab → 🔍 Discover**\n2. Scroll to **Browse All Games**\n3. Tap a category to expand it\n\n**Categories:**\n- 📰 NYT Games (Wordle, Connections, Strands, Mini)\n- 🎮 Game Shelf Originals (Quotle, Slate, Rungs, Word Boxing)\n- 💼 LinkedIn Games (Queens, Tango, Pinpoint)\n- 🔤 Word Games (Quordle, Octordle, Waffle)\n- 🌍 Geography (Worldle, Globle, Travle)\n- 🎬 Entertainment (Framed, Moviedle, Bandle)\n- 🏈 Sports & Misc (Immaculate Grid, Costcodle)",
+          "keywords": ["browse", "category", "categories", "type", "kind", "nyt", "linkedin", "word", "geography"]
+        },
+        {
+          "id": "games-search",
+          "q": "How do I search for a specific game?",
+          "a": "1. Go to **Games tab → 🔍 Discover**\n2. Tap the **Search bar** at the top\n3. Type the game name\n\nMatching games appear instantly. Tap **+** to add one to your shelf.",
+          "keywords": ["search", "find", "specific", "game", "look", "name", "where"]
+        },
+        {
+          "id": "games-suggest",
+          "q": "How do I suggest a new game?",
+          "a": "If your favorite puzzle isn't supported yet:\n\n1. Go to **Games tab → 🔍 Discover**\n2. Scroll to the bottom\n3. Tap **💡 Suggest a Game**\n4. Enter the game name, URL, and a sample share text\n\nWe review suggestions regularly and add popular requests. You can also suggest games via **Menu → Help → Send Feedback**.",
+          "keywords": ["suggest", "request", "add", "new", "game", "missing", "not supported", "want"]
         }
       ]
     },
@@ -32617,37 +33334,79 @@ Hint levels:
       "id": "streaks",
       "name": "Streaks & Stats",
       "icon": "🔥",
-      "order": 3,
+      "order": 6,
       "questions": [
+        {
+          "id": "import-stats",
+          "q": "How do I import my existing streaks from Wordle or other games?",
+          "a": "If you've been playing games before using Game Shelf, you can import your existing streaks:\n\n1. Go to **Stats tab → 🎮 By Game**\n2. Tap **📷 Import Stats** (top right)\n3. Open the game you want to import (e.g., Wordle)\n4. Go to that game's **stats screen** (usually a chart/stats icon)\n5. **Take a screenshot** of the stats\n6. Return to Game Shelf and select/capture the screenshot\n7. Game Shelf reads your streak and updates automatically\n\n**Supported games:** Wordle, Connections, Tango, Queens, Pinpoint, Crossclimb",
+          "keywords": ["import", "existing", "streak", "sync", "screenshot", "transfer", "wordle stats", "bring over", "migrate"]
+        },
         {
           "id": "how-streaks-work",
           "q": "How do streaks work?",
-          "a": "A **streak** counts consecutive days playing the same game. Miss a day = streak resets to 0. Each game has its own separate streak.",
-          "keywords": ["streak", "consecutive", "days", "row"]
+          "a": "A **streak** counts how many consecutive days you've played a specific game.\n\n**How it works:**\n- Day 1: Play Wordle → Streak = 1\n- Day 2: Play Wordle → Streak = 2\n- Day 3: Miss → Streak resets to 0\n- Day 4: Play Wordle → Streak = 1 (starts over)\n\n**Key rules:**\n- Each game has its **own separate streak**\n- Missing Wordle doesn't affect your Connections streak\n- Playing twice in one day doesn't count for the next day\n- Your **max streak** (best ever) is always saved",
+          "keywords": ["streak", "consecutive", "days", "row", "how", "work", "count"]
+        },
+        {
+          "id": "current-vs-max-streak",
+          "q": "What's the difference between Current Streak and Max Streak?",
+          "a": "**Current Streak** = Your active consecutive days right now. Resets to 0 if you miss a day.\n\n**Max Streak** = Your all-time best. Never decreases, even when current streak resets.\n\n**Example:**\n- You build a 45-day streak, then miss a day\n- Current Streak → 0\n- Max Streak → still 45 (your record)\n- You start again, reach 30 days\n- Current Streak → 30\n- Max Streak → still 45",
+          "keywords": ["current", "max", "best", "difference", "all-time", "record", "highest"]
         },
         {
           "id": "streak-reset",
           "q": "Why did my streak reset?",
-          "a": "Streaks reset if you **miss a day**. Playing at 11:59 PM still counts - it's based on calendar days in your local timezone, not 24-hour periods.",
-          "keywords": ["reset", "lost", "gone", "zero", "disappeared"]
+          "a": "Streaks reset when you **miss a calendar day**. Common causes:\n\n| Cause | What happened |\n|-------|---------------|\n| **Didn't play** | Simply forgot to play that game |\n| **Played but didn't record** | Played but didn't log in Game Shelf |\n| **Recorded after midnight** | Logged it but the day had changed |\n| **Timezone confusion** | Traveled or device clock was wrong |\n\n**Your max streak is preserved**—only current streak resets.\n\n**Fix:** If your actual game streak is higher, use **Import Stats** to sync it.",
+          "keywords": ["reset", "lost", "gone", "zero", "disappeared", "why", "missing"]
         },
         {
           "id": "streak-time",
           "q": "What time do streaks reset?",
-          "a": "**Midnight in your local timezone.** Note: games themselves might reset at different times (Wordle resets midnight Eastern), but Game Shelf tracks YOUR play in YOUR timezone.",
-          "keywords": ["time", "midnight", "reset", "timezone", "when"]
+          "a": "**Midnight in your local timezone.**\n\nYou have until 11:59 PM to record that day's game. At 12:00 AM, a new day begins.\n\n**Important distinction:**\n- **Game reset time** (when new puzzle appears) varies by game—Wordle resets at midnight Eastern\n- **Game Shelf streak time** is based on YOUR device's timezone\n\nSo if you're in California and play \"today's Wordle\" at 11 PM PT, it counts for that day in Game Shelf.",
+          "keywords": ["time", "midnight", "reset", "timezone", "when", "clock", "day"]
+        },
+        {
+          "id": "streak-travel",
+          "q": "How do streaks work when I travel across time zones?",
+          "a": "Game Shelf uses your **device's current timezone**, which changes when you travel.\n\n**What this means:**\n- Flying east → Your day gets shorter (less time to play)\n- Flying west → Your day gets longer (more time)\n- Crossing the date line → Could skip or repeat a calendar day\n\n**Example problem:**\n- It's 11 PM Monday in New York, you haven't played\n- You fly to London (5 hours ahead)\n- You land and it's now 4 AM Tuesday—Monday is gone, streak broken\n\n**Best practice:**\n- **Record games before you travel**\n- Play early on travel days\n- Don't rely on \"I'll do it when I land\"",
+          "keywords": ["travel", "timezone", "time zone", "flying", "trip", "vacation", "international", "abroad"]
+        },
+        {
+          "id": "streak-recovery",
+          "q": "Can I recover a lost streak?",
+          "a": "**No automatic recovery.** Game Shelf doesn't have streak freezes or undo.\n\nThis is intentional—streaks represent actual consecutive play, not backfilled data.\n\n**However, you can use Import Stats** if your Game Shelf streak is wrong:\n1. Go to **Stats → By Game → Import Stats**\n2. Screenshot your game's actual stats page\n3. Game Shelf reads the real streak and updates\n\nThis works when:\n- You started Game Shelf after building a streak elsewhere\n- You played but forgot to record\n- A sync issue caused wrong data",
+          "keywords": ["recover", "restore", "lost", "undo", "freeze", "get back", "fix"]
         },
         {
           "id": "view-stats",
           "q": "Where can I see my stats?",
-          "a": "Multiple places:\n\n• **Stats tab** - overview of all games\n• **Game card** - shows streak and today's status\n• **Long-press → Stats** - detailed breakdown for one game",
-          "keywords": ["stats", "statistics", "view", "see", "find", "where"]
+          "a": "Stats appear in multiple places:\n\n| Location | What you see |\n|----------|---------------|\n| **Stats tab → Overview** | Summary cards (today, best streak, total, win rate) |\n| **Stats tab → By Game** | Per-game list with streaks and play counts |\n| **Home screen** | Quick game cards show today's status and streak |\n| **Game detail** | Tap a game row in By Game for full breakdown |\n\n**Quick access:** The 🔥 badge on game cards shows your current streak at a glance.",
+          "keywords": ["stats", "statistics", "view", "see", "find", "where", "look"]
         },
         {
-          "id": "what-stats",
-          "q": "What stats does Game Shelf track?",
-          "a": "For each game: **games played**, **current streak**, **max streak**, **win rate**, **average score**, and complete play history.",
-          "keywords": ["track", "measure", "data", "what stats", "information"]
+          "id": "stats-overview",
+          "q": "What do the stats on the Overview screen mean?",
+          "a": "The **Stats → Overview** shows four summary cards:\n\n| Card | What it means |\n|------|---------------|\n| **Today** | Number of games you've recorded today |\n| **Best Streak** | Your highest *current* streak across all games |\n| **Total Played** | Lifetime count of all games recorded |\n| **Win Rate** | Overall wins ÷ games played (percentage) |\n\n**Note:** \"Best Streak\" shows your best *active* streak, not all-time max across all games.",
+          "keywords": ["overview", "summary", "cards", "today", "total", "win rate", "best streak", "mean"]
+        },
+        {
+          "id": "stats-by-game",
+          "q": "How do I see detailed stats for one specific game?",
+          "a": "1. Go to **Stats tab → 🎮 By Game**\n2. Find the game in the list (sorted by current streak)\n3. **Tap the game row**\n\nThe detail sheet shows:\n- Today's status (played or not)\n- Current Streak\n- Max Streak (all-time best)\n- Games Played (total)\n- Win Rate\n- **Play Now** button\n- **Import Stats** button",
+          "keywords": ["detailed", "specific", "one game", "individual", "breakdown", "per game"]
+        },
+        {
+          "id": "what-stats-tracked",
+          "q": "What stats does Game Shelf track for each game?",
+          "a": "For every game you play:\n\n| Stat | Description |\n|------|-------------|\n| **Games Played** | Total puzzles completed (lifetime) |\n| **Current Streak** | Consecutive days playing |\n| **Max Streak** | Your all-time best streak |\n| **Win Rate** | Percentage of games won |\n| **Scores** | Game-specific (guesses, time, mistakes, etc.) |\n| **Play History** | Date and result of every recorded game |\n\nDifferent games track scores differently—Wordle tracks guesses (1-6), Mini tracks time, Connections tracks mistakes.",
+          "keywords": ["track", "measure", "data", "what stats", "information", "recorded"]
+        },
+        {
+          "id": "stats-mismatch",
+          "q": "Why are my Game Shelf stats different from the game's own stats?",
+          "a": "Game Shelf only knows about games **you record in the app**. Common mismatches:\n\n| Reason | Example |\n|--------|----------|\n| **Started GS after playing** | You had a 100-day Wordle streak before installing |\n| **Forgot to record** | Played but didn't log it in Game Shelf |\n| **Different devices** | Played on work phone, GS is on personal phone |\n| **Cleared browser** | Local-only data was lost |\n\n**Fix:** Use **Import Stats** to sync your actual streak from the game's stats screen.",
+          "keywords": ["different", "wrong", "mismatch", "doesn't match", "incorrect", "sync", "off"]
         }
       ]
     },
@@ -32655,43 +33414,117 @@ Hint levels:
       "id": "hints",
       "name": "AI Hints",
       "icon": "💡",
-      "order": 4,
+      "order": 7,
       "questions": [
         {
           "id": "what-hints",
           "q": "What are AI hints?",
-          "a": "Game Shelf can give you **AI-powered hints** for certain puzzles. Hints range from subtle nudges to direct answers - you control the level.",
-          "keywords": ["hint", "ai", "help", "clue", "assist"]
-        },
-        {
-          "id": "hint-games",
-          "q": "Which games support hints?",
-          "a": "**NYT Games**: Connections, Wordle, Strands, Spelling Bee, Mini\n**Game Shelf Originals**: Quotle, Rungs, Slate",
-          "keywords": ["which", "games", "supported", "hint games"]
-        },
-        {
-          "id": "hint-cost",
-          "q": "How much do hints cost?",
-          "a": "**5 tokens per hint.** You start with 50 free tokens and earn more through gameplay.",
-          "keywords": ["cost", "price", "tokens", "how much", "expensive"]
-        },
-        {
-          "id": "hint-levels",
-          "q": "What are hint levels?",
-          "a": "Ten levels from **Whisper** (barely helpful) to **Answer** (full solution):\n\n1-3: Vague nudges\n4-6: Clearer guidance\n7-9: Significant help\n10: Complete answer\n\nDefault is level 4 (Nudge).",
-          "keywords": ["levels", "whisper", "nudge", "answer", "spoiler", "how much help"]
-        },
-        {
-          "id": "cant-get-hints",
-          "q": "Why can't I get hints?",
-          "a": "You need:\n\n• **Signed in** with Google\n• At least **5 tokens**\n• Under rate limits (20/hour, 50/day)\n\nCheck your token balance in the Wallet.",
-          "keywords": ["cant", "unable", "not working", "error", "why"]
+          "a": "AI Hints are **smart, AI-powered clues** for when you're stuck on a puzzle.\n\n**How they work:**\n- You pick a game and a hint level (1-10)\n- AI generates a hint specific to today's puzzle\n- You control how much help you get—from a tiny whisper to the full answer\n\n**Cost:** 5 tokens per hint\n\n**Available for:** Wordle, Connections, Strands, Spelling Bee, Mini Crossword, Quotle, Rungs, Slate, and more.",
+          "keywords": ["hint", "ai", "help", "clue", "assist", "stuck", "what"]
         },
         {
           "id": "how-get-hint",
           "q": "How do I get a hint?",
-          "a": "1. Start playing a supported game (Connections, Wordle, etc.)\n2. When stuck, tap the **💡 Hint** button on the game card\n3. Choose your hint level (1-10, higher = more help)\n4. Tap **Get Hint** (costs 5 tokens)\n\nThe hint appears in a popup. You can request stronger hints if you need more help.",
-          "keywords": ["get", "use", "request", "hint", "how"]
+          "a": "**Method 1: Long-press a game card**\n1. Find the game on Home or Games → Shelf\n2. **Long-press** (hold) the game card\n3. Tap **💡 Get Hint**\n\n**Method 2: From Stats**\n1. Go to **Stats → By Game**\n2. Tap the game row\n3. Tap the hint option in the detail sheet\n\n**Then:**\n- Adjust the **hint level** slider (1-10)\n- Tap **Get Hint** (costs 5 tokens)\n- Read your hint!",
+          "keywords": ["get", "hint", "how", "access", "find", "where", "request"]
+        },
+        {
+          "id": "hint-games",
+          "q": "Which games support AI hints?",
+          "a": "Most popular games support hints:\n\n| Game | Hint Type |\n|------|------------|\n| **Wordle** | Letter/word clues |\n| **Connections** | Category hints |\n| **Strands** | Theme + word hints |\n| **Spelling Bee** | Word suggestions |\n| **Mini Crossword** | Clue assistance |\n| **Quotle** | Quote context (era, author) |\n| **Rungs** | Path guidance |\n| **Slate** | Word hints |\n\nGames without hint support won't show the hint option.",
+          "keywords": ["which", "games", "supported", "hint games", "available", "list"]
+        },
+        {
+          "id": "hint-cost",
+          "q": "How much do hints cost?",
+          "a": "**5 tokens per hint.**\n\n- Each \"Get Hint\" tap = 5 tokens\n- Each \"Still Stuck?\" tap = 5 more tokens\n- No limit on hints per puzzle (just your token balance)\n\n**Starting balance:** New accounts get 50 free tokens (10 hints).\n\n**Earn more by:** Playing games daily, maintaining streaks, referring friends, or purchasing coins.",
+          "keywords": ["cost", "price", "tokens", "how much", "expensive", "pay"]
+        },
+        {
+          "id": "hint-levels",
+          "q": "What are the hint levels?",
+          "a": "Ten levels from barely-there to full answer:\n\n| Level | Name | What you get |\n|-------|------|--------------|\n| 1-2 | Whisper/Murmur | 🟢 Very vague nudge |\n| 3 | Hint | 🟢 Traditional subtle hint |\n| **4** | **Nudge** | 🟡 **Default** - clear direction |\n| 5-6 | Guide/Assist | 🟡 Significant help |\n| 7-8 | Help/Reveal | 🔴 Most of the answer |\n| 9-10 | Spoiler/Answer | 🔴 Complete solution |\n\n**Color guide:**\n- 🟢 Green = Low spoiler, preserves challenge\n- 🟡 Yellow = Balanced help\n- 🔴 Red = High spoiler",
+          "keywords": ["levels", "whisper", "nudge", "answer", "spoiler", "how much help", "slider", "1-10"]
+        },
+        {
+          "id": "still-stuck-button",
+          "q": "What is the \"Still Stuck?\" button?",
+          "a": "After you get a hint, a **\"Still Stuck?\"** button appears.\n\n**What it does:**\n- Automatically requests the **next level up** (+1)\n- Quick way to get more help without adjusting the slider\n- Costs another **5 tokens**\n\n**Example:**\n- You get a Level 4 hint → still confused\n- Tap \"Still Stuck?\" → get Level 5 hint (5 more tokens)\n- Still stuck? Tap again → Level 6 (5 more tokens)\n\nThis lets you gradually escalate until you get enough help.",
+          "keywords": ["still stuck", "button", "more help", "next level", "escalate"]
+        },
+        {
+          "id": "hint-limits",
+          "q": "Are there limits on how many hints I can get?",
+          "a": "Yes, there are **rate limits** to prevent abuse:\n\n| Limit | Amount |\n|-------|--------|\n| **Hourly** | 20 hints per hour |\n| **Daily** | 50 hints per day |\n\nThese reset automatically. If you hit a limit:\n- You'll see \"Rate limit exceeded\"\n- Wait for the reset (hourly or daily)\n- Your tokens are NOT charged for failed requests\n\n**Note:** These limits are generous—most users never hit them.",
+          "keywords": ["limit", "limits", "rate", "maximum", "how many", "restricted", "too many"]
+        },
+        {
+          "id": "cant-get-hints",
+          "q": "Why can't I get hints?",
+          "a": "Common reasons and fixes:\n\n| Issue | Fix |\n|-------|-----|\n| **\"Sign in required\"** | Sign in via Menu → Account |\n| **\"Insufficient tokens\"** | Need 5 tokens; earn more or buy coins |\n| **\"Rate limit exceeded\"** | Wait for hourly/daily reset |\n| **\"Error getting hint\"** | Check internet connection, try again |\n| **Game not supported** | Not all games have hints yet |\n\n**To check your tokens:** Menu → Wallet",
+          "keywords": ["cant", "can't", "unable", "not working", "error", "why", "problem", "failed"]
+        },
+        {
+          "id": "hint-wrong",
+          "q": "Why did my hint seem wrong or unhelpful?",
+          "a": "AI hints are **generated, not pre-written**—they're not perfect.\n\n**Why hints can miss:**\n- AI occasionally misunderstands the puzzle\n- Some puzzle types are harder to hint on\n- Low hint levels (1-3) are intentionally vague\n- Caching may return a generic hint\n\n**What to try:**\n- **Increase the level** for clearer guidance\n- **Try a different level** (cached hints vary by level)\n- **Provide your progress** when prompted (helps AI avoid repeating what you know)\n\nIf a hint is way off, tap 👎 to send feedback—it helps us improve!",
+          "keywords": ["wrong", "bad", "unhelpful", "inaccurate", "mistake", "off", "useless"]
+        },
+        {
+          "id": "hints-vs-help",
+          "q": "What's the difference between AI Hints and AI Help?",
+          "a": "Two different AI features:\n\n| | AI Hints 💡 | AI Help 🤖 |\n|---|-------------|------------|\n| **Purpose** | Help with **puzzles** | Help with **the app** |\n| **Example** | \"Give me a Wordle clue\" | \"How do I add friends?\" |\n| **Cost** | 5 tokens | 5 tokens |\n| **Access** | Long-press game → Get Hint | Menu → Help → Ask AI |\n| **Follow-ups** | Pay per hint | 3 free follow-ups |\n\n**Use AI Hints** when you're stuck on today's puzzle.\n**Use AI Help** when you have questions about Game Shelf features.",
+          "keywords": ["difference", "hints", "help", "ai", "vs", "versus", "which", "compare"]
+        }
+      ]
+    },
+    {
+      "id": "ai-help",
+      "name": "AI Help",
+      "icon": "🤖",
+      "order": 8,
+      "questions": [
+        {
+          "id": "what-ai-help",
+          "q": "What is AI Help?",
+          "a": "AI Help is your **in-app assistant** for questions about Game Shelf itself.\n\n**What it does:**\n- Answers questions about how to use the app\n- Explains features and where to find them\n- Provides step-by-step guidance\n- Offers clickable buttons to jump directly to features\n\n**Example:**\n> You: \"How do I create a battle?\"\n> AI: Explains the steps + **[Create Battle →]** button\n\n**Cost:** 5 tokens for your first question, then **3 free follow-ups**.",
+          "keywords": ["ai help", "assistant", "ask", "question", "support", "what is"]
+        },
+        {
+          "id": "how-use-ai-help",
+          "q": "How do I use AI Help?",
+          "a": "1. Tap **Menu** (☰) in the top-left\n2. Tap **Help**\n3. Tap **🤖 Ask AI Help**\n4. Type your question and tap **Ask**\n\n**Tips for good questions:**\n- Be specific: \"How do I add a friend?\" ✓\n- Not too vague: \"Help\" ✗\n- One topic at a time works best\n\nThe AI responds in 2-5 seconds with step-by-step guidance.",
+          "keywords": ["how", "use", "access", "ask", "where", "find", "ai help"]
+        },
+        {
+          "id": "ai-help-topics",
+          "q": "What can AI Help answer?",
+          "a": "**AI Help knows about Game Shelf features:**\n- Recording and tracking games\n- Adding/removing games from your shelf\n- How battles work\n- Adding friends\n- Streaks and stats\n- Tokens and coins\n- Settings and menu options\n- Import Stats\n- Any other Game Shelf question\n\n**AI Help can NOT answer:**\n- Puzzle solutions (use **AI Hints** instead)\n- Today's Wordle/Connections answer\n- Questions about other apps\n- Billing issues (contact support@gameshelf.co)",
+          "keywords": ["what", "answer", "ask", "topics", "questions", "can", "about"]
+        },
+        {
+          "id": "ai-help-followups",
+          "q": "What are follow-up questions in AI Help?",
+          "a": "After your first question, you get **3 free follow-ups** to continue the conversation.\n\n**How it works:**\n| Turn | Cost |\n|------|------|\n| 1st question | 5 tokens |\n| Follow-up 1 | FREE |\n| Follow-up 2 | FREE |\n| Follow-up 3 | FREE |\n| New topic | 5 tokens |\n\n**Example:**\n> You: \"How do I add a friend?\" (5 tokens)\n> AI: [explains]\n> You: \"Where's my friend code?\" (FREE)\n> AI: [explains]\n> You: \"Can I share a link instead?\" (FREE)\n\nUse follow-ups to clarify or drill deeper—they're included!",
+          "keywords": ["follow-up", "followup", "free", "conversation", "continue", "turns", "multi"]
+        },
+        {
+          "id": "ai-help-cost",
+          "q": "How much does AI Help cost?",
+          "a": "**5 tokens** for your first question, then **3 free follow-ups**.\n\n| What you get | Cost |\n|--------------|------|\n| 1 question + 3 follow-ups | 5 tokens total |\n| New conversation | 5 more tokens |\n\n**Compared to AI Hints:** Hints cost 5 tokens *each*. AI Help gives you 4 turns for 5 tokens—better value for app questions!\n\n**Not enough tokens?** Earn more by playing games and maintaining streaks, or purchase coins.",
+          "keywords": ["cost", "price", "tokens", "how much", "pay", "expensive", "free"]
+        },
+        {
+          "id": "ai-help-buttons",
+          "q": "What are the navigation buttons in AI Help?",
+          "a": "When AI Help explains how to do something, it often includes a **clickable button** that takes you directly there.\n\n**Example:**\n> You: \"How do I create a battle?\"\n> AI: \"Go to Battles tab → Battles subtab → Create Battle...\"\n> **[Create Battle →]** ← Tap this!\n\n**Available buttons include:**\n- Switch to any tab or subtab\n- Open Create Battle\n- Open Add Friend\n- Open Wallet\n- Open Settings\n- And more\n\nTapping the button closes AI Help and navigates you automatically.",
+          "keywords": ["button", "navigation", "go to", "take me", "shortcut", "link", "action"]
+        },
+        {
+          "id": "ai-help-not-working",
+          "q": "Why isn't AI Help working?",
+          "a": "Common issues and fixes:\n\n| Problem | Solution |\n|---------|----------|\n| **\"Sign in required\"** | Sign in via Menu → Account |\n| **\"Insufficient tokens\"** | Need 5 tokens; play games to earn more |\n| **No response** | Check internet connection |\n| **Wrong answer** | Tap 👎 and try rephrasing your question |\n| **Can't find AI Help** | Menu → Help → Ask AI Help |\n\n**Feedback buttons:** After each response, tap 👍 or 👎 to help improve AI Help. On 👎, you can add a comment explaining what went wrong.",
+          "keywords": ["not working", "error", "problem", "cant", "can't", "broken", "issue", "help"]
         }
       ]
     },
@@ -32699,87 +33532,179 @@ Hint levels:
       "id": "battles",
       "name": "Battles",
       "icon": "⚔️",
-      "order": 5,
+      "order": 9,
       "questions": [
         {
           "id": "what-battles",
-          "q": "What are battles?",
-          "a": "**Brain Battles** are competitions between 2+ players over multiple days. Everyone plays the same games, and scores are compared. Winner takes the prize pool!",
-          "keywords": ["battle", "competition", "compete", "versus", "challenge"]
+          "q": "What are Brain Battles?",
+          "a": "Brain Battles are **competitions** between 2+ players over multiple days.\n\n**How it works:**\n- Everyone plays the same games\n- Scores are compared based on battle type\n- Winner takes the prize (if staked)\n\n**Types of battles:**\n- 🏆 **Total Score** – highest combined points\n- ✅ **Most Wins** – each win = 1 point\n- 🎯 **Perfect Hunter** – only perfect scores count\n- 🔥 **Streak Challenge** – daily completion bonuses",
+          "keywords": ["battle", "battles", "competition", "compete", "versus", "challenge", "what", "brain"]
         },
         {
           "id": "create-battle",
           "q": "How do I create a battle?",
-          "a": "1. Go to **Battles tab** (bottom navigation)\n2. Tap **Create Battle**\n3. Name your battle\n4. **Select games** - tap to add 1-8 games you want to compete on\n5. Set **duration** (1-30 days)\n6. Choose **battle type**: Total Score, Most Wins, Perfect Hunter, or Streak Challenge\n7. Set **stakes**: Friendly (free), or bet coins/tokens\n8. Tap **Create** and share the invite code with friends!\n\n**Quick option:** Use a preset battle from the suggestions for one-tap setup.",
-          "keywords": ["create", "start", "make", "new battle", "host", "setup", "custom"]
-        },
-        {
-          "id": "battle-types",
-          "q": "What battle types are there?",
-          "a": "Four types:\n\n• **Total Score** - highest combined score wins\n• **Most Wins** - each win = 1 point\n• **Perfect Hunter** - only perfect scores count\n• **Streak Challenge** - daily completion bonuses",
-          "keywords": ["types", "modes", "scoring", "total", "wins", "perfect", "streak"]
-        },
-        {
-          "id": "battle-stakes",
-          "q": "What are stakes?",
-          "a": "• **Friendly** - free, bragging rights only\n• **Coins** - 1-5 coins entry, winner takes 80%\n• **Tokens** - 1-500 tokens entry, winner takes 80%\n\nPublic battles are always friendly.",
-          "keywords": ["stakes", "bet", "wager", "coins", "tokens", "prize"]
+          "a": "1. Go to **Battles tab → ⚔️ Battles**\n2. Tap **\"⚔️ Create\"**\n3. Fill in the details:\n   - **Name** (3-30 characters)\n   - **Games** (pick 1-8 games)\n   - **Duration** (1-30 days)\n   - **Type** (Total Score, Most Wins, etc.)\n   - **Stakes** (Friendly, Tokens, or Coins)\n   - **Visibility** (Private or Public)\n4. Tap **Create Battle**\n5. Share the invite link with friends!",
+          "keywords": ["create", "start", "make", "new", "battle", "host", "how"]
         },
         {
           "id": "join-battle",
           "q": "How do I join a battle?",
-          "a": "**From an invite link:**\nTap the link your friend sent - it opens Game Shelf and joins automatically.\n\n**From a battle code:**\n1. Go to Battles tab\n2. Tap **Join Battle**\n3. Enter the 6-character code\n4. Review the battle details and tap **Join**\n\n**Browse public battles:**\n1. Battles tab → **Public Battles**\n2. Find one you like and tap **Join**\n\n**Note:** Battles with stakes require you to have enough coins/tokens to enter.",
-          "keywords": ["join", "enter", "code", "invite", "link", "public"]
+          "a": "**Three ways to join:**\n\n| Method | Steps |\n|--------|-------|\n| **Invite link** | Tap link from friend → Review → Join |\n| **Battle code** | Battles → 🔍 Join → Enter code |\n| **Public battles** | Battles → Scroll to Public → Tap Join |\n\n**Before joining, check:**\n- Do you play the included games?\n- Can you commit to the duration?\n- Are you OK with the entry cost (if staked)?",
+          "keywords": ["join", "enter", "code", "invite", "link", "how"]
         },
         {
-          "id": "forgot-play",
-          "q": "What if I forget to play a battle game?",
-          "a": "Your Home screen shows a **reminder banner** for unplayed battle games. Missing games hurts your score but doesn't disqualify you.",
-          "keywords": ["forget", "missed", "reminder", "notification"]
+          "id": "battle-types",
+          "q": "What do the different battle types mean?",
+          "a": "| Type | How to win |\n|------|------------|\n| 🏆 **Total Score** | Highest combined score across all games |\n| ✅ **Most Wins** | Each game win = 1 point (most points wins) |\n| 🎯 **Perfect Hunter** | Only perfect scores count (Wordle 1-2/6, Connections 0 mistakes) |\n| 🔥 **Streak Challenge** | +10 bonus for completing ALL games each day |\n\n**Tip:** Choose the type that fits your play style. Consistent players do well in Streak Challenge; skilled players excel at Perfect Hunter.",
+          "keywords": ["types", "modes", "scoring", "total", "wins", "perfect", "streak", "difference"]
+        },
+        {
+          "id": "battle-stakes",
+          "q": "What are battle stakes?",
+          "a": "Stakes determine the entry cost and prize:\n\n| Stake | Entry | Prize |\n|-------|-------|-------|\n| **Friendly** | Free | None (bragging rights!) |\n| **Token Battle** | 1-500 tokens | Winner takes the pool |\n| **Coin Battle** | 1-5 coins | Winner takes the pool |\n\n**Notes:**\n- Public battles are always Friendly\n- Prize pools split evenly in ties\n- Entry is paid when you join (non-refundable)",
+          "keywords": ["stakes", "bet", "wager", "coins", "tokens", "prize", "entry", "cost", "friendly"]
+        },
+        {
+          "id": "battle-visibility",
+          "q": "What's the difference between Public and Private battles?",
+          "a": "**Private battles:**\n- Invite-only (share link or code)\n- Can have stakes (tokens/coins)\n- Perfect for friend groups\n\n**Public battles:**\n- Appear in the Public Battles lobby\n- Anyone can join\n- Always Friendly (no stakes)\n- Good for meeting new players\n\n**To create public:** When creating, set Visibility to \"Public\" and Stakes to \"Friendly.\"",
+          "keywords": ["public", "private", "visibility", "invite", "open", "closed", "anyone"]
+        },
+        {
+          "id": "during-battle",
+          "q": "How do I track my progress during a battle?",
+          "a": "1. Go to **Battles tab**\n2. Tap your active battle\n3. See the **detail screen** with:\n   - Full leaderboard\n   - Your current position\n   - Per-game breakdown\n   - Daily results\n   - Time remaining\n\n**Daily routine:**\n- Play the battle's selected games\n- Record results in Game Shelf as usual\n- Scores automatically count—no special action needed\n- Check standings to stay motivated!",
+          "keywords": ["during", "track", "progress", "standings", "leaderboard", "position", "score"]
+        },
+        {
+          "id": "battle-end",
+          "q": "What happens when a battle ends?",
+          "a": "**At the deadline:**\n- Battles end at midnight (creator's timezone)\n- Final scores are calculated\n- Winner is determined\n\n**Prize distribution:**\n- **Friendly:** No prize, just bragging rights\n- **Staked:** Winner gets the full token/coin pool\n- **Ties:** Prize split evenly among tied winners\n\n**After:**\n- Winner announcement shows\n- Prize credited to Wallet\n- Battle moves to \"Past Battles\" (still viewable)",
+          "keywords": ["end", "ends", "over", "finish", "winner", "prize", "when", "completed"]
+        },
+        {
+          "id": "leave-battle",
+          "q": "Can I leave a battle after joining?",
+          "a": "**No.** Once you join a battle, you're committed until it ends.\n\nThis is intentional—it prevents people from leaving when they're losing and keeps competitions fair.\n\n**What you can do:**\n- Stop playing (you'll just score lower)\n- Wait for the battle to end naturally\n- Learn from it for next time\n\n**Entry fees for staked battles are non-refundable.**",
+          "keywords": ["leave", "quit", "exit", "cancel", "abandon", "withdraw", "drop out"]
+        },
+        {
+          "id": "forgot-battle-game",
+          "q": "What if I forget to play a game in my battle?",
+          "a": "**Your Home screen shows reminders** for unplayed battle games.\n\n**What happens if you miss a game:**\n\n| Battle Type | Impact |\n|-------------|--------|\n| **Total Score** | Lose those potential points |\n| **Most Wins** | Miss a potential win point |\n| **Perfect Hunter** | Miss a perfect chance |\n| **Streak Challenge** | Lose daily bonus, streak resets |\n\nMissing games hurts your score but **doesn't disqualify you**—you can still win!\n\n**Tip:** Set phone reminders for battle games.",
+          "keywords": ["forget", "forgot", "missed", "reminder", "miss", "notification", "unplayed"]
+        },
+        {
+          "id": "battle-tips",
+          "q": "Any tips for winning battles?",
+          "a": "**General tips:**\n- Play ALL battle games every day\n- Record results immediately (don't forget!)\n- Check standings to stay motivated\n- Pick battle types that suit your strengths\n\n**Type-specific strategies:**\n\n| Type | Strategy |\n|------|----------|\n| 🏆 Total Score | Play every game well |\n| ✅ Most Wins | Focus on completing, not perfection |\n| 🎯 Perfect Hunter | Only count if you can nail it |\n| 🔥 Streak Challenge | Never miss a day—consistency wins |",
+          "keywords": ["tips", "strategy", "win", "winning", "advice", "how to", "best"]
         }
       ]
     },
     {
-      "id": "social",
+      "id": "friends",
       "name": "Friends & Social",
       "icon": "👥",
-      "order": 6,
+      "order": 10,
       "questions": [
         {
           "id": "add-friends",
-          "q": "How do I add a friend?",
-          "a": "**Option 1 - Friend Code:**\n1. Get your friend's 8-character code (they find it in Battles tab → Friends)\n2. Go to Battles tab → Friends → **Add Friend**\n3. Enter their code and tap Add\n\n**Option 2 - Share Link:**\n1. Go to Battles tab → Friends\n2. Tap **Share** to copy your friend link\n3. Send it via text, email, etc. - they tap it to add you\n\n**Option 3 - Find your code:**\nYour code is shown at the top of the Friends screen. Share it and have friends add YOU!",
-          "keywords": ["add", "friend", "connect", "invite", "code", "link", "find"]
+          "q": "How do I add friends?",
+          "a": "**Three ways:**\n\n| Method | How |\n|--------|-----|\n| **Share your link** | Battles → Friends → Invite Friends → Copy link |\n| **Enter their code** | Battles → Friends → + Add Friend → Enter code |\n| **Accept an invite** | Tap a friend's invite link → Sign in |\n\n**After adding:**\n- See each other's daily activity\n- Challenge each other to battles\n- Send friendly nudges\n- Compare on leaderboards",
+          "keywords": ["add", "friend", "connect", "invite", "how"]
         },
         {
           "id": "friend-code",
-          "q": "What's my friend code?",
-          "a": "Find your unique **8-character code** in Battles tab → Friends (shown at top). Share it so others can add you!",
-          "keywords": ["code", "my code", "friend code", "share"]
+          "q": "What's my friend code and where do I find it?",
+          "a": "Your friend code is a **unique identifier** others can use to add you.\n\n**To find it:**\n1. Go to **Battles tab → 👥 Friends**\n2. Tap **Invite Friends**\n3. Your code displays there (also in your invite link)\n\n**Share it** via text, email, or social media. When someone enters your code, you're automatically connected.",
+          "keywords": ["code", "my code", "friend code", "share", "find", "where"]
         },
         {
           "id": "friends-see",
-          "q": "What can friends see?",
-          "a": "Friends can see: your **profile**, **leaderboard rankings**, and **activity status** (played today or not). They can't see your full history or detailed stats.",
-          "keywords": ["see", "view", "privacy", "visible", "private"]
+          "q": "What can friends see about me?",
+          "a": "**Friends CAN see:**\n- Your display name and profile photo\n- Which games you've played today\n- Your scores (like \"Wordle 4/6\")\n- Your current streaks\n- Your leaderboard position\n\n**Friends CANNOT see:**\n- Your token/coin balance\n- Your email address\n- Your actual puzzle answers\n- Your detailed settings",
+          "keywords": ["see", "view", "privacy", "visible", "private", "what", "profile"]
+        },
+        {
+          "id": "remove-friend",
+          "q": "How do I remove a friend?",
+          "a": "1. Go to **Battles tab → 👥 Friends**\n2. Tap the friend's card\n3. In their profile, tap **Remove Friend**\n4. Confirm the removal\n\n**What happens:**\n- They're removed from your list\n- You're removed from their list\n- You can re-add each other later\n- Battle history is preserved",
+          "keywords": ["remove", "delete", "unfriend", "block", "get rid of"]
         },
         {
           "id": "nudge",
-          "q": "How do nudges work?",
-          "a": "If a friend hasn't played today, tap their profile → **Nudge to Play**. They'll see a notification next time they open Game Shelf.\n\nLimit: one nudge per friend per day.",
-          "keywords": ["nudge", "remind", "poke", "notification"]
+          "q": "How do I send a nudge?",
+          "a": "Nudges are **friendly reminders** to play.\n\n**To send one:**\n1. Go to **Battles → Friends**\n2. Find a friend who hasn't played today\n3. Tap their card\n4. Tap **Send Nudge**\n\n**Rules:**\n- One nudge per friend per day\n- They see it next time they open Game Shelf\n- Can't nudge someone who's already played",
+          "keywords": ["nudge", "remind", "poke", "notification", "send", "how"]
         },
         {
           "id": "leaderboard",
-          "q": "How do leaderboards work?",
-          "a": "Compare with friends by games played: **daily**, **weekly**, or **monthly** rankings. Access via Battles tab → Friends → Leaderboard.",
-          "keywords": ["leaderboard", "ranking", "compare", "score"]
+          "q": "How do friend leaderboards work?",
+          "a": "Leaderboards rank you against friends by **games played**.\n\n**Location:** Battles tab → Friends → Today's Leaderboard\n\n**Time periods:**\n- **Daily** – Who played the most today\n- **Weekly** – This week's totals\n- **Monthly** – This month's rankings\n\n**What counts:** Each game you record = 1 point for leaderboard ranking.\n\n**Tip:** Check the leaderboard to see who's active and challenge them to a battle!",
+          "keywords": ["leaderboard", "ranking", "compare", "score", "standings"]
         },
         {
-          "id": "share-results",
-          "q": "How do I share my results?",
-          "a": "**Share a single game:**\n1. Long-press any game card\n2. Tap **Share** to copy that game's result\n\n**Share all today's games:**\n1. Tap the **Share** button on Home screen\n2. Choose what to include (scores, streaks, etc.)\n3. Tap **Copy** or share directly to an app\n\n**Pro tip:** Your results are formatted for easy pasting into group chats!",
-          "keywords": ["share", "copy", "send", "results", "friends", "text"]
+          "id": "activity-feed",
+          "q": "What is the Activity feed?",
+          "a": "The Activity feed shows **what your friends are doing** in real-time.\n\n**Location:** Battles tab → 📰 Activity\n\n**What it shows:**\n- 🎮 Games played (\"Sarah played Wordle 4/6\")\n- 🔥 Streak milestones (\"Mike hit 50-day streak!\")\n- ⚔️ Battle updates (\"Alex started 'Weekend Battle'\")\n- 🏆 Wins (\"Jordan won 'Friends Match'\")\n\n**Privacy:** Only your friends' activities appear. Your activities are visible to your friends.",
+          "keywords": ["activity", "feed", "updates", "friends", "what", "doing", "news"]
+        },
+        {
+          "id": "invite-friends",
+          "q": "How do I invite new people to Game Shelf?",
+          "a": "1. Go to **Battles → Friends**\n2. Tap **Invite Friends** (purple button)\n3. Copy your personal invite link\n4. Share via text, email, or social media\n\n**When they sign up using your link:**\n- You're automatically connected as friends\n- You may earn **referral tokens** (check Menu → Rewards)",
+          "keywords": ["invite", "refer", "referral", "new", "people", "share", "link"]
+        }
+      ]
+    },
+    {
+      "id": "share-tab",
+      "name": "Share Tab",
+      "icon": "📤",
+      "order": 11,
+      "questions": [
+        {
+          "id": "what-share-tab",
+          "q": "What is the Share Tab?",
+          "a": "The **Share Tab** (📤) helps you share your puzzle results with friends and social media.\n\n**Three subtabs:**\n| Subtab | Purpose |\n|--------|----------|\n| **📅 Today** | Quick share all of today's results |\n| **✏️ Compose** | Build custom share messages |\n| **📜 History** | View and re-share past messages |\n\nIt's the easiest way to brag about your scores!",
+          "keywords": ["share", "tab", "what", "purpose", "results", "social"]
+        },
+        {
+          "id": "quick-share",
+          "q": "How do I quickly share today's results?",
+          "a": "1. Go to **Share tab → 📅 Today**\n2. See your games displayed as tags\n3. Tap **\"Quick Share All Results\"**\n4. Share via your preferred app or copy to clipboard\n\n**What gets shared:**\n```\n🎯 Today's Game Shelf Results\n\n🟩 Wordle 4/6\n🟪 Connections 1 mistake\n🔵 Strands 0 hints\n\n📊 3/5 games • 🔥 12 day streak\ngameshelf.co\n```",
+          "keywords": ["quick", "share", "today", "results", "all", "how", "fast"]
+        },
+        {
+          "id": "compose-custom",
+          "q": "How do I create a custom share message?",
+          "a": "1. Go to **Share tab → ✏️ Compose**\n2. **Select games** to include (checkboxes)\n3. **Choose a template** (Minimal, Standard, Detailed, Fun)\n4. **Customize** header/footer text if desired\n5. **Preview** your message\n6. **Share** via platform button or copy\n\n**Options:**\n- Include/exclude specific games\n- Add/remove streaks\n- Add/remove Game Shelf link\n- Change emoji style",
+          "keywords": ["compose", "custom", "create", "build", "message", "template", "edit"]
+        },
+        {
+          "id": "weekly-recap",
+          "q": "What is the Weekly Recap?",
+          "a": "The Weekly Recap summarizes your **last 7 days** of play.\n\n**To share it:**\n1. Go to **Share tab → 📅 Today**\n2. Tap **\"📊 Share Weekly Recap\"**\n\n**What it includes:**\n- Total games played\n- Wins and win rate\n- Streak highlights\n- Best performances\n\nGreat for weekly check-ins with friends!",
+          "keywords": ["weekly", "recap", "summary", "week", "7 days", "share"]
+        },
+        {
+          "id": "share-history",
+          "q": "Where can I see my past shares?",
+          "a": "**Share tab → 📜 History**\n\nShows all messages you've previously shared, sorted by date.\n\n**What you can do:**\n- **View** – Tap to see full message\n- **Re-share** – Tap share icon to send again\n- **Copy** – Long-press to copy text\n- **Delete** – Swipe or tap menu to remove\n\n**Note:** History is stored locally. Signing in helps preserve it.",
+          "keywords": ["history", "past", "previous", "old", "shares", "find", "where"]
+        },
+        {
+          "id": "share-platforms",
+          "q": "What apps can I share to?",
+          "a": "Game Shelf uses your device's **native share sheet**, so you can share to any app that accepts text:\n\n- **Messages / iMessage**\n- **WhatsApp**\n- **Telegram**\n- **Twitter/X**\n- **Facebook**\n- **Email**\n- **Notes**\n- **And more...**\n\nYou can also **Copy to Clipboard** and paste anywhere manually.",
+          "keywords": ["apps", "platforms", "where", "share", "twitter", "whatsapp", "messages", "facebook"]
+        },
+        {
+          "id": "share-not-working",
+          "q": "Why isn't sharing working?",
+          "a": "Common issues:\n\n| Problem | Fix |\n|---------|-----|\n| **Nothing to share** | Record some games first |\n| **Share sheet won't open** | Try \"Copy to Clipboard\" instead |\n| **Message looks wrong** | Try a different template in Compose |\n| **Can't find History** | Go to Share tab → 📜 History subtab |\n\n**Tip:** If Quick Share doesn't work, try Compose for more control.",
+          "keywords": ["share", "not working", "broken", "problem", "error", "cant", "can't"]
         }
       ]
     },
@@ -32787,31 +33712,67 @@ Hint levels:
       "id": "economy",
       "name": "Tokens & Coins",
       "icon": "💰",
-      "order": 7,
+      "order": 12,
       "questions": [
         {
           "id": "tokens-vs-coins",
           "q": "What's the difference between tokens and coins?",
-          "a": "**Tokens** = free currency, earned through play. Use for hints and token battles.\n\n**Coins** = purchased currency. Use for coin battles and rewards shop.",
-          "keywords": ["tokens", "coins", "difference", "currency"]
+          "a": "Game Shelf has **two currencies**:\n\n| Currency | How to Get | Used For |\n|----------|------------|----------|\n| **💎 Tokens** | Earned free through play | AI Hints, AI Help, Token Battles |\n| **🪙 Coins** | Purchased with real money | Coin Battles, Rewards Shop |\n\n**Key difference:** Tokens are free and unlimited (earn through gameplay). Coins require purchase but unlock premium features.",
+          "keywords": ["tokens", "coins", "difference", "currency", "money", "free", "paid"]
         },
         {
           "id": "earn-tokens",
           "q": "How do I earn tokens?",
-          "a": "• **New account**: 50 tokens\n• **5+ games/day**: 5 tokens\n• **5-day streak**: 10 tokens\n• **All GS originals**: 5 tokens\n• **Win battles**: from prize pool\n• **Referrals**: 10-50 tokens",
-          "keywords": ["earn", "get", "free", "tokens", "how"]
+          "a": "Multiple ways to earn **free tokens**:\n\n| Activity | Reward |\n|----------|--------|\n| **New account** | 50 tokens (one-time) |\n| **Daily play** | 1-2 tokens per game recorded |\n| **7-day streak** | +5 tokens |\n| **30-day streak** | +10 tokens |\n| **100-day streak** | +25 tokens |\n| **Win token battles** | Winner takes pool |\n| **Refer friends** | Bonus when they sign up |\n\n**Tip:** Maintaining streaks on multiple games multiplies your milestone rewards!",
+          "keywords": ["earn", "get", "free", "tokens", "how", "rewards", "streaks"]
+        },
+        {
+          "id": "spend-tokens",
+          "q": "What can I spend tokens on?",
+          "a": "**Token costs:**\n\n| Feature | Cost |\n|---------|------|\n| **AI Hint** | 5 tokens (per hint) |\n| **AI Help** | 5 tokens (+ 3 free follow-ups) |\n| **Token Battles** | Entry fee varies (5-50 tokens) |\n\n**Tips:**\n- Use hints sparingly (only when truly stuck)\n- Maximize AI Help follow-ups before asking new questions\n- Keep a reserve of 20+ tokens recommended",
+          "keywords": ["spend", "use", "cost", "tokens", "hints", "help", "battles"]
+        },
+        {
+          "id": "check-balance",
+          "q": "Where do I see my token/coin balance?",
+          "a": "**Two places to check:**\n\n1. **Menu** → Balance shows at top (💎 tokens, 🪙 coins)\n2. **Wallet** → Tap balance in menu for full details\n\n**Wallet shows:**\n- Current balances\n- Transaction history\n- Buy Coins option",
+          "keywords": ["balance", "how many", "check", "wallet", "see", "find", "where"]
         },
         {
           "id": "buy-coins",
           "q": "How do I buy coins?",
-          "a": "Hub → Wallet → **Buy Coins**. Select a package and complete purchase via Stripe. Coins never expire.",
-          "keywords": ["buy", "purchase", "coins", "money"]
+          "a": "1. Open **Menu → Wallet**\n2. Tap **\"Buy Coins\"**\n3. Select a package\n4. Complete purchase\n\n**Payment methods:** Apple Pay, Google Pay, credit/debit card (varies by platform).\n\n**Packages offer bonuses** - larger purchases give more coins per dollar.\n\n**Note:** Coins are non-refundable. Refund requests go through your app store.",
+          "keywords": ["buy", "purchase", "coins", "money", "pay", "how", "get"]
         },
         {
-          "id": "check-balance",
-          "q": "Where do I see my balance?",
-          "a": "• **Home screen**: Wallet widget\n• **Header**: Token count\n• **Menu → Wallet**: Full details and transaction history",
-          "keywords": ["balance", "how many", "check", "wallet"]
+          "id": "ran-out-tokens",
+          "q": "What happens if I run out of tokens?",
+          "a": "**Without tokens:**\n- ❌ Can't use AI Hints\n- ❌ Can't use AI Help\n- ❌ Can't enter token battles\n- ✅ All other features still work\n\n**How to get more:**\n- Play and record games (earn 1-2 per game)\n- Maintain streaks for milestone bonuses\n- Win token battles\n- Refer friends",
+          "keywords": ["out", "zero", "empty", "no tokens", "run out", "none"]
+        },
+        {
+          "id": "token-battle-entry",
+          "q": "How do token battle entry fees work?",
+          "a": "When you **join a token battle**:\n\n1. Entry fee (set by creator) is deducted\n2. Fees go into a **prize pool**\n3. Winner takes the **entire pool**\n\n**Example:** 5 players × 10 tokens = 50 token pool for winner.\n\n**Risk/reward:** Higher entry = bigger potential payout, but you could lose your stake.",
+          "keywords": ["battle", "entry", "fee", "tokens", "pool", "prize", "win"]
+        },
+        {
+          "id": "transaction-history",
+          "q": "Can I see my token/coin history?",
+          "a": "Yes! **Menu → Wallet** shows your transaction history.\n\n**Each entry shows:**\n- Date and time\n- Type (Earned, Spent, Won, Purchased)\n- Amount (+/-)\n- Balance after transaction\n\n**Examples:**\n- \"AI Hint -5 tokens\"\n- \"Battle Won +50 tokens\"\n- \"Streak Bonus +10 tokens\"",
+          "keywords": ["history", "transactions", "log", "record", "past", "spent"]
+        },
+        {
+          "id": "coins-expire",
+          "q": "Do tokens or coins expire?",
+          "a": "**No!** Neither currency expires.\n\n- **Tokens** stay in your account indefinitely\n- **Coins** never expire after purchase\n\nYour balance persists as long as your account exists.",
+          "keywords": ["expire", "expiration", "lose", "time limit", "forever"]
+        },
+        {
+          "id": "rewards-shop",
+          "q": "What's in the Rewards Shop?",
+          "a": "The Rewards Shop offers **premium items for coins**:\n\n| Category | Examples |\n|----------|----------|\n| **Profile Frames** | Decorative borders for your avatar |\n| **Themes** | App color customizations |\n| **Badges** | Special display badges |\n| **Limited Items** | Seasonal/event exclusives |\n\n**Access:** Menu → Rewards → Shop\n\n**Note:** Shop items are permanent unlocks (own forever once purchased).",
+          "keywords": ["rewards", "shop", "store", "buy", "cosmetics", "frames", "badges"]
         }
       ]
     },
@@ -32819,37 +33780,55 @@ Hint levels:
       "id": "account",
       "name": "Account & Sync",
       "icon": "☁️",
-      "order": 8,
+      "order": 13,
       "questions": [
         {
           "id": "why-sign-in",
           "q": "Why should I sign in?",
-          "a": "Signing in enables: **sync across devices**, friends, battles, AI hints, leaderboards, and **automatic backup**. Without sign-in, data only exists on your current device.",
-          "keywords": ["sign in", "login", "why", "benefit", "google"]
+          "a": "Signing in unlocks **major features**:\n\n| Feature | Without Sign-In | With Sign-In |\n|---------|-----------------|---------------|\n| Track games | ✅ Local only | ✅ Synced |\n| AI Hints | ❌ No | ✅ Yes |\n| Friends & Battles | ❌ No | ✅ Yes |\n| Multi-device | ❌ No | ✅ Yes |\n| Backup | ❌ No | ✅ Automatic |\n\n**Bottom line:** Without sign-in, data only exists on your current device and can be lost.",
+          "keywords": ["sign in", "login", "why", "benefit", "google", "account"]
         },
         {
           "id": "how-sign-in",
           "q": "How do I sign in?",
-          "a": "Menu → Account → **Sign in with Google**. Select your Google account and you're done! Data syncs automatically.",
-          "keywords": ["sign in", "login", "how", "google"]
+          "a": "1. Tap **Menu** (☰)\n2. Tap **Account**\n3. Tap **\"Sign in with Google\"**\n4. Select your Google account\n5. Done!\n\n**First-time bonus:** New accounts receive **50 free tokens**.\n\nYour existing local data automatically merges with your new account.",
+          "keywords": ["sign in", "login", "how", "google", "steps"]
         },
         {
-          "id": "switch-devices",
-          "q": "Will I lose data if I switch devices?",
-          "a": "**If signed in**: No - your data syncs automatically. Just sign in on the new device.\n\n**If not signed in**: Yes - data is device-only and can't be recovered.",
-          "keywords": ["switch", "new device", "phone", "transfer", "lose"]
+          "id": "multiple-devices",
+          "q": "Can I use Game Shelf on multiple devices?",
+          "a": "**Yes!** Just sign in with the **same Google account** on each device.\n\n**What syncs automatically:**\n- Games on your shelf\n- All stats and streaks\n- Play history\n- Friends and battles\n- Token/coin balance\n\n**Sync timing:** Real-time when online. Changes appear within seconds.",
+          "keywords": ["multiple", "devices", "sync", "phone", "tablet", "computer", "two"]
+        },
+        {
+          "id": "sign-out",
+          "q": "How do I sign out?",
+          "a": "1. Tap **Menu** (☰)\n2. Tap **Account**\n3. Scroll to bottom\n4. Tap **\"Sign Out\"**\n\n**What happens:**\n- Local data remains on device\n- Cloud data stays safe\n- Social features disabled until you sign back in\n\n**Sign back in anytime** with the same account to restore everything.",
+          "keywords": ["sign out", "logout", "log out", "how"]
+        },
+        {
+          "id": "switch-account",
+          "q": "Can I switch to a different Google account?",
+          "a": "Yes, but you need to **sign out first**:\n\n1. Menu → Account → Sign Out\n2. Menu → Account → Sign in with Google\n3. Choose the different Google account\n\n**Important:** Each Google account has separate Game Shelf data. Switching accounts means switching to that account's stats, friends, and history.",
+          "keywords": ["switch", "change", "different", "account", "google"]
+        },
+        {
+          "id": "data-not-syncing",
+          "q": "My data isn't syncing between devices!",
+          "a": "**Troubleshooting steps:**\n\n1. **Same account?** Verify same Google account on both devices\n2. **Signed in?** Check both devices show you logged in\n3. **Internet?** Ensure both devices are online\n4. **Refresh** - Pull down to refresh or restart app\n5. **Re-sign** - Sign out and back in on both devices\n\n**Still not working?** Contact support@gameshelf.co with device details.",
+          "keywords": ["sync", "not syncing", "different", "devices", "problem", "issue"]
         },
         {
           "id": "delete-account",
           "q": "How do I delete my account?",
-          "a": "Menu → Account → **Delete Account**. This permanently removes all data from our servers. This action cannot be undone.",
-          "keywords": ["delete", "remove", "account", "data", "privacy"]
+          "a": "⚠️ **Warning: This cannot be undone!**\n\n1. Menu → Account\n2. Scroll to very bottom\n3. Tap **\"Delete Account\"**\n4. Read the warning\n5. Confirm deletion\n\n**What gets permanently deleted:**\n- All stats, history, streaks\n- Friends connections\n- Tokens and coins (non-refundable)\n\n**Consider signing out instead** if you just want to stop using the app temporarily.",
+          "keywords": ["delete", "remove", "account", "permanent", "data"]
         },
         {
-          "id": "how-sync",
-          "q": "How do I sync my data across devices?",
-          "a": "1. **Sign in with Google** on your first device (Menu → Account)\n2. On your new device, open Game Shelf\n3. **Sign in with the same Google account**\n4. Your data syncs automatically!\n\nSync happens in real-time - play on your phone, see it on your tablet instantly.",
-          "keywords": ["sync", "transfer", "multiple", "devices", "phone", "tablet", "computer"]
+          "id": "forgot-account",
+          "q": "I forgot which Google account I used!",
+          "a": "**To find your account:**\n\n1. Think about which email you typically use\n2. Try signing in with each Google account you have\n3. The correct one will show your existing data\n\n**Tips:**\n- Check your Google account list in device settings\n- Look for welcome emails from Game Shelf\n- Try your primary Gmail first\n\n**Can't find it?** Your data may be on a different device (not signed in) or the account may have been deleted.",
+          "keywords": ["forgot", "which", "account", "email", "find", "lost"]
         }
       ]
     },
@@ -32857,55 +33836,79 @@ Hint levels:
       "id": "troubleshooting",
       "name": "Troubleshooting",
       "icon": "🔧",
-      "order": 9,
+      "order": 14,
       "questions": [
         {
-          "id": "streak-not-updating",
-          "q": "My streak didn't update!",
-          "a": "Check that the game was actually recorded (see History). If it's there, the streak should be correct. If you played close to midnight, timezone differences might have affected which day it counted.",
-          "keywords": ["streak", "update", "wrong", "not working", "didnt"]
-        },
-        {
-          "id": "fix-streak",
-          "q": "How do I fix a broken streak?",
-          "a": "Unfortunately, **streaks can't be manually edited** - they reflect your actual play history.\n\nIf you believe there's an error:\n1. Check **History** to confirm the game was recorded\n2. Verify the **date** - timezone issues can cause a game to count for a different day\n3. If you played but forgot to record, the streak is legitimately broken\n\n**Tip:** Enable notifications to remind you before midnight!",
-          "keywords": ["fix", "repair", "restore", "broken", "lost", "streak", "reset"]
+          "id": "game-not-recognized",
+          "q": "Why isn't my game result being recognized?",
+          "a": "**Common causes:**\n\n| Problem | Solution |\n|---------|----------|\n| Game not supported | Check if it's in Games → Discover |\n| Modified share text | Use original format only |\n| Extra text added | Remove emojis/words you added |\n| Clipboard empty | Copy the share text again |\n\n**Fix:** Go back to game, tap Share, return to Game Shelf immediately, tap Record Game.",
+          "keywords": ["not recognized", "cant record", "wont work", "error", "detect"]
         },
         {
           "id": "clipboard-ios",
-          "q": "Why does iOS keep asking to allow paste?",
-          "a": "**This is a privacy feature, not a bug.** iOS protects your clipboard because it might contain sensitive data (passwords, addresses, etc.).\n\nUnlike Android, iOS requires your explicit permission every time an app reads your clipboard. This means:\n\n• You'll see **\"Allow Paste?\"** each time you record a game\n• Just tap **Allow** to log your result\n• Your clipboard is never read without your knowledge\n\nIt's one extra tap, but it keeps you in control of your data.",
-          "keywords": ["clipboard", "paste", "ios", "iphone", "permission", "allow", "privacy", "why"]
+          "q": "Why does iOS keep asking \"Allow Paste?\"",
+          "a": "This is an **Apple privacy feature**, not a bug.\n\nOn iPhone/iPad, apps cannot secretly read your clipboard. iOS asks permission **every time**.\n\n**What to do:**\n- Tap **\"Allow\"** when prompted\n- If you tap \"Don't Allow,\" close Game Shelf, copy again, and retry\n\n**This is normal** - it protects your privacy by preventing apps from reading sensitive copied data without permission.",
+          "keywords": ["allow paste", "ios", "iphone", "permission", "clipboard", "every time"]
         },
         {
-          "id": "autolog-ios",
-          "q": "Why doesn't Auto-Log work on my iPhone?",
-          "a": "**Auto-Log requires silent clipboard access**, which iOS doesn't allow for privacy reasons.\n\n**On Android/Desktop:** Game Shelf can detect results on your clipboard automatically when you return.\n\n**On iPhone/iPad:** iOS asks permission before any app reads your clipboard. So instead of auto-logging, you'll:\n1. Tap **Record Game**\n2. Tap **Allow** when prompted\n3. Confirm the result\n\nThis is actually the more privacy-respecting approach - no app should silently snoop your clipboard!",
-          "keywords": ["auto", "log", "autolog", "ios", "iphone", "ipad", "automatic", "doesnt work", "not working"]
+          "id": "streak-reset-troubleshoot",
+          "q": "Why did my streak reset?",
+          "a": "Streaks reset when you **miss a day**. Common reasons:\n\n| Cause | Explanation |\n|-------|-------------|\n| Forgot to play | Check your history for gaps |\n| Forgot to record | Playing isn't enough - must record in Game Shelf |\n| Timezone travel | Day boundaries shift when you travel |\n| Recording error | Result didn't save properly |\n\n**Check:** Stats → By Game → find the game → view history to see any gaps.",
+          "keywords": ["streak", "reset", "lost", "zero", "why", "gone"]
+        },
+        {
+          "id": "streak-time-troubleshoot",
+          "q": "When exactly do streaks reset?",
+          "a": "**Midnight in YOUR local timezone.**\n\n- Based on your device's clock\n- Not based on when the game resets (Wordle resets at midnight ET)\n- Playing at 11:59 PM still counts for that day\n\n**Traveling?** Your device timezone affects which \"day\" your play counts for. Record before traveling if you're concerned.",
+          "keywords": ["streak", "time", "midnight", "reset", "when", "timezone"]
         },
         {
           "id": "app-slow",
-          "q": "The app is running slowly",
-          "a": "Try:\n\n• **Refresh** the page\n• **Clear cache**: Settings → Developer → Clear Cache\n• **Reinstall PWA**: Remove from home screen, re-add",
-          "keywords": ["slow", "laggy", "performance", "freeze", "stuck"]
+          "q": "The app is running slowly or freezing.",
+          "a": "**Try these fixes in order:**\n\n1. **Refresh** - Pull down or restart the app\n2. **Clear cache** - Menu → Advanced → Clear Cache\n3. **Restart device** - Full device restart\n4. **Reinstall** - Remove from home screen, reinstall from browser\n\n**PWA stuck on old version?** Menu → Advanced → Force Update\n\n**Still slow?** Report via Menu → Help → Feedback with your device info.",
+          "keywords": ["slow", "laggy", "freeze", "stuck", "performance", "crash"]
         },
         {
           "id": "data-disappeared",
           "q": "My data disappeared!",
-          "a": "**If signed in**: Try signing out and back in.\n\n**If not signed in**: Local data can be lost when clearing browser data - unfortunately this can't be recovered. Always sign in for backup!",
-          "keywords": ["data", "lost", "gone", "disappeared", "missing"]
+          "a": "**If signed in:**\n- Sign out and sign back in\n- Data should restore from cloud\n\n**If NOT signed in:**\n- Local-only data can be lost when clearing browser data\n- Unfortunately, this cannot be recovered\n- **Always sign in** to prevent future data loss\n\n**Signed in but still missing?** Check you're using the correct Google account.",
+          "keywords": ["data", "lost", "gone", "disappeared", "missing", "vanished"]
         },
         {
-          "id": "no-sound",
-          "q": "Sound not working",
-          "a": "Check:\n\n• **Device not muted** (check mute switch/volume)\n• **Sound enabled**: Settings → Sound Effects\n• **iOS**: Tap anywhere in app first to enable audio",
-          "keywords": ["sound", "audio", "mute", "silent", "hear"]
+          "id": "hints-not-working",
+          "q": "AI Hints aren't working.",
+          "a": "**Requirements for hints:**\n\n| Requirement | How to Check |\n|-------------|--------------|\n| Signed in | Menu → Account |\n| 5+ tokens | Menu → Wallet |\n| Under rate limit | Wait if you've used many hints |\n| Internet connection | Check your connection |\n\n**Rate limits:** 20 hints/hour, 50 hints/day\n\n**Error message?** \"Rate limit exceeded\" means wait an hour. \"Insufficient tokens\" means earn or buy more.",
+          "keywords": ["hints", "not working", "error", "cant", "unable", "broken"]
         },
         {
-          "id": "game-not-supported",
-          "q": "A game I play isn't supported",
-          "a": "Menu → Help → **Send Feedback** and let us know! Include the game name, URL, and sample share text. We add new games regularly.",
-          "keywords": ["not supported", "add game", "request", "suggest", "new game"]
+          "id": "battle-scores-wrong",
+          "q": "My battle scores aren't updating.",
+          "a": "**Checklist:**\n\n1. **Game recorded?** Check if result appears in your Stats\n2. **Battle game?** Must be one of the games selected for this battle\n3. **Battle active?** Confirm battle hasn't ended yet\n4. **Refresh** - Pull down on battle details screen\n\n**Scores update** when you record games. If you recorded but it's not showing, wait a moment and refresh.",
+          "keywords": ["battle", "scores", "not updating", "wrong", "missing"]
+        },
+        {
+          "id": "cant-join-battle",
+          "q": "I can't join a battle.",
+          "a": "**Common reasons:**\n\n| Issue | Solution |\n|-------|----------|\n| Battle full | Join a different battle |\n| Battle ended | Find an active one |\n| Invalid code | Check spelling of invite code |\n| Not enough tokens/coins | Check your balance |\n| Not signed in | Sign in first |\n\n**Need the code?** Ask the battle creator to resend the invite link.",
+          "keywords": ["cant join", "battle", "error", "unable", "wont let me"]
+        },
+        {
+          "id": "sound-not-working",
+          "q": "Sound effects aren't playing.",
+          "a": "**Check these:**\n\n1. **Device not muted** - Check your phone's mute switch/volume\n2. **Sound enabled** - Menu → Settings → Sound Effects (toggle on)\n3. **iOS specific** - Tap anywhere in the app first to enable audio\n\n**Still no sound?** Try closing and reopening the app, or reinstalling.",
+          "keywords": ["sound", "audio", "mute", "silent", "no sound", "effects"]
+        },
+        {
+          "id": "pwa-not-updating",
+          "q": "The app seems stuck on an old version.",
+          "a": "**For PWA (installed to home screen):**\n\n1. Menu → Advanced → **Force Update Check**\n2. If that doesn't work: Close app completely, reopen\n3. Last resort: Uninstall PWA, revisit gameshelf.co, reinstall\n\n**Check version:** Menu → scroll to bottom → see version number\n\n**Desktop:** Try hard refresh (Ctrl+Shift+R or Cmd+Shift+R)",
+          "keywords": ["update", "old version", "stuck", "pwa", "refresh", "outdated"]
+        },
+        {
+          "id": "contact-support",
+          "q": "How do I contact support?",
+          "a": "**Options:**\n\n1. **In-app:** Menu → Help → Feedback\n2. **Email:** support@gameshelf.co\n\n**Include in your message:**\n- Device type (iPhone, Android, Desktop)\n- Browser (Safari, Chrome, etc.)\n- What happened (steps to reproduce)\n- Screenshots if possible\n\n**Response time:** Usually within 24-48 hours.",
+          "keywords": ["support", "contact", "help", "email", "feedback", "report", "bug"]
         }
       ]
     },
@@ -32913,25 +33916,37 @@ Hint levels:
       "id": "privacy",
       "name": "Privacy & Data",
       "icon": "🔒",
-      "order": 10,
+      "order": 15,
       "questions": [
         {
-          "id": "what-data",
+          "id": "what-data-collected",
           "q": "What data does Game Shelf collect?",
-          "a": "Your **puzzle results**, stats, and activity. If signed in, your Google profile info (name, email, photo) for identification. We don't track your browsing or access games directly.",
-          "keywords": ["data", "collect", "privacy", "information", "track"]
+          "a": "**Data collected:**\n\n| Data | Purpose |\n|------|---------|\n| Email & name | Account identification |\n| Profile photo | Display to friends |\n| Game results | Your stats tracking |\n| Device info | Debugging, analytics |\n\n**NOT collected:**\n- Passwords (handled by Google)\n- Contacts\n- Location\n- Other apps\n- Your actual puzzle answers (just scores)",
+          "keywords": ["data", "collect", "privacy", "information", "track", "what"]
         },
         {
-          "id": "data-private",
-          "q": "Is my data private?",
-          "a": "Yes. Only you can see your full data. Friends only see what you share: leaderboard rankings and profile. You control your visibility.",
-          "keywords": ["private", "secure", "safe", "who can see"]
+          "id": "who-sees-data",
+          "q": "Who can see my data?",
+          "a": "**Friends can see:**\n- Your display name and photo\n- Which games you played today\n- Your scores (e.g., \"Wordle 4/6\")\n- Your current streaks\n- Leaderboard position\n\n**Friends CANNOT see:**\n- Your token/coin balance\n- Your email address\n- Your detailed settings\n- Your actual puzzle answers\n\n**Public:** Only visible in public battles (name, photo, scores).",
+          "keywords": ["see", "view", "privacy", "visible", "friends", "public", "private"]
         },
         {
           "id": "export-data",
-          "q": "Can I export my data?",
-          "a": "Yes! Menu → Settings & Data → **Export Data**. Download all your stats and history.",
-          "keywords": ["export", "download", "backup", "copy"]
+          "q": "Can I export or download my data?",
+          "a": "**Currently:** No self-service export feature.\n\n**To request your data:**\n- Email support@gameshelf.co\n- Subject: \"Data Export Request\"\n- Include your account email\n\n**GDPR/CCPA requests** are honored. We'll provide your data within 30 days.\n\n**Future:** Self-service export is planned.",
+          "keywords": ["export", "download", "backup", "copy", "gdpr", "data"]
+        },
+        {
+          "id": "delete-data",
+          "q": "How do I delete all my data?",
+          "a": "**Delete your account** to remove all data:\n\n1. Menu → Account\n2. Scroll to bottom\n3. Tap \"Delete Account\"\n4. Confirm\n\n**This permanently removes:**\n- All stats, history, streaks\n- Friends connections\n- Tokens and coins\n- Your profile\n\n**Cannot be undone.** Consider signing out instead if you might return.",
+          "keywords": ["delete", "remove", "data", "erase", "privacy", "forget"]
+        },
+        {
+          "id": "data-security",
+          "q": "Is my data secure?",
+          "a": "**Security measures:**\n\n| Protection | Details |\n|------------|---------|\n| **Encrypted transit** | Data encrypted when sent |\n| **Secure storage** | Stored in Firebase (Google Cloud) |\n| **No passwords** | Google handles authentication |\n| **Limited access** | Only you and friends (limited) see your data |\n\n**We never:**\n- Sell your data\n- Share with advertisers\n- Access your other accounts\n\n**Concerns?** Contact support@gameshelf.co",
+          "keywords": ["secure", "security", "safe", "encrypted", "protected", "hack"]
         }
       ]
     }
