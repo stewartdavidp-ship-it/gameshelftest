@@ -1,7 +1,64 @@
-Game Shelf PWA v1.3.10 Release Notes
+Game Shelf PWA v1.3.13 Release Notes
 =====================================
 
 Release Date: January 29, 2026
+
+LAUNCH PREFERENCES FIX:
+-----------------------
+* "Manage App vs Browser" in Settings now works properly
+* Shows ALL games that support native app launch (NYT, LinkedIn games)
+* Previously only showed games with already-saved preferences
+* Users can now proactively set app vs browser before playing
+* Default is browser, tap any game to toggle
+
+SETTINGS MENU MODAL FIXES:
+--------------------------
+* All settings that open sheets/modals now close the menu first
+* Fixed: Sounds, Launch Prefs, Achievements, Referral, Merch Store, Help
+* 300ms delay ensures menu animation completes before opening new sheet
+* No more modals appearing behind the settings menu
+
+---
+
+Game Shelf PWA v1.3.12 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+HELP MODAL TIMING FIX:
+----------------------
+* All help menu actions (Feedback, Tutorial, About, What's New) now
+  wait 350ms for help sheet to close before opening their modal
+* Prevents new modals from appearing behind the help sheet
+
+RECONFIGURE GAMES WARNING:
+--------------------------
+* Added confirmation dialog before starting game setup wizard
+* Explains what will happen: add/remove games, change preferences
+* Reassures that stats and history are preserved
+* User can cancel before proceeding
+
+---
+
+Game Shelf PWA v1.3.11 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+iOS CLIPBOARD DOCUMENTATION:
+----------------------------
+* Added iOS note to Auto-Log setting in Settings
+  - "⚠️ Not available on iOS due to clipboard restrictions"
+
+* New FAQ: "Why does iOS keep asking to allow paste?"
+  - Explains this is a privacy feature, not a bug
+  - iOS protects clipboard from silent access
+  - Frames it positively (user stays in control)
+
+* New FAQ: "Why doesn't Auto-Log work on my iPhone?"
+  - Explains Auto-Log requires silent clipboard access
+  - Shows the difference between Android/Desktop vs iOS
+  - Validates iOS approach as privacy-respecting
 
 HELP SYSTEM IMPROVEMENTS:
 -------------------------
