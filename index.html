@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.18">
+    <meta name="version" content="1.3.19">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -3203,7 +3203,7 @@
             color: white;
         }
         
-        /* Generic Subtab System (v1.3.18) */
+        /* Generic Subtab System (v1.3.19) */
         .subtab-container {
             display: flex;
             border-bottom: 1px solid var(--border);
@@ -8610,6 +8610,31 @@
             background: var(--surface-hover);
         }
 
+        /* AI Help Action Buttons (navigation) */
+        .ai-help-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 12px 4px 4px 0;
+            transition: transform 0.15s, opacity 0.15s;
+        }
+
+        .ai-help-action-btn:hover {
+            transform: scale(1.03);
+        }
+
+        .ai-help-action-btn:active {
+            transform: scale(0.97);
+        }
+
         /* AI Help Feedback */
         .ai-help-feedback {
             margin-top: 16px;
@@ -8787,7 +8812,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.18</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.19</span>
             </div>
         </div>
         <div class="header-right">
@@ -9041,7 +9066,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.18</div>
+            <div class="settings-version">Game Shelf PWA v1.3.19</div>
         </div>
     </div>
     
@@ -9260,7 +9285,7 @@
             </div>
         </div>
         
-        <!-- Stats Screen (v1.3.18) -->
+        <!-- Stats Screen (v1.3.19) -->
         <div class="screen" id="screen-stats">
             <!-- Stats Subtabs -->
             <div class="subtab-container" id="stats-subtabs">
@@ -9419,7 +9444,7 @@
             </div>
         </div>
         
-        <!-- Share Screen (v1.3.18) -->
+        <!-- Share Screen (v1.3.19) -->
         <div class="screen" id="screen-share">
             <!-- Share Subtabs -->
             <div class="subtab-container" id="share-subtabs">
@@ -12014,7 +12039,7 @@ Wordle 1,234 3/6
             }
         }
         
-        // Games Tab Switching (v1.3.18)
+        // Games Tab Switching (v1.3.19)
         function switchGamesTab(tabName) {
             // Update tab buttons
             document.querySelectorAll('#games-subtabs .subtab-btn').forEach(tab => {
@@ -12035,7 +12060,7 @@ Wordle 1,234 3/6
             }
         }
         
-        // Stats Tab Switching (v1.3.18)
+        // Stats Tab Switching (v1.3.19)
         function switchStatsTab(tabName) {
             // Update tab buttons
             document.querySelectorAll('#stats-subtabs .subtab-btn').forEach(tab => {
@@ -12056,7 +12081,7 @@ Wordle 1,234 3/6
             }
         }
         
-        // Share Tab Switching (v1.3.18)
+        // Share Tab Switching (v1.3.19)
         function switchShareTab(tabName) {
             // Update tab buttons
             document.querySelectorAll('#share-subtabs .subtab-btn').forEach(tab => {
@@ -18157,10 +18182,10 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.18';
+        const APP_VERSION = '1.3.19';
         
         const RELEASE_NOTES = {
-            '1.3.18': [
+            '1.3.19': [
                 { icon: '📑', title: 'Unified Subtab Navigation', desc: 'Games, Stats, and Share tabs now have consistent subtabs like Battles' },
                 { icon: '📚', title: 'Games: Shelf & Discover', desc: 'Your shelf in one view, browse all games in another' },
                 { icon: '📊', title: 'Stats: Overview & By Game', desc: 'Summary cards separate from detailed per-game stats' },
@@ -19062,11 +19087,120 @@ Wordle 1,234 3/6
             // Bullet points at start of lines
             formatted = formatted.replace(/^[•\-]\s+/gm, '• ');
             
+            // Parse action tokens: [ACTION:functionName:param|Button Label]
+            // First, clean up any malformed tokens (missing closing bracket)
+            formatted = formatted.replace(/\[ACTION:[^\]]*$/gm, '');
+            
+            // Parse valid action tokens
+            formatted = formatted.replace(
+                /\[ACTION:([^|\]]+)\|([^\]]+)\]/g,
+                (match, action, label) => {
+                    const parts = action.split(':');
+                    const fn = parts[0];
+                    const param = parts[1] || '';
+                    const paramAttr = param ? ` data-param="${param}"` : '';
+                    return `<button class="ai-help-action-btn" data-action="${fn}"${paramAttr}>${label}</button>`;
+                }
+            );
+            
             // Preserve line breaks
             formatted = formatted.replace(/\n/g, '<br>');
             
             return formatted;
         }
+        
+        // AI Help Action Handler
+        function executeAIHelpAction(action, param) {
+            const actions = {
+                // Tab Navigation
+                'switchTab': (tab) => switchTab(tab),
+                'switchGamesTab': (subtab) => { switchTab('games'); setTimeout(() => switchGamesTab(subtab), 100); },
+                'switchStatsTab': (subtab) => { switchTab('stats'); setTimeout(() => switchStatsTab(subtab), 100); },
+                'switchBattlesTab': (subtab) => { switchTab('hub'); if(subtab) setTimeout(() => switchHubTab(subtab), 100); },
+                'switchShareTab': (subtab) => { switchTab('share'); setTimeout(() => switchShareTab(subtab), 100); },
+                
+                // Sheets/Modals
+                'showCreateBattle': () => showCreateBattle(),
+                'showAccountSheet': () => showAccountSheet(),
+                'showHelpSheet': () => showHelpSheet(),
+                'showWalletSheet': () => showWalletSheet(),
+                'showAddFriendSheet': () => showAddFriendSheet(),
+                'showFeedbackSheet': () => showFeedbackSheet(),
+                'showSuggestGameSheet': () => showSuggestGameSheet(),
+                'showRewardsSheet': () => showRewardsSheet(),
+                
+                // Game Actions
+                'openGame': (gameId) => {
+                    // Check if game is on shelf, if not go to discover
+                    const onShelf = (appData.games || []).includes(gameId);
+                    if (onShelf) {
+                        switchTab('games');
+                        switchGamesTab('shelf');
+                    } else {
+                        switchTab('games');
+                        switchGamesTab('discover');
+                        // Try to search for it
+                        setTimeout(() => {
+                            const searchInput = document.getElementById('game-search-input');
+                            if (searchInput) {
+                                const gameInfo = getGameInfo(gameId);
+                                searchInput.value = gameInfo?.name || gameId;
+                                searchInput.dispatchEvent(new Event('input'));
+                            }
+                        }, 200);
+                    }
+                },
+                'showGameHint': (gameId) => {
+                    switchTab('home');
+                    setTimeout(() => {
+                        const card = document.querySelector(`.game-card[data-game="${gameId}"]`);
+                        if (card) {
+                            const hintBtn = card.querySelector('.hint-btn');
+                            if (hintBtn) hintBtn.click();
+                        }
+                    }, 200);
+                },
+                
+                // Settings
+                'openSettings': () => openSettingsMenu(),
+            };
+            
+            const handler = actions[action];
+            if (handler) {
+                // Track analytics
+                try {
+                    if (firebase.auth().currentUser) {
+                        firebase.database().ref('ai-help-actions').push({
+                            action: action,
+                            param: param || null,
+                            timestamp: firebase.database.ServerValue.TIMESTAMP
+                        });
+                    }
+                } catch (e) {}
+                
+                // Execute
+                handler(param);
+                playSound('tap');
+            } else {
+                console.warn('Unknown AI Help action:', action);
+            }
+        }
+        
+        // Click handler for AI Help action buttons (event delegation)
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('ai-help-action-btn')) {
+                const action = e.target.dataset.action;
+                const param = e.target.dataset.param;
+                
+                // Close AI Help sheet first
+                closeAIHelpSheet();
+                
+                // Small delay to let sheet close
+                setTimeout(() => {
+                    executeAIHelpAction(action, param);
+                }, 300);
+            }
+        });
 
         // AI Help feedback and conversation tracking
         let lastAIHelpQuestion = '';
@@ -29890,7 +30024,7 @@ Hint levels:
                     templateSelect.value = 'default';
                 }
                 
-                // Switch to Compose tab (v1.3.18)
+                // Switch to Compose tab (v1.3.19)
                 switchShareTab('compose');
                 
                 showToast('📜 Loaded from history');
@@ -32187,7 +32321,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "1.0",
-  "appVersion": "1.3.18",
+  "appVersion": "1.3.19",
   "lastUpdated": "2026-01-29",
   "categories": [
     {

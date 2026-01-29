@@ -1,3 +1,41 @@
+Game Shelf PWA v1.3.19 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI NAVIGATION ACTIONS:
+----------------------
+* AI Help can now provide clickable navigation buttons
+* When AI explains how to do something, it includes a button to go there
+* Example: "How do I create a battle?" → includes [Create Battle →] button
+* Buttons close AI Help sheet and navigate to the right place
+
+AVAILABLE ACTIONS:
+------------------
+* Tab navigation (Home, Games, Stats, Battles, Share)
+* Subtab navigation (Shelf, Discover, Overview, etc.)
+* Open sheets (Create Battle, Add Friend, Wallet, Feedback, etc.)
+* Find/open specific games
+* Open game hints
+
+TECHNICAL:
+----------
+* Action token format: [ACTION:functionName:param|Label]
+* Token parser in formatAIHelpResponse()
+* executeAIHelpAction() handler with 15+ actions
+* Event delegation for action button clicks
+* Analytics tracking for action usage (ai-help-actions)
+* Malformed tokens stripped gracefully
+
+SYSTEM PROMPT:
+--------------
+* Added NAVIGATION ACTIONS section with available actions
+* Added rules for when to include actions
+* Added examples with action buttons
+* AI only includes action when user wants to DO something
+
+---
+
 Game Shelf PWA v1.3.18 Release Notes
 =====================================
 
