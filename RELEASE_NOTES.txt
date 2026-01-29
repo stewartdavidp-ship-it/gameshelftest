@@ -1,3 +1,38 @@
+Game Shelf PWA v1.3.33 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+SMARTER STATS IMPORT:
+---------------------
+Complete rewrite of the Import Stats OCR engine for better reliability:
+
+**Intelligent Game Detection:**
+- Fuzzy keyword matching - finds game names anywhere in text
+- No longer relies on specific phrases like "GUESS DISTRIBUTION"
+- Detects "Connections" from "Connections Bot", "Connections archive", etc.
+- Works with new/unknown stats page layouts
+
+**Universal Stats Extraction:**
+- Pattern-based extraction for common stat terms
+- Recognizes: played, completed, win %, streak, max, best, longest
+- 4-number layout detection (common stats row pattern)
+- Multiple fallback methods for reliability
+
+**Game Picker Fallback:**
+- If stats detected but game unknown, prompts user to select
+- Shows extracted stats preview before confirming
+- Quick selection from games on user's shelf
+
+**Technical Details:**
+- STATS_GAME_KEYWORDS: extensible keyword map per game
+- UNIVERSAL_STAT_PATTERNS: regex patterns for each stat type  
+- detectGameFromText(): fuzzy matching with confidence scores
+- detectFourNumberLayout(): heuristic for [played][win%][streak][max] rows
+- showGamePickerForStats(): fallback UI when game unknown
+
+---
+
 Game Shelf PWA v1.3.32 Release Notes
 =====================================
 

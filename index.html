@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.32">
+    <meta name="version" content="1.3.33">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9122,7 +9122,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.32</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.33</span>
             </div>
         </div>
         <div class="header-right">
@@ -9376,7 +9376,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.32</div>
+            <div class="settings-version">Game Shelf PWA v1.3.33</div>
         </div>
     </div>
     
@@ -18592,9 +18592,12 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.32';
+        const APP_VERSION = '1.3.33';
         
         const RELEASE_NOTES = {
+            '1.3.33': [
+                { icon: '📷', title: 'Smarter Stats Import', desc: 'Import Stats now recognizes more games automatically and asks which game if unsure' }
+            ],
             '1.3.32': [
                 { icon: '🧠', title: 'Smarter AI Help', desc: 'Improved FAQ matching with synonyms and better context for more accurate answers' }
             ],
@@ -28385,6 +28388,169 @@ Hint levels:
         
         // ============ PHASE 2: OCR STATS IMPORT ============
         
+        // Game keywords for fuzzy detection - maps to game IDs
+        // Each game has primary name + additional keywords that might appear on stats screens
+        const STATS_GAME_KEYWORDS = {
+            'wordle': ['wordle', 'guess distribution'],
+            'connections': ['connections', 'connection'],
+            'strands': ['strands', 'strand'],
+            'mini': ['mini crossword', 'the mini', 'mini'],
+            'spelling-bee': ['spelling bee', 'genius', 'queen bee', 'pangram'],
+            'letterboxed': ['letterboxed', 'letter boxed'],
+            'queens': ['queens'],
+            'tango': ['tango'],
+            'pinpoint': ['pinpoint'],
+            'crossclimb': ['crossclimb', 'cross climb'],
+            'zip': ['zip'],
+            'quordle': ['quordle'],
+            'octordle': ['octordle'],
+            'waffle': ['waffle'],
+            'redactle': ['redactle'],
+            'semantle': ['semantle'],
+            'nerdle': ['nerdle'],
+            'contexto': ['contexto'],
+            'dordle': ['dordle'],
+            'worldle': ['worldle'],
+            'globle': ['globle'],
+            'tradle': ['tradle'],
+            'travle': ['travle'],
+            'wheretaken': ['wheretaken', 'where taken'],
+            'foodguessr': ['foodguessr', 'food guessr'],
+            'framed': ['framed'],
+            'actorle': ['actorle'],
+            'moviedle': ['moviedle'],
+            'heardle': ['heardle'],
+            'bandle': ['bandle'],
+            'immaculate-grid': ['immaculate grid', 'immaculate'],
+            'costcodle': ['costcodle'],
+            'quotle': ['quotle'],
+            'slate': ['slate'],
+            'rungs': ['rungs'],
+            'wordboxing': ['word boxing', 'wordboxing']
+        };
+        
+        // Universal stats patterns - work across all games
+        const UNIVERSAL_STAT_PATTERNS = {
+            // Games played/completed - number followed by or preceded by keyword
+            gamesPlayed: [
+                /(\d{1,5})\s*(?:played|completed|games|puzzles|total)/i,
+                /(?:played|completed|games|puzzles|total)\s*(\d{1,5})/i
+            ],
+            // Win percentage - number with % or near "win"
+            winPercent: [
+                /(\d{1,3})\s*%/,
+                /(\d{1,3})\s*(?:win|success|rate)/i,
+                /(?:win|success)\s*(?:rate|%)?\s*(\d{1,3})/i
+            ],
+            // Current streak - variations of "current streak" or "day streak"
+            currentStreak: [
+                /current\s*streak\s*[:\s]*(\d+)/i,
+                /(\d+)\s*current\s*streak/i,
+                /(\d+)\s*day\s*streak/i,
+                /streak\s*[:\s]*(\d+)/i
+            ],
+            // Max streak - variations of "max", "best", "longest"
+            maxStreak: [
+                /max\s*(?:streak)?\s*[:\s]*(\d+)/i,
+                /(\d+)\s*max\s*streak/i,
+                /best\s*(?:streak)?\s*[:\s]*(\d+)/i,
+                /(\d+)\s*best/i,
+                /longest\s*(?:streak)?\s*[:\s]*(\d+)/i
+            ]
+        };
+        
+        // Detect game from OCR text using fuzzy keyword matching
+        function detectGameFromText(text) {
+            const normalized = text.toLowerCase();
+            
+            // Track matches with confidence scores
+            const matches = [];
+            
+            for (const [gameId, keywords] of Object.entries(STATS_GAME_KEYWORDS)) {
+                for (const keyword of keywords) {
+                    if (normalized.includes(keyword.toLowerCase())) {
+                        // Longer keywords = higher confidence
+                        const confidence = keyword.length;
+                        matches.push({ gameId, keyword, confidence });
+                    }
+                }
+            }
+            
+            if (matches.length === 0) return null;
+            
+            // Sort by confidence (prefer longer/more specific matches)
+            matches.sort((a, b) => b.confidence - a.confidence);
+            
+            console.log('📊 Game detection matches:', matches.map(m => `${m.gameId}(${m.keyword})`).join(', '));
+            
+            // Return highest confidence match
+            return matches[0].gameId;
+        }
+        
+        // Extract a stat value using multiple patterns
+        function extractStatValue(text, patterns) {
+            for (const pattern of patterns) {
+                const match = text.match(pattern);
+                if (match) {
+                    // Find the captured group (could be group 1 or 2 depending on pattern)
+                    const value = parseInt(match[1]) || parseInt(match[2]);
+                    if (!isNaN(value)) return value;
+                }
+            }
+            return null;
+        }
+        
+        // Try to detect the 4-number stats layout common to many games
+        // Pattern: [played] [win%] [current streak] [max streak]
+        function detectFourNumberLayout(text) {
+            // Look for 4 numbers in sequence with labels nearby
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            
+            // Find lines that are primarily numbers
+            const numberLines = [];
+            for (let i = 0; i < lines.length; i++) {
+                const numbers = lines[i].match(/\d+/g);
+                if (numbers && numbers.length >= 4) {
+                    // Found a line with 4+ numbers
+                    const parsed = numbers.slice(0, 4).map(n => parseInt(n));
+                    
+                    // Validate: first number should be largest (games played)
+                    // second should be <=100 (percentage), 3rd and 4th are streaks
+                    if (parsed[0] >= parsed[2] && parsed[0] >= parsed[3] && parsed[1] <= 100) {
+                        return {
+                            gamesPlayed: parsed[0],
+                            winPercent: parsed[1],
+                            currentStreak: parsed[2],
+                            maxStreak: parsed[3]
+                        };
+                    }
+                }
+            }
+            
+            // Also try matching 4 numbers across the normalized text
+            const normalized = text.replace(/\s+/g, ' ');
+            const fourNumMatch = normalized.match(/(\d{1,5})\s+(\d{1,3})\s+(\d{1,4})\s+(\d{1,4})/);
+            if (fourNumMatch) {
+                const parsed = [
+                    parseInt(fourNumMatch[1]),
+                    parseInt(fourNumMatch[2]),
+                    parseInt(fourNumMatch[3]),
+                    parseInt(fourNumMatch[4])
+                ];
+                // Same validation
+                if (parsed[0] >= parsed[2] && parsed[0] >= parsed[3] && parsed[1] <= 100) {
+                    return {
+                        gamesPlayed: parsed[0],
+                        winPercent: parsed[1],
+                        currentStreak: parsed[2],
+                        maxStreak: parsed[3]
+                    };
+                }
+            }
+            
+            return null;
+        }
+        
         // Process screenshot from clipboard
         async function processScreenshot(blob) {
             try {
@@ -28431,104 +28597,135 @@ Hint levels:
             }
         }
         
-        // Parse stats from OCR text
+        // Parse stats from OCR text - INTELLIGENT DYNAMIC VERSION
         function parseStatsFromOCR(text) {
-            // Normalize whitespace
             const normalized = text.replace(/\s+/g, ' ').trim();
-            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
             
-            console.log('📊 Parsing stats from:', normalized.substring(0, 200));
+            console.log('📊 Parsing stats from:', normalized.substring(0, 300));
             
-            // Detect game type by keywords
-            let gameType = null;
-            
-            if (/GUESS\s*DISTRIBUTION/i.test(normalized) || 
-                (/Statistics/i.test(normalized) && /Played/i.test(normalized) && /Streak/i.test(normalized) && !/(MISTAKE|Perfect\s*Puzzles)/i.test(normalized))) {
-                gameType = 'wordle';
-            } else if (/MISTAKE\s*DISTRIBUTION/i.test(normalized) || /Perfect\s*Puzzles/i.test(normalized)) {
-                gameType = 'connections';
-            } else if (/Tango\s*#?\d+/i.test(normalized)) {
-                gameType = 'tango';
-            } else if (/Queens\s*#?\d+/i.test(normalized)) {
-                gameType = 'queens';
-            } else if (/Pinpoint\s*#?\d+/i.test(normalized)) {
-                gameType = 'pinpoint';
-            } else if (/Crossclimb\s*#?\d+/i.test(normalized)) {
-                gameType = 'crossclimb';
-            }
+            // Step 1: Detect game type using fuzzy keyword matching
+            let gameType = detectGameFromText(text);
             
             if (!gameType) {
-                console.log('📊 Could not identify game type from OCR');
+                console.log('📊 Could not identify game from text');
+                // Don't give up yet - we might still be able to extract stats
+                // and ask the user which game
+            }
+            
+            console.log('📊 Detected game type:', gameType || '(unknown)');
+            
+            // Step 2: Try to extract stats using universal patterns
+            let stats = {
+                type: 'stats',
+                game: gameType,
+                gamesPlayed: extractStatValue(normalized, UNIVERSAL_STAT_PATTERNS.gamesPlayed),
+                winPercent: extractStatValue(normalized, UNIVERSAL_STAT_PATTERNS.winPercent),
+                currentStreak: extractStatValue(normalized, UNIVERSAL_STAT_PATTERNS.currentStreak),
+                maxStreak: extractStatValue(normalized, UNIVERSAL_STAT_PATTERNS.maxStreak)
+            };
+            
+            console.log('📊 Pattern extraction:', stats);
+            
+            // Step 3: If pattern extraction didn't get streak, try 4-number layout detection
+            if (stats.currentStreak === null) {
+                const layoutStats = detectFourNumberLayout(text);
+                if (layoutStats) {
+                    console.log('📊 Layout detection found:', layoutStats);
+                    // Merge layout stats with any we already found
+                    stats.gamesPlayed = stats.gamesPlayed ?? layoutStats.gamesPlayed;
+                    stats.winPercent = stats.winPercent ?? layoutStats.winPercent;
+                    stats.currentStreak = stats.currentStreak ?? layoutStats.currentStreak;
+                    stats.maxStreak = stats.maxStreak ?? layoutStats.maxStreak;
+                }
+            }
+            
+            // Step 4: Validate - need at least current streak
+            if (stats.currentStreak === null) {
+                console.log('📊 Could not extract current streak');
                 return null;
             }
             
-            console.log('📊 Detected game type:', gameType);
-            
-            // Extract numbers - look for the stats row pattern
-            // Stats pages typically have: [large number] [percentage] [streak] [max streak]
-            // Often with labels below: Played/Completed, Win %, Current Streak, Max Streak
-            
-            // Find all numbers in the text
-            const allNumbers = normalized.match(/\d+/g)?.map(n => parseInt(n)) || [];
-            console.log('📊 Found numbers:', allNumbers);
-            
-            // Try to find the 4-stat pattern
-            // Look for sequences like: "1361 98 14 115" or similar
-            let stats = null;
-            
-            // Method 1: Look for labeled values
-            const playedMatch = normalized.match(/(\d{1,5})\s*(?:Played|Completed|Plays)/i);
-            const winMatch = normalized.match(/(\d{1,3})\s*(?:Win\s*%|%)/i);
-            const currentStreakMatch = normalized.match(/(\d{1,4})\s*(?:Current|Day)?\s*Streak/i) || 
-                                       normalized.match(/Current\s*Streak\s*(\d{1,4})/i);
-            const maxStreakMatch = normalized.match(/(\d{1,4})\s*Max\s*(?:Streak)?/i) ||
-                                   normalized.match(/Max\s*(?:Streak)?\s*(\d{1,4})/i);
-            
-            // Method 2: Look for 4 numbers in a row at the start (common stats layout)
-            // Pattern: Stats pages often show 4 numbers on one line
-            const fourNumberPattern = normalized.match(/(\d{1,5})\s+(\d{1,3})\s+(\d{1,4})\s+(\d{1,4})/);
-            
-            if (playedMatch || currentStreakMatch) {
-                stats = {
-                    type: 'stats',
-                    game: gameType,
-                    gamesPlayed: playedMatch ? parseInt(playedMatch[1]) : null,
-                    winPercent: winMatch ? parseInt(winMatch[1]) : null,
-                    currentStreak: currentStreakMatch ? parseInt(currentStreakMatch[1]) : null,
-                    maxStreak: maxStreakMatch ? parseInt(maxStreakMatch[1]) : null
-                };
-            } else if (fourNumberPattern) {
-                stats = {
-                    type: 'stats',
-                    game: gameType,
-                    gamesPlayed: parseInt(fourNumberPattern[1]),
-                    winPercent: parseInt(fourNumberPattern[2]),
-                    currentStreak: parseInt(fourNumberPattern[3]),
-                    maxStreak: parseInt(fourNumberPattern[4])
-                };
+            // Step 5: If we have stats but no game, prompt user
+            if (!stats.game) {
+                console.log('📊 Have stats but no game - will prompt user');
+                // Store stats temporarily and show game picker
+                pendingUnknownStats = stats;
+                showGamePickerForStats(stats);
+                return null; // Don't process yet - wait for user selection
             }
             
-            // Validate - at minimum need game and current streak
-            if (stats && stats.currentStreak !== null) {
-                console.log('📊 Parsed stats:', stats);
-                return stats;
+            console.log('📊 Final parsed stats:', stats);
+            return stats;
+        }
+        
+        // Pending stats when game couldn't be detected
+        let pendingUnknownStats = null;
+        
+        // Show game picker when we detect stats but can't identify the game
+        function showGamePickerForStats(stats) {
+            // Get games that are on user's shelf (most likely candidates)
+            const shelfGames = appData.games.map(g => GAMES[g.id]).filter(g => g);
+            
+            // Build game chips HTML
+            const gameChipsHtml = shelfGames.length > 0 
+                ? shelfGames.map(g => `
+                    <button onclick="selectGameForUnknownStats('${g.id}')" style="
+                        display: inline-flex; align-items: center; gap: 6px;
+                        padding: 10px 14px; margin: 4px;
+                        background: var(--bg-tertiary); border: 1px solid var(--border);
+                        border-radius: 20px; cursor: pointer; font-size: 0.95rem;
+                    ">
+                        <span>${g.icon}</span> ${g.name}
+                    </button>
+                `).join('')
+                : '<p style="color: var(--text-muted);">Add games to your shelf first</p>';
+            
+            showGenericSheet({
+                title: '🎮 Which game is this?',
+                content: `
+                    <div style="padding: 16px;">
+                        <p style="color: var(--text-muted); margin-bottom: 16px;">
+                            Found stats but couldn't identify the game:
+                        </p>
+                        <div style="background: var(--bg-tertiary); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                            <div style="display: flex; justify-content: space-around; text-align: center;">
+                                ${stats.gamesPlayed !== null ? `<div><div style="font-size: 1.5rem; font-weight: 600;">${stats.gamesPlayed}</div><div style="font-size: 0.75rem; color: var(--text-muted);">Played</div></div>` : ''}
+                                ${stats.winPercent !== null ? `<div><div style="font-size: 1.5rem; font-weight: 600;">${stats.winPercent}%</div><div style="font-size: 0.75rem; color: var(--text-muted);">Win</div></div>` : ''}
+                                ${stats.currentStreak !== null ? `<div><div style="font-size: 1.5rem; font-weight: 600;">${stats.currentStreak}</div><div style="font-size: 0.75rem; color: var(--text-muted);">Streak</div></div>` : ''}
+                                ${stats.maxStreak !== null ? `<div><div style="font-size: 1.5rem; font-weight: 600;">${stats.maxStreak}</div><div style="font-size: 0.75rem; color: var(--text-muted);">Max</div></div>` : ''}
+                            </div>
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.9rem;">
+                            Select the game these stats are from:
+                        </p>
+                        <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+                            ${gameChipsHtml}
+                        </div>
+                        <button onclick="closeGenericSheet(); pendingUnknownStats = null;" style="
+                            width: 100%; margin-top: 16px; padding: 12px;
+                            background: var(--bg-tertiary); border: 1px solid var(--border);
+                            border-radius: 10px; color: var(--text-muted); cursor: pointer;
+                        ">
+                            Cancel
+                        </button>
+                    </div>
+                `
+            });
+        }
+        
+        // User selected game for unknown stats
+        async function selectGameForUnknownStats(gameId) {
+            closeGenericSheet();
+            
+            if (!pendingUnknownStats) {
+                showToast('No stats pending', 'error');
+                return;
             }
             
-            // Fallback: Try to find just streak numbers
-            const streakOnly = normalized.match(/(\d{1,4})\s*(?:day)?\s*(?:win\s*)?streak/i);
-            if (streakOnly) {
-                return {
-                    type: 'stats',
-                    game: gameType,
-                    gamesPlayed: null,
-                    winPercent: null,
-                    currentStreak: parseInt(streakOnly[1]),
-                    maxStreak: null
-                };
-            }
+            const stats = { ...pendingUnknownStats, game: gameId };
+            pendingUnknownStats = null;
             
-            console.log('📊 Could not extract stats values');
-            return null;
+            await processStatsImport(stats);
         }
         
         // Process imported stats - compare with GS and update
@@ -33092,7 +33289,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "2.0",
-  "appVersion": "1.3.32",
+  "appVersion": "1.3.33",
   "lastUpdated": "2026-01-29",
   "categories": [
     {
