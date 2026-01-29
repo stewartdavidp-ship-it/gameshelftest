@@ -76,6 +76,12 @@
           "q": "Which games are supported?",
           "a": "34+ games including: **Wordle**, **Connections**, **Strands**, Mini, Spelling Bee, Quordle, Queens, Tango, Worldle, Framed, and more. See Games tab → Browse for the full list.",
           "keywords": ["supported", "games", "list", "which", "what games"]
+        },
+        {
+          "id": "insights-lightbulb",
+          "q": "What's the lightbulb icon on my game card?",
+          "a": "The 💡 icon means **Today's Insight** is available. Tap the completed game card, then **View Today's Insight** to see AI analysis of today's puzzle - difficulty rating, traps, and whether it was fair. You can react and share your take! Currently available for Connections, with more games coming soon.",
+          "keywords": ["lightbulb", "insight", "insights", "bulb", "icon", "analysis", "fair", "reaction", "💡"]
         }
       ]
     },

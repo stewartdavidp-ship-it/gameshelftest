@@ -1,4 +1,4 @@
-Game Shelf PWA v1.3.31 Release Notes
+Game Shelf PWA v1.3.32 Release Notes
 =====================================
 
 Release Date: January 29, 2026
@@ -13,6 +13,7 @@ AI HELP RAG IMPROVEMENTS (Phase 5):
 * Added category boosting for high-priority FAQ categories
   - Getting Started and Troubleshooting get 2x boost
   - Recording and Streaks get 1.5x boost
+* Added FAQ entry for "What's the lightbulb icon?" (Daily Insights)
 * Overall: AI Help should now provide more accurate, relevant answers
 
 ---
