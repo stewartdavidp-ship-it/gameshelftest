@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.7">
+    <meta name="version" content="1.3.8">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -3089,10 +3089,29 @@
         }
         
         .bottom-sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 1.1rem;
             font-weight: 700;
             margin-bottom: 16px;
-            text-align: center;
+            padding-right: 8px;
+        }
+        
+        .bottom-sheet-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        
+        .bottom-sheet-close:hover {
+            background: var(--surface-hover);
         }
         
         .log-textarea {
@@ -8011,9 +8030,9 @@
         .help-sheet-content {
             display: flex;
             flex-direction: column;
-            height: 100%;
-            max-height: 100%;
+            flex: 1;
             min-height: 0;
+            overflow: hidden;
         }
 
         .help-search-container {
@@ -8505,7 +8524,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.7</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.8</span>
             </div>
         </div>
         <div class="header-right">
@@ -8754,7 +8773,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.7</div>
+            <div class="settings-version">Game Shelf PWA v1.3.8</div>
         </div>
     </div>
     
@@ -9762,7 +9781,10 @@
     <div class="bottom-sheet-overlay" id="log-sheet" onclick="closeLogSheet(event)">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 80vh;">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">📋 Log Game Result</div>
+            <div class="bottom-sheet-header">
+                <span>📋 Log Game Result</span>
+                <button class="bottom-sheet-close" onclick="closeLogSheet(event)">×</button>
+            </div>
             
             <!-- Tabs -->
             <div class="log-tabs">
@@ -9889,7 +9911,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="issue-sheet" onclick="closeIssueSheet()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 90vh;">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">📝 Report Issue / Request</div>
+            <div class="bottom-sheet-header">
+                <span>📝 Report Issue / Request</span>
+                <button class="bottom-sheet-close" onclick="closeIssueSheet()">×</button>
+            </div>
             
             <div style="padding: 16px; overflow-y: auto; max-height: 70vh;">
                 <form id="issue-report-form" onsubmit="submitIssueReport(event)">
@@ -10237,12 +10262,13 @@ Wordle 1,234 3/6
     
     <!-- Help Sheet -->
     <div class="bottom-sheet-overlay" id="help-sheet-overlay" onclick="closeHelpSheet()">
-        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 92vh; height: 92vh; overflow: hidden; display: flex; flex-direction: column;">
             <div class="bottom-sheet-handle"></div>
             <div class="help-sheet-content">
-                <div class="bottom-sheet-header" style="padding: 16px; border-bottom: 1px solid var(--border);">
+                <!-- Compact header: title left, X right -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;">
                     <h3 style="margin: 0; font-size: 1.1rem;">Help</h3>
-                    <button style="background: none; border: none; font-size: 24px; color: var(--text-secondary); cursor: pointer; padding: 0; line-height: 1;" onclick="closeHelpSheet()">×</button>
+                    <button style="background: none; border: none; font-size: 24px; color: var(--text-secondary); cursor: pointer; padding: 4px 8px; line-height: 1;" onclick="closeHelpSheet()">×</button>
                 </div>
                 
                 <!-- Search -->
@@ -10255,7 +10281,7 @@ Wordle 1,234 3/6
                            oninput="handleHelpSearch(this.value)">
                 </div>
                 
-                <!-- Content Area -->
+                <!-- Content Area - takes most of the space -->
                 <div class="help-content" id="help-content">
                     <!-- Populated by JS -->
                 </div>
@@ -10266,21 +10292,21 @@ Wordle 1,234 3/6
                     <button class="help-ask-ai-btn" onclick="showAskAI()">Ask AI</button>
                 </div>
                 
-                <!-- Bottom Actions -->
-                <div class="help-bottom-actions">
-                    <div class="help-action-item" onclick="helpReportIssue()">
+                <!-- Bottom Actions - Compact -->
+                <div class="help-bottom-actions" style="display: flex; flex-wrap: wrap; gap: 0; padding: 4px 0;">
+                    <div class="help-action-item" onclick="helpReportIssue()" style="flex: 1 1 50%; padding: 10px 12px;">
                         <span class="help-action-icon">💬</span>
-                        <span class="help-action-text">Send Feedback</span>
+                        <span class="help-action-text">Feedback</span>
                     </div>
-                    <div class="help-action-item" onclick="helpStartTutorial()">
+                    <div class="help-action-item" onclick="helpStartTutorial()" style="flex: 1 1 50%; padding: 10px 12px;">
                         <span class="help-action-icon">📖</span>
-                        <span class="help-action-text">How to Use Game Shelf</span>
+                        <span class="help-action-text">Tutorial</span>
                     </div>
-                    <div class="help-action-item" onclick="helpShowAbout()">
+                    <div class="help-action-item" onclick="helpShowAbout()" style="flex: 1 1 50%; padding: 10px 12px;">
                         <span class="help-action-icon">🎮</span>
-                        <span class="help-action-text">About Game Shelf</span>
+                        <span class="help-action-text">About</span>
                     </div>
-                    <div class="help-action-item" onclick="helpShowWhatsNew()">
+                    <div class="help-action-item" onclick="helpShowWhatsNew()" style="flex: 1 1 50%; padding: 10px 12px;">
                         <span class="help-action-icon">🎉</span>
                         <span class="help-action-text">What's New</span>
                         <span class="help-action-badge" id="help-whats-new-badge" style="display: none;">NEW</span>
@@ -10595,7 +10621,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="account-sheet" onclick="closeAccountModal()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">👤 Account</div>
+            <div class="bottom-sheet-header">
+                <span>👤 Account</span>
+                <button class="bottom-sheet-close" onclick="closeAccountModal()">×</button>
+            </div>
             <div id="modal-content">
                 <!-- Populated by JS based on auth state -->
             </div>
@@ -10833,7 +10862,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="create-battle-sheet" onclick="closeCreateBattle()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh; overflow-y: auto;">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">⚔️ Create Battle</div>
+            <div class="bottom-sheet-header">
+                <span>⚔️ Create Battle</span>
+                <button class="bottom-sheet-close" onclick="closeCreateBattle()">×</button>
+            </div>
             
             <div class="battle-form-group">
                 <label class="battle-form-label">Battle Name</label>
@@ -10961,7 +10993,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="join-battle-sheet" onclick="closeJoinBattle()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">🔍 Join Battle</div>
+            <div class="bottom-sheet-header">
+                <span>🔍 Join Battle</span>
+                <button class="bottom-sheet-close" onclick="closeJoinBattle()">×</button>
+            </div>
             
             <div class="battle-form-group">
                 <label class="battle-form-label">Enter Battle Code</label>
@@ -11030,7 +11065,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="battle-details-sheet" onclick="closeBattleDetails()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh; overflow-y: auto;">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header" id="battle-details-title">⚔️ Battle Details</div>
+            <div class="bottom-sheet-header">
+                <span id="battle-details-title">⚔️ Battle Details</span>
+                <button class="bottom-sheet-close" onclick="closeBattleDetails()">×</button>
+            </div>
             
             <div id="battle-status-banner" style="padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; font-weight: 600;"></div>
             
@@ -11145,7 +11183,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="referral-sheet" onclick="closeReferralSheet()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh;">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">🎁 Invite Friends</div>
+            <div class="bottom-sheet-header">
+                <span>🎁 Invite Friends</span>
+                <button class="bottom-sheet-close" onclick="closeReferralSheet()">×</button>
+            </div>
             
             <!-- Earnings Summary -->
             <div class="referral-earnings">
@@ -11417,7 +11458,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="achievements-sheet" onclick="closeAchievements()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">🏆 Achievements</div>
+            <div class="bottom-sheet-header">
+                <span>🏆 Achievements</span>
+                <button class="bottom-sheet-close" onclick="closeAchievements()">×</button>
+            </div>
             
             <div class="achievements-header">
                 <span>Your Progress</span>
@@ -17593,13 +17637,17 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.7';
+        const APP_VERSION = '1.3.8';
         
         const RELEASE_NOTES = {
+            '1.3.8': [
+                { icon: '📋', title: 'Much Larger Help View', desc: 'FAQ area now fills most of the screen' },
+                { icon: '✕', title: 'X Buttons on All Modals', desc: 'Easy dismiss from top-right corner' },
+                { icon: '🔧', title: 'Menu No Longer Blocks Help', desc: 'Help opens cleanly from menu' }
+            ],
             '1.3.7': [
                 { icon: '🤖', title: 'Bigger AI Help', desc: 'Response area is now 5x larger for easier reading' },
-                { icon: '🎨', title: 'Fixed Ask AI Button', desc: 'Button now shows text properly with gradient style' },
-                { icon: '👆', title: 'Clickable Help Items', desc: 'Bottom menu items no longer blocked by floating button' }
+                { icon: '🎨', title: 'Fixed Ask AI Button', desc: 'Button now shows text properly with gradient style' }
             ],
             '1.3.6': [
                 { icon: '📢', title: 'Cleaner Share Hub', desc: 'Removed header clutter, larger message editor' },
@@ -17832,9 +17880,11 @@ Wordle 1,234 3/6
             markFaqSeen();
             
             // Close settings menu if open
-            const settingsEl = document.getElementById('settings-panel');
-            if (settingsEl && settingsEl.classList.contains('active')) {
-                toggleSettingsMenu();
+            const settingsMenu = document.getElementById('settings-menu');
+            const settingsOverlay = document.getElementById('settings-overlay');
+            if (settingsMenu && settingsMenu.classList.contains('active')) {
+                settingsMenu.classList.remove('active');
+                if (settingsOverlay) settingsOverlay.classList.remove('active');
             }
             
             // Hide floating help button while sheet is open
@@ -31225,7 +31275,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "1.0",
-  "appVersion": "1.3.7",
+  "appVersion": "1.3.8",
   "lastUpdated": "2026-01-29",
   "categories": [
     {

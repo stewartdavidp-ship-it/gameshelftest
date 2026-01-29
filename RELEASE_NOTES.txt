@@ -1,3 +1,35 @@
+Game Shelf PWA v1.3.8 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+HELP SYSTEM UX OVERHAUL:
+------------------------
+* Help sheet now fills 92% of screen (was 85vh)
+* Compact header: "Help" title left, X button right (single row)
+* Bottom actions condensed to 2x2 grid
+* FAQ content area now has room to breathe
+
+* Menu properly closes when opening Help
+  - Fixed bug where Help was hidden behind settings menu
+  - Settings menu now closes before Help sheet opens
+
+X BUTTONS ON ALL MODALS:
+------------------------
+Added consistent X dismiss buttons to top-right of:
+* Log Game Result
+* Report Issue / Request
+* Account
+* Create Battle
+* Join Battle
+* Battle Details
+* Achievements
+* Invite Friends
+
+New CSS class .bottom-sheet-close provides consistent styling.
+
+---
+
 Game Shelf PWA v1.3.7 Release Notes
 =====================================
 
