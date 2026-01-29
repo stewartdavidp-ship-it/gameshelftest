@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.35">
+    <meta name="version" content="1.3.36">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9319,7 +9319,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.35</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.36</span>
             </div>
         </div>
         <div class="header-right">
@@ -9593,7 +9593,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.35</div>
+            <div class="settings-version">Game Shelf PWA v1.3.36</div>
         </div>
     </div>
     
@@ -18923,9 +18923,12 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.35';
+        const APP_VERSION = '1.3.36';
         
         const RELEASE_NOTES = {
+            '1.3.36': [
+                { icon: '🔍', title: 'Smarter OCR Processing', desc: 'Fixed stats screenshot parsing - Connections stats now recognized reliably!' }
+            ],
             '1.3.35': [
                 { icon: '☀️', title: 'Morning Review', desc: 'Start your day with a spoiler-free preview of today\'s puzzles! Enable in Settings.' }
             ],
@@ -29085,8 +29088,156 @@ Hint levels:
             return null;
         }
         
+        // v1.3.36: Preprocess OCR text to fix common character confusions
+        // Tesseract often confuses similar-looking characters
+        function preprocessOCRText(text) {
+            let processed = text;
+            
+            // Log original for debugging
+            console.log('📷 OCR Preprocessing - Original:', text.substring(0, 200));
+            
+            // Fix common OCR character confusions in NUMBER contexts
+            // We need to be careful to only fix these in contexts where numbers are expected
+            
+            // Step 1: Find sequences that look like stats (numbers near stat keywords)
+            // Replace common confusions: l/I -> 1, O -> 0 when surrounded by digits or spaces
+            
+            // Pattern: digit or space, then confused char, then digit or space
+            // This avoids changing letters in actual words
+            processed = processed.replace(/(\d)\s*[lI]\s*(\d)/g, '$1 1 $2');  // 562 l 29 -> 562 1 29
+            processed = processed.replace(/(\d)\s*O\s*(\d)/g, '$1 0 $2');     // 8O -> 80 in context
+            
+            // Fix standalone confused characters between digits
+            processed = processed.replace(/(\d)\s+[lI]\s+(\d)/g, '$1 1 $2');
+            processed = processed.replace(/(\d)\s+O\s+(\d)/g, '$1 0 $2');
+            
+            // Fix at start of number sequences (after space/newline)
+            processed = processed.replace(/(^|\s)[lI](\d)/gm, '$11$2');       // l29 -> 129
+            processed = processed.replace(/(^|\s)O(\d)/gm, '$10$2');          // O5 -> 05
+            
+            // Fix at end of number sequences (before space/newline)
+            processed = processed.replace(/(\d)[lI]($|\s)/gm, '$11$2');       // 29l -> 291
+            processed = processed.replace(/(\d)O($|\s)/gm, '$10$2');          // 29O -> 290
+            
+            // Fix within numbers (no spaces)
+            processed = processed.replace(/(\d)[lI](\d)/g, '$11$2');          // 5l2 -> 512
+            processed = processed.replace(/(\d)O(\d)/g, '$10$2');             // 5O2 -> 502
+            
+            // Step 2: Normalize various dash/hyphen characters that might appear
+            processed = processed.replace(/[–—−]/g, '-');
+            
+            // Step 3: Normalize whitespace but preserve newlines for structure detection
+            processed = processed.replace(/[ \t]+/g, ' ');  // Multiple spaces/tabs -> single space
+            processed = processed.replace(/ ?\n ?/g, '\n'); // Clean up around newlines
+            
+            console.log('📷 OCR Preprocessing - Cleaned:', processed.substring(0, 200));
+            
+            return processed;
+        }
+        
+        // v1.3.36: More aggressive number sequence finder for stats
+        // Looks for 4 numbers that could be stats even if OCR garbled them slightly
+        function findStatsNumberSequence(text) {
+            console.log('📷 Looking for stats number sequence...');
+            
+            // Strategy 1: Look for 4 numbers in a row (our stats layout)
+            const normalized = text.replace(/\s+/g, ' ');
+            
+            // Try to find 4 numbers separated by spaces
+            const fourNumPattern = /(\d{1,5})\s+(\d{1,3})\s+(\d{1,4})\s+(\d{1,4})/g;
+            let match;
+            const candidates = [];
+            
+            while ((match = fourNumPattern.exec(normalized)) !== null) {
+                const nums = [
+                    parseInt(match[1]),
+                    parseInt(match[2]),
+                    parseInt(match[3]),
+                    parseInt(match[4])
+                ];
+                
+                // Validate: [played] [win%] [current] [max]
+                // played should be largest, win% <= 100, streaks are smaller
+                if (nums[1] <= 100 && nums[0] >= nums[2] && nums[0] >= nums[3]) {
+                    console.log('📷 Found valid candidate:', nums, 'at position', match.index);
+                    candidates.push({
+                        nums,
+                        position: match.index,
+                        match: match[0]
+                    });
+                }
+            }
+            
+            // Strategy 2: If no 4-number sequence, look for numbers near stat keywords
+            if (candidates.length === 0) {
+                console.log('📷 No 4-number sequence found, trying keyword proximity...');
+                
+                // Find all numbers in the text
+                const allNumbers = [];
+                const numPattern = /\d+/g;
+                while ((match = numPattern.exec(normalized)) !== null) {
+                    allNumbers.push({
+                        value: parseInt(match[0]),
+                        position: match.index,
+                        text: match[0]
+                    });
+                }
+                
+                console.log('📷 All numbers found:', allNumbers.map(n => n.value));
+                
+                // Look for "Completed" keyword and find the number before it
+                const completedPos = normalized.toLowerCase().indexOf('completed');
+                const winPos = normalized.toLowerCase().indexOf('win');
+                const streakPos = normalized.toLowerCase().indexOf('streak');
+                
+                console.log('📷 Keyword positions - Completed:', completedPos, 'Win:', winPos, 'Streak:', streakPos);
+                
+                if (completedPos > 0 || winPos > 0 || streakPos > 0) {
+                    // Find numbers that appear before these keywords
+                    // Stats typically appear as: NUM NUM NUM NUM then labels
+                    
+                    // Get the earliest keyword position
+                    const keywordPositions = [completedPos, winPos, streakPos].filter(p => p > 0);
+                    if (keywordPositions.length > 0) {
+                        const firstKeyword = Math.min(...keywordPositions);
+                        
+                        // Get numbers that appear before the first keyword
+                        const numbersBeforeKeywords = allNumbers.filter(n => n.position < firstKeyword);
+                        console.log('📷 Numbers before keywords:', numbersBeforeKeywords.map(n => n.value));
+                        
+                        // Take the last 4 numbers before keywords (skip status bar time etc)
+                        if (numbersBeforeKeywords.length >= 4) {
+                            const lastFour = numbersBeforeKeywords.slice(-4);
+                            const nums = lastFour.map(n => n.value);
+                            
+                            // Validate
+                            if (nums[1] <= 100 && nums[0] >= nums[2] && nums[0] >= nums[3]) {
+                                console.log('📷 Found valid sequence from keyword proximity:', nums);
+                                candidates.push({
+                                    nums,
+                                    position: lastFour[0].position,
+                                    match: nums.join(' ')
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Return best candidate (prefer later position to skip status bar times)
+            if (candidates.length > 0) {
+                // Sort by position descending, return the one closest to keywords
+                candidates.sort((a, b) => b.position - a.position);
+                console.log('📷 Best candidate:', candidates[0]);
+                return candidates[0].nums;
+            }
+            
+            console.log('📷 No valid stats sequence found');
+            return null;
+        }
+        
         // Process screenshot from clipboard
-        // v1.3.35: Enhanced with validation layer to prevent false positives
+        // v1.3.36: Enhanced with OCR preprocessing and robust number detection
         async function processScreenshot(blob) {
             try {
                 // Initialize Tesseract worker if needed
@@ -29100,13 +29251,16 @@ Hint levels:
                 const { data } = await ocrWorker.recognize(imageUrl);
                 URL.revokeObjectURL(imageUrl);
                 
-                const ocrText = data.text;
-                console.log('📷 OCR Result:', ocrText);
+                const rawOcrText = data.text;
+                console.log('📷 Raw OCR Result:', rawOcrText);
                 
-                if (!ocrText || ocrText.trim().length < 10) {
+                if (!rawOcrText || rawOcrText.trim().length < 10) {
                     showToast('📷 Couldn\'t read text from image', 'error');
                     return;
                 }
+                
+                // v1.3.36: Preprocess OCR text to fix common character confusions
+                const ocrText = preprocessOCRText(rawOcrText);
                 
                 // Try to parse as stats first
                 const stats = parseStatsFromOCR(ocrText);
@@ -29287,6 +29441,20 @@ Hint levels:
                     stats.winPercent = stats.winPercent ?? splitLineStats.winPercent;
                     stats.currentStreak = stats.currentStreak ?? splitLineStats.currentStreak;
                     stats.maxStreak = stats.maxStreak ?? splitLineStats.maxStreak;
+                }
+            }
+            
+            // v1.3.36: Step 3c - Last resort: aggressive number sequence finder
+            // This uses keyword proximity and handles more OCR edge cases
+            if (stats.currentStreak === null && looksLikeStats) {
+                console.log('📊 Trying aggressive number sequence finder...');
+                const sequenceNums = findStatsNumberSequence(text);
+                if (sequenceNums) {
+                    console.log('📊 Aggressive finder found:', sequenceNums);
+                    stats.gamesPlayed = stats.gamesPlayed ?? sequenceNums[0];
+                    stats.winPercent = stats.winPercent ?? sequenceNums[1];
+                    stats.currentStreak = sequenceNums[2];  // Always use this - it's what we need
+                    stats.maxStreak = stats.maxStreak ?? sequenceNums[3];
                 }
             }
             
