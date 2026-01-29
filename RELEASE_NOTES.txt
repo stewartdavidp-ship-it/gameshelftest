@@ -1,3 +1,30 @@
+Game Shelf PWA v1.3.21 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+UI IMPROVEMENT:
+---------------
+* Active tab label is now bold for better visibility
+* Previously only color changed (purple) - now also font-weight: 700
+* Makes it clearer which tab you're currently on
+
+---
+
+Game Shelf PWA v1.3.20 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+BUG FIX:
+--------
+* Fixed "Can't find variable: getGameInfo" error in AI Help
+* The error occurred when gathering user context for AI requests
+* Root cause: Code referenced non-existent getGameInfo() function
+* Fix: Changed to use GAMES[gameId] lookup instead
+
+---
+
 Game Shelf PWA v1.3.19 Release Notes
 =====================================
 
