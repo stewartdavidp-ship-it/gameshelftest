@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.4">
+    <meta name="version" content="1.3.6">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -5120,7 +5120,7 @@
             font-size: 0.95rem;
             font-family: inherit;
             resize: vertical;
-            min-height: 100px;
+            min-height: 180px;
         }
         
         .share-emoji-bar {
@@ -8011,8 +8011,9 @@
         .help-sheet-content {
             display: flex;
             flex-direction: column;
-            height: 85vh;
-            max-height: 85vh;
+            height: 100%;
+            max-height: 100%;
+            min-height: 0;
         }
 
         .help-search-container {
@@ -8056,6 +8057,7 @@
             flex: 1;
             overflow-y: auto;
             padding: 8px 0;
+            min-height: 0;
         }
 
         /* Category Accordion */
@@ -8500,7 +8502,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.4</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.6</span>
             </div>
         </div>
         <div class="header-right">
@@ -8749,7 +8751,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.4</div>
+            <div class="settings-version">Game Shelf PWA v1.3.6</div>
         </div>
     </div>
     
@@ -9096,11 +9098,6 @@
         
         <!-- Share Screen -->
         <div class="screen" id="screen-share">
-            <div class="share-hub-header">
-                <div style="font-size: 2rem;">📢</div>
-                <h2>Share Hub</h2>
-                <p>Write once, share everywhere</p>
-            </div>
             
             <!-- Friend Recommendations Section for Share -->
             <div class="recommendations-section" id="recommendations-section-share" style="margin: 0 16px 16px 16px;">
@@ -9167,7 +9164,7 @@
                         <option value="history">📜 From History...</option>
                     </select>
                 </div>
-                <textarea class="share-textarea" id="share-screen-message" rows="4" placeholder="Write your message here..."></textarea>
+                <textarea class="share-textarea" id="share-screen-message" rows="8" placeholder="Write your message here..."></textarea>
                 <div class="share-emoji-bar">
                     <button class="share-emoji-btn" onclick="insertShareEmoji('🎮')">🎮</button>
                     <button class="share-emoji-btn" onclick="insertShareEmoji('🧠')">🧠</button>
@@ -10237,7 +10234,7 @@ Wordle 1,234 3/6
     
     <!-- Help Sheet -->
     <div class="bottom-sheet-overlay" id="help-sheet-overlay" onclick="closeHelpSheet()">
-        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 90vh;">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;">
             <div class="bottom-sheet-handle"></div>
             <div class="help-sheet-content">
                 <div class="bottom-sheet-header" style="padding: 16px; border-bottom: 1px solid var(--border);">
@@ -17593,13 +17590,20 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.4';
+        const APP_VERSION = '1.3.6';
         
         const RELEASE_NOTES = {
+            '1.3.6': [
+                { icon: '📢', title: 'Cleaner Share Hub', desc: 'Removed header clutter, larger message editor' },
+                { icon: '🤖', title: 'Smarter AI Help', desc: 'Now gives step-by-step instructions instead of just descriptions' }
+            ],
+            '1.3.5': [
+                { icon: '🔧', title: 'Help Sheet Fix', desc: 'Fixed FAQ categories not displaying or expanding properly' }
+            ],
             '1.3.4': [
                 { icon: '🤖', title: 'AI Help', desc: 'Ask questions about Game Shelf and get instant answers' },
                 { icon: '💡', title: 'Smart Context', desc: 'AI knows what you searched and viewed in FAQs' },
-                { icon: '💎', title: 'Token-Powered', desc: '5 tokens per question (can be adjusted based on feedback)' }
+                { icon: '💎', title: 'Token-Powered', desc: '5 tokens per question' }
             ],
             '1.3.3': [
                 { icon: '❓', title: 'Help Center', desc: 'Searchable FAQs, tutorials, and support all in one place' },
@@ -30994,6 +30998,10 @@ Hint levels:
         
         // ============ INIT ============
         function init() {
+            // Update header version badge to match APP_VERSION
+            const versionBadge = document.getElementById('header-version-badge');
+            if (versionBadge) versionBadge.textContent = 'v' + APP_VERSION;
+            
             loadData();
             
             // v1.3.0: Validate streaks on startup (reset broken streaks)
@@ -31199,7 +31207,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "1.0",
-  "appVersion": "1.3.4",
+  "appVersion": "1.3.6",
   "lastUpdated": "2026-01-29",
   "categories": [
     {

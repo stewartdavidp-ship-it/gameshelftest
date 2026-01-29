@@ -1,3 +1,63 @@
+Game Shelf PWA v1.3.6 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+SHARE HUB IMPROVEMENTS:
+-----------------------
+* Removed header clutter
+  - Removed 📢 bullhorn icon
+  - Removed "Share Hub" title
+  - Removed "Write once, share everywhere" tagline
+  - More space for actual content
+
+* Larger message composer
+  - Textarea rows increased from 4 to 8
+  - Min-height increased from 100px to 180px
+  - More room to write without scrolling
+
+AI HELP IMPROVEMENTS:
+---------------------
+* Smarter, more actionable responses
+  - Now gives step-by-step instructions
+  - Leads with actions, not descriptions
+  - Includes numbered steps for multi-step tasks
+  
+* Added built-in guides for common tasks:
+  - Create a Battle (full 6-step walkthrough)
+  - Add a Friend
+  - Get an AI Hint
+  - Record a Game
+  - Check Streaks
+  - Remove a Game
+
+DEPLOYMENT:
+-----------
+1. Upload index.js to Command Center (AI Help prompt change)
+2. Deploy gameshelf-deploy-v1_3_6.zip
+
+---
+
+Game Shelf PWA v1.3.5 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+BUG FIX:
+--------
+* Fixed Help sheet FAQ categories not displaying or expanding
+  - Root cause: CSS height conflict between bottom-sheet container and help-sheet-content
+  - .help-sheet-content had fixed height: 85vh inside 90vh container with padding
+  - This caused flex children to clip incorrectly, especially on iOS
+  
+* Fix details:
+  - Changed .help-sheet-content from height: 85vh to height: 100%
+  - Added min-height: 0 to .help-content for proper flex shrinking
+  - Set overflow: hidden on help sheet's bottom-sheet container
+  - Made bottom-sheet use flex layout for proper height distribution
+
+---
+
 Game Shelf PWA v1.3.4 Release Notes
 =====================================
 
