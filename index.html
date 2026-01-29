@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.33">
+    <meta name="version" content="1.3.34">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9122,7 +9122,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.33</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.34</span>
             </div>
         </div>
         <div class="header-right">
@@ -9376,7 +9376,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.33</div>
+            <div class="settings-version">Game Shelf PWA v1.3.34</div>
         </div>
     </div>
     
@@ -14273,19 +14273,66 @@ Wordle 1,234 3/6
             },
             {
                 id: 'mini',
-                // Matches: "I solved the 1/17/2026 New York Times Mini Crossword in 1:23!"
-                // Also: "Mini Crossword", time patterns
-                regex: /(?:I\s+solved.*(?:Mini|mini).*in\s+)?(\d+):(\d+)|Mini\s*Crossword/i,
+                // v1.3.34: STRICT Mini matching to prevent false positives from status bar times
+                // Must have explicit Mini context - bare times like "2:29" are NOT matched
+                // Valid formats:
+                //   "I solved the 1/17/2026 New York Times Mini Crossword in 1:23!"
+                //   "Mini Crossword" with nearby time
+                //   "The Mini" with nearby time
+                regex: /(?:I\s+solved.*(?:Mini|The\s+Mini).*in\s+(\d+):(\d+))|(?:(?:Mini\s*Crossword|The\s+Mini|NYT\s+Mini)[\s\S]{0,50}(\d+):(\d+))|(?:(\d+):(\d+)[\s\S]{0,50}(?:Mini\s*Crossword|The\s+Mini|NYT\s+Mini))/i,
                 extract: (match, text) => {
-                    // Try to find time pattern anywhere in text
-                    const timeMatch = text.match(/(\d+):(\d+)/);
-                    if (timeMatch) {
-                        const mins = parseInt(timeMatch[1]);
-                        const secs = parseInt(timeMatch[2]);
-                        const totalSecs = mins * 60 + secs;
+                    // v1.3.34: Additional validation - reject if text contains strong indicators of OTHER games
+                    // This prevents matching when OCR picks up status bar time on a Connections/Wordle stats page
+                    const otherGameIndicators = [
+                        /connections\s*(bot|archive|puzzle)/i,
+                        /wordle\s*\d/i,
+                        /strands\s*#?\d/i,
+                        /completed.*win.*streak/i,  // Stats page indicator
+                        /current\s*streak.*max\s*streak/i  // Stats page indicator
+                    ];
+                    
+                    for (const indicator of otherGameIndicators) {
+                        if (indicator.test(text)) {
+                            console.log('🚫 Mini parser rejected: found other game indicator', indicator);
+                            return null;
+                        }
+                    }
+                    
+                    // Extract time from the matched groups (different positions depending on which pattern matched)
+                    let mins, secs;
+                    if (match[1] && match[2]) {
+                        mins = parseInt(match[1]);
+                        secs = parseInt(match[2]);
+                    } else if (match[3] && match[4]) {
+                        mins = parseInt(match[3]);
+                        secs = parseInt(match[4]);
+                    } else if (match[5] && match[6]) {
+                        mins = parseInt(match[5]);
+                        secs = parseInt(match[6]);
+                    } else {
+                        // Matched "Mini Crossword" text but no time found in pattern
+                        // Look for time near the Mini mention
+                        const miniPos = text.search(/Mini\s*Crossword|The\s+Mini|NYT\s+Mini/i);
+                        if (miniPos >= 0) {
+                            // Look for time within 100 chars of Mini mention
+                            const nearbyText = text.substring(Math.max(0, miniPos - 50), miniPos + 100);
+                            const timeMatch = nearbyText.match(/(\d+):(\d+)/);
+                            if (timeMatch) {
+                                mins = parseInt(timeMatch[1]);
+                                secs = parseInt(timeMatch[2]);
+                            }
+                        }
+                    }
+                    
+                    if (mins !== undefined && secs !== undefined) {
+                        // Sanity check: Mini times are typically 0-15 minutes
+                        // Reject absurd times (likely status bar or other noise)
+                        if (mins > 30 || secs >= 60) {
+                            console.log('🚫 Mini parser rejected: invalid time', mins, secs);
+                            return null;
+                        }
                         
-                        // Battle scoring: slower decay, reasonable floor
-                        // <45s: 28, 1 min: 24, 2 min: 20, 3 min: 16, 4+ min: 12
+                        const totalSecs = mins * 60 + secs;
                         const fast = totalSecs <= 45;
                         const numericScore = fast ? 28 : Math.max(25 - Math.floor(totalSecs / 15), 12);
                         
@@ -14300,6 +14347,7 @@ Wordle 1,234 3/6
                             meta: { seconds: totalSecs, fast }
                         };
                     }
+                    
                     return { gameId: 'mini', score: 'Done', won: true, numericScore: 15 };
                 }
             },
@@ -18592,9 +18640,12 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.33';
+        const APP_VERSION = '1.3.34';
         
         const RELEASE_NOTES = {
+            '1.3.34': [
+                { icon: '🔒', title: 'Robust OCR Engine', desc: 'Fixed false game detection from screenshots - no more Mini conflicts on Connections stats!' }
+            ],
             '1.3.33': [
                 { icon: '📷', title: 'Smarter Stats Import', desc: 'Import Stats now recognizes more games automatically and asks which game if unsure' }
             ],
@@ -28552,6 +28603,7 @@ Hint levels:
         }
         
         // Process screenshot from clipboard
+        // v1.3.34: Enhanced with validation layer to prevent false positives
         async function processScreenshot(blob) {
             try {
                 // Initialize Tesseract worker if needed
@@ -28573,16 +28625,28 @@ Hint levels:
                     return;
                 }
                 
-                // Try to parse as stats
+                // Try to parse as stats first
                 const stats = parseStatsFromOCR(ocrText);
                 
                 if (stats) {
+                    // v1.3.34: Check if stats parsing is handling the input
+                    if (stats.handled) {
+                        return; // Stats parser is showing a prompt
+                    }
                     await processStatsImport(stats);
                     return;
                 }
                 
-                // Maybe it's a share result screenshot? Try game parsers
-                const results = parseMultipleGames(ocrText);
+                // v1.3.34: Before falling back to share parsers, validate this isn't a stats page
+                // that just failed to parse
+                if (isLikelyStatsScreenshot(ocrText)) {
+                    console.log('📷 Detected likely stats screenshot but parsing failed');
+                    showToast('📊 Couldn\'t read stats - try the share text instead', 'info');
+                    return;
+                }
+                
+                // Maybe it's a share result screenshot? Try game parsers with validation
+                const results = parseMultipleGamesValidated(ocrText);
                 if (results.length > 0) {
                     await processShareText(ocrText);
                     return;
@@ -28597,11 +28661,102 @@ Hint levels:
             }
         }
         
+        // v1.3.34: Check if OCR text looks like a stats screenshot
+        function isLikelyStatsScreenshot(text) {
+            const lower = text.toLowerCase();
+            
+            // Strong indicators of stats pages
+            const statsIndicators = [
+                /\d+\s*completed/i,
+                /win\s*%/i,
+                /current\s*streak/i,
+                /max\s*streak/i,
+                /\d+\s+\d+\s+\d+\s+\d+/,  // Four numbers in a row (stats layout)
+                /statistics/i,
+                /your\s*stats/i
+            ];
+            
+            const matchCount = statsIndicators.filter(p => p.test(text)).length;
+            return matchCount >= 2;
+        }
+        
+        // v1.3.34: Validated version of parseMultipleGames that rejects suspicious results
+        function parseMultipleGamesValidated(text) {
+            const results = parseMultipleGames(text);
+            
+            // Filter out suspicious results
+            return results.filter(result => {
+                // Validate the result makes sense given the full text context
+                return validateParseResult(result, text);
+            });
+        }
+        
+        // v1.3.34: Validate that a parse result makes sense
+        function validateParseResult(result, text) {
+            if (!result || !result.gameId) return false;
+            
+            // Build a "context fingerprint" of the text
+            const lower = text.toLowerCase();
+            
+            // Check for conflicting game indicators
+            const gameIndicators = {
+                'connections': [/connections/i, /puzzle\s*#?\d+/i],
+                'wordle': [/wordle\s*\d/i, /[⬛⬜🟨🟩]{5}/],
+                'strands': [/strands/i, /[🔵🟡💡]/],
+                'mini': [/mini\s*crossword/i, /the\s+mini/i, /nyt\s+mini/i],
+                'spelling-bee': [/spelling\s*bee/i, /🐝/, /genius|queen\s*bee/i],
+                'quordle': [/quordle/i],
+                'connections-sports': [/connections:\s*sports/i]
+            };
+            
+            // Count how many indicators point to the detected game vs other games
+            const detectedIndicators = gameIndicators[result.gameId] || [];
+            const hasOwnIndicator = detectedIndicators.some(p => p.test(text));
+            
+            // Check if there are STRONGER indicators for a DIFFERENT game
+            for (const [gameId, indicators] of Object.entries(gameIndicators)) {
+                if (gameId === result.gameId) continue;
+                
+                const hasOtherIndicator = indicators.some(p => p.test(text));
+                if (hasOtherIndicator && !hasOwnIndicator) {
+                    console.log(`🚫 Rejecting ${result.gameId} - found indicators for ${gameId} instead`);
+                    return false;
+                }
+            }
+            
+            // Special validation for time-based games
+            if (result.gameId === 'mini' && result.score) {
+                // If we matched a Mini time, make sure there's actual Mini context
+                if (!hasOwnIndicator) {
+                    console.log('🚫 Rejecting Mini - no Mini context found in text');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
         // Parse stats from OCR text - INTELLIGENT DYNAMIC VERSION
+        // v1.3.34: Enhanced to handle OCR quirks like split number/label lines
         function parseStatsFromOCR(text) {
             const normalized = text.replace(/\s+/g, ' ').trim();
             
             console.log('📊 Parsing stats from:', normalized.substring(0, 300));
+            
+            // v1.3.34: First check if this LOOKS like a stats screenshot
+            // Stats pages have characteristic patterns that share results don't
+            const statsPageIndicators = [
+                /completed|played/i,
+                /win\s*%|win\s*rate/i,
+                /current\s*streak/i,
+                /max\s*streak|best\s*streak|longest/i,
+                /statistics/i
+            ];
+            
+            const indicatorCount = statsPageIndicators.filter(p => p.test(text)).length;
+            const looksLikeStats = indicatorCount >= 2;
+            
+            console.log('📊 Stats indicators found:', indicatorCount, '- looks like stats:', looksLikeStats);
             
             // Step 1: Detect game type using fuzzy keyword matching
             let gameType = detectGameFromText(text);
@@ -28639,9 +28794,32 @@ Hint levels:
                 }
             }
             
+            // v1.3.34: Step 3b - Try enhanced split-line detection for OCR
+            // This handles cases where numbers are on one line, labels on another
+            if (stats.currentStreak === null && looksLikeStats) {
+                const splitLineStats = detectSplitLineLayout(text);
+                if (splitLineStats) {
+                    console.log('📊 Split-line detection found:', splitLineStats);
+                    stats.gamesPlayed = stats.gamesPlayed ?? splitLineStats.gamesPlayed;
+                    stats.winPercent = stats.winPercent ?? splitLineStats.winPercent;
+                    stats.currentStreak = stats.currentStreak ?? splitLineStats.currentStreak;
+                    stats.maxStreak = stats.maxStreak ?? splitLineStats.maxStreak;
+                }
+            }
+            
             // Step 4: Validate - need at least current streak
             if (stats.currentStreak === null) {
                 console.log('📊 Could not extract current streak');
+                
+                // v1.3.34: If this looks like a stats page but we couldn't parse it,
+                // prompt user rather than falling through to share text parsers
+                if (looksLikeStats && gameType) {
+                    console.log('📊 Stats page detected but parsing failed - prompting user');
+                    pendingUnknownStats = { ...stats, parseFailure: true };
+                    showStatsParseFailurePrompt(gameType, text);
+                    return { type: 'stats', handled: true }; // Signal that we're handling it
+                }
+                
                 return null;
             }
             
@@ -28656,6 +28834,108 @@ Hint levels:
             
             console.log('📊 Final parsed stats:', stats);
             return stats;
+        }
+        
+        // v1.3.34: Detect stats when numbers and labels are on separate lines (common OCR issue)
+        // Example OCR output:
+        //   "562 80 1 29"
+        //   "Completed Win% Current Max Streak"
+        function detectSplitLineLayout(text) {
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            
+            for (let i = 0; i < lines.length - 1; i++) {
+                const currentLine = lines[i];
+                const nextLine = lines[i + 1];
+                
+                // Check if current line is mostly numbers
+                const numbers = currentLine.match(/\d+/g);
+                if (!numbers || numbers.length < 3) continue;
+                
+                // Check if next line has stat-related labels
+                const labelLine = nextLine.toLowerCase();
+                const hasLabels = (
+                    (labelLine.includes('completed') || labelLine.includes('played')) &&
+                    (labelLine.includes('streak') || labelLine.includes('win'))
+                );
+                
+                if (!hasLabels) continue;
+                
+                console.log('📊 Found split layout - numbers:', numbers, 'labels:', nextLine);
+                
+                // Parse the numbers based on position
+                // Typical order: [played] [win%] [current streak] [max streak]
+                const parsed = numbers.slice(0, 4).map(n => parseInt(n));
+                
+                if (parsed.length >= 4) {
+                    // Validate: first should be largest (games played), second <=100 (%)
+                    if (parsed[0] >= parsed[2] && parsed[0] >= parsed[3] && parsed[1] <= 100) {
+                        return {
+                            gamesPlayed: parsed[0],
+                            winPercent: parsed[1],
+                            currentStreak: parsed[2],
+                            maxStreak: parsed[3]
+                        };
+                    }
+                }
+                
+                // Try alternative orders based on label positions
+                if (parsed.length >= 2) {
+                    // At minimum, try to extract streak values
+                    const streakPos = labelLine.indexOf('streak');
+                    if (streakPos >= 0) {
+                        // Find which number positions might be streaks
+                        // Usually the smaller numbers toward the end
+                        return {
+                            gamesPlayed: parsed[0] > 100 ? parsed[0] : null,
+                            winPercent: parsed.find(n => n <= 100 && n > 0) || null,
+                            currentStreak: parsed.length >= 3 ? parsed[2] : parsed[1],
+                            maxStreak: parsed.length >= 4 ? parsed[3] : null
+                        };
+                    }
+                }
+            }
+            
+            return null;
+        }
+        
+        // v1.3.34: Show prompt when stats page detected but couldn't parse
+        function showStatsParseFailurePrompt(gameType, ocrText) {
+            const game = GAMES[gameType];
+            if (!game) return;
+            
+            showGenericSheet({
+                title: '📊 Stats Screenshot Detected',
+                content: `
+                    <div style="padding: 16px;">
+                        <p style="color: var(--text-muted); margin-bottom: 16px;">
+                            This looks like a <strong>${game.name}</strong> stats page, but we couldn't read the numbers clearly.
+                        </p>
+                        <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 0.9rem;">
+                            Would you like to enter your stats manually?
+                        </p>
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button onclick="closeGenericSheet()" style="
+                                padding: 12px 24px; border-radius: 10px;
+                                background: var(--bg-tertiary); border: 1px solid var(--border);
+                                color: var(--text-primary); cursor: pointer;
+                            ">Cancel</button>
+                            <button onclick="closeGenericSheet(); openManualStatsEntry('${gameType}')" style="
+                                padding: 12px 24px; border-radius: 10px;
+                                background: var(--accent-blue); border: none;
+                                color: white; font-weight: 600; cursor: pointer;
+                            ">Enter Manually</button>
+                        </div>
+                    </div>
+                `
+            });
+        }
+        
+        // v1.3.34: Manual stats entry (placeholder - can be enhanced)
+        function openManualStatsEntry(gameId) {
+            // For now, just open the log sheet for that game
+            lastLaunchedGame = gameId;
+            openLogSheet();
+            showToast('Enter your result manually', 'info');
         }
         
         // Pending stats when game couldn't be detected
@@ -33289,7 +33569,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "2.0",
-  "appVersion": "1.3.33",
+  "appVersion": "1.3.34",
   "lastUpdated": "2026-01-29",
   "categories": [
     {

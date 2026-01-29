@@ -1,3 +1,59 @@
+Game Shelf PWA v1.3.34 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+ROBUST OCR ENGINE - FALSE POSITIVE FIX:
+---------------------------------------
+Critical fix for OCR screenshot parsing that was causing false game detection.
+
+**The Problem:**
+When importing a Connections stats screenshot, the app was incorrectly detecting 
+it as a Mini Crossword time score. The phone's status bar time (e.g., "2:29") 
+was being matched by the overly-greedy Mini parser regex.
+
+**Root Cause:**
+The Mini parser regex `(\d+):(\d+)|Mini\s*Crossword` would match ANY time pattern,
+including times from the phone's status bar, clocks in screenshots, etc.
+
+**The Fix (Multi-Layer Defense):**
+
+1. **Strict Mini Regex** - Now requires actual Mini context:
+   - Must have "Mini Crossword", "The Mini", or "NYT Mini" near the time
+   - Bare time patterns like "2:29" are no longer matched
+   - Time must be within 50-100 chars of Mini mention
+
+2. **Game Conflict Detection** - Mini parser now rejects if:
+   - Text contains "Connections Bot" or "Connections archive"
+   - Text contains "current streak...max streak" (stats page indicator)
+   - Text contains strong indicators of other games
+
+3. **Stats Page Priority** - Enhanced stats detection:
+   - New `isLikelyStatsScreenshot()` function detects stats pages
+   - If stats-like but unparseable, shows helpful prompt instead of misdetecting
+   - New `detectSplitLineLayout()` handles OCR where numbers and labels are on separate lines
+
+4. **Parse Result Validation** - New validation layer:
+   - `validateParseResult()` checks if detected game makes sense given full text
+   - Compares game indicators - rejects if stronger indicators for different game
+   - Prevents any parser from claiming content that clearly belongs to another game
+
+5. **Sanity Checks** - Additional guardrails:
+   - Mini times must be <30 minutes, seconds <60
+   - Stats numbers must pass validation (games played > streaks, win% ≤100)
+
+**Technical Details:**
+- New functions: detectSplitLineLayout(), isLikelyStatsScreenshot(), 
+  parseMultipleGamesValidated(), validateParseResult(), showStatsParseFailurePrompt()
+- Mini regex changed from greedy pattern to context-requiring pattern
+- Added otherGameIndicators blocklist in Mini extract()
+
+**Files Modified:**
+- gameshelf/index.html - OCR engine overhaul, v1.3.34
+- gameshelf/sw.js - CACHE_VERSION to v1.3.34
+
+---
+
 Game Shelf PWA v1.3.33 Release Notes
 =====================================
 
