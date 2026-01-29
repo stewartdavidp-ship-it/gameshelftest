@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.29">
+    <meta name="version" content="1.3.30">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9122,7 +9122,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.29</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.30</span>
             </div>
         </div>
         <div class="header-right">
@@ -9376,7 +9376,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.29</div>
+            <div class="settings-version">Game Shelf PWA v1.3.30</div>
         </div>
     </div>
     
@@ -18592,9 +18592,12 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.29';
+        const APP_VERSION = '1.3.30';
         
         const RELEASE_NOTES = {
+            '1.3.30': [
+                { icon: '🔗', title: 'Share URL', desc: 'Insight shares now include gameshelf.app link' }
+            ],
             '1.3.29': [
                 { icon: '🐛', title: 'Insight Button Fix', desc: 'View Today\'s Insight now appears when tapping completed games' }
             ],
@@ -26412,7 +26415,7 @@ Hint levels:
                 brutal: '🤯 BRUTAL'
             };
             
-            const shareText = `Today's ${gameName} (${today}) was ${reactionLabels[currentInsightReaction]}!\n\nWhat did you think?\n\n📊 Tracked with Game Shelf`;
+            const shareText = `Today's ${gameName} (${today}) was ${reactionLabels[currentInsightReaction]}!\n\nWhat did you think?\n\n📊 Tracked with Game Shelf\ngameshelf.app`;
             
             if (navigator.share) {
                 navigator.share({
@@ -33035,7 +33038,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "2.0",
-  "appVersion": "1.3.29",
+  "appVersion": "1.3.30",
   "lastUpdated": "2026-01-29",
   "categories": [
     {
