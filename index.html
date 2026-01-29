@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.13">
+    <meta name="version" content="1.3.15">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -410,6 +410,13 @@
         
         .settings-link .icon {
             font-size: 1.1rem;
+        }
+        
+        .menu-chevron {
+            margin-left: auto;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            font-weight: 300;
         }
         
         .settings-desc {
@@ -8524,7 +8531,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.13</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.15</span>
             </div>
         </div>
         <div class="header-right">
@@ -8553,12 +8560,74 @@
                 <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Tap to manage wallet</div>
             </div>
             
-            <!-- Settings Submenu Toggle - NOW AT TOP -->
+            <!-- Account - Critical for new users -->
+            <div class="settings-section">
+                <div class="settings-section-title">☁️ Account</div>
+                <div id="menu-account-section">
+                    <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(signInWithGoogle, 300)">
+                        <span class="icon">🔐</span>
+                        <span id="auth-menu-text">Sign in with Google</span>
+                        <span class="menu-chevron">›</span>
+                    </a>
+                    <p class="settings-desc">Save progress across devices</p>
+                </div>
+            </div>
+            
+            <!-- My Games - Combined with Achievements -->
+            <div class="settings-section">
+                <div class="settings-section-title">🎮 My Games</div>
+                <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showAchievements, 300)">
+                    <span class="icon">🏆</span>
+                    View Achievements
+                    <span class="menu-chevron">›</span>
+                </a>
+                <p class="settings-desc">Track your progress & unlock badges</p>
+                <a class="settings-link" onclick="confirmReconfigureGames()" style="margin-top: 8px;">
+                    <span class="icon">⚙️</span>
+                    Reconfigure Games
+                    <span class="menu-chevron">›</span>
+                </a>
+                <p class="settings-desc">Change your game selection & preferences</p>
+            </div>
+            
+            <!-- Rewards - Combined Invite + Shop -->
+            <div class="settings-section">
+                <div class="settings-section-title">🎁 Rewards</div>
+                <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showReferralSheet, 300)">
+                    <span class="icon">📨</span>
+                    Share & Earn Tokens
+                    <span class="menu-chevron">›</span>
+                </a>
+                <p class="settings-desc">Get 🎟️ 110 tokens per friend + auto-connect!</p>
+                <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showMerchStore, 300)" style="margin-top: 8px;">
+                    <span class="icon">🛍️</span>
+                    Redeem Rewards
+                    <span class="menu-chevron">›</span>
+                </a>
+                <p class="settings-desc">Use coins for rewards & gifts</p>
+            </div>
+            
+            <!-- Help - Easy access -->
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    ❓ Help
+                    <span class="help-menu-badge" id="help-menu-badge" style="display: none;"></span>
+                </div>
+                <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showHelp, 300)">
+                    <span class="icon">❓</span>
+                    FAQs & Support
+                    <span class="menu-chevron">›</span>
+                    <span id="faq-menu-badge" style="display: none; background: var(--accent-red); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px;">NEW</span>
+                </a>
+                <p class="settings-desc">Answers, tutorials, feedback & more</p>
+            </div>
+            
+            <!-- Settings Submenu Toggle - Collapsible -->
             <div class="settings-section" style="padding-bottom: 0;">
                 <div class="settings-submenu-toggle" id="settings-submenu-toggle" onclick="toggleSettingsSubmenu()">
                     <div class="toggle-left">
                         <span class="toggle-icon">⚙️</span>
-                        <span class="toggle-label">Settings & Data</span>
+                        <span class="toggle-label">Settings</span>
                     </div>
                     <span class="toggle-arrow">▼</span>
                 </div>
@@ -8597,10 +8666,11 @@
                         <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showSoundCustomizer, 300)">
                             <span class="icon">🎵</span>
                             Customize Sounds
+                            <span class="menu-chevron">›</span>
                         </a>
                     </div>
                     
-                    <!-- Logging Settings - NEW -->
+                    <!-- Game Logging -->
                     <div class="settings-section">
                         <div class="settings-section-title">📋 Game Logging</div>
                         <div class="settings-toggle-row">
@@ -8622,6 +8692,7 @@
                         <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showLaunchPrefsManager, 300)">
                             <span class="icon">📱</span>
                             Manage App vs Browser
+                            <span class="menu-chevron">›</span>
                         </a>
                         <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 36px;">
                             Change how games open (app or browser)
@@ -8643,33 +8714,39 @@
                     <!-- Daily Goal -->
                     <div class="settings-section">
                         <div class="settings-section-title">🎯 Daily Goal</div>
-                        <a class="settings-link" onclick="resetDailyGoal()">
+                        <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showDailyGoalPicker, 300)">
                             <span class="icon">🎯</span>
                             Set Daily Goal
+                            <span class="menu-chevron">›</span>
                         </a>
                     </div>
-                    
+                </div>
+            </div>
+            
+            <!-- Advanced Submenu Toggle - Collapsible -->
+            <div class="settings-section" style="padding-bottom: 0;">
+                <div class="settings-submenu-toggle" id="advanced-submenu-toggle" onclick="toggleAdvancedSubmenu()">
+                    <div class="toggle-left">
+                        <span class="toggle-icon">🔧</span>
+                        <span class="toggle-label">Advanced</span>
+                    </div>
+                    <span class="toggle-arrow">▼</span>
+                </div>
+                
+                <!-- Advanced Submenu Content -->
+                <div class="settings-submenu-content" id="advanced-submenu-content">
                     <!-- Data -->
                     <div class="settings-section">
                         <div class="settings-section-title">📦 Data</div>
-                        <!-- Export/Import hidden for now - using cloud sync instead
-                        <a class="settings-link" onclick="exportData()">
-                            <span class="icon">📤</span>
-                            Export Data
-                        </a>
-                        <a class="settings-link" onclick="importData()">
-                            <span class="icon">📥</span>
-                            Import Data
-                        </a>
-                        -->
-                        <a class="settings-link" onclick="forceAppUpdate()">
+                        <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(forceAppUpdate, 300)">
                             <span class="icon">🔄</span>
                             Force Update Check
                         </a>
                         <p class="settings-desc">Check for new version and reload</p>
-                        <a class="settings-link" onclick="clearAllData()" style="color: var(--accent-red);">
+                        <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(clearAllData, 300)" style="color: var(--accent-red); margin-top: 8px;">
                             <span class="icon">🗑️</span>
                             Reset All Data
+                            <span class="menu-chevron">›</span>
                         </a>
                     </div>
                     
@@ -8698,7 +8775,7 @@
                             Show floating help button for quick access
                         </p>
                         
-                        <a class="settings-link" onclick="resetPurchaseLimits()" style="margin-top: 12px;">
+                        <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(resetPurchaseLimits, 300)" style="margin-top: 12px;">
                             <span class="icon">🧹</span>
                             Reset Purchase Limits
                         </a>
@@ -8706,75 +8783,9 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Account - Moved up for prominence -->
-            <div class="settings-section">
-                <div class="settings-section-title">☁️ Account</div>
-                <div id="menu-account-section">
-                    <a class="settings-link" onclick="signInWithGoogle()">
-                        <span class="icon">🔐</span>
-                        <span id="auth-menu-text">Sign in with Google</span>
-                    </a>
-                    <p class="settings-desc">Save progress across devices</p>
-                </div>
-            </div>
-            
-            <!-- My Games -->
-            <div class="settings-section">
-                <div class="settings-section-title">🎮 My Games</div>
-                <a class="settings-link" onclick="confirmReconfigureGames()">
-                    <span class="icon">⚙️</span>
-                    Reconfigure Games
-                </a>
-                <p class="settings-desc">Change your game selection & preferences</p>
-            </div>
-            
-            <!-- Achievements -->
-            <div class="settings-section">
-                <div class="settings-section-title">🏆 Achievements</div>
-                <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showAchievements, 300)">
-                    <span class="icon">🏆</span>
-                    View Achievements
-                </a>
-                <p class="settings-desc">Track your progress & unlock badges</p>
-            </div>
-            
-            <!-- Invite Friends -->
-            <div class="settings-section">
-                <div class="settings-section-title">🎁 Invite Friends</div>
-                <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showReferralSheet, 300)">
-                    <span class="icon">📨</span>
-                    Share & Earn Tokens
-                </a>
-                <p class="settings-desc">Get 🎟️ 110 tokens per friend + auto-connect!</p>
-            </div>
-            
-            <!-- Rewards Shop -->
-            <div class="settings-section">
-                <div class="settings-section-title">🛍️ Rewards Shop</div>
-                <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showMerchStore, 300)">
-                    <span class="icon">🛍️</span>
-                    Redeem Rewards
-                </a>
-                <p class="settings-desc">Use coins for rewards & gifts</p>
-            </div>
-            
-            <!-- Help -->
-            <div class="settings-section">
-                <div class="settings-section-title">
-                    ❓ Help
-                    <span class="help-menu-badge" id="help-menu-badge" style="display: none;"></span>
-                </div>
-                <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showHelp, 300)">
-                    <span class="icon">❓</span>
-                    FAQs & Support
-                    <span id="faq-menu-badge" style="display: none; background: var(--accent-red); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: auto;">NEW</span>
-                </a>
-                <p class="settings-desc">Answers, tutorials, feedback & more</p>
-            </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.13</div>
+            <div class="settings-version">Game Shelf PWA v1.3.15</div>
         </div>
     </div>
     
@@ -16230,7 +16241,7 @@ Wordle 1,234 3/6
                                 <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(currentUser.email || '')}</div>
                             </div>
                         </div>
-                        <a class="settings-link" onclick="signOut()" style="color: var(--accent-red);">
+                        <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(signOut, 300)" style="color: var(--accent-red);">
                             <span class="icon">🚪</span>
                             Sign Out
                         </a>
@@ -16240,9 +16251,10 @@ Wordle 1,234 3/6
                 if (authMenuText) authMenuText.textContent = 'Sign in with Google';
                 if (menuAccountSection) {
                     menuAccountSection.innerHTML = `
-                        <a class="settings-link" onclick="signInWithGoogle()">
+                        <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(signInWithGoogle, 300)">
                             <span class="icon">🔐</span>
                             <span>Sign in with Google</span>
+                            <span class="menu-chevron">›</span>
                         </a>
                         <p class="settings-desc">Save progress across devices</p>
                     `;
@@ -16274,6 +16286,13 @@ Wordle 1,234 3/6
         function toggleSettingsSubmenu() {
             const toggle = document.getElementById('settings-submenu-toggle');
             const content = document.getElementById('settings-submenu-content');
+            toggle.classList.toggle('expanded');
+            content.classList.toggle('expanded');
+        }
+        
+        function toggleAdvancedSubmenu() {
+            const toggle = document.getElementById('advanced-submenu-toggle');
+            const content = document.getElementById('advanced-submenu-content');
             toggle.classList.toggle('expanded');
             content.classList.toggle('expanded');
         }
@@ -17494,6 +17513,56 @@ Wordle 1,234 3/6
             }
         }
         
+        function showDailyGoalPicker() {
+            const currentGoal = appData.dailyGoal || 5;
+            
+            // Generate goal options
+            let optionsHtml = '';
+            for (let i = 1; i <= 10; i++) {
+                const isSelected = i === currentGoal;
+                optionsHtml += `
+                    <button onclick="setDailyGoalAndClose(${i})" style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 48px;
+                        height: 48px;
+                        border-radius: 12px;
+                        border: 2px solid ${isSelected ? 'var(--accent-primary)' : 'var(--border)'};
+                        background: ${isSelected ? 'rgba(102, 126, 234, 0.2)' : 'var(--card-bg)'};
+                        color: ${isSelected ? 'var(--accent-primary)' : 'var(--text-primary)'};
+                        font-size: 1.2rem;
+                        font-weight: ${isSelected ? '700' : '500'};
+                        cursor: pointer;
+                    ">${i}</button>
+                `;
+            }
+            
+            showGenericSheet({
+                title: '🎯 Set Daily Goal',
+                content: `
+                    <p style="color: var(--text-muted); margin-bottom: 16px; text-align: center;">
+                        How many games do you want to complete each day?
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 8px;">
+                        ${optionsHtml}
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; text-align: center;">
+                        Current goal: ${currentGoal} games per day
+                    </p>
+                `,
+                showClose: true
+            });
+        }
+        
+        function setDailyGoalAndClose(goal) {
+            appData.dailyGoal = goal;
+            saveData();
+            renderProgress();
+            closeGenericSheet();
+            showToast(`Daily goal set to ${goal} games`);
+        }
+        
         // Confirmation Modal Functions
         let confirmModalCallback = null;
         let confirmModalAltCallback = null;
@@ -17671,9 +17740,15 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.13';
+        const APP_VERSION = '1.3.15';
         
         const RELEASE_NOTES = {
+            '1.3.15': [
+                { icon: '📋', title: 'Menu Reorganized', desc: 'Account, My Games, Rewards, and Help now at top for easy access' },
+                { icon: '›', title: 'Visual Navigation Cues', desc: 'Chevrons (›) indicate items that open new screens' },
+                { icon: '🎯', title: 'Better Daily Goal Picker', desc: 'Visual grid selector instead of text prompt' },
+                { icon: '✨', title: 'Cleaner UX', desc: 'Menu closes smoothly before any action' }
+            ],
             '1.3.13': [
                 { icon: '🚀', title: 'Launch Preferences Fixed', desc: 'Manage App vs Browser now shows all supported games' },
                 { icon: '🪟', title: 'Settings Menu Fixes', desc: 'All settings that open sheets now close the menu first' }
@@ -31349,7 +31424,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "1.0",
-  "appVersion": "1.3.13",
+  "appVersion": "1.3.15",
   "lastUpdated": "2026-01-29",
   "categories": [
     {

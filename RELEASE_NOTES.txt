@@ -1,3 +1,45 @@
+Game Shelf PWA v1.3.15 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+MENU REORGANIZATION:
+--------------------
+* Restructured menu for better usability based on access frequency
+* Top-level sections now: Account, My Games, Rewards, Help
+* Achievements moved into "My Games" section
+* Invite Friends + Rewards Shop combined into "Rewards" section
+* Help moved higher for easy access
+* Settings & Advanced sections are collapsible
+
+VISUAL NAVIGATION CUES:
+-----------------------
+* Added chevron (›) indicators to menu items that navigate away
+* Users can now visually distinguish:
+  - Items with › = opens a new screen/sheet
+  - Items without › = action or toggle (stays in menu)
+
+MENU BEHAVIOR IMPROVEMENTS:
+---------------------------
+* All navigation items now close menu before opening sheet
+* Fixed: Sign in/out, Daily Goal, Force Update, Reset Data, Reset Limits
+* Consistent 300ms delay for smooth animation
+
+DAILY GOAL PICKER:
+------------------
+* Replaced browser prompt with visual picker sheet
+* Grid of 1-10 buttons for easy selection
+* Shows current goal, immediate feedback on tap
+
+---
+
+Game Shelf PWA v1.3.14 Release Notes
+=====================================
+
+(Skipped - changes merged into v1.3.15)
+
+---
+
 Game Shelf PWA v1.3.13 Release Notes
 =====================================
 
