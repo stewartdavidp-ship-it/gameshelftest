@@ -1,3 +1,16 @@
+Game Shelf PWA v1.3.29 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+BUG FIX - INSIGHT BUTTON LOCATION:
+----------------------------------
+* "View Today's Insight" button now appears in the "Already Played" sheet
+* Previously only showed in long-press menu, now shows when tapping completed game
+* Natural flow: see 💡 icon → tap card → see insight option
+
+---
+
 Game Shelf PWA v1.3.28 Release Notes
 =====================================
 

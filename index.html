@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.28">
+    <meta name="version" content="1.3.29">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9122,7 +9122,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.28</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.29</span>
             </div>
         </div>
         <div class="header-right">
@@ -9376,7 +9376,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.28</div>
+            <div class="settings-version">Game Shelf PWA v1.3.29</div>
         </div>
     </div>
     
@@ -18592,9 +18592,12 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.28';
+        const APP_VERSION = '1.3.29';
         
         const RELEASE_NOTES = {
+            '1.3.29': [
+                { icon: '🐛', title: 'Insight Button Fix', desc: 'View Today\'s Insight now appears when tapping completed games' }
+            ],
             '1.3.28': [
                 { icon: '💡', title: 'Daily Insights', desc: 'Get AI-powered analysis of today\'s puzzle - was it fair? React and share your take!' }
             ],
@@ -24265,6 +24268,7 @@ Wordle 1,234 3/6
             if (todayHistory[gameId] && !forceVisit) {
                 // Game already played - show options sheet
                 const todayScore = todayHistory[gameId].score;
+                const hasInsight = isInsightAvailable(gameId);
                 showGenericSheet({
                     title: `✅ ${game.name} - Already Played`,
                     content: `
@@ -24292,6 +24296,26 @@ Wordle 1,234 3/6
                                 ">
                                     <span>🎮</span> Visit Game Anyway
                                 </button>
+                                
+                                ${hasInsight ? `
+                                <button onclick="closeGenericSheet(); showInsightSheet('${gameId}')" style="
+                                    width: 100%;
+                                    padding: 14px;
+                                    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(139, 92, 246, 0.15));
+                                    border: 1px solid var(--accent-purple);
+                                    border-radius: 10px;
+                                    color: var(--accent-purple);
+                                    font-size: 1rem;
+                                    font-weight: 600;
+                                    cursor: pointer;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 8px;
+                                ">
+                                    <span>💡</span> View Today's Insight
+                                </button>
+                                ` : ''}
                                 
                                 <button onclick="closeGenericSheet(); showGameStatsDetail('${gameId}')" style="
                                     width: 100%;
@@ -33011,7 +33035,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "2.0",
-  "appVersion": "1.3.28",
+  "appVersion": "1.3.29",
   "lastUpdated": "2026-01-29",
   "categories": [
     {
