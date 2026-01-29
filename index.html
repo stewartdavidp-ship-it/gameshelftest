@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.24">
+    <meta name="version" content="1.3.26">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -3107,7 +3107,7 @@
         
         .nav-tab.active {
             color: var(--accent-purple);
-            background: rgba(102, 126, 234, 0.15);
+            background: rgba(102, 126, 234, 0.25);
         }
         
         .nav-tab.active .nav-label {
@@ -7774,13 +7774,22 @@
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85);
             transition: all 0.4s ease;
             pointer-events: none;
-            /* Strong visible border for dark mode */
+            /* Strong visible border */
             border: 3px solid var(--accent-purple);
-            /* Inner glow to illuminate dark content */
+            /* Outer glow */
             box-shadow: 
                 0 0 0 9999px rgba(0, 0, 0, 0.85),
-                inset 0 0 20px 5px rgba(102, 126, 234, 0.25),
                 0 0 30px 8px rgba(102, 126, 234, 0.5);
+        }
+        
+        /* Class applied to the actual element being highlighted */
+        .tutorial-highlighted {
+            position: relative;
+            z-index: 2001 !important;
+            filter: brightness(1.4) !important;
+            box-shadow: 0 0 20px 5px rgba(102, 126, 234, 0.4) !important;
+            background: rgba(102, 126, 234, 0.25) !important;
+            border-radius: 12px !important;
         }
         
         .tutorial-spotlight.pulse {
@@ -8899,7 +8908,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.24</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.26</span>
             </div>
         </div>
         <div class="header-right">
@@ -9153,7 +9162,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.24</div>
+            <div class="settings-version">Game Shelf PWA v1.3.26</div>
         </div>
     </div>
     
@@ -18307,11 +18316,14 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.24';
+        const APP_VERSION = '1.3.26';
         
         const RELEASE_NOTES = {
+            '1.3.26': [
+                { icon: '🎓', title: 'Tutorial Fixes', desc: 'Fixed tutorial targeting hidden FABs, desktop positioning, and missing elements' }
+            ],
             '1.3.24': [
-                { icon: '🌙', title: 'Dark Mode Visibility', desc: 'Tutorial highlights and active tab indicator now much more visible in dark mode' }
+                { icon: '🌙', title: 'Dark Mode Visibility', desc: 'Active tab indicator now much more visible in dark mode' }
             ],
             '1.3.23': [
                 { icon: '🖥️', title: 'Desktop Enhancement', desc: 'Better experience on desktop browsers with contained layout and mobile reminder' }
@@ -31985,23 +31997,20 @@ Hint levels:
             {
                 id: 'share-fab',
                 title: '📤 Quick Share Button',
-                content: 'This floating button shows how many games you\'ve <strong>logged today</strong>. Tap it to instantly share all your results!',
-                target: '#share-fab',
-                position: 'left',
+                content: 'Tap this button to instantly <strong>share all your results</strong> from today! Creates a ready-to-paste recap.',
+                target: '#header-share-btn',
+                position: 'bottom',
                 action: () => {
                     switchTab('home');
-                    // Ensure FAB is visible for tutorial
-                    const fab = document.getElementById('share-fab');
-                    if (fab) fab.classList.add('visible');
                 },
-                tip: '💡 The badge shows your logged game count'
+                tip: '💡 Share to Messages, social media, or anywhere you want'
             },
             {
                 id: 'hint-fab',
                 title: '💡 AI Hint Helper',
                 content: 'Stuck on a puzzle? Tap the <strong>hint button</strong> for AI-powered help! Choose from 10 hint levels - from subtle nudges to full answers.',
-                target: '#hint-fab',
-                position: 'left',
+                target: '#header-hint-btn',
+                position: 'bottom',
                 action: () => {
                     switchTab('home');
                 },
@@ -32021,6 +32030,7 @@ Hint levels:
                 content: 'Explore games by category: <strong>NYT Games, LinkedIn Games, Word Games</strong>, and more. Tap a category to expand it.',
                 target: '#browse-categories',
                 position: 'bottom',
+                action: () => { switchTab('games'); setTimeout(() => switchGamesTab('discover'), 100); },
                 tip: '💡 Tap "+ Add" to add a game to your shelf'
             },
             {
@@ -32050,10 +32060,10 @@ Hint levels:
             {
                 id: 'share-hub',
                 title: '🎨 Share Hub',
-                content: 'Compose messages, pick platforms, and share! You can also create <strong>weekly recaps</strong> to show your progress.',
-                target: '.share-hub-header',
+                content: 'See your <strong>daily results</strong>, compose custom messages, and share! Create <strong>weekly recaps</strong> to show your progress.',
+                target: '.share-results-section',
                 position: 'bottom',
-                tip: '📸 Download image cards to post on Instagram or Twitter'
+                tip: '📸 Use the Compose tab to customize your share message'
             },
             {
                 id: 'menu-button',
@@ -32086,6 +32096,12 @@ Hint levels:
         function skipTutorial() {
             const overlay = document.getElementById('tutorial-overlay');
             overlay.classList.remove('active');
+            
+            // Remove highlight from any highlighted element
+            document.querySelectorAll('.tutorial-highlighted').forEach(el => {
+                el.classList.remove('tutorial-highlighted');
+            });
+            
             showToast('Tutorial skipped. Access anytime from Menu → Help & About', 'info');
             
             // Show install banner after skipping tutorial
@@ -32142,6 +32158,11 @@ Hint levels:
             const backBtn = document.getElementById('tutorial-back-btn');
             const nextBtn = document.getElementById('tutorial-next-btn');
             
+            // Remove highlight from any previously highlighted element
+            document.querySelectorAll('.tutorial-highlighted').forEach(el => {
+                el.classList.remove('tutorial-highlighted');
+            });
+            
             // Find target element
             const target = document.querySelector(step.target);
             if (!target) {
@@ -32150,14 +32171,26 @@ Hint levels:
                 return;
             }
             
+            // Add highlight class to the actual target element
+            target.classList.add('tutorial-highlighted');
+            
             // Get target position
             const rect = target.getBoundingClientRect();
             const padding = 8;
             
-            // Position spotlight
+            // On desktop with containment, need to offset for the centered body
+            let offsetX = 0;
+            let offsetY = 0;
+            if (window.innerWidth >= 600) {
+                const bodyRect = document.body.getBoundingClientRect();
+                offsetX = bodyRect.left;
+                offsetY = bodyRect.top;
+            }
+            
+            // Position spotlight (adjusted for desktop offset)
             spotlight.style.transform = 'none'; // Clear any initial centering
-            spotlight.style.left = (rect.left - padding) + 'px';
-            spotlight.style.top = (rect.top - padding) + 'px';
+            spotlight.style.left = (rect.left - padding - offsetX) + 'px';
+            spotlight.style.top = (rect.top - padding - offsetY) + 'px';
             spotlight.style.width = (rect.width + padding * 2) + 'px';
             spotlight.style.height = (rect.height + padding * 2) + 'px';
             
@@ -32186,28 +32219,41 @@ Hint levels:
             // Reset arrow classes
             arrow.className = 'tutorial-card-arrow';
             
+            // Adjust rect values for desktop offset
+            const adjRect = {
+                left: rect.left - offsetX,
+                right: rect.right - offsetX,
+                top: rect.top - offsetY,
+                bottom: rect.bottom - offsetY,
+                width: rect.width,
+                height: rect.height
+            };
+            
+            // Get container width for boundary checks
+            const containerWidth = window.innerWidth >= 600 ? 480 : window.innerWidth;
+            
             if (step.position === 'bottom') {
                 // Card below target
-                cardTop = rect.bottom + 20;
-                cardLeft = rect.left + rect.width / 2 - cardWidth / 2;
+                cardTop = adjRect.bottom + 20;
+                cardLeft = adjRect.left + adjRect.width / 2 - cardWidth / 2;
                 arrow.classList.add('top');
             } else if (step.position === 'top') {
                 // Card above target
-                cardTop = rect.top - cardHeight - 30;
-                cardLeft = rect.left + rect.width / 2 - cardWidth / 2;
+                cardTop = adjRect.top - cardHeight - 30;
+                cardLeft = adjRect.left + adjRect.width / 2 - cardWidth / 2;
                 arrow.classList.add('bottom');
             } else if (step.position === 'left') {
-                cardTop = rect.top + rect.height / 2 - cardHeight / 2;
-                cardLeft = rect.left - cardWidth - 20;
+                cardTop = adjRect.top + adjRect.height / 2 - cardHeight / 2;
+                cardLeft = adjRect.left - cardWidth - 20;
                 arrow.classList.add('right');
             } else {
-                cardTop = rect.top + rect.height / 2 - cardHeight / 2;
-                cardLeft = rect.right + 20;
+                cardTop = adjRect.top + adjRect.height / 2 - cardHeight / 2;
+                cardLeft = adjRect.right + 20;
                 arrow.classList.add('left');
             }
             
-            // Keep card on screen
-            cardLeft = Math.max(16, Math.min(cardLeft, window.innerWidth - cardWidth - 16));
+            // Keep card on screen (use container width on desktop)
+            cardLeft = Math.max(16, Math.min(cardLeft, containerWidth - cardWidth - 16));
             cardTop = Math.max(16, Math.min(cardTop, window.innerHeight - cardHeight - 16));
             
             card.style.left = cardLeft + 'px';
@@ -32235,6 +32281,11 @@ Hint levels:
         function finishTutorial() {
             const overlay = document.getElementById('tutorial-overlay');
             overlay.classList.remove('active');
+            
+            // Remove highlight from any highlighted element
+            document.querySelectorAll('.tutorial-highlighted').forEach(el => {
+                el.classList.remove('tutorial-highlighted');
+            });
             
             // Return to home tab
             switchTab('home');
@@ -32465,7 +32516,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "1.0",
-  "appVersion": "1.3.24",
+  "appVersion": "1.3.26",
   "lastUpdated": "2026-01-29",
   "categories": [
     {

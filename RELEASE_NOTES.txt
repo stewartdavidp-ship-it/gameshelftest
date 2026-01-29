@@ -1,3 +1,55 @@
+Game Shelf PWA v1.3.26 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+TUTORIAL SYSTEM OVERHAUL:
+-------------------------
+* Fixed tutorial targeting hidden FAB buttons (moved to header)
+  - #share-fab → #header-share-btn
+  - #hint-fab → #header-hint-btn
+* Fixed .share-hub-header target (didn't exist) → .share-results-section
+* Fixed #browse-categories - now switches to Discover subtab first
+* Fixed desktop positioning - spotlight/card now account for body offset
+* Added .tutorial-highlighted class with brightness + purple background
+* Properly cleans up highlight class on skip/finish
+
+ACTIVE TAB VISIBILITY:
+----------------------
+* Increased active tab background opacity from 15% to 25%
+* Now clearly visible in dark mode
+
+TECHNICAL DETAILS:
+------------------
+Desktop positioning fix:
+* getBoundingClientRect() returns viewport coords
+* With body transform, fixed elements are relative to body
+* Now calculates bodyRect offset and subtracts from positioning
+
+Tutorial highlight class:
+* filter: brightness(1.4)
+* background: rgba(102, 126, 234, 0.25)
+* box-shadow: 0 0 20px 5px rgba(102, 126, 234, 0.4)
+* z-index: 2001 to appear above overlay
+
+---
+
+Game Shelf PWA v1.3.25 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+TUTORIAL DARK MODE FIX (ATTEMPT):
+---------------------------------
+* Added .tutorial-highlighted class to brighten actual target elements
+* Uses filter: brightness(1.4) on the element being highlighted
+* Class applied via JS when positioning tutorial spotlight
+* Class removed when moving between steps or ending tutorial
+
+Note: This was intermediate version - see v1.3.26 for complete fix.
+
+---
+
 Game Shelf PWA v1.3.24 Release Notes
 =====================================
 
