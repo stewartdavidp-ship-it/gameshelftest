@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.2.75">
+    <meta name="version" content="1.2.77">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7904,7 +7904,7 @@
             display: none;
         }
         
-        /* Feedback Mode Indicator - v1.2.75: Hidden permanently */
+        /* Feedback Mode Indicator - v1.2.77: Hidden permanently */
         .uat-mode-badge {
             display: none !important;
         }
@@ -8012,7 +8012,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.75</span>
+                <span style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.2.77</span>
             </div>
         </div>
         <div class="header-right">
@@ -8271,7 +8271,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.2.75</div>
+            <div class="settings-version">Game Shelf PWA v1.2.77</div>
         </div>
     </div>
     
@@ -10308,17 +10308,33 @@ Wordle 1,234 3/6
             </div>
             
             <div class="battle-form-group">
-                <label class="battle-form-label">Entry Fee (optional)</label>
-                <select class="battle-input" id="battle-entry-fee">
-                    <option value="0">Free - Just for fun</option>
-                    <option value="1">🪙 1 coin</option>
-                    <option value="2">🪙 2 coins</option>
-                    <option value="3">🪙 3 coins</option>
-                    <option value="5">🪙 5 coins - Max wager</option>
-                </select>
-                <div id="entry-fee-note" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
-                    💡 Keep it friendly - max 5 coins like a golf wager
+                <label class="battle-form-label">Stakes</label>
+                <div class="battle-stake-select" id="battle-stake-select" style="display: flex; gap: 8px; margin-bottom: 8px;">
+                    <div class="battle-stake-option selected" data-stake="friendly" onclick="selectBattleStake(this)" style="flex: 1; padding: 12px 8px; text-align: center; background: var(--bg-tertiary); border-radius: 8px; cursor: pointer; border: 2px solid var(--accent-purple); transition: all 0.2s;">
+                        <div style="font-size: 1.2rem;">🤝</div>
+                        <div style="font-size: 0.8rem; font-weight: 600;">Friendly</div>
+                    </div>
+                    <div class="battle-stake-option" data-stake="coins" onclick="selectBattleStake(this)" style="flex: 1; padding: 12px 8px; text-align: center; background: var(--bg-tertiary); border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s;">
+                        <div style="font-size: 1.2rem;">🪙</div>
+                        <div style="font-size: 0.8rem; font-weight: 600;">Coins</div>
+                    </div>
+                    <div class="battle-stake-option" data-stake="tokens" onclick="selectBattleStake(this)" style="flex: 1; padding: 12px 8px; text-align: center; background: var(--bg-tertiary); border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s;">
+                        <div style="font-size: 1.2rem;">🎟️</div>
+                        <div style="font-size: 0.8rem; font-weight: 600;">Tokens</div>
+                    </div>
                 </div>
+                <!-- Amount input (hidden for Friendly) -->
+                <div id="stake-amount-container" style="display: none;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span id="stake-amount-icon" style="font-size: 1.2rem;">🪙</span>
+                        <input type="number" class="battle-input" id="battle-stake-amount" min="1" max="5" value="1" style="flex: 1; text-align: center; font-size: 1.1rem;" onchange="validateStakeAmount()">
+                        <span id="stake-amount-label" style="font-size: 0.85rem; color: var(--text-muted);">coins (max 5)</span>
+                    </div>
+                </div>
+                <!-- Hidden field for legacy compatibility -->
+                <select class="battle-input" id="battle-entry-fee" style="display: none;">
+                    <option value="0" selected>Free</option>
+                </select>
             </div>
             
             <!-- Public/Private Toggle -->
@@ -10334,9 +10350,8 @@ Wordle 1,234 3/6
             </div>
             
             <!-- Integrity Notice -->
-            <div id="battle-integrity-notice" style="background: var(--bg-tertiary); border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary);">
-                <div style="font-weight: 600; margin-bottom: 4px;">🤝 Community Honor System</div>
-                <div>Battles are played on trust. There's no automated verification - it's like a friendly office pool or golf wager. Play fair with your friends!</div>
+            <div id="battle-integrity-notice" style="background: var(--bg-tertiary); border-radius: 8px; padding: 10px 12px; margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
+                🤝 Battles run on trust - like a friendly golf wager. Play fair!
             </div>
             
             <!-- Battle Rules Preview -->
@@ -15172,8 +15187,8 @@ Wordle 1,234 3/6
             checkFiveDayStreakReward();
             checkAllGsGamesReward();
             
-            // Update battle scores if in active battle
-            updateBattleScore(result.gameId, result.numericScore || 1);
+            // Update battle scores if in active battle (pass full result for win/perfect tracking)
+            updateBattleScore(result.gameId, result.numericScore || 1, result);
             
             saveData();
             syncToCloud();
@@ -16212,7 +16227,7 @@ Wordle 1,234 3/6
                     saveData();
                     renderWallet();
                     
-                    // v1.2.75: Play coin drop sound for referral rewards
+                    // v1.2.77: Play coin drop sound for referral rewards
                     playSound('walletAdd');
                     
                     showToast(`🎁 +${totalTokens} tokens from referrals!`);
@@ -16373,7 +16388,7 @@ Wordle 1,234 3/6
                 return this.ctx;
             },
             
-            // v1.2.75: Async resume for iOS
+            // v1.2.77: Async resume for iOS
             async ensureResumed() {
                 if (!this.ctx) this.init();
                 if (this.ctx && this.ctx.state === 'suspended') {
@@ -16414,7 +16429,7 @@ Wordle 1,234 3/6
                     const ctx = this.init();
                     if (!ctx) return;
                     
-                    // v1.2.75: Must await resume on iOS
+                    // v1.2.77: Must await resume on iOS
                     if (ctx.state === 'suspended') {
                         await ctx.resume();
                     }
@@ -16697,7 +16712,7 @@ Wordle 1,234 3/6
             SoundManager.playSound(soundId);
             SoundManager.enabled = oldEnabled;
             
-            // v1.2.75: Show mute reminder after a short delay
+            // v1.2.77: Show mute reminder after a short delay
             // (browsers can't detect hardware mute, so we remind users)
             setTimeout(() => {
                 showToast('🔇 No sound? Check if your device is muted', 'info', 3000);
@@ -16947,7 +16962,7 @@ Wordle 1,234 3/6
         }
         
         function showAbout() {
-            const version = '1.2.75';
+            const version = '1.2.77';
             const aboutText = `🧩 Game Shelf PWA
 
 Track your daily puzzle games in one place!
@@ -17699,35 +17714,48 @@ Made with ❤️ for puzzle enthusiasts`;
             const icon = document.getElementById('battle-visibility-icon');
             const text = document.getElementById('battle-visibility-text');
             const desc = document.getElementById('battle-visibility-desc');
-            const entryFeeSelect = document.getElementById('battle-entry-fee');
-            const entryFeeNote = document.getElementById('entry-fee-note');
+            const stakeSelect = document.getElementById('battle-stake-select');
+            const amountContainer = document.getElementById('stake-amount-container');
+            const integrityNotice = document.getElementById('battle-integrity-notice');
             
             if (isPublic) {
                 icon.textContent = '🌍';
                 text.textContent = 'Public Battle';
                 desc.textContent = 'Anyone can find and join';
                 
-                // Disable entry fee for public battles
-                if (entryFeeSelect) {
-                    entryFeeSelect.value = '0';
-                    entryFeeSelect.disabled = true;
-                    entryFeeSelect.style.opacity = '0.5';
+                // v1.2.77: Force friendly for public battles
+                if (stakeSelect) {
+                    stakeSelect.style.opacity = '0.5';
+                    stakeSelect.style.pointerEvents = 'none';
+                    // Select friendly option
+                    const friendlyOption = stakeSelect.querySelector('[data-stake="friendly"]');
+                    if (friendlyOption) {
+                        document.querySelectorAll('.battle-stake-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                            opt.style.border = '2px solid transparent';
+                        });
+                        friendlyOption.classList.add('selected');
+                        friendlyOption.style.border = '2px solid var(--accent-purple)';
+                    }
                 }
-                if (entryFeeNote) {
-                    entryFeeNote.innerHTML = '🚫 Public battles are free to keep things fair';
+                if (amountContainer) {
+                    amountContainer.style.display = 'none';
+                }
+                if (integrityNotice) {
+                    integrityNotice.innerHTML = '🌍 Public battles are always friendly - no wagering with strangers';
                 }
             } else {
                 icon.textContent = '🔒';
                 text.textContent = 'Private Battle';
                 desc.textContent = 'Only people with code can join';
                 
-                // Enable entry fee for private battles
-                if (entryFeeSelect) {
-                    entryFeeSelect.disabled = false;
-                    entryFeeSelect.style.opacity = '1';
+                // v1.2.77: Re-enable stake selection
+                if (stakeSelect) {
+                    stakeSelect.style.opacity = '1';
+                    stakeSelect.style.pointerEvents = 'auto';
                 }
-                if (entryFeeNote) {
-                    entryFeeNote.innerHTML = '💡 Keep it friendly - max 5 coins like a golf wager';
+                if (integrityNotice) {
+                    integrityNotice.innerHTML = '🤝 Battles run on trust - like a friendly golf wager. Play fair!';
                 }
             }
         }
@@ -17742,6 +17770,90 @@ Made with ❤️ for puzzle enthusiasts`;
             
             // Update rules preview
             updateBattleRulesPreview();
+        }
+        
+        // v1.2.77: Stake type selection (Friendly/Coins/Tokens)
+        function selectBattleStake(el) {
+            // Remove selected styling from all options
+            document.querySelectorAll('.battle-stake-option').forEach(opt => {
+                opt.classList.remove('selected');
+                opt.style.border = '2px solid transparent';
+            });
+            // Add to clicked one
+            el.classList.add('selected');
+            el.style.border = '2px solid var(--accent-purple)';
+            
+            const stakeType = el.dataset.stake;
+            const amountContainer = document.getElementById('stake-amount-container');
+            const amountInput = document.getElementById('battle-stake-amount');
+            const amountIcon = document.getElementById('stake-amount-icon');
+            const amountLabel = document.getElementById('stake-amount-label');
+            const legacyFee = document.getElementById('battle-entry-fee');
+            
+            if (stakeType === 'friendly') {
+                amountContainer.style.display = 'none';
+                legacyFee.value = '0';
+            } else if (stakeType === 'coins') {
+                amountContainer.style.display = 'block';
+                amountIcon.textContent = '🪙';
+                amountLabel.textContent = 'coins (max 5)';
+                amountInput.min = 1;
+                amountInput.max = 5;
+                amountInput.value = Math.min(amountInput.value || 1, 5);
+                validateStakeAmount();
+            } else if (stakeType === 'tokens') {
+                amountContainer.style.display = 'block';
+                amountIcon.textContent = '🎟️';
+                amountLabel.textContent = 'tokens (max 500)';
+                amountInput.min = 1;
+                amountInput.max = 500;
+                amountInput.value = Math.min(amountInput.value || 10, 500);
+                validateStakeAmount();
+            }
+            
+            updateBattleRulesPreview();
+        }
+        
+        function validateStakeAmount() {
+            const selectedStake = document.querySelector('.battle-stake-option.selected');
+            const stakeType = selectedStake ? selectedStake.dataset.stake : 'friendly';
+            const amountInput = document.getElementById('battle-stake-amount');
+            const legacyFee = document.getElementById('battle-entry-fee');
+            
+            if (stakeType === 'friendly') {
+                legacyFee.value = '0';
+                return;
+            }
+            
+            let amount = parseInt(amountInput.value) || 1;
+            const max = stakeType === 'coins' ? 5 : 500;
+            
+            // Clamp value
+            if (amount < 1) amount = 1;
+            if (amount > max) amount = max;
+            amountInput.value = amount;
+            
+            // Store in a format we can parse later: "coins:3" or "tokens:100"
+            // For now, store negative for tokens to differentiate
+            if (stakeType === 'coins') {
+                legacyFee.value = amount.toString();
+            } else {
+                // Use negative to indicate tokens (hacky but backward compatible)
+                legacyFee.value = (-amount).toString();
+            }
+        }
+        
+        function getBattleStakeInfo() {
+            const selectedStake = document.querySelector('.battle-stake-option.selected');
+            const stakeType = selectedStake ? selectedStake.dataset.stake : 'friendly';
+            const amountInput = document.getElementById('battle-stake-amount');
+            
+            if (stakeType === 'friendly') {
+                return { type: 'friendly', amount: 0 };
+            }
+            
+            const amount = parseInt(amountInput.value) || 1;
+            return { type: stakeType, amount: amount };
         }
         
         function updateBattleRulesPreview() {
@@ -17980,17 +18092,29 @@ Made with ❤️ for puzzle enthusiasts`;
             
             const name = sanitizeTextInput(document.getElementById('battle-name-input').value, 30) || 'Brain Battle';
             const duration = parseInt(document.getElementById('battle-duration').value);
-            let entryFee = parseInt(document.getElementById('battle-entry-fee').value);
             const isPublic = document.getElementById('battle-public-toggle')?.checked || false;
             
-            // SAFEGUARD: Enforce entry fee rules
-            // - Public battles: always free (prevents cheating incentive with strangers)
-            // - Private battles: max 5 coins (keeps it a friendly wager)
+            // v1.2.77: Get stake info from new UI
+            const stakeInfo = getBattleStakeInfo();
+            let stakeType = stakeInfo.type;  // 'friendly', 'coins', or 'tokens'
+            let stakeAmount = stakeInfo.amount;
+            
+            // SAFEGUARD: Enforce stake rules
+            // - Public battles: always friendly (no wagering with strangers)
+            // - Private battles: max 5 coins OR max 500 tokens
             if (isPublic) {
-                entryFee = 0;
+                stakeType = 'friendly';
+                stakeAmount = 0;
             } else {
-                entryFee = Math.min(entryFee, 5); // Cap at 5 coins
+                if (stakeType === 'coins') {
+                    stakeAmount = Math.min(stakeAmount, 5);
+                } else if (stakeType === 'tokens') {
+                    stakeAmount = Math.min(stakeAmount, 500);
+                }
             }
+            
+            // Legacy compatibility: entryFee for old code paths
+            const entryFee = stakeType === 'coins' ? stakeAmount : 0;
             
             // Get selected battle type
             const selectedTypeEl = document.querySelector('.battle-type-option.selected');
@@ -18004,10 +18128,15 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            // Check if user has enough coins for entry fee
+            // Check if user has enough for stake
             const coins = appData.wallet?.coins || 0;
-            if (entryFee > 0 && coins < entryFee) {
-                showToast(`Need ${entryFee} coins to create`, 'error');
+            const tokens = appData.wallet?.tokens || 0;
+            if (stakeType === 'coins' && coins < stakeAmount) {
+                showToast(`Need ${stakeAmount} coins to create`, 'error');
+                return;
+            }
+            if (stakeType === 'tokens' && tokens < stakeAmount) {
+                showToast(`Need ${stakeAmount} tokens to create`, 'error');
                 return;
             }
             
@@ -18028,10 +18157,14 @@ Made with ❤️ for puzzle enthusiasts`;
                 startDate: now,
                 endDate: now + (duration * 24 * 60 * 60 * 1000),
                 duration: duration,
-                entryFee: entryFee,
+                // v1.2.77: New stake fields
+                stakeType: stakeType,
+                stakeAmount: stakeAmount,
+                entryFee: entryFee,  // Legacy compatibility
                 joinCode: joinCode,
                 isPublic: isPublic,
-                prizePool: entryFee, // Will grow as people join
+                prizePool: stakeAmount, // Will grow as people join
+                prizeType: stakeType,   // Track what currency the pool is in
                 participants: {
                     [currentUser.uid]: {
                         odataId: currentUser.uid,
@@ -18066,18 +18199,24 @@ Made with ❤️ for puzzle enthusiasts`;
                         createdAt: now,
                         endDate: now + (duration * 24 * 60 * 60 * 1000),
                         duration: duration,
-                        entryFee: entryFee,
+                        stakeType: stakeType,
+                        stakeAmount: stakeAmount,
+                        entryFee: entryFee,  // Legacy
                         joinCode: joinCode,
                         participantCount: 1
                     };
                     await db.ref(`public-battles/${battleId}`).set(publicBattleData);
                 }
                 
-                // Deduct entry fee
-                if (entryFee > 0) {
-                    appData.wallet.coins -= entryFee;
-                    // Award tokens for coin-based battle participation
-                    awardBattleParticipationTokens(name);
+                // v1.2.77: Deduct stake (coins or tokens)
+                if (stakeAmount > 0) {
+                    if (stakeType === 'coins') {
+                        appData.wallet.coins -= stakeAmount;
+                        // Award tokens for coin-based battle participation
+                        awardBattleParticipationTokens(name);
+                    } else if (stakeType === 'tokens') {
+                        appData.wallet.tokens -= stakeAmount;
+                    }
                     saveData();
                     renderWallet();
                 }
@@ -18168,8 +18307,16 @@ Made with ❤️ for puzzle enthusiasts`;
                 const typeInfo = BATTLE_TYPES[battle.type] || BATTLE_TYPES['total-score'];
                 document.getElementById('join-battle-type').textContent = `${typeInfo.icon} ${typeInfo.name}`;
                 
-                // Entry fee
-                document.getElementById('join-battle-fee').textContent = battle.entryFee > 0 ? `🪙 ${battle.entryFee}` : 'Free';
+                // v1.2.77: Entry fee / Stakes display
+                const stakeType = battle.stakeType || (battle.entryFee > 0 ? 'coins' : 'friendly');
+                const stakeAmount = battle.stakeAmount || battle.entryFee || 0;
+                let feeDisplay = 'Free';
+                if (stakeType === 'coins' && stakeAmount > 0) {
+                    feeDisplay = `🪙 ${stakeAmount}`;
+                } else if (stakeType === 'tokens' && stakeAmount > 0) {
+                    feeDisplay = `🎟️ ${stakeAmount}`;
+                }
+                document.getElementById('join-battle-fee').textContent = feeDisplay;
                 
                 // Days left
                 const daysLeft = Math.max(0, Math.ceil((battle.endDate - now) / oneDayMs));
@@ -18241,11 +18388,18 @@ Made with ❤️ for puzzle enthusiasts`;
                 return;
             }
             
-            const entryFee = battle.entryFee || 0;
+            // v1.2.77: Handle coins and tokens
+            const stakeType = battle.stakeType || (battle.entryFee > 0 ? 'coins' : 'friendly');
+            const stakeAmount = battle.stakeAmount || battle.entryFee || 0;
             const coins = appData.wallet?.coins || 0;
+            const tokens = appData.wallet?.tokens || 0;
             
-            if (entryFee > 0 && coins < entryFee) {
-                showToast(`Need ${entryFee} coins to join`, 'error');
+            if (stakeType === 'coins' && stakeAmount > 0 && coins < stakeAmount) {
+                showToast(`Need ${stakeAmount} coins to join`, 'error');
+                return;
+            }
+            if (stakeType === 'tokens' && stakeAmount > 0 && tokens < stakeAmount) {
+                showToast(`Need ${stakeAmount} tokens to join`, 'error');
                 return;
             }
             
@@ -18263,9 +18417,9 @@ Made with ❤️ for puzzle enthusiasts`;
                 });
                 
                 // Update prize pool
-                if (entryFee > 0) {
-                    const currentPool = battle.prizePool || entryFee;
-                    await db.ref(`battles/${battleId}/prizePool`).set(currentPool + entryFee);
+                if (stakeAmount > 0) {
+                    const currentPool = battle.prizePool || stakeAmount;
+                    await db.ref(`battles/${battleId}/prizePool`).set(currentPool + stakeAmount);
                 }
                 
                 // Start the battle if pending
@@ -18273,11 +18427,15 @@ Made with ❤️ for puzzle enthusiasts`;
                     await db.ref(`battles/${battleId}/status`).set('active');
                 }
                 
-                // Deduct entry fee
-                if (entryFee > 0) {
-                    appData.wallet.coins -= entryFee;
-                    // Award tokens for coin-based battle participation
-                    awardBattleParticipationTokens(battle.name);
+                // v1.2.77: Deduct stake (coins or tokens)
+                if (stakeAmount > 0) {
+                    if (stakeType === 'coins') {
+                        appData.wallet.coins -= stakeAmount;
+                        // Award tokens for coin-based battle participation
+                        awardBattleParticipationTokens(battle.name);
+                    } else if (stakeType === 'tokens') {
+                        appData.wallet.tokens -= stakeAmount;
+                    }
                     saveData();
                     renderWallet();
                 }
@@ -18348,7 +18506,12 @@ Made with ❤️ for puzzle enthusiasts`;
             
             const winner = participants[0];
             const runnerUp = participants[1];
-            const prizePool = (battle.entryFee || 0) * participants.length;
+            
+            // v1.2.77: Handle both coins and tokens properly
+            const stakeType = battle.stakeType || (battle.entryFee > 0 ? 'coins' : 'friendly');
+            const stakeAmount = battle.stakeAmount || battle.entryFee || 0;
+            const prizePool = stakeAmount * participants.length;
+            
             const isWinner = winner?.odataId === currentUser?.uid;
             const isRunnerUp = runnerUp?.odataId === currentUser?.uid;
             const isSoloChallenge = participants.length === 1;
@@ -18368,6 +18531,7 @@ Made with ❤️ for puzzle enthusiasts`;
                         score: winner.score
                     } : null,
                     prizePool: prizePool,
+                    prizeType: stakeType,
                     prizes: {
                         first: winnerPrize,
                         second: runnerUpPrize
@@ -18379,7 +18543,8 @@ Made with ❤️ for puzzle enthusiasts`;
                     logActivity('battle-won', {
                         battleId: battle.id,
                         name: battle.name,
-                        prize: winnerPrize
+                        prize: winnerPrize,
+                        prizeType: stakeType
                     });
                 }
                 
@@ -18387,17 +18552,21 @@ Made with ❤️ for puzzle enthusiasts`;
                 let myPrize = 0;
                 if (isWinner && winnerPrize > 0) {
                     myPrize = winnerPrize;
-                    appData.wallet.tokens = (appData.wallet?.tokens || 0) + winnerPrize;
                 } else if (isRunnerUp && runnerUpPrize > 0 && participants.length > 2) {
                     myPrize = runnerUpPrize;
-                    appData.wallet.tokens = (appData.wallet?.tokens || 0) + runnerUpPrize;
                 }
                 
+                // v1.2.77: Award correct currency type
                 if (myPrize > 0) {
+                    if (stakeType === 'coins') {
+                        appData.wallet.coins = (appData.wallet?.coins || 0) + myPrize;
+                    } else {
+                        // tokens or friendly (though friendly should have 0 prize)
+                        appData.wallet.tokens = (appData.wallet?.tokens || 0) + myPrize;
+                    }
                     saveData();
                     renderWallet();
                     
-                    // v1.2.75: Play coin drop sound for prize
                     playSound('walletAdd');
                 }
                 
@@ -18918,6 +19087,58 @@ Made with ❤️ for puzzle enthusiasts`;
                     <span style="color: var(--accent-green);">${parseInt(p.score) || 0}</span>
                 </div>
             `).join('');
+            
+            // v1.2.77: Check for unplayed battle games today
+            checkBattleReminder(activeBattle);
+        }
+        
+        // v1.2.77: Show reminder if user hasn't played all battle games today
+        function checkBattleReminder(battle) {
+            if (!currentUser) return;
+            
+            const today = getTodayString();
+            const participant = battle.participants?.[currentUser.uid];
+            const dailyScores = participant?.dailyScores || {};
+            
+            // Get today's games played
+            const todaysGames = Object.keys(dailyScores)
+                .filter(key => key.startsWith(today + '_'))
+                .map(key => key.split('_')[1]);
+            
+            // Find unplayed battle games
+            const unplayedGames = (battle.games || []).filter(g => !todaysGames.includes(g));
+            
+            // Update or show reminder
+            const reminderEl = document.getElementById('battle-reminder');
+            if (!reminderEl) {
+                // Create reminder element if it doesn't exist
+                const widget = document.getElementById('battle-widget');
+                if (!widget) return;
+                
+                const reminder = document.createElement('div');
+                reminder.id = 'battle-reminder';
+                reminder.style.cssText = 'margin-top: 8px; padding: 8px 10px; background: var(--accent-orange); color: #1a1a2e; border-radius: 8px; font-size: 0.8rem; font-weight: 600; display: none; cursor: pointer;';
+                reminder.onclick = () => showBattleDetails(battle.id);
+                widget.appendChild(reminder);
+            }
+            
+            const reminder = document.getElementById('battle-reminder');
+            if (unplayedGames.length > 0 && unplayedGames.length < battle.games.length) {
+                // Some games played, some not
+                const gameNames = unplayedGames.map(g => GAMES[g]?.name || g).slice(0, 2);
+                const moreCount = unplayedGames.length - 2;
+                let text = `⚠️ Still need: ${gameNames.join(', ')}`;
+                if (moreCount > 0) text += ` +${moreCount} more`;
+                reminder.textContent = text;
+                reminder.style.display = 'block';
+            } else if (unplayedGames.length === battle.games.length) {
+                // No games played yet today
+                reminder.textContent = `⚠️ Play your battle games today!`;
+                reminder.style.display = 'block';
+            } else {
+                // All games played
+                reminder.style.display = 'none';
+            }
         }
         
         // ============ PUBLIC BATTLES LOBBY ============
@@ -19092,23 +19313,72 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         // Update battle score when logging a game
-        async function updateBattleScore(gameId, score) {
+        async function updateBattleScore(gameId, score, result = {}) {
             if (!currentUser) return;
             
             const today = getTodayString();
+            const scoreKey = `${today}_${gameId}`;
+            
+            // Determine win/perfect status
+            const won = result.won || false;
+            const perfect = result.meta?.perfect || result.score?.includes('🎯') || false;
             
             for (const battle of userBattles) {
                 if (battle.status !== 'active') continue;
                 if (!battle.games?.includes(gameId)) continue;
                 
                 try {
-                    // Add daily score
-                    await db.ref(`battles/${battle.id}/participants/${currentUser.uid}/dailyScores/${today}_${gameId}`).set(score);
+                    const participantRef = db.ref(`battles/${battle.id}/participants/${currentUser.uid}`);
                     
-                    // Update total score
-                    const participant = battle.participants[currentUser.uid];
-                    const newTotal = (participant?.score || 0) + score;
-                    await db.ref(`battles/${battle.id}/participants/${currentUser.uid}/score`).set(newTotal);
+                    // v1.2.77: Use transaction to store score AND meta atomically
+                    // Firebase Function trigger will recalculate proper score based on battle type
+                    await participantRef.transaction(participant => {
+                        if (!participant) return participant;
+                        
+                        // Initialize if needed
+                        if (!participant.dailyScores) participant.dailyScores = {};
+                        if (!participant.dailyMeta) participant.dailyMeta = {};
+                        
+                        // Store raw score
+                        participant.dailyScores[scoreKey] = score;
+                        
+                        // Store meta for battle type scoring (wins/perfect/streak)
+                        participant.dailyMeta[scoreKey] = {
+                            won: won,
+                            perfect: perfect,
+                            timestamp: Date.now()
+                        };
+                        
+                        // Client-side score calculation (Firebase trigger will override for non-total-score battles)
+                        // This provides immediate feedback while trigger processes
+                        const battleType = battle.type || 'total-score';
+                        
+                        if (battleType === 'total-score') {
+                            // Sum all raw scores
+                            participant.score = Object.values(participant.dailyScores)
+                                .reduce((sum, s) => sum + (parseInt(s) || 0), 0);
+                        } else if (battleType === 'wins') {
+                            // Count wins
+                            participant.score = Object.values(participant.dailyMeta)
+                                .filter(m => m?.won).length;
+                        } else if (battleType === 'perfect') {
+                            // Count perfects
+                            participant.score = Object.values(participant.dailyMeta)
+                                .filter(m => m?.perfect).length;
+                        } else if (battleType === 'streak') {
+                            // Raw scores (bonus calculated server-side)
+                            participant.score = Object.values(participant.dailyScores)
+                                .reduce((sum, s) => sum + (parseInt(s) || 0), 0);
+                        }
+                        
+                        // Track unique days played
+                        const uniqueDays = new Set(
+                            Object.keys(participant.dailyScores).map(key => key.split('_')[0])
+                        );
+                        participant.daysPlayed = uniqueDays.size;
+                        
+                        return participant;
+                    });
                     
                 } catch (e) {
                     console.error('Error updating battle score:', e);
@@ -19739,7 +20009,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 saveData();
                 renderWallet();
                 
-                // v1.2.75: Play coin drop sound for wallet addition
+                // v1.2.77: Play coin drop sound for wallet addition
                 playSound('walletAdd');
                 
                 closeGenericSheet();
@@ -19816,7 +20086,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 saveData();
                 renderWallet();
                 
-                // v1.2.75: Play coin drop sound
+                // v1.2.77: Play coin drop sound
                 playSound('walletAdd');
                 
                 // Show celebration
@@ -19846,7 +20116,7 @@ Made with ❤️ for puzzle enthusiasts`;
                 saveData();
                 renderWallet();
                 
-                // v1.2.75: Play coin drop sound
+                // v1.2.77: Play coin drop sound
                 playSound('walletAdd');
                 
                 // Show celebration
@@ -19863,7 +20133,7 @@ Made with ❤️ for puzzle enthusiasts`;
             saveData();
             renderWallet();
             
-            // v1.2.75: Play coin drop sound
+            // v1.2.77: Play coin drop sound
             playSound('walletAdd');
             
             showToast('🎟️ +5 tokens for battle participation!');
@@ -20478,7 +20748,7 @@ Made with ❤️ for puzzle enthusiasts`;
                     ...data,
                     platform: getPlatform(),
                     isStandalone: isStandalone(),
-                    appVersion: '1.2.75'
+                    appVersion: '1.2.77'
                 }
             };
             
@@ -21406,7 +21676,7 @@ Made with ❤️ for puzzle enthusiasts`;
         }
         
         function openGameUrl(launchUrl) {
-            // v1.2.75: On iOS PWA, show first-time tip about returning from games
+            // v1.2.77: On iOS PWA, show first-time tip about returning from games
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
             
@@ -23033,7 +23303,7 @@ Hint levels:
                     document.getElementById('hint-result').style.display = 'block';
                     document.getElementById('hint-get-btn').style.display = 'none';
                     
-                    // v1.2.75: Play hint received sound
+                    // v1.2.77: Play hint received sound
                     playSound('hint');
                     
                     // Show usage info if available
@@ -24443,7 +24713,7 @@ Hint levels:
                         // On iOS, user already saw paste popup, don't trigger another with readText
                         if (isIOS) {
                             console.log('clipboard.read() failed on iOS, not retrying:', readErr.message);
-                            // v1.2.75: Don't show error toast - clipboard often succeeds via other paths
+                            // v1.2.77: Don't show error toast - clipboard often succeeds via other paths
                             // Just silently open log sheet after delay (user can manual log if needed)
                             setTimeout(() => {
                                 // Only open log sheet if game wasn't already logged
@@ -24915,6 +25185,9 @@ Hint levels:
                     syncToCloud();
                     renderAll();
                     
+                    // v1.2.77: Update battle scores with the new score and meta
+                    updateBattleScore(gameId, result.numericScore || 0, result);
+                    
                     const gameInfo = GAMES[gameId];
                     showToast(`✓ Updated to ${result.score}`, 'success');
                 }
@@ -24927,10 +25200,10 @@ Hint levels:
         
         // Long-press handler for manual entry fallback
         let recordButtonTimer = null;
-        let recordButtonHandled = false; // v1.2.75: Prevent double execution from touch+mouse
+        let recordButtonHandled = false; // v1.2.77: Prevent double execution from touch+mouse
         
         function handleRecordButtonDown(e) {
-            // v1.2.75: Prevent mouse events after touch events
+            // v1.2.77: Prevent mouse events after touch events
             if (e && e.type === 'mousedown' && recordButtonHandled) {
                 return;
             }
@@ -24942,7 +25215,7 @@ Hint levels:
             }, 600);
         }
         function handleRecordButtonUp(e) {
-            // v1.2.75: Prevent mouse events after touch events  
+            // v1.2.77: Prevent mouse events after touch events  
             if (e && e.type === 'mouseup' && recordButtonHandled) {
                 recordButtonHandled = false; // Reset for next interaction
                 return;
@@ -24954,7 +25227,7 @@ Hint levels:
                 recordButtonHandled = true; // Mark as handled
                 handleRecordGame();
                 
-                // v1.2.75: Reset after a delay to allow for next tap
+                // v1.2.77: Reset after a delay to allow for next tap
                 setTimeout(() => { recordButtonHandled = false; }, 500);
             }
         }
@@ -29030,7 +29303,7 @@ Hint levels:
                 volumeSlider.value = SoundManager.volume * 100;
             }
             
-            // v1.2.75: Fix iOS sound - AudioContext must be resumed within a user gesture
+            // v1.2.77: Fix iOS sound - AudioContext must be resumed within a user gesture
             // Add one-time listener to ensure AudioContext is ready on first interaction
             const initAudioOnGesture = async () => {
                 // Initialize if not already done

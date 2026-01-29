@@ -1,3 +1,62 @@
+Game Shelf PWA v1.2.77 Release Notes
+=====================================
+
+Release Date: January 28, 2026
+
+BATTLE SYSTEM FIXES:
+--------------------
+* Fixed critical double-counting bug
+  - Logging same game twice no longer adds to score twice
+  - Score now recalculates from all dailyScores (idempotent)
+  
+* Fixed race condition in rapid game logging
+  - Multiple games logged quickly now all count correctly
+  - Uses Firebase transactions for atomic updates
+
+* Fixed prize pool calculation for token battles
+  - Token stakes now correctly calculate prize pool
+  - Was using entryFee (coins only) instead of stakeAmount
+
+* Fixed winner payment currency
+  - Coin battle winners now get coins back (not tokens)
+  - Token battle winners get tokens back
+
+* Fixed score conflict not updating battles
+  - Replacing a score via conflict dialog now updates battle score
+
+* Added battle reminder widget
+  - Orange banner shows unplayed battle games: "⚠️ Still need: Wordle, Connections"
+  - Clicking opens battle details
+
+* Fixed daysPlayed tracking
+  - Now correctly tracks unique days played in battles
+
+NEW BATTLE STAKE UI (v1.2.76):
+------------------------------
+* Replaced dropdown with three buttons: Friendly | Coins | Tokens
+* Coins: 1-5 coins max
+* Tokens: 1-500 tokens max
+* Simplified warning to single line
+
+SERVER-SIDE SCORING (Firebase Functions):
+-----------------------------------------
+* New calculateBattleScore trigger recalculates scores authoritatively
+* Battle type scoring now applied correctly:
+  - Total Score: sum of all raw scores
+  - Most Wins: 1 point per win
+  - Perfect Hunter: 1 point per perfect score
+  - Streak Challenge: raw scores + 10 pts per complete day
+* New checkBattleCompletion hourly job auto-completes expired battles
+
+TECHNICAL:
+----------
+* Client stores dailyMeta with won/perfect flags
+* Server trigger recalculates based on battle type
+* Firebase transactions prevent race conditions
+* Prize distribution respects stakeType (coins vs tokens)
+
+---
+
 Game Shelf PWA v1.2.75 Release Notes
 =====================================
 
