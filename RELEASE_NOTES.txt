@@ -1,3 +1,100 @@
+Game Shelf PWA v1.3.18 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+MULTI-TURN AI HELP CONVERSATIONS:
+---------------------------------
+* AI Help now supports follow-up questions
+* First question costs 5 tokens (same as before)
+* Up to 3 follow-ups are FREE
+* Conversation displayed as chat thread with user/AI bubbles
+* "New question" button starts fresh conversation (5 tokens)
+
+UI CHANGES:
+-----------
+* Redesigned AI Help sheet with conversation thread layout
+* User messages shown as purple bubbles (right side)
+* AI responses shown as gray bubbles (left side)
+* Follow-up input appears after AI responds
+* Shows remaining free follow-ups
+
+FIREBASE UPDATES:
+-----------------
+* getAIHelp function now accepts messages array for context
+* Analytics tracks isFollowup and turnCount
+* Each turn counts toward daily rate limit (20/day)
+
+TECHNICAL:
+----------
+* buildContextualPrompt helper function extracted
+* Conversation history passed to Claude API
+* Max 10 messages in history (safety limit)
+
+---
+
+Game Shelf PWA v1.3.17 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI HELP IMPROVEMENTS:
+---------------------
+* Added feedback collection (👍/👎) after AI responses
+* Optional comment field for negative feedback
+* Improved system prompt with few-shot examples
+* Better handling of vague questions (asks for clarification)
+* Updated navigation references for all subtabs
+
+ENHANCED AI CONTEXT:
+--------------------
+* Passes user's current tab/subtab to AI
+* Passes user's shelf games for personalized help
+* Passes token balance for hint-related questions
+* RAG-lite: Searches FAQ and passes relevant Q&As to AI
+
+FIREBASE UPDATES:
+-----------------
+* New ai-help-feedback path for feedback storage
+* Enhanced analytics with user context
+
+---
+
+Game Shelf PWA v1.3.16 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+UNIFIED SUBTAB NAVIGATION:
+--------------------------
+* Added consistent subtab navigation to Games, Stats, and Share tabs
+* Matches existing Battles tab pattern for unified UX
+
+GAMES TAB SUBTABS:
+------------------
+* 📚 Shelf - Your games + Recommendations
+* 🔍 Discover - Search + Browse by Category + Suggest
+
+STATS TAB SUBTABS:
+------------------
+* 📊 Overview - Summary cards (Total Games, Streaks, etc.)
+* 🎮 By Game - Per-game detailed stats + Import Stats
+
+SHARE TAB SUBTABS:
+------------------
+* 📅 Today - Quick share today's results + Friend recommendations
+* ✏️ Compose - Full message composer + Templates + All platforms
+* 📜 History - Past shares (now a dedicated tab, not hidden)
+
+BENEFITS:
+---------
+* Less scrolling - Content segmented into focused views
+* Better discoverability - Features easier to find
+* Cleaner first impression - Each subtab shows just what's relevant
+* Consistent experience across all main tabs
+
+---
+
 Game Shelf PWA v1.3.15 Release Notes
 =====================================
 

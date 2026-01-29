@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.15">
+    <meta name="version" content="1.3.18">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -3201,6 +3201,35 @@
             background: var(--accent-purple);
             border-color: var(--accent-purple);
             color: white;
+        }
+        
+        /* Generic Subtab System (v1.3.18) */
+        .subtab-container {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+        .subtab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .subtab-btn.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--accent-purple);
+        }
+        .subtab-content {
+            display: none;
+        }
+        .subtab-content.active {
+            display: block;
         }
         
         .log-tab-content {
@@ -8377,9 +8406,133 @@
         }
 
         .ai-help-response-area.visible {
-            display: block;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* Conversation Thread */
+        .ai-help-conversation {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-help-message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .ai-help-message.user {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-help-message.assistant {
+            align-self: flex-start;
+            background: var(--surface);
+            color: var(--text);
+            border-bottom-left-radius: 4px;
+        }
+
+        .ai-help-message.assistant .message-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--primary);
+        }
+
+        .ai-help-message.assistant .message-text {
+            white-space: pre-wrap;
+        }
+
+        .ai-help-message.assistant .message-text strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .ai-help-message.loading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        /* Follow-up Input */
+        .ai-help-followup-area {
+            padding: 12px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 8px;
+        }
+
+        .ai-help-followup-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .ai-help-followup-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--surface);
+            color: var(--text);
+            font-size: 14px;
+            resize: none;
+            min-height: 40px;
+            max-height: 80px;
+            font-family: inherit;
+        }
+
+        .ai-help-followup-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .ai-help-followup-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ai-help-followup-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ai-help-turn-info {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        .ai-help-turn-info .free-badge {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        /* Legacy single response (keep for backwards compat) */
         .ai-help-response {
             background: var(--surface);
             border-radius: 12px;
@@ -8457,6 +8610,109 @@
             background: var(--surface-hover);
         }
 
+        /* AI Help Feedback */
+        .ai-help-feedback {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .ai-help-feedback-prompt {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .ai-help-feedback-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .ai-help-feedback-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .ai-help-feedback-btn:hover {
+            background: var(--surface-hover);
+        }
+
+        .ai-help-feedback-btn.selected {
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .ai-help-feedback-btn.helpful.selected {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+
+        .ai-help-feedback-btn.not-helpful.selected {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .ai-help-feedback-comment {
+            margin-top: 12px;
+            display: none;
+        }
+
+        .ai-help-feedback-comment.visible {
+            display: block;
+        }
+
+        .ai-help-feedback-comment textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--bg);
+            color: var(--text);
+            resize: none;
+            font-family: inherit;
+        }
+
+        .ai-help-feedback-comment textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .ai-help-feedback-submit {
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .ai-help-feedback-submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .ai-help-feedback-thanks {
+            text-align: center;
+            padding: 12px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
         /* Bottom Actions */
         .help-bottom-actions {
             border-top: 1px solid var(--border);
@@ -8531,7 +8787,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.15</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.18</span>
             </div>
         </div>
         <div class="header-right">
@@ -8785,7 +9041,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.15</div>
+            <div class="settings-version">Game Shelf PWA v1.3.18</div>
         </div>
     </div>
     
@@ -8928,32 +9184,36 @@
         
         <!-- Games Screen -->
         <div class="screen" id="screen-games">
-            <!-- Search Bar -->
-            <div style="padding: 0 16px 12px;">
-                <input type="text" id="games-search-input" placeholder="🔍 Search games..." 
-                       oninput="filterGames(this.value)"
-                       style="width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 12px; font-size: 0.95rem; background: var(--bg-secondary); color: var(--text-primary); box-sizing: border-box;">
+            <!-- Games Subtabs -->
+            <div class="subtab-container" id="games-subtabs">
+                <button class="subtab-btn active" data-games-tab="shelf" onclick="switchGamesTab('shelf')">
+                    📚 Shelf
+                </button>
+                <button class="subtab-btn" data-games-tab="discover" onclick="switchGamesTab('discover')">
+                    🔍 Discover
+                </button>
             </div>
             
-            <!-- Recommendations Section -->
-            <div class="recommendations-section" id="recommendations-section">
-                <div class="recommendations-header" id="recommendations-header" onclick="toggleRecommendations('games')">
-                    <div>
-                        <div class="recommendations-title">
-                            <span>✨</span>
-                            <span>Recommended for You</span>
-                            <span class="recommendations-chevron">▼</span>
+            <!-- Shelf Subtab -->
+            <div class="subtab-content active" id="games-tab-shelf">
+                <!-- Recommendations Section -->
+                <div class="recommendations-section" id="recommendations-section">
+                    <div class="recommendations-header" id="recommendations-header" onclick="toggleRecommendations('games')">
+                        <div>
+                            <div class="recommendations-title">
+                                <span>✨</span>
+                                <span>Recommended for You</span>
+                                <span class="recommendations-chevron">▼</span>
+                            </div>
+                            <div class="recommendations-subtitle">Based on your shelf and friends</div>
                         </div>
-                        <div class="recommendations-subtitle">Based on your shelf and friends</div>
+                        <button class="recommendations-refresh" onclick="event.stopPropagation(); refreshRecommendations()" title="Refresh">🔄</button>
                     </div>
-                    <button class="recommendations-refresh" onclick="event.stopPropagation(); refreshRecommendations()" title="Refresh">🔄</button>
+                    <div class="recommendations-list" id="recommendations-list">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
-                <div class="recommendations-list" id="recommendations-list">
-                    <!-- Populated by JS -->
-                </div>
-            </div>
-            
-            <div class="games-list" id="games-list-container">
+                
                 <!-- Your Shelf -->
                 <div class="games-category">
                     <div class="category-title">Your Shelf <span id="shelf-count" style="color: var(--text-muted); font-weight: normal;">(0)</span></div>
@@ -8962,52 +9222,81 @@
                         <!-- Populated by JS -->
                     </div>
                 </div>
+            </div>
+            
+            <!-- Discover Subtab -->
+            <div class="subtab-content" id="games-tab-discover">
+                <!-- Search Bar -->
+                <div style="padding: 0 16px 12px;">
+                    <input type="text" id="games-search-input" placeholder="🔍 Search games..." 
+                           oninput="filterGames(this.value)"
+                           style="width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 12px; font-size: 0.95rem; background: var(--bg-secondary); color: var(--text-primary); box-sizing: border-box;">
+                </div>
                 
-                <!-- Browse All Games -->
-                <div class="games-category">
-                    <div class="category-title" style="margin-bottom: 8px;">Browse All Games</div>
-                    <div id="browse-categories">
+                <!-- Search Results (shown when searching) -->
+                <div id="games-search-results" style="display: none; padding: 0 16px;">
+                    <div class="games-grid" id="search-results-grid">
                         <!-- Populated by JS -->
                     </div>
                 </div>
                 
-                <!-- Suggest a Game -->
-                <div style="padding: 16px;">
-                    <button onclick="showSuggestGame()" style="width: 100%; padding: 14px; background: var(--bg-secondary); border: 2px dashed var(--border); border-radius: 12px; color: var(--text-muted); font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <span>💡</span>
-                        <span>Suggest a Game</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Search Results (hidden by default) -->
-            <div id="games-search-results" style="display: none; padding: 0 16px;">
-                <div class="games-grid" id="search-results-grid">
-                    <!-- Populated by JS -->
+                <!-- Browse All Games -->
+                <div class="games-list" id="games-list-container">
+                    <div class="games-category">
+                        <div class="category-title" style="margin-bottom: 8px;">Browse All Games</div>
+                        <div id="browse-categories">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Suggest a Game -->
+                    <div style="padding: 16px;">
+                        <button onclick="showSuggestGame()" style="width: 100%; padding: 14px; background: var(--bg-secondary); border: 2px dashed var(--border); border-radius: 12px; color: var(--text-muted); font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span>💡</span>
+                            <span>Suggest a Game</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <!-- Stats Screen (v1.2.47) -->
+        <!-- Stats Screen (v1.3.18) -->
         <div class="screen" id="screen-stats">
-            <div class="section-header" style="margin-bottom: 16px;">
-                <span class="section-title">📊 Your Stats</span>
-                <button class="see-all" onclick="handleRecordGame()" style="background: var(--accent-purple); color: white; border-radius: 8px; padding: 6px 12px;">
-                    📷 Import Stats
+            <!-- Stats Subtabs -->
+            <div class="subtab-container" id="stats-subtabs">
+                <button class="subtab-btn active" data-stats-tab="overview" onclick="switchStatsTab('overview')">
+                    📊 Overview
+                </button>
+                <button class="subtab-btn" data-stats-tab="bygame" onclick="switchStatsTab('bygame')">
+                    🎮 By Game
                 </button>
             </div>
             
-            <!-- Stats Summary Cards -->
-            <div id="stats-summary" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
-                <!-- Populated by JS -->
+            <!-- Overview Subtab -->
+            <div class="subtab-content active" id="stats-tab-overview">
+                <div class="section-header" style="margin-bottom: 16px;">
+                    <span class="section-title">Your Stats</span>
+                </div>
+                
+                <!-- Stats Summary Cards -->
+                <div id="stats-summary" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+                    <!-- Populated by JS -->
+                </div>
             </div>
             
-            <!-- Per-Game Stats List -->
-            <div class="section-header" style="margin-bottom: 12px;">
-                <span class="section-title">Game Details</span>
-            </div>
-            <div id="stats-game-list" style="display: flex; flex-direction: column; gap: 12px;">
-                <!-- Populated by JS -->
+            <!-- By Game Subtab -->
+            <div class="subtab-content" id="stats-tab-bygame">
+                <div class="section-header" style="margin-bottom: 16px;">
+                    <span class="section-title">Game Details</span>
+                    <button class="see-all" onclick="handleRecordGame()" style="background: var(--accent-purple); color: white; border-radius: 8px; padding: 6px 12px;">
+                        📷 Import Stats
+                    </button>
+                </div>
+                
+                <!-- Per-Game Stats List -->
+                <div id="stats-game-list" style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Populated by JS -->
+                </div>
             </div>
         </div>
         
@@ -9130,160 +9419,182 @@
             </div>
         </div>
         
-        <!-- Share Screen -->
+        <!-- Share Screen (v1.3.18) -->
         <div class="screen" id="screen-share">
+            <!-- Share Subtabs -->
+            <div class="subtab-container" id="share-subtabs">
+                <button class="subtab-btn active" data-share-tab="today" onclick="switchShareTab('today')">
+                    📅 Today
+                </button>
+                <button class="subtab-btn" data-share-tab="compose" onclick="switchShareTab('compose')">
+                    ✏️ Compose
+                </button>
+                <button class="subtab-btn" data-share-tab="history" onclick="switchShareTab('history')">
+                    📜 History
+                </button>
+            </div>
             
-            <!-- Friend Recommendations Section for Share -->
-            <div class="recommendations-section" id="recommendations-section-share" style="margin: 0 16px 16px 16px;">
-                <div class="recommendations-header" onclick="toggleRecommendations('share')">
-                    <div>
-                        <div class="recommendations-title">
-                            <span>👥</span>
-                            <span>Share With Friends</span>
-                            <span class="recommendations-chevron">▼</span>
+            <!-- Today Subtab -->
+            <div class="subtab-content active" id="share-tab-today">
+                <!-- Today's Results -->
+                <div class="share-results-section">
+                    <div class="share-results-header">
+                        <h4>📊 Today's Results</h4>
+                        <span class="share-results-date" id="share-screen-date"></span>
+                    </div>
+                    <div class="share-result-tags" id="share-screen-results">
+                        <!-- Filled dynamically -->
+                    </div>
+                    <button class="quick-recap-btn" onclick="quickShareRecap()" style="
+                        width: 100%;
+                        margin-top: 12px;
+                        padding: 12px 16px;
+                        background: linear-gradient(135deg, #667eea, #764ba2);
+                        border: none;
+                        border-radius: 10px;
+                        color: white;
+                        font-size: 0.95rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    ">
+                        <span>📤</span>
+                        <span>Quick Share All Results</span>
+                    </button>
+                    <button class="weekly-recap-btn" onclick="openWeeklyRecap()">
+                        <span>📊</span>
+                        <span>Share Weekly Recap</span>
+                    </button>
+                </div>
+                
+                <!-- Friend Recommendations Section for Share -->
+                <div class="recommendations-section" id="recommendations-section-share" style="margin: 16px 16px 0 16px;">
+                    <div class="recommendations-header" onclick="toggleRecommendations('share')">
+                        <div>
+                            <div class="recommendations-title">
+                                <span>👥</span>
+                                <span>Share With Friends</span>
+                                <span class="recommendations-chevron">▼</span>
+                            </div>
+                            <div class="recommendations-subtitle">Invite friends to compare scores</div>
                         </div>
-                        <div class="recommendations-subtitle">Invite friends to compare scores</div>
+                    </div>
+                    <div class="recommendations-list" id="recommendations-list-share">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
-                <div class="recommendations-list" id="recommendations-list-share">
+            </div>
+            
+            <!-- Compose Subtab -->
+            <div class="subtab-content" id="share-tab-compose">
+                <!-- Message Composer -->
+                <div class="share-composer">
+                    <div class="share-composer-header">
+                        <label>✍️ Your Message</label>
+                        <select class="share-template-select" id="share-screen-template" onchange="handleTemplateChange()">
+                            <option value="default">Default</option>
+                            <option value="brag">Bragging 🏆</option>
+                            <option value="humble">Humble 😅</option>
+                            <option value="streak">Streak Focus 🔥</option>
+                            <option value="challenge">Challenge ⚔️</option>
+                            <option value="minimal">Minimal</option>
+                            <option value="history">📜 From History...</option>
+                        </select>
+                    </div>
+                    <textarea class="share-textarea" id="share-screen-message" rows="8" placeholder="Write your message here..."></textarea>
+                    <div class="share-emoji-bar">
+                        <button class="share-emoji-btn" onclick="insertShareEmoji('🎮')">🎮</button>
+                        <button class="share-emoji-btn" onclick="insertShareEmoji('🧠')">🧠</button>
+                        <button class="share-emoji-btn" onclick="insertShareEmoji('🔥')">🔥</button>
+                        <button class="share-emoji-btn" onclick="insertShareEmoji('💪')">💪</button>
+                        <button class="share-emoji-btn" onclick="insertShareEmoji('🎯')">🎯</button>
+                        <button class="share-emoji-btn" onclick="insertShareEmoji('✨')">✨</button>
+                    </div>
+                    <div class="share-options-row">
+                        <label class="share-option-checkbox">
+                            <input type="checkbox" id="share-include-link" checked onchange="applyShareTemplate()">
+                            <span>Include invite link</span>
+                        </label>
+                        <label class="share-option-checkbox">
+                            <input type="checkbox" id="share-save-history" checked>
+                            <span>Save to history</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Share Platforms -->
+                <div class="share-platforms">
+                    <h4>🚀 Share To</h4>
+                    
+                    <!-- Primary Platforms -->
+                    <div class="share-platforms-grid">
+                        <button class="share-platform-btn" style="background: #000;" onclick="shareToTwitter()">
+                            <span class="icon">𝕏</span>
+                            <span class="label">Twitter/X</span>
+                        </button>
+                        <button class="share-platform-btn" style="background: #1877F2;" onclick="shareToFacebook()">
+                            <span class="icon">📘</span>
+                            <span class="label">Facebook</span>
+                        </button>
+                        <button class="share-platform-btn" style="background: #0A66C2;" onclick="shareToLinkedIn()">
+                            <span class="icon">💼</span>
+                            <span class="label">LinkedIn</span>
+                        </button>
+                        <button class="share-platform-btn" style="background: #000;" onclick="shareToThreads()">
+                            <span class="icon">🧵</span>
+                            <span class="label">Threads</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Secondary Platforms -->
+                    <div class="share-platforms-grid">
+                        <button class="share-platform-btn" style="background: #FF4500;" onclick="shareToReddit()">
+                            <span class="icon">🔴</span>
+                            <span class="label">Reddit</span>
+                        </button>
+                        <button class="share-platform-btn" style="background: #5865F2;" onclick="shareToDiscord()">
+                            <span class="icon">💬</span>
+                            <span class="label">Discord</span>
+                        </button>
+                        <button class="share-platform-btn" style="background: #0085FF;" onclick="shareToBlueSky()">
+                            <span class="icon">🦋</span>
+                            <span class="label">BlueSky</span>
+                        </button>
+                        <button class="share-platform-btn" style="background: #6364FF;" onclick="shareToMastodon()">
+                            <span class="icon">🐘</span>
+                            <span class="label">Mastodon</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Utility -->
+                    <div class="share-utility-grid">
+                        <button class="share-platform-btn" style="background: var(--bg-tertiary); border: 1px solid var(--border);" onclick="copyShareMessage()">
+                            <span class="icon">📋</span>
+                            <span class="label" style="color: var(--text-primary);">Copy</span>
+                        </button>
+                        <button class="share-platform-btn" style="background: var(--accent-green);" onclick="shareNative()">
+                            <span class="icon">📤</span>
+                            <span class="label">More...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- History Subtab -->
+            <div class="subtab-content" id="share-tab-history">
+                <div class="section-header" style="margin-bottom: 16px;">
+                    <span class="section-title">Share History</span>
+                </div>
+                <div class="share-history-list" id="share-history-list" style="display: block;">
                     <!-- Populated by JS -->
                 </div>
-            </div>
-            
-            <!-- Today's Results -->
-            <div class="share-results-section">
-                <div class="share-results-header">
-                    <h4>📊 Today's Results</h4>
-                    <span class="share-results-date" id="share-screen-date"></span>
-                </div>
-                <div class="share-result-tags" id="share-screen-results">
-                    <!-- Filled dynamically -->
-                </div>
-                <button class="quick-recap-btn" onclick="quickShareRecap()" style="
-                    width: 100%;
-                    margin-top: 12px;
-                    padding: 12px 16px;
-                    background: linear-gradient(135deg, #667eea, #764ba2);
-                    border: none;
-                    border-radius: 10px;
-                    color: white;
-                    font-size: 0.95rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 8px;
-                ">
-                    <span>📤</span>
-                    <span>Quick Share All Results</span>
-                </button>
-                <button class="weekly-recap-btn" onclick="openWeeklyRecap()">
-                    <span>📊</span>
-                    <span>Share Weekly Recap</span>
-                </button>
-            </div>
-            
-            <!-- Message Composer -->
-            <div class="share-composer">
-                <div class="share-composer-header">
-                    <label>✍️ Your Message</label>
-                    <select class="share-template-select" id="share-screen-template" onchange="handleTemplateChange()">
-                        <option value="default">Default</option>
-                        <option value="brag">Bragging 🏆</option>
-                        <option value="humble">Humble 😅</option>
-                        <option value="streak">Streak Focus 🔥</option>
-                        <option value="challenge">Challenge ⚔️</option>
-                        <option value="minimal">Minimal</option>
-                        <option value="history">📜 From History...</option>
-                    </select>
-                </div>
-                <textarea class="share-textarea" id="share-screen-message" rows="8" placeholder="Write your message here..."></textarea>
-                <div class="share-emoji-bar">
-                    <button class="share-emoji-btn" onclick="insertShareEmoji('🎮')">🎮</button>
-                    <button class="share-emoji-btn" onclick="insertShareEmoji('🧠')">🧠</button>
-                    <button class="share-emoji-btn" onclick="insertShareEmoji('🔥')">🔥</button>
-                    <button class="share-emoji-btn" onclick="insertShareEmoji('💪')">💪</button>
-                    <button class="share-emoji-btn" onclick="insertShareEmoji('🎯')">🎯</button>
-                    <button class="share-emoji-btn" onclick="insertShareEmoji('✨')">✨</button>
-                </div>
-                <div class="share-options-row">
-                    <label class="share-option-checkbox">
-                        <input type="checkbox" id="share-include-link" checked onchange="applyShareTemplate()">
-                        <span>Include invite link</span>
-                    </label>
-                    <label class="share-option-checkbox">
-                        <input type="checkbox" id="share-save-history" checked>
-                        <span>Save to history</span>
-                    </label>
-                </div>
-            </div>
-            
-            <!-- Share History (collapsible) -->
-            <div class="share-history-section" id="share-history-section" style="display: none;">
-                <div class="share-history-header" onclick="toggleShareHistory()">
-                    <span>📜 Recent Shares</span>
-                    <span class="share-history-chevron">▼</span>
-                </div>
-                <div class="share-history-list" id="share-history-list">
-                    <!-- Populated by JS -->
-                </div>
-            </div>
-            
-            <!-- Share Platforms -->
-            <div class="share-platforms">
-                <h4>🚀 Share To</h4>
-                
-                <!-- Primary Platforms -->
-                <div class="share-platforms-grid">
-                    <button class="share-platform-btn" style="background: #000;" onclick="shareToTwitter()">
-                        <span class="icon">𝕏</span>
-                        <span class="label">Twitter/X</span>
-                    </button>
-                    <button class="share-platform-btn" style="background: #1877F2;" onclick="shareToFacebook()">
-                        <span class="icon">📘</span>
-                        <span class="label">Facebook</span>
-                    </button>
-                    <button class="share-platform-btn" style="background: #0A66C2;" onclick="shareToLinkedIn()">
-                        <span class="icon">💼</span>
-                        <span class="label">LinkedIn</span>
-                    </button>
-                    <button class="share-platform-btn" style="background: #000;" onclick="shareToThreads()">
-                        <span class="icon">🧵</span>
-                        <span class="label">Threads</span>
-                    </button>
-                </div>
-                
-                <!-- Secondary Platforms -->
-                <div class="share-platforms-grid">
-                    <button class="share-platform-btn" style="background: #FF4500;" onclick="shareToReddit()">
-                        <span class="icon">🔴</span>
-                        <span class="label">Reddit</span>
-                    </button>
-                    <button class="share-platform-btn" style="background: #5865F2;" onclick="shareToDiscord()">
-                        <span class="icon">💬</span>
-                        <span class="label">Discord</span>
-                    </button>
-                    <button class="share-platform-btn" style="background: #0085FF;" onclick="shareToBlueSky()">
-                        <span class="icon">🦋</span>
-                        <span class="label">BlueSky</span>
-                    </button>
-                    <button class="share-platform-btn" style="background: #6364FF;" onclick="shareToMastodon()">
-                        <span class="icon">🐘</span>
-                        <span class="label">Mastodon</span>
-                    </button>
-                </div>
-                
-                <!-- Utility -->
-                <div class="share-utility-grid">
-                    <button class="share-platform-btn" style="background: var(--bg-tertiary); border: 1px solid var(--border);" onclick="copyShareMessage()">
-                        <span class="icon">📋</span>
-                        <span class="label" style="color: var(--text-primary);">Copy</span>
-                    </button>
-                    <button class="share-platform-btn" style="background: var(--accent-green);" onclick="shareNative()">
-                        <span class="icon">📤</span>
-                        <span class="label">More...</span>
-                    </button>
+                <div id="share-history-empty" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                    <div style="font-size: 2rem; margin-bottom: 12px;">📜</div>
+                    <div>No shares yet</div>
+                    <div style="font-size: 0.85rem; margin-top: 8px;">Your shared messages will appear here</div>
                 </div>
             </div>
         </div>
@@ -10376,17 +10687,58 @@ Wordle 1,234 3/6
                         </div>
                     </div>
                     
-                    <!-- Response Area -->
+                    <!-- Conversation Area -->
                     <div class="ai-help-response-area" id="ai-help-response-area">
-                        <div class="ai-help-response" id="ai-help-response">
-                            <div class="ai-help-response-header">
-                                <span>🤖</span>
-                                <span>AI Assistant</span>
-                            </div>
-                            <div class="ai-help-response-text" id="ai-help-response-text"></div>
+                        <!-- Conversation Thread -->
+                        <div class="ai-help-conversation" id="ai-help-conversation">
+                            <!-- Messages will be added here dynamically -->
                         </div>
-                        <div class="ai-help-ask-another" style="display: flex; gap: 12px; justify-content: center;">
-                            <button class="ai-help-another-btn" onclick="resetAIHelp()">Ask another question</button>
+                        
+                        <!-- Follow-up Input (appears after first response) -->
+                        <div class="ai-help-followup-area" id="ai-help-followup-area" style="display: none;">
+                            <div class="ai-help-followup-row">
+                                <textarea 
+                                    id="ai-help-followup-input" 
+                                    class="ai-help-followup-input"
+                                    placeholder="Ask a follow-up..."
+                                    rows="1"
+                                    onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submitAIHelpFollowup(); }"
+                                    oninput="this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 80) + 'px';"
+                                ></textarea>
+                                <button class="ai-help-followup-btn" id="ai-help-followup-btn" onclick="submitAIHelpFollowup()">→</button>
+                            </div>
+                            <div class="ai-help-turn-info" id="ai-help-turn-info">
+                                <span class="free-badge">FREE</span> follow-up · <span id="ai-help-turns-remaining">3</span> remaining
+                            </div>
+                        </div>
+                        
+                        <!-- Feedback Section (shown after each AI response) -->
+                        <div class="ai-help-feedback" id="ai-help-feedback" style="display: none;">
+                            <div class="ai-help-feedback-prompt">Was this helpful?</div>
+                            <div class="ai-help-feedback-buttons">
+                                <button class="ai-help-feedback-btn helpful" onclick="submitAIHelpFeedback('helpful')">
+                                    <span>👍</span>
+                                    <span>Yes</span>
+                                </button>
+                                <button class="ai-help-feedback-btn not-helpful" onclick="submitAIHelpFeedback('not_helpful')">
+                                    <span>👎</span>
+                                    <span>No</span>
+                                </button>
+                            </div>
+                            <div class="ai-help-feedback-comment" id="ai-help-feedback-comment">
+                                <textarea id="ai-help-feedback-text" placeholder="What went wrong? (optional)" rows="2" maxlength="500"></textarea>
+                                <div class="ai-help-feedback-submit">
+                                    <button class="ai-help-feedback-submit-btn" onclick="submitAIHelpFeedbackComment()">Send Feedback</button>
+                                </div>
+                            </div>
+                            <div class="ai-help-feedback-thanks" id="ai-help-feedback-thanks" style="display:none;">
+                                ✓ Thanks for your feedback!
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="ai-help-ask-another" style="display: flex; gap: 12px; justify-content: center; margin-top: 12px;">
+                            <button class="ai-help-another-btn" onclick="resetAIHelp()">💎 New question (5 tokens)</button>
                             <button class="ai-help-another-btn" onclick="closeAIHelpSheet()" style="background: var(--surface); color: var(--text-secondary);">Done</button>
                         </div>
                     </div>
@@ -11659,6 +12011,71 @@ Wordle 1,234 3/6
             } else if (tabName === 'battles') {
                 renderBattles();
                 loadPublicBattles();
+            }
+        }
+        
+        // Games Tab Switching (v1.3.18)
+        function switchGamesTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('#games-subtabs .subtab-btn').forEach(tab => {
+                const isActive = tab.dataset.gamesTab === tabName;
+                tab.classList.toggle('active', isActive);
+            });
+            
+            // Update tab content
+            document.querySelectorAll('#screen-games .subtab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `games-tab-${tabName}`);
+            });
+            
+            // Load data for tab
+            if (tabName === 'shelf') {
+                renderShelfGames();
+            } else if (tabName === 'discover') {
+                renderBrowseCategories();
+            }
+        }
+        
+        // Stats Tab Switching (v1.3.18)
+        function switchStatsTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('#stats-subtabs .subtab-btn').forEach(tab => {
+                const isActive = tab.dataset.statsTab === tabName;
+                tab.classList.toggle('active', isActive);
+            });
+            
+            // Update tab content
+            document.querySelectorAll('#screen-stats .subtab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `stats-tab-${tabName}`);
+            });
+            
+            // Load data for tab
+            if (tabName === 'overview') {
+                renderStatsSummary();
+            } else if (tabName === 'bygame') {
+                renderStatsGameList();
+            }
+        }
+        
+        // Share Tab Switching (v1.3.18)
+        function switchShareTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('#share-subtabs .subtab-btn').forEach(tab => {
+                const isActive = tab.dataset.shareTab === tabName;
+                tab.classList.toggle('active', isActive);
+            });
+            
+            // Update tab content
+            document.querySelectorAll('#screen-share .subtab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `share-tab-${tabName}`);
+            });
+            
+            // Load data for tab
+            if (tabName === 'today') {
+                updateShareScreen();
+            } else if (tabName === 'compose') {
+                applyShareTemplate();
+            } else if (tabName === 'history') {
+                renderShareHistory();
             }
         }
         
@@ -17740,14 +18157,19 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.15';
+        const APP_VERSION = '1.3.18';
         
         const RELEASE_NOTES = {
+            '1.3.18': [
+                { icon: '📑', title: 'Unified Subtab Navigation', desc: 'Games, Stats, and Share tabs now have consistent subtabs like Battles' },
+                { icon: '📚', title: 'Games: Shelf & Discover', desc: 'Your shelf in one view, browse all games in another' },
+                { icon: '📊', title: 'Stats: Overview & By Game', desc: 'Summary cards separate from detailed per-game stats' },
+                { icon: '📅', title: 'Share: Today, Compose, History', desc: 'Quick share, custom messages, and past shares - all organized' }
+            ],
             '1.3.15': [
                 { icon: '📋', title: 'Menu Reorganized', desc: 'Account, My Games, Rewards, and Help now at top for easy access' },
                 { icon: '›', title: 'Visual Navigation Cues', desc: 'Chevrons (›) indicate items that open new screens' },
-                { icon: '🎯', title: 'Better Daily Goal Picker', desc: 'Visual grid selector instead of text prompt' },
-                { icon: '✨', title: 'Cleaner UX', desc: 'Menu closes smoothly before any action' }
+                { icon: '🎯', title: 'Better Daily Goal Picker', desc: 'Visual grid selector instead of text prompt' }
             ],
             '1.3.13': [
                 { icon: '🚀', title: 'Launch Preferences Fixed', desc: 'Manage App vs Browser now shows all supported games' },
@@ -18309,10 +18731,26 @@ Wordle 1,234 3/6
             // Clear input
             document.getElementById('ai-help-input').value = '';
             
+            // Clear conversation thread
+            document.getElementById('ai-help-conversation').innerHTML = '';
+            document.getElementById('ai-help-followup-area').style.display = 'none';
+            const followupInput = document.getElementById('ai-help-followup-input');
+            if (followupInput) {
+                followupInput.value = '';
+                followupInput.style.height = 'auto';
+            }
+            
             // Reset button state
             const btn = document.getElementById('ai-help-submit-btn');
             btn.disabled = false;
             btn.innerHTML = '<span>Ask</span><span>→</span>';
+            
+            // Reset conversation state
+            aiHelpConversation = [];
+            aiHelpTurnCount = 0;
+            lastAIHelpQuestion = '';
+            lastAIHelpResponse = '';
+            resetAIHelpFeedback();
             
             // Update token display
             updateAIHelpTokenDisplay();
@@ -18346,7 +18784,7 @@ Wordle 1,234 3/6
                 return;
             }
             
-            // Check tokens again
+            // Check tokens again (only first question costs tokens)
             const tokens = appData.wallet?.tokens || 0;
             if (tokens < 5) {
                 showToast('Not enough tokens (need 5)', 'error');
@@ -18358,38 +18796,82 @@ Wordle 1,234 3/6
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner"></span><span>Thinking...</span>';
             
-            // Hide intro, show response area with loading
+            // Reset conversation state
+            aiHelpConversation = [];
+            aiHelpTurnCount = 0;
+            
+            // Hide intro, show conversation area
             document.getElementById('ai-help-intro').style.display = 'none';
             document.getElementById('ai-help-response-area').classList.add('visible');
-            document.getElementById('ai-help-response-text').innerHTML = '<div class="ai-help-loading"><span class="spinner"></span> Thinking...</div>';
+            
+            // Clear conversation thread and add user message
+            const conversationEl = document.getElementById('ai-help-conversation');
+            conversationEl.innerHTML = '';
+            addAIHelpMessage('user', question);
+            addAIHelpMessage('assistant', null, true); // Loading state
+            
+            // Hide input area, hide feedback, hide followup during first call
+            document.getElementById('ai-help-input-area').style.display = 'none';
+            document.getElementById('ai-help-feedback').style.display = 'none';
+            document.getElementById('ai-help-followup-area').style.display = 'none';
+            
+            // Store question for feedback tracking
+            lastAIHelpQuestion = question;
             
             try {
-                // Build hybrid context
+                // Build enhanced context
+                const appContext = getCurrentAppContext();
+                const relevantFaqs = getRelevantFaqContent(question);
+                
                 const hybridContext = {
                     searchQuery: lastHelpSearchQuery || null,
-                    viewedFaqs: viewedFaqIds.length > 0 ? viewedFaqIds : null
+                    viewedFaqs: viewedFaqIds.length > 0 ? viewedFaqIds : null,
+                    currentTab: appContext.currentTab,
+                    currentSubtab: appContext.currentSubtab,
+                    shelfGames: appContext.shelfGames.length > 0 ? appContext.shelfGames : null,
+                    tokenBalance: appContext.tokens,
+                    relevantFaqs: relevantFaqs
                 };
                 
-                // Call dedicated AI Help function
+                // Build messages array (just first question for now)
+                const messages = [{ role: 'user', content: question }];
+                
+                // Call AI Help function
                 const getAIHelpFn = firebase.functions().httpsCallable('getAIHelp');
                 const result = await getAIHelpFn({
                     question: question,
-                    hybridContext: hybridContext
+                    messages: messages,
+                    hybridContext: hybridContext,
+                    isFollowup: false
                 });
                 
                 const answer = result.data.answer || 'Sorry, I couldn\'t generate a response.';
                 
-                // Deduct tokens (client-side)
+                // Store response for feedback tracking
+                lastAIHelpResponse = answer;
+                
+                // Deduct tokens (only on first question)
                 const HELP_COST = 5;
                 appData.wallet.tokens = (appData.wallet?.tokens || 0) - HELP_COST;
                 saveData();
                 renderWallet();
                 
-                // Show response
-                document.getElementById('ai-help-response-text').innerHTML = formatAIHelpResponse(answer);
+                // Update conversation state
+                aiHelpConversation = [
+                    { role: 'user', content: question },
+                    { role: 'assistant', content: answer }
+                ];
+                aiHelpTurnCount = 1;
                 
-                // Hide input area after successful response
-                document.getElementById('ai-help-input-area').style.display = 'none';
+                // Update conversation thread - remove loading, add real response
+                removeAIHelpLoadingMessage();
+                addAIHelpMessage('assistant', answer);
+                
+                // Show feedback and follow-up input
+                resetAIHelpFeedback();
+                document.getElementById('ai-help-feedback').style.display = 'block';
+                document.getElementById('ai-help-followup-area').style.display = 'block';
+                updateFollowupTurnInfo();
                 
                 // Play success sound
                 playSound('success');
@@ -18411,15 +18893,163 @@ Wordle 1,234 3/6
                     errorMsg = error.message;
                 }
                 
-                document.getElementById('ai-help-response-text').innerHTML = `<div class="ai-help-error">${escapeHtml(errorMsg)}</div>`;
+                // Remove loading message and show error
+                removeAIHelpLoadingMessage();
+                const conversationEl = document.getElementById('ai-help-conversation');
+                conversationEl.innerHTML += `<div class="ai-help-message assistant"><div class="ai-help-error">${escapeHtml(errorMsg)}</div></div>`;
                 
                 // Show input area again on error
                 document.getElementById('ai-help-input-area').style.display = 'block';
             }
             
-            // Reset button (but keep disabled if showing response)
+            // Reset button
             btn.innerHTML = '<span>Ask</span><span>→</span>';
-            btn.disabled = document.getElementById('ai-help-input-area').style.display === 'none';
+            btn.disabled = false;
+        }
+        
+        async function submitAIHelpFollowup() {
+            const input = document.getElementById('ai-help-followup-input');
+            const question = input.value.trim();
+            
+            if (!question) return;
+            
+            // Check if max follow-ups reached
+            if (aiHelpTurnCount >= AI_HELP_MAX_FOLLOWUPS + 1) {
+                showToast('Max follow-ups reached. Start a new question.', 'info');
+                return;
+            }
+            
+            // Show loading state
+            const btn = document.getElementById('ai-help-followup-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;"></span>';
+            input.disabled = true;
+            
+            // Clear input
+            input.value = '';
+            input.style.height = 'auto';
+            
+            // Add user message to thread
+            addAIHelpMessage('user', question);
+            addAIHelpMessage('assistant', null, true); // Loading
+            
+            // Hide feedback during loading
+            document.getElementById('ai-help-feedback').style.display = 'none';
+            
+            // Update conversation state
+            aiHelpConversation.push({ role: 'user', content: question });
+            
+            // Store for feedback
+            lastAIHelpQuestion = question;
+            
+            try {
+                // Build messages array with full history
+                const messages = [...aiHelpConversation];
+                
+                // Build context (lighter for follow-ups)
+                const appContext = getCurrentAppContext();
+                const hybridContext = {
+                    currentTab: appContext.currentTab,
+                    currentSubtab: appContext.currentSubtab,
+                    tokenBalance: appContext.tokens
+                };
+                
+                // Call AI Help function
+                const getAIHelpFn = firebase.functions().httpsCallable('getAIHelp');
+                const result = await getAIHelpFn({
+                    question: question,
+                    messages: messages,
+                    hybridContext: hybridContext,
+                    isFollowup: true
+                });
+                
+                const answer = result.data.answer || 'Sorry, I couldn\'t generate a response.';
+                
+                // Store response
+                lastAIHelpResponse = answer;
+                
+                // Update conversation state (no token cost for follow-ups)
+                aiHelpConversation.push({ role: 'assistant', content: answer });
+                aiHelpTurnCount++;
+                
+                // Update thread
+                removeAIHelpLoadingMessage();
+                addAIHelpMessage('assistant', answer);
+                
+                // Show feedback
+                resetAIHelpFeedback();
+                document.getElementById('ai-help-feedback').style.display = 'block';
+                
+                // Update turn info or hide follow-up if maxed out
+                if (aiHelpTurnCount > AI_HELP_MAX_FOLLOWUPS) {
+                    document.getElementById('ai-help-followup-area').style.display = 'none';
+                    showToast('Max follow-ups reached', 'info');
+                } else {
+                    updateFollowupTurnInfo();
+                }
+                
+                // Play sound
+                playSound('success');
+                
+                // Scroll to bottom
+                const conversationEl = document.getElementById('ai-help-conversation');
+                conversationEl.scrollTop = conversationEl.scrollHeight;
+                
+            } catch (error) {
+                console.error('AI Help follow-up error:', error);
+                
+                // Remove user message from state on error
+                aiHelpConversation.pop();
+                
+                let errorMsg = 'Something went wrong. Please try again.';
+                if (error.message) errorMsg = error.message;
+                
+                removeAIHelpLoadingMessage();
+                showToast(errorMsg, 'error');
+            }
+            
+            // Reset button
+            btn.innerHTML = '→';
+            btn.disabled = false;
+            input.disabled = false;
+            input.focus();
+        }
+        
+        function addAIHelpMessage(role, content, isLoading = false) {
+            const conversationEl = document.getElementById('ai-help-conversation');
+            const messageEl = document.createElement('div');
+            messageEl.className = `ai-help-message ${role}`;
+            
+            if (isLoading) {
+                messageEl.classList.add('loading');
+                messageEl.id = 'ai-help-loading-message';
+                messageEl.innerHTML = '<span class="spinner"></span> Thinking...';
+            } else if (role === 'user') {
+                messageEl.textContent = content;
+            } else {
+                messageEl.innerHTML = `
+                    <div class="message-header"><span>🤖</span><span>AI Assistant</span></div>
+                    <div class="message-text">${formatAIHelpResponse(content)}</div>
+                `;
+            }
+            
+            conversationEl.appendChild(messageEl);
+            conversationEl.scrollTop = conversationEl.scrollHeight;
+        }
+        
+        function removeAIHelpLoadingMessage() {
+            const loadingEl = document.getElementById('ai-help-loading-message');
+            if (loadingEl) loadingEl.remove();
+        }
+        
+        function updateFollowupTurnInfo() {
+            const remaining = AI_HELP_MAX_FOLLOWUPS - aiHelpTurnCount + 1;
+            document.getElementById('ai-help-turns-remaining').textContent = remaining;
+            
+            // Hide follow-up area if no turns remaining
+            if (remaining <= 0) {
+                document.getElementById('ai-help-followup-area').style.display = 'none';
+            }
         }
         
         function formatAIHelpResponse(text) {
@@ -18436,6 +19066,140 @@ Wordle 1,234 3/6
             formatted = formatted.replace(/\n/g, '<br>');
             
             return formatted;
+        }
+
+        // AI Help feedback and conversation tracking
+        let lastAIHelpQuestion = '';
+        let lastAIHelpResponse = '';
+        let aiHelpConversation = []; // Array of {role: 'user'|'assistant', content: string}
+        let aiHelpTurnCount = 0;
+        const AI_HELP_MAX_FOLLOWUPS = 3;
+        let lastAIHelpFeedbackId = null;
+        
+        function submitAIHelpFeedback(rating) {
+            const feedbackSection = document.getElementById('ai-help-feedback');
+            const buttons = feedbackSection.querySelectorAll('.ai-help-feedback-btn');
+            const commentSection = document.getElementById('ai-help-feedback-comment');
+            const thanksSection = document.getElementById('ai-help-feedback-thanks');
+            
+            // Mark button as selected
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            const selectedBtn = feedbackSection.querySelector(`.ai-help-feedback-btn.${rating === 'helpful' ? 'helpful' : 'not-helpful'}`);
+            if (selectedBtn) selectedBtn.classList.add('selected');
+            
+            if (rating === 'not_helpful') {
+                // Show comment field for negative feedback
+                commentSection.classList.add('visible');
+            } else {
+                // Positive feedback - record immediately
+                commentSection.classList.remove('visible');
+                recordAIHelpFeedback(rating, null);
+                
+                // Show thanks
+                feedbackSection.querySelector('.ai-help-feedback-buttons').style.display = 'none';
+                thanksSection.style.display = 'block';
+            }
+        }
+        
+        function submitAIHelpFeedbackComment() {
+            const comment = document.getElementById('ai-help-feedback-text').value.trim();
+            recordAIHelpFeedback('not_helpful', comment);
+            
+            // Show thanks
+            const feedbackSection = document.getElementById('ai-help-feedback');
+            feedbackSection.querySelector('.ai-help-feedback-buttons').style.display = 'none';
+            feedbackSection.querySelector('.ai-help-feedback-comment').style.display = 'none';
+            document.getElementById('ai-help-feedback-thanks').style.display = 'block';
+        }
+        
+        async function recordAIHelpFeedback(rating, comment) {
+            if (!firebase.auth().currentUser) return;
+            
+            try {
+                const feedbackData = {
+                    odometerId: appData.odometerId || firebase.auth().currentUser.uid,
+                    question: lastAIHelpQuestion.substring(0, 200),
+                    response: lastAIHelpResponse.substring(0, 500),
+                    rating: rating,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                };
+                
+                if (comment) {
+                    feedbackData.comment = comment.substring(0, 500);
+                }
+                
+                await firebase.database().ref('ai-help-feedback').push(feedbackData);
+                console.log('AI Help feedback recorded:', rating);
+                
+                playSound('success');
+            } catch (e) {
+                console.warn('Failed to record AI Help feedback:', e);
+            }
+        }
+        
+        function resetAIHelpFeedback() {
+            // Reset feedback UI when asking another question
+            const feedbackSection = document.getElementById('ai-help-feedback');
+            feedbackSection.querySelector('.ai-help-feedback-buttons').style.display = 'flex';
+            feedbackSection.querySelectorAll('.ai-help-feedback-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('ai-help-feedback-comment').classList.remove('visible');
+            document.getElementById('ai-help-feedback-text').value = '';
+            document.getElementById('ai-help-feedback-thanks').style.display = 'none';
+        }
+        
+        function getRelevantFaqContent(query) {
+            // RAG-lite: Find top 3 matching FAQs to include as context
+            const results = searchFaq(query);
+            if (results.length === 0) return null;
+            
+            // Take top 3 results
+            const topResults = results.slice(0, 3);
+            return topResults.map(faq => ({
+                question: faq.q,
+                answer: faq.a.replace(/\*\*/g, '').substring(0, 300) // Strip markdown, truncate
+            }));
+        }
+        
+        function getCurrentAppContext() {
+            // Gather context about user's current state
+            const activeTab = document.querySelector('.nav-tab.active');
+            let currentTab = activeTab?.dataset?.tab || 'unknown';
+            
+            // Get current subtab if applicable
+            let currentSubtab = null;
+            if (currentTab === 'games') {
+                const activeSubtab = document.querySelector('#games-content .subtab-btn.active');
+                currentSubtab = activeSubtab?.textContent?.trim() || null;
+            } else if (currentTab === 'stats') {
+                const activeSubtab = document.querySelector('#stats-content .subtab-btn.active');
+                currentSubtab = activeSubtab?.textContent?.trim() || null;
+            } else if (currentTab === 'hub') {
+                const activeSubtab = document.querySelector('.hub-subtab.active');
+                currentSubtab = activeSubtab?.textContent?.trim() || null;
+            } else if (currentTab === 'share') {
+                const activeSubtab = document.querySelector('#share-content .subtab-btn.active');
+                currentSubtab = activeSubtab?.textContent?.trim() || null;
+            }
+            
+            // Get user's shelf games (just names)
+            const shelfGames = (appData.games || []).slice(0, 10).map(g => {
+                const info = getGameInfo(g);
+                return info?.name || g;
+            });
+            
+            // Check if signed in
+            const isSignedIn = !!firebase.auth().currentUser;
+            
+            // Get token balance
+            const tokens = appData.wallet?.tokens || 0;
+            
+            return {
+                currentTab,
+                currentSubtab,
+                shelfGames,
+                isSignedIn,
+                tokens
+            };
         }
 
         // Badge system
@@ -29055,17 +29819,18 @@ Hint levels:
         
         function renderShareHistory() {
             const container = document.getElementById('share-history-list');
-            const section = document.getElementById('share-history-section');
-            if (!container || !section) return;
+            const emptyState = document.getElementById('share-history-empty');
+            if (!container) return;
             
             const history = getShareHistory();
             
             if (history.length === 0) {
-                section.style.display = 'none';
+                container.innerHTML = '';
+                if (emptyState) emptyState.style.display = 'block';
                 return;
             }
             
-            section.style.display = 'block';
+            if (emptyState) emptyState.style.display = 'none';
             
             const platformIcons = {
                 'twitter': '𝕏',
@@ -29080,7 +29845,7 @@ Hint levels:
                 'native': '📤'
             };
             
-            container.innerHTML = history.slice(0, 10).map((entry, index) => {
+            container.innerHTML = history.slice(0, 20).map((entry, index) => {
                 const date = new Date(entry.timestamp);
                 const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                 const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
@@ -29100,6 +29865,7 @@ Hint levels:
         }
         
         function toggleShareHistory() {
+            // Legacy function - no longer needed with subtabs but keep for compatibility
             const section = document.getElementById('share-history-section');
             if (section) {
                 section.classList.toggle('expanded');
@@ -29124,11 +29890,8 @@ Hint levels:
                     templateSelect.value = 'default';
                 }
                 
-                // Collapse history section
-                const section = document.getElementById('share-history-section');
-                if (section) {
-                    section.classList.remove('expanded');
-                }
+                // Switch to Compose tab (v1.3.18)
+                switchShareTab('compose');
                 
                 showToast('📜 Loaded from history');
             }
@@ -31424,7 +32187,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "1.0",
-  "appVersion": "1.3.15",
+  "appVersion": "1.3.18",
   "lastUpdated": "2026-01-29",
   "categories": [
     {
