@@ -1,3 +1,50 @@
+Game Shelf PWA v1.3.10 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+HELP SYSTEM IMPROVEMENTS:
+-------------------------
+* Added 9 new how-to FAQ entries:
+  - How do I get a hint?
+  - How do I fix a broken streak?
+  - How do I remove a game from my shelf?
+  - How do I share my results?
+  - How do I sync my data across devices?
+  - How do I add a game to my shelf?
+  - Expanded: How do I create a battle? (full step-by-step)
+  - Expanded: How do I add a friend? (multiple options)
+  - Expanded: How do I join a battle? (all methods)
+
+* Fixed all "Hub" references in FAQ and AI Help
+  - Now correctly says "Battles tab" with sub-tabs
+  - AI Help system prompt completely updated
+
+* AI Help sign-in flow improved
+  - No longer kicks user out if not signed in
+  - Shows sign-in prompt inline with button
+  - User stays in context
+
+* Added "Done" button in AI Help response view
+  - Easy exit alongside "Ask another question"
+
+UI CONSISTENCY:
+---------------
+* Added X close buttons to 8 more modals:
+  - Add Friend
+  - Profile View
+  - Merch Store
+  - Activity Summary (Welcome Back)
+  - Contact Results
+  - Friend Confirm
+  - Suggest a Game
+  - Quick Capture
+
+* Changed Help "About" icon from 🎮 to ℹ️
+  - More appropriate info icon
+
+---
+
 Game Shelf PWA v1.3.8 Release Notes
 =====================================
 

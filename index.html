@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.9">
+    <meta name="version" content="1.3.10">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8524,7 +8524,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.9</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.10</span>
             </div>
         </div>
         <div class="header-right">
@@ -8773,7 +8773,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.9</div>
+            <div class="settings-version">Game Shelf PWA v1.3.10</div>
         </div>
     </div>
     
@@ -10210,7 +10210,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="quick-capture-sheet" onclick="closeQuickCapture()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 70vh;">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">⚡ Quick Capture</div>
+            <div class="bottom-sheet-header">
+                <span>⚡ Quick Capture</span>
+                <button class="bottom-sheet-close" onclick="closeQuickCapture()">×</button>
+            </div>
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px; text-align: center;">
                 Tap a game you just played to log it
             </p>
@@ -10303,7 +10306,7 @@ Wordle 1,234 3/6
                         <span class="help-action-text">Tutorial</span>
                     </div>
                     <div class="help-action-item" onclick="helpShowAbout()" style="flex: 1 1 50%; padding: 10px 12px;">
-                        <span class="help-action-icon">🎮</span>
+                        <span class="help-action-icon">ℹ️</span>
                         <span class="help-action-text">About</span>
                     </div>
                     <div class="help-action-item" onclick="helpShowWhatsNew()" style="flex: 1 1 50%; padding: 10px 12px;">
@@ -10327,6 +10330,16 @@ Wordle 1,234 3/6
                 </div>
                 
                 <div class="ai-help-body">
+                    <!-- Sign In Required View -->
+                    <div class="ai-help-signin" id="ai-help-signin" style="display: none; text-align: center; padding: 32px 16px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🔐</div>
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Sign in to use AI Help</div>
+                        <div style="color: var(--text-secondary); margin-bottom: 24px;">Get personalized answers to your Game Shelf questions</div>
+                        <button onclick="closeAIHelpSheet(); setTimeout(showAccountSheet, 300);" style="background: var(--accent-gradient); color: white; border: none; padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                            Sign in with Google
+                        </button>
+                    </div>
+                    
                     <!-- Intro -->
                     <div class="ai-help-intro" id="ai-help-intro">
                         <div class="ai-help-intro-icon">💬</div>
@@ -10360,8 +10373,9 @@ Wordle 1,234 3/6
                             </div>
                             <div class="ai-help-response-text" id="ai-help-response-text"></div>
                         </div>
-                        <div class="ai-help-ask-another">
+                        <div class="ai-help-ask-another" style="display: flex; gap: 12px; justify-content: center;">
                             <button class="ai-help-another-btn" onclick="resetAIHelp()">Ask another question</button>
+                            <button class="ai-help-another-btn" onclick="closeAIHelpSheet()" style="background: var(--surface); color: var(--text-secondary);">Done</button>
                         </div>
                     </div>
                 </div>
@@ -10833,7 +10847,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="merch-sheet" onclick="closeMerchStore()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">🛍️ Merch Store</div>
+            <div class="bottom-sheet-header">
+                <span>🛍️ Merch Store</span>
+                <button class="bottom-sheet-close" onclick="closeMerchStore()">×</button>
+            </div>
             
             <div class="merch-balance-bar">
                 <span>Your Balance:</span>
@@ -11297,7 +11314,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="add-friend-sheet" onclick="closeAddFriend()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh;">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">👥 Invite & Connect</div>
+            <div class="bottom-sheet-header">
+                <span>👥 Invite & Connect</span>
+                <button class="bottom-sheet-close" onclick="closeAddFriend()">×</button>
+            </div>
             
             <!-- Your Invite Code -->
             <div class="friend-code-display">
@@ -11343,7 +11363,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="contact-results-sheet" onclick="closeContactResults()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 80vh;">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">📱 Friends on Game Shelf</div>
+            <div class="bottom-sheet-header">
+                <span>📱 Friends on Game Shelf</span>
+                <button class="bottom-sheet-close" onclick="closeContactResults()">×</button>
+            </div>
             
             <div id="contact-results-content">
                 <!-- Populated by JS -->
@@ -11357,7 +11380,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="suggest-game-sheet" onclick="closeSuggestGame()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">💡 Suggest a Game</div>
+            <div class="bottom-sheet-header">
+                <span>💡 Suggest a Game</span>
+                <button class="bottom-sheet-close" onclick="closeSuggestGame()">×</button>
+            </div>
             
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
                 Know a daily puzzle game we should add? Let us know!
@@ -11402,7 +11428,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="friend-confirm-sheet" onclick="closeFriendConfirm()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">👋 Add Friend?</div>
+            <div class="bottom-sheet-header">
+                <span>👋 Add Friend?</span>
+                <button class="bottom-sheet-close" onclick="closeFriendConfirm()">×</button>
+            </div>
             
             <div class="profile-header" id="friend-confirm-profile">
                 <!-- Populated by JS -->
@@ -11419,6 +11448,7 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="profile-view-sheet" onclick="closeProfileView()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 90vh;">
             <div class="bottom-sheet-handle"></div>
+            <button class="bottom-sheet-close" onclick="closeProfileView()" style="position: absolute; top: 12px; right: 12px; z-index: 10;">×</button>
             
             <div class="profile-header" id="profile-view-header">
                 <!-- Populated by JS -->
@@ -11444,7 +11474,10 @@ Wordle 1,234 3/6
     <div class="bottom-sheet-overlay" id="activity-summary-sheet" onclick="closeActivitySummary()">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh;">
             <div class="bottom-sheet-handle"></div>
-            <div class="bottom-sheet-header">👋 Welcome Back!</div>
+            <div class="bottom-sheet-header">
+                <span>👋 Welcome Back!</span>
+                <button class="bottom-sheet-close" onclick="closeActivitySummary()">×</button>
+            </div>
             
             <div id="activity-summary-content" style="max-height: 60vh; overflow-y: auto;">
                 <!-- Generated by showActivitySummary() -->
@@ -17637,9 +17670,15 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.9';
+        const APP_VERSION = '1.3.10';
         
         const RELEASE_NOTES = {
+            '1.3.10': [
+                { icon: '❓', title: 'More How-To FAQs', desc: 'Step-by-step guides for common tasks like creating battles and adding friends' },
+                { icon: '✕', title: 'Close Buttons Everywhere', desc: 'All modals now have clear X buttons to dismiss' },
+                { icon: '🔐', title: 'Better AI Help Sign-In', desc: 'Sign in prompt shown inline instead of kicking you out' },
+                { icon: '🧭', title: 'Fixed Navigation Help', desc: 'AI Help now gives correct directions (Battles tab, not Hub)' }
+            ],
             '1.3.9': [
                 { icon: '⚔️', title: 'Battles Tab First', desc: 'Hub now opens to Battles by default' }
             ],
@@ -18135,8 +18174,12 @@ Wordle 1,234 3/6
             
             // Check if signed in
             if (!currentUser) {
-                showToast('Sign in to use AI Help', 'info');
-                setTimeout(() => showAccountSheet(), 500);
+                // Show sign-in view in AI Help sheet
+                document.getElementById('ai-help-signin').style.display = 'block';
+                document.getElementById('ai-help-intro').style.display = 'none';
+                document.getElementById('ai-help-input-area').style.display = 'none';
+                document.getElementById('ai-help-response-area').classList.remove('visible');
+                document.getElementById('ai-help-sheet-overlay').classList.add('active');
                 return;
             }
             
@@ -18147,7 +18190,7 @@ Wordle 1,234 3/6
                 return;
             }
             
-            // Reset AI Help sheet state
+            // Reset AI Help sheet state (also hides sign-in view)
             resetAIHelp();
             
             // Pre-fill with search query if present
@@ -18172,7 +18215,8 @@ Wordle 1,234 3/6
         }
         
         function resetAIHelp() {
-            // Show input, hide response
+            // Hide sign-in view, show input
+            document.getElementById('ai-help-signin').style.display = 'none';
             document.getElementById('ai-help-intro').style.display = 'block';
             document.getElementById('ai-help-input-area').style.display = 'block';
             document.getElementById('ai-help-response-area').classList.remove('visible');
@@ -31278,7 +31322,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "1.0",
-  "appVersion": "1.3.9",
+  "appVersion": "1.3.10",
   "lastUpdated": "2026-01-29",
   "categories": [
     {
@@ -31310,6 +31354,12 @@ Hint levels:
           "q": "Do I need to create an account?",
           "a": "No account required for basic tracking. However, **signing in with Google** unlocks: sync across devices, friends, battles, AI hints, leaderboards, and automatic backup.",
           "keywords": ["account", "sign in", "login", "register", "google"]
+        },
+        {
+          "id": "add-game-shelf",
+          "q": "How do I add a game to my shelf?",
+          "a": "1. Go to the **Games tab**\n2. Browse categories or use **Search**\n3. Tap the **+** button on any game to add it\n\n**Quick add:** When you record a result for a game not on your shelf, Game Shelf asks if you want to add it.\n\n**Bulk add:** Tap a category header → **Add All** to add every game in that category.",
+          "keywords": ["add", "game", "shelf", "new", "browse", "find"]
         }
       ]
     },
@@ -31354,6 +31404,12 @@ Hint levels:
           "q": "Which games are supported?",
           "a": "34+ games including: **Wordle**, **Connections**, **Strands**, Mini, Spelling Bee, Quordle, Queens, Tango, Worldle, Framed, and more. See Games tab → Browse for the full list.",
           "keywords": ["supported", "games", "list", "which", "what games"]
+        },
+        {
+          "id": "remove-game",
+          "q": "How do I remove a game from my shelf?",
+          "a": "1. Find the game card on Home or Games tab\n2. **Long-press** (hold) the card until the menu appears\n3. Tap **Remove from Shelf**\n4. Confirm removal\n\n**Note:** Your stats and history are preserved - you can re-add the game anytime and your data returns.",
+          "keywords": ["remove", "delete", "hide", "game", "shelf", "unwanted"]
         }
       ]
     },
@@ -31430,6 +31486,12 @@ Hint levels:
           "q": "Why can't I get hints?",
           "a": "You need:\n\n• **Signed in** with Google\n• At least **5 tokens**\n• Under rate limits (20/hour, 50/day)\n\nCheck your token balance in the Wallet.",
           "keywords": ["cant", "unable", "not working", "error", "why"]
+        },
+        {
+          "id": "how-get-hint",
+          "q": "How do I get a hint?",
+          "a": "1. Start playing a supported game (Connections, Wordle, etc.)\n2. When stuck, tap the **💡 Hint** button on the game card\n3. Choose your hint level (1-10, higher = more help)\n4. Tap **Get Hint** (costs 5 tokens)\n\nThe hint appears in a popup. You can request stronger hints if you need more help.",
+          "keywords": ["get", "use", "request", "hint", "how"]
         }
       ]
     },
@@ -31448,8 +31510,8 @@ Hint levels:
         {
           "id": "create-battle",
           "q": "How do I create a battle?",
-          "a": "Hub tab → Battles → **Create Battle**\n\nChoose: name, games (1-8), duration (1-30 days), battle type, stakes, and visibility.",
-          "keywords": ["create", "start", "make", "new battle", "host"]
+          "a": "1. Go to **Battles tab** (bottom navigation)\n2. Tap **Create Battle**\n3. Name your battle\n4. **Select games** - tap to add 1-8 games you want to compete on\n5. Set **duration** (1-30 days)\n6. Choose **battle type**: Total Score, Most Wins, Perfect Hunter, or Streak Challenge\n7. Set **stakes**: Friendly (free), or bet coins/tokens\n8. Tap **Create** and share the invite code with friends!\n\n**Quick option:** Use a preset battle from the suggestions for one-tap setup.",
+          "keywords": ["create", "start", "make", "new battle", "host", "setup", "custom"]
         },
         {
           "id": "battle-types",
@@ -31466,8 +31528,8 @@ Hint levels:
         {
           "id": "join-battle",
           "q": "How do I join a battle?",
-          "a": "Three ways:\n\n• Enter the **6-character code**\n• Click an **invite link**\n• Browse **public battles** in Hub → Battles",
-          "keywords": ["join", "enter", "code", "invite", "link"]
+          "a": "**From an invite link:**\nTap the link your friend sent - it opens Game Shelf and joins automatically.\n\n**From a battle code:**\n1. Go to Battles tab\n2. Tap **Join Battle**\n3. Enter the 6-character code\n4. Review the battle details and tap **Join**\n\n**Browse public battles:**\n1. Battles tab → **Public Battles**\n2. Find one you like and tap **Join**\n\n**Note:** Battles with stakes require you to have enough coins/tokens to enter.",
+          "keywords": ["join", "enter", "code", "invite", "link", "public"]
         },
         {
           "id": "forgot-play",
@@ -31485,14 +31547,14 @@ Hint levels:
       "questions": [
         {
           "id": "add-friends",
-          "q": "How do I add friends?",
-          "a": "Hub → Friends → **Add Friend**\n\n• Enter their **8-character friend code**\n• Share your **friend link**\n• Use **Find Friends** to check contacts",
-          "keywords": ["add", "friend", "connect", "invite"]
+          "q": "How do I add a friend?",
+          "a": "**Option 1 - Friend Code:**\n1. Get your friend's 8-character code (they find it in Battles tab → Friends)\n2. Go to Battles tab → Friends → **Add Friend**\n3. Enter their code and tap Add\n\n**Option 2 - Share Link:**\n1. Go to Battles tab → Friends\n2. Tap **Share** to copy your friend link\n3. Send it via text, email, etc. - they tap it to add you\n\n**Option 3 - Find your code:**\nYour code is shown at the top of the Friends screen. Share it and have friends add YOU!",
+          "keywords": ["add", "friend", "connect", "invite", "code", "link", "find"]
         },
         {
           "id": "friend-code",
           "q": "What's my friend code?",
-          "a": "Find your unique **8-character code** in Hub → Friends. Share it so others can add you!",
+          "a": "Find your unique **8-character code** in Battles tab → Friends (shown at top). Share it so others can add you!",
           "keywords": ["code", "my code", "friend code", "share"]
         },
         {
@@ -31510,8 +31572,14 @@ Hint levels:
         {
           "id": "leaderboard",
           "q": "How do leaderboards work?",
-          "a": "Compare with friends by games played: **daily**, **weekly**, or **monthly** rankings. Access via Hub → Friends → Leaderboard.",
+          "a": "Compare with friends by games played: **daily**, **weekly**, or **monthly** rankings. Access via Battles tab → Friends → Leaderboard.",
           "keywords": ["leaderboard", "ranking", "compare", "score"]
+        },
+        {
+          "id": "share-results",
+          "q": "How do I share my results?",
+          "a": "**Share a single game:**\n1. Long-press any game card\n2. Tap **Share** to copy that game's result\n\n**Share all today's games:**\n1. Tap the **Share** button on Home screen\n2. Choose what to include (scores, streaks, etc.)\n3. Tap **Copy** or share directly to an app\n\n**Pro tip:** Your results are formatted for easy pasting into group chats!",
+          "keywords": ["share", "copy", "send", "results", "friends", "text"]
         }
       ]
     },
@@ -31576,6 +31644,12 @@ Hint levels:
           "q": "How do I delete my account?",
           "a": "Menu → Account → **Delete Account**. This permanently removes all data from our servers. This action cannot be undone.",
           "keywords": ["delete", "remove", "account", "data", "privacy"]
+        },
+        {
+          "id": "how-sync",
+          "q": "How do I sync my data across devices?",
+          "a": "1. **Sign in with Google** on your first device (Menu → Account)\n2. On your new device, open Game Shelf\n3. **Sign in with the same Google account**\n4. Your data syncs automatically!\n\nSync happens in real-time - play on your phone, see it on your tablet instantly.",
+          "keywords": ["sync", "transfer", "multiple", "devices", "phone", "tablet", "computer"]
         }
       ]
     },
@@ -31590,6 +31664,12 @@ Hint levels:
           "q": "My streak didn't update!",
           "a": "Check that the game was actually recorded (see History). If it's there, the streak should be correct. If you played close to midnight, timezone differences might have affected which day it counted.",
           "keywords": ["streak", "update", "wrong", "not working", "didnt"]
+        },
+        {
+          "id": "fix-streak",
+          "q": "How do I fix a broken streak?",
+          "a": "Unfortunately, **streaks can't be manually edited** - they reflect your actual play history.\n\nIf you believe there's an error:\n1. Check **History** to confirm the game was recorded\n2. Verify the **date** - timezone issues can cause a game to count for a different day\n3. If you played but forgot to record, the streak is legitimately broken\n\n**Tip:** Enable notifications to remind you before midnight!",
+          "keywords": ["fix", "repair", "restore", "broken", "lost", "streak", "reset"]
         },
         {
           "id": "clipboard-ios",
