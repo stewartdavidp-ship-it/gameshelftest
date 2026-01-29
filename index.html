@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.34">
+    <meta name="version" content="1.3.35">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -4301,6 +4301,203 @@
             transform: scale(0.98);
         }
         
+        /* ============ MORNING REVIEW SHEET ============ */
+        .morning-review-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .morning-review-icon {
+            font-size: 3rem;
+            margin-bottom: 8px;
+            animation: morning-glow 3s ease-in-out infinite;
+        }
+        
+        @keyframes morning-glow {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.4)); }
+            50% { filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.8)); }
+        }
+        
+        .morning-review-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .morning-review-date {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .morning-review-intro {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.05));
+            border-radius: 12px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .morning-review-games {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .morning-review-game {
+            display: flex;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-orange);
+        }
+        
+        .morning-review-game-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .morning-review-game-content {
+            flex: 1;
+        }
+        
+        .morning-review-game-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+        
+        .morning-review-game-snippet {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .morning-review-vibe {
+            text-align: center;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .morning-review-vibe-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        
+        .morning-review-vibe-rating {
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+        }
+        
+        .morning-review-vibe-text {
+            font-size: 0.9rem;
+            color: var(--accent-orange);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        
+        .morning-review-outro {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .morning-review-cta {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-orange), #f59e0b);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .morning-review-cta:active {
+            transform: scale(0.98);
+        }
+        
+        .morning-review-yesterday {
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .morning-review-yesterday-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        
+        .morning-review-yesterday-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+        
+        .morning-review-loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .morning-review-loading-icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            animation: morning-pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes morning-pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+        
+        .morning-review-loading-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .morning-review-loading-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .morning-review-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .morning-review-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
         /* Quick Capture Sheet */
         .quick-capture-grid {
             display: grid;
@@ -9122,7 +9319,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.34</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.35</span>
             </div>
         </div>
         <div class="header-right">
@@ -9302,6 +9499,26 @@
                         </div>
                     </div>
                     
+                    <!-- Morning Review -->
+                    <div class="settings-section">
+                        <div class="settings-section-title">☀️ Morning Review</div>
+                        <div class="settings-toggle-row">
+                            <label>
+                                <span class="icon">☀️</span>
+                                <span>Show Daily Preview</span>
+                            </label>
+                            <input type="checkbox" id="morning-review-toggle" onchange="toggleMorningReviewSetting(this.checked)" checked>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 36px;">
+                            Get a spoiler-free preview of today's puzzles
+                        </p>
+                        <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(() => showMorningReview('today'), 300)" style="margin-top: 8px;">
+                            <span class="icon">👁️</span>
+                            View Today's Review
+                            <span class="menu-chevron">›</span>
+                        </a>
+                    </div>
+                    
                     <!-- Daily Goal -->
                     <div class="settings-section">
                         <div class="settings-section-title">🎯 Daily Goal</div>
@@ -9376,7 +9593,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.34</div>
+            <div class="settings-version">Game Shelf PWA v1.3.35</div>
         </div>
     </div>
     
@@ -10906,6 +11123,69 @@ Wordle 1,234 3/6
             <!-- Error State -->
             <div class="insight-error" id="insight-error" style="display: none;">
                 Something went wrong. Please try again.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Morning Review Sheet -->
+    <div class="bottom-sheet-overlay" id="morning-review-overlay" onclick="closeMorningReview()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 90vh;">
+            <div class="bottom-sheet-handle"></div>
+            <button class="hint-sheet-close" onclick="closeMorningReview()" aria-label="Close morning review">×</button>
+            
+            <!-- Loading State -->
+            <div class="morning-review-loading" id="morning-review-loading">
+                <div class="morning-review-loading-icon">☀️</div>
+                <div class="morning-review-loading-title">Preparing your morning briefing...</div>
+                <div class="morning-review-loading-subtitle">Scanning today's puzzles for intel...</div>
+            </div>
+            
+            <!-- Content (shown after loading) -->
+            <div id="morning-review-content" style="display: none;">
+                <div class="morning-review-header">
+                    <div class="morning-review-icon">☀️</div>
+                    <div class="morning-review-title">Morning Review</div>
+                    <div class="morning-review-date" id="morning-review-date">Thursday, January 30</div>
+                </div>
+                
+                <div class="morning-review-intro" id="morning-review-intro">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div class="morning-review-games" id="morning-review-games">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div class="morning-review-vibe" id="morning-review-vibe">
+                    <div class="morning-review-vibe-label">Today's Vibe</div>
+                    <div class="morning-review-vibe-rating" id="morning-review-vibe-rating">🌶️🌶️🌶️</div>
+                    <div class="morning-review-vibe-text" id="morning-review-vibe-text">Medium-Spicy</div>
+                </div>
+                
+                <div class="morning-review-outro" id="morning-review-outro">
+                    Go get 'em!
+                </div>
+                
+                <button class="morning-review-cta" onclick="closeMorningReview()">
+                    🎯 Let's Go!
+                </button>
+                
+                <div class="morning-review-yesterday" id="morning-review-yesterday">
+                    <button class="morning-review-yesterday-btn" onclick="showMorningReview('yesterday')">
+                        📅 Yesterday's Review
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Error State -->
+            <div class="morning-review-error" id="morning-review-error" style="display: none;">
+                Couldn't load the morning review. Please try again later.
+            </div>
+            
+            <!-- Empty State (no games matched) -->
+            <div class="morning-review-empty" id="morning-review-empty" style="display: none;">
+                <div style="font-size: 2rem; margin-bottom: 12px;">🤷</div>
+                <div>No preview available for your games today.</div>
             </div>
         </div>
     </div>
@@ -14273,7 +14553,7 @@ Wordle 1,234 3/6
             },
             {
                 id: 'mini',
-                // v1.3.34: STRICT Mini matching to prevent false positives from status bar times
+                // v1.3.35: STRICT Mini matching to prevent false positives from status bar times
                 // Must have explicit Mini context - bare times like "2:29" are NOT matched
                 // Valid formats:
                 //   "I solved the 1/17/2026 New York Times Mini Crossword in 1:23!"
@@ -14281,7 +14561,7 @@ Wordle 1,234 3/6
                 //   "The Mini" with nearby time
                 regex: /(?:I\s+solved.*(?:Mini|The\s+Mini).*in\s+(\d+):(\d+))|(?:(?:Mini\s*Crossword|The\s+Mini|NYT\s+Mini)[\s\S]{0,50}(\d+):(\d+))|(?:(\d+):(\d+)[\s\S]{0,50}(?:Mini\s*Crossword|The\s+Mini|NYT\s+Mini))/i,
                 extract: (match, text) => {
-                    // v1.3.34: Additional validation - reject if text contains strong indicators of OTHER games
+                    // v1.3.35: Additional validation - reject if text contains strong indicators of OTHER games
                     // This prevents matching when OCR picks up status bar time on a Connections/Wordle stats page
                     const otherGameIndicators = [
                         /connections\s*(bot|archive|puzzle)/i,
@@ -17017,6 +17297,9 @@ Wordle 1,234 3/6
                 if (!appData.achievements['cloud-sync']) {
                     unlockAchievement('cloud-sync');
                 }
+                
+                // Check if morning review should show (first login of day)
+                checkMorningReview();
             }
             
             isInitialAuthCheck = false;
@@ -18640,9 +18923,12 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.34';
+        const APP_VERSION = '1.3.35';
         
         const RELEASE_NOTES = {
+            '1.3.35': [
+                { icon: '☀️', title: 'Morning Review', desc: 'Start your day with a spoiler-free preview of today\'s puzzles! Enable in Settings.' }
+            ],
             '1.3.34': [
                 { icon: '🔒', title: 'Robust OCR Engine', desc: 'Fixed false game detection from screenshots - no more Mini conflicts on Connections stats!' }
             ],
@@ -26541,6 +26827,203 @@ Hint levels:
             return INSIGHT_GAMES_LIST.includes(gameId) || INSIGHT_GAMES_LIST.includes(gameId.replace('nyt-', ''));
         }
         
+        // ============ MORNING REVIEW ============
+        
+        // Game config for morning review display
+        const MORNING_REVIEW_GAME_CONFIG = {
+            'wordle': { name: 'Wordle', icon: '🟩' },
+            'connections': { name: 'Connections', icon: '🔗' },
+            'strands': { name: 'Strands', icon: '🧵' },
+            'mini': { name: 'Mini', icon: '📝' },
+            'linkedin-queens': { name: 'Queens', icon: '👑' },
+            'linkedin-pinpoint': { name: 'Pinpoint', icon: '🎯' },
+            'quordle': { name: 'Quordle', icon: '4️⃣' },
+            'octordle': { name: 'Octordle', icon: '8️⃣' },
+            'waffle': { name: 'Waffle', icon: '🧇' },
+            'spelling-bee': { name: 'Spelling Bee', icon: '🐝' }
+        };
+        
+        let morningReviewShown = false;
+        
+        // Check if morning review should show on app load
+        function checkMorningReview() {
+            // Skip if not signed in
+            if (!currentUser) return;
+            
+            // Skip if disabled in settings
+            const morningReviewEnabled = localStorage.getItem('morningReviewEnabled');
+            if (morningReviewEnabled === 'false') return;
+            
+            // Check if already shown today
+            const lastShown = localStorage.getItem('lastMorningReviewDate');
+            const today = new Date().toDateString();
+            
+            if (lastShown === today) return;
+            
+            // Show with slight delay for better UX
+            setTimeout(() => {
+                showMorningReview('today', true);
+            }, 1000);
+        }
+        
+        // Get user's shelf games that are supported by morning review
+        function getMorningReviewGames() {
+            const shelfGames = Object.keys(userData?.games || {});
+            const supportedGames = Object.keys(MORNING_REVIEW_GAME_CONFIG);
+            
+            // Map game IDs (handle nyt- prefix variations)
+            const userGames = [];
+            shelfGames.forEach(gameId => {
+                // Direct match
+                if (supportedGames.includes(gameId)) {
+                    userGames.push(gameId);
+                    return;
+                }
+                // Try without nyt- prefix
+                const withoutPrefix = gameId.replace('nyt-', '');
+                if (supportedGames.includes(withoutPrefix)) {
+                    userGames.push(withoutPrefix);
+                    return;
+                }
+                // Try with variations
+                if (gameId === 'nyt-connections' || gameId === 'connections') {
+                    userGames.push('connections');
+                } else if (gameId === 'nyt-wordle' || gameId === 'wordle') {
+                    userGames.push('wordle');
+                } else if (gameId === 'nyt-strands' || gameId === 'strands') {
+                    userGames.push('strands');
+                } else if (gameId === 'nyt-mini' || gameId === 'mini' || gameId === 'nyt-mini-crossword') {
+                    userGames.push('mini');
+                } else if (gameId === 'nyt-spelling-bee' || gameId === 'spelling-bee') {
+                    userGames.push('spelling-bee');
+                } else if (gameId === 'queens') {
+                    userGames.push('linkedin-queens');
+                } else if (gameId === 'pinpoint') {
+                    userGames.push('linkedin-pinpoint');
+                }
+            });
+            
+            // Dedupe and return
+            return [...new Set(userGames)];
+        }
+        
+        async function showMorningReview(dateOption = 'today', isAutoShow = false) {
+            // Must be signed in
+            if (!currentUser) {
+                showToast('Sign in to view morning review');
+                return;
+            }
+            
+            const overlay = document.getElementById('morning-review-overlay');
+            const loading = document.getElementById('morning-review-loading');
+            const content = document.getElementById('morning-review-content');
+            const error = document.getElementById('morning-review-error');
+            const empty = document.getElementById('morning-review-empty');
+            const yesterday = document.getElementById('morning-review-yesterday');
+            
+            // Reset state
+            loading.style.display = 'block';
+            content.style.display = 'none';
+            error.style.display = 'none';
+            empty.style.display = 'none';
+            
+            // Show overlay
+            overlay.classList.add('active');
+            
+            // Mark as shown today if this is auto-show
+            if (isAutoShow && dateOption === 'today') {
+                localStorage.setItem('lastMorningReviewDate', new Date().toDateString());
+            }
+            
+            try {
+                // Get user's games
+                const userGames = getMorningReviewGames();
+                
+                if (userGames.length === 0) {
+                    loading.style.display = 'none';
+                    empty.style.display = 'block';
+                    return;
+                }
+                
+                // Call Firebase function
+                const getMorningReviewFn = firebase.functions().httpsCallable('getMorningReview');
+                const result = await getMorningReviewFn({
+                    games: userGames,
+                    date: dateOption
+                });
+                
+                const data = result.data;
+                
+                // Check if we got any games back
+                if (!data.games || data.games.length === 0) {
+                    loading.style.display = 'none';
+                    empty.style.display = 'block';
+                    return;
+                }
+                
+                // Populate content
+                document.getElementById('morning-review-date').textContent = data.dateDisplay;
+                document.getElementById('morning-review-intro').textContent = `"${data.intro}"`;
+                document.getElementById('morning-review-vibe-rating').textContent = data.vibe;
+                document.getElementById('morning-review-vibe-text').textContent = data.vibeLabel;
+                document.getElementById('morning-review-outro').textContent = `"${data.outro}"`;
+                
+                // Populate games
+                const gamesContainer = document.getElementById('morning-review-games');
+                gamesContainer.innerHTML = '';
+                
+                data.games.forEach(game => {
+                    const config = MORNING_REVIEW_GAME_CONFIG[game.id] || { name: game.id, icon: '🎮' };
+                    
+                    const gameEl = document.createElement('div');
+                    gameEl.className = 'morning-review-game';
+                    gameEl.innerHTML = `
+                        <div class="morning-review-game-icon">${config.icon}</div>
+                        <div class="morning-review-game-content">
+                            <div class="morning-review-game-name">${config.name}</div>
+                            <div class="morning-review-game-snippet">${game.snippet}</div>
+                        </div>
+                    `;
+                    gamesContainer.appendChild(gameEl);
+                });
+                
+                // Show/hide yesterday option
+                if (dateOption === 'yesterday') {
+                    yesterday.style.display = 'none';
+                } else {
+                    yesterday.style.display = 'block';
+                }
+                
+                // Show content
+                loading.style.display = 'none';
+                content.style.display = 'block';
+                
+            } catch (err) {
+                console.error('Morning Review error:', err);
+                loading.style.display = 'none';
+                error.textContent = err.message || 'Couldn\'t load the morning review. Please try again later.';
+                error.style.display = 'block';
+            }
+        }
+        
+        function closeMorningReview() {
+            document.getElementById('morning-review-overlay').classList.remove('active');
+        }
+        
+        function toggleMorningReviewSetting(enabled) {
+            localStorage.setItem('morningReviewEnabled', enabled ? 'true' : 'false');
+            showToast(enabled ? 'Morning Review enabled' : 'Morning Review disabled');
+        }
+        
+        // Initialize morning review toggle on settings load
+        function initMorningReviewSetting() {
+            const toggle = document.getElementById('morning-review-toggle');
+            if (toggle) {
+                const enabled = localStorage.getItem('morningReviewEnabled') !== 'false';
+                toggle.checked = enabled;
+            }
+        }
+        
         function selectHintGame(gameId, localData = null) {
             const game = HINT_GAMES[gameId];
             if (!game) return;
@@ -28603,7 +29086,7 @@ Hint levels:
         }
         
         // Process screenshot from clipboard
-        // v1.3.34: Enhanced with validation layer to prevent false positives
+        // v1.3.35: Enhanced with validation layer to prevent false positives
         async function processScreenshot(blob) {
             try {
                 // Initialize Tesseract worker if needed
@@ -28629,7 +29112,7 @@ Hint levels:
                 const stats = parseStatsFromOCR(ocrText);
                 
                 if (stats) {
-                    // v1.3.34: Check if stats parsing is handling the input
+                    // v1.3.35: Check if stats parsing is handling the input
                     if (stats.handled) {
                         return; // Stats parser is showing a prompt
                     }
@@ -28637,7 +29120,7 @@ Hint levels:
                     return;
                 }
                 
-                // v1.3.34: Before falling back to share parsers, validate this isn't a stats page
+                // v1.3.35: Before falling back to share parsers, validate this isn't a stats page
                 // that just failed to parse
                 if (isLikelyStatsScreenshot(ocrText)) {
                     console.log('📷 Detected likely stats screenshot but parsing failed');
@@ -28661,7 +29144,7 @@ Hint levels:
             }
         }
         
-        // v1.3.34: Check if OCR text looks like a stats screenshot
+        // v1.3.35: Check if OCR text looks like a stats screenshot
         function isLikelyStatsScreenshot(text) {
             const lower = text.toLowerCase();
             
@@ -28680,7 +29163,7 @@ Hint levels:
             return matchCount >= 2;
         }
         
-        // v1.3.34: Validated version of parseMultipleGames that rejects suspicious results
+        // v1.3.35: Validated version of parseMultipleGames that rejects suspicious results
         function parseMultipleGamesValidated(text) {
             const results = parseMultipleGames(text);
             
@@ -28691,7 +29174,7 @@ Hint levels:
             });
         }
         
-        // v1.3.34: Validate that a parse result makes sense
+        // v1.3.35: Validate that a parse result makes sense
         function validateParseResult(result, text) {
             if (!result || !result.gameId) return false;
             
@@ -28737,13 +29220,13 @@ Hint levels:
         }
         
         // Parse stats from OCR text - INTELLIGENT DYNAMIC VERSION
-        // v1.3.34: Enhanced to handle OCR quirks like split number/label lines
+        // v1.3.35: Enhanced to handle OCR quirks like split number/label lines
         function parseStatsFromOCR(text) {
             const normalized = text.replace(/\s+/g, ' ').trim();
             
             console.log('📊 Parsing stats from:', normalized.substring(0, 300));
             
-            // v1.3.34: First check if this LOOKS like a stats screenshot
+            // v1.3.35: First check if this LOOKS like a stats screenshot
             // Stats pages have characteristic patterns that share results don't
             const statsPageIndicators = [
                 /completed|played/i,
@@ -28794,7 +29277,7 @@ Hint levels:
                 }
             }
             
-            // v1.3.34: Step 3b - Try enhanced split-line detection for OCR
+            // v1.3.35: Step 3b - Try enhanced split-line detection for OCR
             // This handles cases where numbers are on one line, labels on another
             if (stats.currentStreak === null && looksLikeStats) {
                 const splitLineStats = detectSplitLineLayout(text);
@@ -28811,7 +29294,7 @@ Hint levels:
             if (stats.currentStreak === null) {
                 console.log('📊 Could not extract current streak');
                 
-                // v1.3.34: If this looks like a stats page but we couldn't parse it,
+                // v1.3.35: If this looks like a stats page but we couldn't parse it,
                 // prompt user rather than falling through to share text parsers
                 if (looksLikeStats && gameType) {
                     console.log('📊 Stats page detected but parsing failed - prompting user');
@@ -28836,7 +29319,7 @@ Hint levels:
             return stats;
         }
         
-        // v1.3.34: Detect stats when numbers and labels are on separate lines (common OCR issue)
+        // v1.3.35: Detect stats when numbers and labels are on separate lines (common OCR issue)
         // Example OCR output:
         //   "562 80 1 29"
         //   "Completed Win% Current Max Streak"
@@ -28898,7 +29381,7 @@ Hint levels:
             return null;
         }
         
-        // v1.3.34: Show prompt when stats page detected but couldn't parse
+        // v1.3.35: Show prompt when stats page detected but couldn't parse
         function showStatsParseFailurePrompt(gameType, ocrText) {
             const game = GAMES[gameType];
             if (!game) return;
@@ -28930,7 +29413,7 @@ Hint levels:
             });
         }
         
-        // v1.3.34: Manual stats entry (placeholder - can be enhanced)
+        // v1.3.35: Manual stats entry (placeholder - can be enhanced)
         function openManualStatsEntry(gameId) {
             // For now, just open the log sheet for that game
             lastLaunchedGame = gameId;
@@ -33447,6 +33930,9 @@ Hint levels:
                 autoLogToggle.checked = appData.settings?.autoLog !== false;
             }
             
+            // Load morning review setting (default to enabled)
+            initMorningReviewSetting();
+            
             // Load test mode setting
             initTestModeToggle();
             
@@ -33569,7 +34055,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "2.0",
-  "appVersion": "1.3.34",
+  "appVersion": "1.3.35",
   "lastUpdated": "2026-01-29",
   "categories": [
     {

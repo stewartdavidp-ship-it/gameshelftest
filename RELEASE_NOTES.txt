@@ -1,3 +1,48 @@
+Game Shelf PWA v1.3.35 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+MORNING REVIEW - AI-POWERED DAILY PREVIEW:
+------------------------------------------
+New feature that gives users a spoiler-free preview of today's puzzles to build 
+excitement before their morning puzzling session.
+
+**How It Works:**
+- First login of the day triggers the Morning Review automatically
+- AI searches for today's puzzles and generates personalized hype snippets
+- Each game gets 1-2 sentences teasing the vibe without spoiling answers
+- Content is cached - first user generates, all others get instant results
+- Only shows games that are on the user's shelf (personalized)
+
+**Supported Games:**
+- NYT: Wordle, Connections, Strands, Mini, Spelling Bee
+- LinkedIn: Queens, Pinpoint
+- Indies: Quordle, Octordle, Waffle
+
+**UI Features:**
+- Beautiful modal with game-by-game snippets
+- Overall "vibe rating" (1-5 🌶️ emojis)
+- Energetic intro and motivational outro
+- "Yesterday's Review" option for historical viewing
+- Settings toggle to enable/disable
+- Quick access in Settings → Morning Review → View Today's Review
+
+**Technical Details:**
+- New Firebase Function: getMorningReview
+- Cache structure: morning-review/{date}/meta + games
+- 7-day cache retention (vs 2-day for hints)
+- Spliced per-user based on shelf games
+- Analytics tracking for usage patterns
+
+**Settings:**
+- New toggle in Settings submenu: "Show Daily Preview"
+- "View Today's Review" link opens modal on demand
+- Defaults to enabled for all users
+
+
+=====================================
+
 Game Shelf PWA v1.3.34 Release Notes
 =====================================
 
