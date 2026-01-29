@@ -1,3 +1,24 @@
+Game Shelf PWA v1.3.22 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI HELP IMPROVEMENTS:
+--------------------
+* AI Help now knows about the Import Stats feature
+* Added step-by-step guide for importing existing streaks/stats
+* Added FAQ entry: "Can I import my existing streak from Wordle?"
+* Added showImportStats navigation action
+* Fixed incorrect response that said "Game Shelf can't sync your Wordle streak"
+
+SYSTEM PROMPT UPDATES:
+----------------------
+* Added "Import Stats from Other Apps" section with steps
+* Added few-shot example for import/sync questions
+* AI now correctly directs users to Stats → By Game → Import Stats
+
+---
+
 Game Shelf PWA v1.3.21 Release Notes
 =====================================
 
