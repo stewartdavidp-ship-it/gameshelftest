@@ -1,3 +1,29 @@
+Game Shelf PWA v1.3.7 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI HELP UI FIXES:
+-----------------
+* Much larger response area
+  - Sheet height increased from 70vh to 85vh
+  - Response area min-height: 300px
+  - Font size increased to 15px with better line-height
+  - Now 5x more readable
+
+* Fixed "Ask AI" button visibility
+  - Button was all white with invisible text
+  - Changed from white/var(--primary) to gradient style
+  - Now uses linear-gradient(135deg, #667eea, #764ba2) like other buttons
+  - Added box-shadow for depth
+
+* Fixed help menu items not clickable
+  - Floating help button (purple ?) was blocking clicks
+  - Now hides when help sheet is open
+  - Re-appears when sheet closes
+
+---
+
 Game Shelf PWA v1.3.6 Release Notes
 =====================================
 

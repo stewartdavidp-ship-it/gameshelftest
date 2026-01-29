@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.6">
+    <meta name="version" content="1.3.7">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8228,28 +8228,29 @@
         }
 
         .help-ask-ai-btn {
-            background: white;
-            color: var(--primary);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
             border: none;
-            padding: 10px 24px;
-            border-radius: 20px;
+            padding: 12px 28px;
+            border-radius: 25px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
             transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
 
         .help-ask-ai-btn:hover {
             transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
         }
 
         /* AI Help Sheet */
         .ai-help-sheet-content {
             display: flex;
             flex-direction: column;
-            height: 70vh;
-            max-height: 70vh;
+            height: 85vh;
+            max-height: 85vh;
         }
 
         .ai-help-body {
@@ -8346,6 +8347,7 @@
             flex: 1;
             overflow-y: auto;
             display: none;
+            min-height: 0;
         }
 
         .ai-help-response-area.visible {
@@ -8355,10 +8357,11 @@
         .ai-help-response {
             background: var(--surface);
             border-radius: 12px;
-            padding: 16px;
-            font-size: 14px;
-            line-height: 1.6;
+            padding: 20px;
+            font-size: 15px;
+            line-height: 1.7;
             color: var(--text);
+            min-height: 300px;
         }
 
         .ai-help-response-header {
@@ -8502,7 +8505,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.6</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.7</span>
             </div>
         </div>
         <div class="header-right">
@@ -8751,7 +8754,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.6</div>
+            <div class="settings-version">Game Shelf PWA v1.3.7</div>
         </div>
     </div>
     
@@ -17590,9 +17593,14 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.6';
+        const APP_VERSION = '1.3.7';
         
         const RELEASE_NOTES = {
+            '1.3.7': [
+                { icon: '🤖', title: 'Bigger AI Help', desc: 'Response area is now 5x larger for easier reading' },
+                { icon: '🎨', title: 'Fixed Ask AI Button', desc: 'Button now shows text properly with gradient style' },
+                { icon: '👆', title: 'Clickable Help Items', desc: 'Bottom menu items no longer blocked by floating button' }
+            ],
             '1.3.6': [
                 { icon: '📢', title: 'Cleaner Share Hub', desc: 'Removed header clutter, larger message editor' },
                 { icon: '🤖', title: 'Smarter AI Help', desc: 'Now gives step-by-step instructions instead of just descriptions' }
@@ -17829,12 +17837,22 @@ Wordle 1,234 3/6
                 toggleSettingsMenu();
             }
             
+            // Hide floating help button while sheet is open
+            const floatingBtn = document.getElementById('floating-help-btn');
+            if (floatingBtn) floatingBtn.style.display = 'none';
+            
             // Show sheet
             document.getElementById('help-sheet-overlay').classList.add('active');
         }
 
         function closeHelpSheet() {
             document.getElementById('help-sheet-overlay').classList.remove('active');
+            
+            // Show floating help button again
+            const floatingBtn = document.getElementById('floating-help-btn');
+            if (floatingBtn && !floatingBtn.classList.contains('hidden')) {
+                floatingBtn.style.display = 'flex';
+            }
         }
 
         function renderHelpCategories() {
@@ -31207,7 +31225,7 @@ Hint levels:
     <script id="faq-data" type="application/json">
 {
   "version": "1.0",
-  "appVersion": "1.3.6",
+  "appVersion": "1.3.7",
   "lastUpdated": "2026-01-29",
   "categories": [
     {
