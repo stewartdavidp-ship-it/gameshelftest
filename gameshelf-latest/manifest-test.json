@@ -1,0 +1,75 @@
+{
+  "name": "Game Shelf TEST",
+  "short_name": "GS Test",
+  "description": "Track your daily puzzle games (TEST BUILD)",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#0a0a0f",
+  "theme_color": "#ff9900",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "lang": "en-US",
+  
+  "icons": [
+    {
+      "src": "icons-test/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons-test/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons-test/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons-test/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Log Game",
+      "short_name": "Log",
+      "description": "Quickly log today's game results",
+      "url": "./index.html?action=log"
+    },
+    {
+      "name": "Share Results",
+      "short_name": "Share",
+      "description": "Share your daily results",
+      "url": "./index.html?tab=share"
+    },
+    {
+      "name": "Play Wordle",
+      "short_name": "Wordle",
+      "description": "Launch Wordle",
+      "url": "./index.html?game=wordle"
+    }
+  ],
+  
+  "share_target": {
+    "action": "./index.html?share-target=true",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  }
+}
