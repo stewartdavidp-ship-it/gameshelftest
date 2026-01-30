@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.53.1">
+    <meta name="version" content="1.3.54">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -207,6 +207,22 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+        
+        .beta-badge-link {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .beta-badge-link:active {
+            transform: scale(0.95);
         }
         
         .header-right {
@@ -9320,8 +9336,9 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.53.1</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.54</span>
             </div>
+            <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
         <div class="header-right">
             <button class="header-btn" id="header-share-btn" onclick="quickShareRecap()" title="Share Today's Results">📤</button>
@@ -9594,7 +9611,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.53.1</div>
+            <div class="settings-version">Game Shelf PWA v1.3.54</div>
         </div>
     </div>
     
@@ -12724,7 +12741,7 @@
                 return;
             }
             
-            // v1.3.53.1: Use UID directly for simpler friend links
+            // v1.3.54: Use UID directly for simpler friend links
             const link = `${window.location.origin}${window.location.pathname}?friend=${currentUser.uid}`;
             const message = `Add me on Game Shelf! 🎮\n\nTrack daily puzzles, compete in battles, and build streaks together.\n\n${link}`;
             
@@ -18860,10 +18877,10 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.53.1';
+        const APP_VERSION = '1.3.54';
         
         const RELEASE_NOTES = {
-            '1.3.53.1': [
+            '1.3.54': [
                 { icon: '📊', title: 'Enhanced Analytics', desc: 'Better tracking for Morning Review, hints, insights, and social features' }
             ],
             '1.3.47': [
@@ -25464,7 +25481,7 @@
                 return;
             }
             
-            // v1.3.53.1: Removed auto-clear for already-logged games
+            // v1.3.54: Removed auto-clear for already-logged games
             // User might want hints even after completing the game
             // The lastLaunchedGame is still useful for hint selection
             
@@ -28723,7 +28740,7 @@ Hint levels:
         
         // ============ LOG SHEET (Manual Entry) ============
         function openLogSheet() {
-            // v1.3.53.1: Simplified to manual entry only
+            // v1.3.54: Simplified to manual entry only
             document.getElementById('log-sheet').classList.add('active');
             renderQuickLogButtons();
             
@@ -29281,7 +29298,7 @@ Hint levels:
             return null;
         }
         
-        // v1.3.53.1: Robust image inversion with debugging and error handling
+        // v1.3.54: Robust image inversion with debugging and error handling
         async function invertImage(blob) {
             return new Promise((resolve, reject) => {
                 const img = new Image();
@@ -29347,14 +29364,14 @@ Hint levels:
         }
         
         // Process screenshot from clipboard
-        // v1.3.53.1: Try BOTH original and inverted, use whichever PARSES successfully
+        // v1.3.54: Try BOTH original and inverted, use whichever PARSES successfully
         async function processScreenshot(blob) {
             try {
                 // Initialize Tesseract worker if needed
                 if (!ocrWorker) {
                     showToast('🔄 Loading OCR engine...', 'info');
                     ocrWorker = await Tesseract.createWorker('eng');
-                    // v1.3.53.1: Set PSM 3 (fully automatic page segmentation) for better number recognition
+                    // v1.3.54: Set PSM 3 (fully automatic page segmentation) for better number recognition
                     // PSM 6 (uniform block) misses the large stat numbers, PSM 3/4 find them
                     await ocrWorker.setParameters({
                         tessedit_pageseg_mode: Tesseract.PSM.AUTO  // PSM 3
@@ -30131,7 +30148,7 @@ Hint levels:
                 setTimeout(() => { recordButtonHandled = false; }, 500);
             }
         }
-        // v1.3.53.1: Cancel long-press if user is scrolling (touchmove)
+        // v1.3.54: Cancel long-press if user is scrolling (touchmove)
         function handleRecordButtonMove(e) {
             if (recordButtonTimer) {
                 clearTimeout(recordButtonTimer);
@@ -30150,9 +30167,9 @@ Hint levels:
             if (quickOptions) quickOptions.style.display = 'none';
         }
         
-        // v1.3.53.1: switchLogTab kept for backwards compatibility but tabs removed from UI
+        // v1.3.54: switchLogTab kept for backwards compatibility but tabs removed from UI
         function switchLogTab(tab) {
-            // No-op - tabs removed in v1.3.53.1
+            // No-op - tabs removed in v1.3.54
             if (tab === 'quick') {
                 renderQuickLogButtons();
                 const quickOptions = document.getElementById('quick-log-options');
