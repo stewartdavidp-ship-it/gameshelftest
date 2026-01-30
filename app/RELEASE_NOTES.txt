@@ -1,3 +1,18 @@
+Game Shelf PWA v1.4.4 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+WHAT'S NEW POPUP REMOVED:
+-------------------------
+
+1. LESS INTRUSIVE UPDATE NOTIFICATIONS:
+   - What's New no longer auto-pops up when you log in
+   - A badge will still appear on the Help button when there's an update
+   - Click Help → What's New to see changes at your convenience
+
+---
+
 Game Shelf PWA v1.4.3 Release Notes
 =====================================
 

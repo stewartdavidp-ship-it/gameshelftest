@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.4.3">
+    <meta name="version" content="1.4.4">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9366,7 +9366,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.4.3</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.4.4</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -9659,7 +9659,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.4.3</div>
+            <div class="settings-version">Game Shelf PWA v1.4.4</div>
         </div>
     </div>
     
@@ -18943,9 +18943,12 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.4.3';
+        const APP_VERSION = '1.4.4';
         
         const RELEASE_NOTES = {
+            '1.4.4': [
+                { icon: '🔕', title: 'Less Intrusive Updates', desc: "What's New no longer auto-pops up - check Help when you see the badge" }
+            ],
             '1.4.3': [
                 { icon: '❓', title: 'Help Button On by Default', desc: 'Help button now shows by default for new users' },
                 { icon: '🖥️', title: 'Desktop Menu Fix', desc: 'Settings menu now appears beside the app on desktop instead of covering it' }
@@ -19094,12 +19097,9 @@
         
         function checkForWhatsNew() {
             if (hasUnseenUpdate()) {
-                // Show badge on menu
+                // Show badge on menu - user can click Help to see What's New
                 updateWhatsNewBadge(true);
-                // Auto-show What's New after brief delay (let app render first)
-                setTimeout(() => {
-                    showWhatsNew(true); // true = auto-triggered
-                }, 1500);
+                // No auto-popup - What's New is accessible from Help section
             }
         }
         
