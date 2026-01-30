@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.4.0">
+    <meta name="version" content="1.4.1">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9336,7 +9336,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.4.0</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.4.1</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -9609,9 +9609,27 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Legal -->
+            <div class="settings-section" style="border-top: 1px solid var(--border); margin-top: 8px; padding-top: 16px;">
+                <div class="settings-section-title">📜 Legal</div>
+                <a class="settings-link" href="https://gameshelf.co/terms" target="_blank">
+                    <span class="icon">📋</span>
+                    Terms of Service
+                    <span class="menu-chevron">›</span>
+                </a>
+                <a class="settings-link" href="https://gameshelf.co/privacy" target="_blank" style="margin-top: 8px;">
+                    <span class="icon">🔒</span>
+                    Privacy Policy
+                    <span class="menu-chevron">›</span>
+                </a>
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 12px; text-align: center; line-height: 1.4;">
+                    Game Shelf is not affiliated with The New York Times,<br>LinkedIn, or any game publisher.
+                </p>
+            </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.4.0</div>
+            <div class="settings-version">Game Shelf PWA v1.4.1</div>
         </div>
     </div>
     
@@ -10230,6 +10248,14 @@
                 <button class="setup-btn setup-btn-secondary" onclick="setupGoToScreen('setup-select-games')" style="margin-top: 12px;">
                     Choose My Own Games
                 </button>
+                
+                <!-- Terms acknowledgment -->
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 20px; text-align: center; line-height: 1.5;">
+                    By continuing, you agree to our<br>
+                    <a href="https://gameshelf.co/terms" target="_blank" style="color: var(--accent);">Terms of Service</a> 
+                    and 
+                    <a href="https://gameshelf.co/privacy" target="_blank" style="color: var(--accent);">Privacy Policy</a>
+                </p>
             </div>
         </div>
         
@@ -11022,6 +11048,12 @@
                     <div class="hint-game-chip" onclick="selectHintGame('slate')">📝 Slate</div>
                 </div>
             </div>
+            
+            <!-- Disclaimer -->
+            <p style="font-size: 0.65rem; color: var(--text-muted); text-align: center; margin-top: 16px; padding: 0 16px; line-height: 1.4;">
+                Hints are AI-generated and may not always be accurate.<br>
+                Game Shelf is not affiliated with game publishers.
+            </p>
         </div>
     </div>
     
@@ -12741,7 +12773,7 @@
                 return;
             }
             
-            // v1.4.0: Use UID directly for simpler friend links
+            // v1.4.1: Use UID directly for simpler friend links
             const link = `${window.location.origin}${window.location.pathname}?friend=${currentUser.uid}`;
             const message = `Add me on Game Shelf! 🎮\n\nTrack daily puzzles, compete in battles, and build streaks together.\n\n${link}`;
             
@@ -18877,10 +18909,10 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.4.0';
+        const APP_VERSION = '1.4.1';
         
         const RELEASE_NOTES = {
-            '1.4.0': [
+            '1.4.1': [
                 { icon: '📊', title: 'Enhanced Analytics', desc: 'Better tracking for Morning Review, hints, insights, and social features' }
             ],
             '1.3.47': [
@@ -25481,7 +25513,7 @@
                 return;
             }
             
-            // v1.4.0: Removed auto-clear for already-logged games
+            // v1.4.1: Removed auto-clear for already-logged games
             // User might want hints even after completing the game
             // The lastLaunchedGame is still useful for hint selection
             
@@ -28740,7 +28772,7 @@ Hint levels:
         
         // ============ LOG SHEET (Manual Entry) ============
         function openLogSheet() {
-            // v1.4.0: Simplified to manual entry only
+            // v1.4.1: Simplified to manual entry only
             document.getElementById('log-sheet').classList.add('active');
             renderQuickLogButtons();
             
@@ -29298,7 +29330,7 @@ Hint levels:
             return null;
         }
         
-        // v1.4.0: Robust image inversion with debugging and error handling
+        // v1.4.1: Robust image inversion with debugging and error handling
         async function invertImage(blob) {
             return new Promise((resolve, reject) => {
                 const img = new Image();
@@ -29364,14 +29396,14 @@ Hint levels:
         }
         
         // Process screenshot from clipboard
-        // v1.4.0: Try BOTH original and inverted, use whichever PARSES successfully
+        // v1.4.1: Try BOTH original and inverted, use whichever PARSES successfully
         async function processScreenshot(blob) {
             try {
                 // Initialize Tesseract worker if needed
                 if (!ocrWorker) {
                     showToast('🔄 Loading OCR engine...', 'info');
                     ocrWorker = await Tesseract.createWorker('eng');
-                    // v1.4.0: Set PSM 3 (fully automatic page segmentation) for better number recognition
+                    // v1.4.1: Set PSM 3 (fully automatic page segmentation) for better number recognition
                     // PSM 6 (uniform block) misses the large stat numbers, PSM 3/4 find them
                     await ocrWorker.setParameters({
                         tessedit_pageseg_mode: Tesseract.PSM.AUTO  // PSM 3
@@ -30148,7 +30180,7 @@ Hint levels:
                 setTimeout(() => { recordButtonHandled = false; }, 500);
             }
         }
-        // v1.4.0: Cancel long-press if user is scrolling (touchmove)
+        // v1.4.1: Cancel long-press if user is scrolling (touchmove)
         function handleRecordButtonMove(e) {
             if (recordButtonTimer) {
                 clearTimeout(recordButtonTimer);
@@ -30167,9 +30199,9 @@ Hint levels:
             if (quickOptions) quickOptions.style.display = 'none';
         }
         
-        // v1.4.0: switchLogTab kept for backwards compatibility but tabs removed from UI
+        // v1.4.1: switchLogTab kept for backwards compatibility but tabs removed from UI
         function switchLogTab(tab) {
-            // No-op - tabs removed in v1.4.0
+            // No-op - tabs removed in v1.4.1
             if (tab === 'quick') {
                 renderQuickLogButtons();
                 const quickOptions = document.getElementById('quick-log-options');

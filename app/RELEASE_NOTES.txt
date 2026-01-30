@@ -1,3 +1,34 @@
+Game Shelf PWA v1.4.1 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+LEGAL & TERMS UPDATE:
+---------------------
+
+1. IMPLICIT TERMS ACKNOWLEDGMENT:
+   - Added "By continuing, you agree to our Terms of Service and Privacy Policy"
+   - Displayed on the setup welcome screen
+   - Links to gameshelf.co/terms and gameshelf.co/privacy
+   - Low-friction: continuing through setup = acceptance
+
+2. LEGAL SECTION IN SETTINGS MENU:
+   - Added new "Legal" section at bottom of settings menu
+   - Links to Terms of Service and Privacy Policy
+   - Added third-party disclaimer: "Game Shelf is not affiliated with 
+     The New York Times, LinkedIn, or any game publisher."
+
+3. AI HINT DISCLAIMER:
+   - Added disclaimer at bottom of hint sheet
+   - "Hints are AI-generated and may not always be accurate."
+   - "Game Shelf is not affiliated with game publishers."
+
+Note: Terms and Privacy Policy documents created but need to be hosted at:
+- gameshelf.co/terms
+- gameshelf.co/privacy
+
+---
+
 Game Shelf PWA v1.4.0 Release Notes
 =====================================
 
