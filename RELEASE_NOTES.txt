@@ -1,3 +1,48 @@
+Game Shelf PWA v1.3.45 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+OCR IMAGE SELECTION FIX - DARK MODE SCREENSHOTS:
+------------------------------------------------
+Fixed an issue where dark mode screenshots (light text on dark background) were
+not being processed correctly, even though the inverted version would work.
+
+**The Problem:**
+When pasting a dark mode screenshot, the system would try both original and 
+inverted images but often selected the wrong one. The original naive selection
+logic compared raw number counts, which could be fooled by OCR noise producing
+random digits in the wrong image.
+
+**Root Cause:**
+The selection logic used simple heuristics (has large number, number count) that
+didn't account for OCR quality. A garbage OCR result with random digits could
+"win" over a clean inverted result with actual stats numbers.
+
+**Solution - Quality-Based Scoring:**
+New `scoreOCRForStats()` function evaluates each OCR result based on:
+
+1. **Stat Keywords** (+10 each): completed/played, win%, current streak, max streak
+2. **Valid 4-Number Sequence** (+50): The key pattern [played][%][current][max]
+   with validation (win% ≤ 100, played ≥ streaks)  
+3. **Large Number Bonus** (+5): Having a number > 100 (games played count)
+
+The image with the higher score is selected, ensuring meaningful stats content
+wins over OCR noise.
+
+**Console Output:**
+```
+📷 Original score: 5 nums: ['2', '29', ...]
+📷 Inverted score: 85 nums: ['562', '80', '1', '29']
+📷 Using INVERTED (score: 85 > 5)
+```
+
+**Files Modified:**
+- gameshelf/index.html - New scoring logic in processScreenshot(), v1.3.45
+- gameshelf/sw.js - CACHE_VERSION to v1.3.45
+
+---
+
 Game Shelf PWA v1.3.36 Release Notes
 =====================================
 

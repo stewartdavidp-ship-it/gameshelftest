@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.44">
+    <meta name="version" content="1.3.45">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9319,7 +9319,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.44</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.45</span>
             </div>
         </div>
         <div class="header-right">
@@ -9593,7 +9593,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.44</div>
+            <div class="settings-version">Game Shelf PWA v1.3.45</div>
         </div>
     </div>
     
@@ -18923,9 +18923,12 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.44';
+        const APP_VERSION = '1.3.45';
         
         const RELEASE_NOTES = {
+            '1.3.45': [
+                { icon: '📷', title: 'OCR Selection Fix', desc: 'Fixed dark mode screenshot detection - now scores both original and inverted images to pick the best one' }
+            ],
             '1.3.44': [
                 { icon: '🎯', title: 'Stats OCR Fixed', desc: 'Now tries both original and inverted images to find stats numbers' }
             ],
@@ -29275,7 +29278,7 @@ Hint levels:
         }
         
         // Process screenshot from clipboard
-        // v1.3.44: Always try BOTH original and inverted, use whichever finds more numbers
+        // v1.3.45: Try BOTH original and inverted, use whichever PARSES successfully
         async function processScreenshot(blob) {
             try {
                 // Initialize Tesseract worker if needed
@@ -29291,56 +29294,78 @@ Hint levels:
                     return data.text;
                 };
                 
+                // Helper to score OCR quality for stats detection
+                const scoreOCRForStats = (text) => {
+                    if (!text || text.length < 10) return { score: 0, nums: [] };
+                    
+                    const processed = preprocessOCRText(text);
+                    const nums = processed.match(/\d+/g) || [];
+                    const normalized = processed.replace(/\s+/g, ' ').toLowerCase();
+                    
+                    let score = 0;
+                    
+                    // Check for stat keywords
+                    if (/completed|played/i.test(normalized)) score += 10;
+                    if (/win\s*%|win\s*rate/i.test(normalized)) score += 10;
+                    if (/current\s*streak/i.test(normalized)) score += 10;
+                    if (/max\s*streak/i.test(normalized)) score += 10;
+                    
+                    // Check for valid 4-number sequence (the key pattern for stats)
+                    const fourNumMatch = processed.replace(/\s+/g, ' ').match(/(\d{1,5})\s+(\d{1,3})\s+(\d{1,4})\s+(\d{1,4})/);
+                    if (fourNumMatch) {
+                        const parsed = [parseInt(fourNumMatch[1]), parseInt(fourNumMatch[2]), parseInt(fourNumMatch[3]), parseInt(fourNumMatch[4])];
+                        // Validate: played >= streaks, win% <= 100
+                        if (parsed[1] <= 100 && parsed[0] >= parsed[2] && parsed[0] >= parsed[3]) {
+                            score += 50; // Strong indicator of valid stats
+                        }
+                    }
+                    
+                    // Bonus for having a large number (games played count)
+                    if (nums.some(n => parseInt(n) > 100)) score += 5;
+                    
+                    return { score, nums, text: processed };
+                };
+                
                 showToast('🔄 Processing image...', 'info');
                 
-                // Always try BOTH and compare results
                 // Step 1: Try original
                 console.log('📷 Trying original image...');
                 const originalText = await runOCR(blob);
-                const originalNumbers = originalText.match(/\d+/g) || [];
-                const originalHasLarge = originalNumbers.some(n => parseInt(n) > 100);
-                console.log('📷 Original numbers:', originalNumbers.slice(0, 10), 'hasLarge:', originalHasLarge);
+                const originalScore = scoreOCRForStats(originalText);
+                console.log('📷 Original score:', originalScore.score, 'nums:', originalScore.nums.slice(0, 8));
                 
                 // Step 2: Try inverted
                 console.log('📷 Trying inverted image...');
                 const invertedBlob = await invertImage(blob);
                 const invertedText = await runOCR(invertedBlob);
-                const invertedNumbers = invertedText.match(/\d+/g) || [];
-                const invertedHasLarge = invertedNumbers.some(n => parseInt(n) > 100);
-                console.log('📷 Inverted numbers:', invertedNumbers.slice(0, 10), 'hasLarge:', invertedHasLarge);
+                const invertedScore = scoreOCRForStats(invertedText);
+                console.log('📷 Inverted score:', invertedScore.score, 'nums:', invertedScore.nums.slice(0, 8));
                 
-                // Step 3: Pick the better result
+                // Step 3: Pick the better result based on stats detection score
                 let rawOcrText;
-                let numbersFound;
+                let ocrText;
                 
-                // Prefer the one with a large number (likely stats), or more numbers total
-                if (invertedHasLarge && !originalHasLarge) {
-                    console.log('📷 Using INVERTED (found large number)');
+                if (invertedScore.score > originalScore.score) {
+                    console.log('📷 Using INVERTED (score:', invertedScore.score, '>', originalScore.score, ')');
                     rawOcrText = invertedText;
-                    numbersFound = invertedNumbers;
-                } else if (originalHasLarge && !invertedHasLarge) {
-                    console.log('📷 Using ORIGINAL (found large number)');
+                    ocrText = invertedScore.text;
+                } else if (originalScore.score > invertedScore.score) {
+                    console.log('📷 Using ORIGINAL (score:', originalScore.score, '>', invertedScore.score, ')');
                     rawOcrText = originalText;
-                    numbersFound = originalNumbers;
-                } else if (invertedNumbers.length > originalNumbers.length) {
-                    console.log('📷 Using INVERTED (more numbers)');
-                    rawOcrText = invertedText;
-                    numbersFound = invertedNumbers;
+                    ocrText = originalScore.text;
                 } else {
-                    console.log('📷 Using ORIGINAL (default)');
+                    // Tie - prefer original (light mode screenshots are more common)
+                    console.log('📷 Using ORIGINAL (tie, score:', originalScore.score, ')');
                     rawOcrText = originalText;
-                    numbersFound = originalNumbers;
+                    ocrText = originalScore.text || preprocessOCRText(originalText);
                 }
                 
-                console.log('📷 Final numbers found:', numbersFound);
+                console.log('📷 Final OCR text preview:', ocrText?.substring(0, 100));
                 
-                if (!rawOcrText || rawOcrText.trim().length < 10) {
+                if (!ocrText || ocrText.trim().length < 10) {
                     showToast('📷 Couldn\'t read text from image', 'error');
                     return;
                 }
-                
-                // v1.3.36: Preprocess OCR text to fix common character confusions
-                const ocrText = preprocessOCRText(rawOcrText);
                 
                 // Try to parse as stats first
                 const stats = parseStatsFromOCR(ocrText);
