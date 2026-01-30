@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="version" content="1.0.0">
+    <title>Privacy Policy - Game Shelf</title>
+    <meta name="description" content="Game Shelf Privacy Policy">
+    <meta name="theme-color" content="#667eea">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700;800&family=Satoshi:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #08080c;
+            --bg-secondary: #0d0d14;
+            --bg-card: #13131d;
+            --text-primary: #ffffff;
+            --text-secondary: #9898a8;
+            --text-muted: #5a5a6e;
+            --accent-purple: #7c8aff;
+            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --border: #1f1f2e;
+        }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Satoshi', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Cabinet Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        
+        /* Nav */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 24px;
+            background: rgba(8, 8, 12, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        
+        .nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .nav-logo {
+            width: 36px;
+            height: 36px;
+        }
+        
+        .nav-brand-text {
+            font-family: 'Cabinet Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-back {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .nav-back:hover {
+            text-decoration: underline;
+        }
+        
+        /* Content */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+        }
+        
+        .page-header {
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .page-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .legal-content h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        .legal-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .legal-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .legal-content ul, .legal-content ol {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+        
+        .legal-content li {
+            margin-bottom: 8px;
+        }
+        
+        .legal-content strong {
+            color: var(--text-primary);
+        }
+        
+        .legal-content a {
+            color: var(--accent-purple);
+        }
+        
+        .highlight-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        
+        .highlight-box p {
+            margin-bottom: 0;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 0.9rem;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .data-table th {
+            color: var(--text-primary);
+            font-weight: 600;
+            background: var(--bg-card);
+        }
+        
+        .data-table td {
+            color: var(--text-secondary);
+        }
+        
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 32px 24px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-purple);
+        }
+        
+        .footer-copyright {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        
+        @media (max-width: 600px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 100px 20px 60px;
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">
+                <svg class="nav-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#667eea"/><stop offset="100%" style="stop-color:#764ba2"/></linearGradient></defs>
+                    <rect x="5" y="5" width="90" height="90" rx="20" fill="url(#g)"/>
+                    <g transform="rotate(-12, 35, 50)"><rect x="15" y="28" width="28" height="36" rx="4" fill="white"/><circle cx="43" cy="46" r="6" fill="white"/><text x="29" y="54" font-family="Arial" font-size="20" font-weight="bold" fill="#667eea" text-anchor="middle">G</text></g>
+                    <g transform="rotate(12, 65, 50)"><rect x="57" y="28" width="28" height="36" rx="4" fill="rgba(255,255,255,0.9)"/><circle cx="57" cy="46" r="6" fill="url(#g)"/><text x="71" y="54" font-family="Arial" font-size="20" font-weight="bold" fill="#764ba2" text-anchor="middle">S</text></g>
+                </svg>
+                <span class="nav-brand-text">Game Shelf</span>
+            </a>
+            <a href="/" class="nav-back">← Back to Home</a>
+        </div>
+    </nav>
+
+    <main class="content">
+        <header class="page-header">
+            <h1 class="page-title">Privacy Policy</h1>
+            <p class="page-meta">Effective Date: January 30, 2026 • Last Updated: January 30, 2026</p>
+        </header>
+
+        <div class="legal-content">
+            <h2>Introduction</h2>
+            <p>This Privacy Policy describes how Stewartstuff LLC ("we," "us," or "our") collects, uses, and shares information when you use Game Shelf ("the Service"), including our website at gameshelf.co and companion games (Quotle, Slate, Rungs, Word Boxing).</p>
+            <p>We respect your privacy and are committed to protecting your personal information.</p>
+
+            <h2>Information We Collect</h2>
+            
+            <h3>Information You Provide</h3>
+            <p><strong>Account Information:</strong> When you sign in with Google, we receive your name, email address, and profile photo URL.</p>
+            <p><strong>Game Data:</strong> Puzzle game results you record, statistics and streaks, battle participation, friend connections, and your display name.</p>
+            <p><strong>Transaction Information:</strong> Purchase history and payment confirmation from Stripe (we do not store credit card numbers).</p>
+            
+            <h3>Information Collected Automatically</h3>
+            <p><strong>Usage Data:</strong> Features you use, pages you visit, and actions you take.</p>
+            <p><strong>Device Information:</strong> Device type, browser type, IP address, and general location (city/region level).</p>
+
+            <h2>How We Use Your Information</h2>
+            <p>We use your information to:</p>
+            <ul>
+                <li><strong>Provide the Service:</strong> Track your game results, sync data across devices, connect you with friends, and deliver AI-powered hints</li>
+                <li><strong>Process Transactions:</strong> Complete purchases and maintain purchase history</li>
+                <li><strong>Improve the Service:</strong> Understand feature usage, fix bugs, and develop new features</li>
+                <li><strong>Communicate with You:</strong> Respond to support requests and send service-related notifications</li>
+                <li><strong>Ensure Security:</strong> Prevent fraud and enforce our Terms of Service</li>
+            </ul>
+
+            <h2>Information Sharing</h2>
+            <div class="highlight-box">
+                <p><strong>We do not sell your personal information.</strong></p>
+            </div>
+            
+            <p>We share information only in these circumstances:</p>
+            
+            <h3>With Friends</h3>
+            <p>Friends you connect with can see your display name, photo, leaderboard rankings, and activity status. Friends cannot see your full game history or private information.</p>
+            
+            <h3>Service Providers</h3>
+            <table class="data-table">
+                <tr>
+                    <th>Provider</th>
+                    <th>Purpose</th>
+                    <th>Data Shared</th>
+                </tr>
+                <tr>
+                    <td>Google Firebase</td>
+                    <td>Database, authentication, hosting</td>
+                    <td>Account data, game data</td>
+                </tr>
+                <tr>
+                    <td>Stripe</td>
+                    <td>Payment processing</td>
+                    <td>Purchase transactions</td>
+                </tr>
+                <tr>
+                    <td>Anthropic</td>
+                    <td>AI hints</td>
+                    <td>Hint requests (anonymized)</td>
+                </tr>
+            </table>
+            
+            <h3>Legal Requirements</h3>
+            <p>We may disclose information if required by law, court order, or government request.</p>
+
+            <h2>Data Retention</h2>
+            <p><strong>Active Accounts:</strong> We retain your information while your account is active.</p>
+            <p><strong>Deleted Accounts:</strong> When you delete your account, your personal data is removed within 30 days. Backup copies may persist for up to 90 days.</p>
+            <p><strong>Transaction Records:</strong> We retain purchase records for 7 years for tax and legal compliance.</p>
+
+            <h2>Your Rights and Choices</h2>
+            <ul>
+                <li><strong>Access and Export:</strong> View your data in the app or request a full export at support@gameshelf.co</li>
+                <li><strong>Correction:</strong> Update your display name and profile in app settings</li>
+                <li><strong>Deletion:</strong> Delete your account anytime via Menu → Account → Delete Account</li>
+                <li><strong>Opt-Out:</strong> Sign out to use limited features without an account</li>
+            </ul>
+
+            <h2>California Privacy Rights (CCPA)</h2>
+            <p>If you are a California resident, you have the right to know what personal information we collect, request deletion, and not be discriminated against for exercising your rights. <strong>We do not sell personal information.</strong></p>
+            <p>To exercise these rights, contact <a href="mailto:support@gameshelf.co">support@gameshelf.co</a> with "CCPA Request" in the subject line.</p>
+
+            <h2>European Privacy Rights (GDPR)</h2>
+            <p>If you are in the European Economic Area, you have rights to access, correct, delete, restrict, and port your data. Your data may be transferred to the United States using appropriate safeguards.</p>
+            <p>To exercise these rights, contact <a href="mailto:support@gameshelf.co">support@gameshelf.co</a> with "GDPR Request" in the subject line.</p>
+
+            <h2>Children's Privacy</h2>
+            <p>Game Shelf is not intended for children under 13. We do not knowingly collect personal information from children under 13. If we learn that we have collected information from a child under 13, we will delete it promptly.</p>
+
+            <h2>Security</h2>
+            <p>We implement appropriate technical and organizational measures to protect your information, including encryption in transit (HTTPS), secure authentication through Google, and Firebase security rules. However, no method of transmission or storage is 100% secure.</p>
+
+            <h2>Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time. We will notify you of material changes by posting the new policy and updating the "Last Updated" date.</p>
+
+            <h2>Contact Us</h2>
+            <p>If you have questions about this Privacy Policy, please contact us:</p>
+            <p><strong>Email:</strong> <a href="mailto:support@gameshelf.co">support@gameshelf.co</a><br>
+            <strong>Website:</strong> <a href="https://gameshelf.co">https://gameshelf.co</a></p>
+            <p>For privacy-specific requests, include "Privacy" in the subject line.</p>
+
+            <h2>Summary</h2>
+            <table class="data-table">
+                <tr>
+                    <th>What We Collect</th>
+                    <th>Why</th>
+                    <th>Shared With</th>
+                </tr>
+                <tr>
+                    <td>Google profile (name, email, photo)</td>
+                    <td>Account identification</td>
+                    <td>Friends (limited)</td>
+                </tr>
+                <tr>
+                    <td>Game results and stats</td>
+                    <td>Core functionality</td>
+                    <td>Friends (limited)</td>
+                </tr>
+                <tr>
+                    <td>Purchase history</td>
+                    <td>Transaction records</td>
+                    <td>Stripe</td>
+                </tr>
+                <tr>
+                    <td>Usage data</td>
+                    <td>Improve Service</td>
+                    <td>No one (internal only)</td>
+                </tr>
+            </table>
+
+            <p style="margin-top: 48px; font-size: 0.85rem; color: var(--text-muted);">
+                <em>Stewartstuff LLC • Massachusetts, USA</em>
+            </p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/terms">Terms</a>
+            <a href="/privacy">Privacy</a>
+            <a href="mailto:support@gameshelf.co">Contact</a>
+        </div>
+        <p class="footer-copyright">© 2026 Game Shelf • Stewartstuff LLC</p>
+    </footer>
+</body>
+</html>

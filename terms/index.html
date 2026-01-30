@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="version" content="1.0.0">
+    <title>Terms of Service - Game Shelf</title>
+    <meta name="description" content="Game Shelf Terms of Service">
+    <meta name="theme-color" content="#667eea">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700;800&family=Satoshi:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #08080c;
+            --bg-secondary: #0d0d14;
+            --bg-card: #13131d;
+            --text-primary: #ffffff;
+            --text-secondary: #9898a8;
+            --text-muted: #5a5a6e;
+            --accent-purple: #7c8aff;
+            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --border: #1f1f2e;
+        }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Satoshi', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Cabinet Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        
+        /* Nav */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 24px;
+            background: rgba(8, 8, 12, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        
+        .nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .nav-logo {
+            width: 36px;
+            height: 36px;
+        }
+        
+        .nav-brand-text {
+            font-family: 'Cabinet Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-back {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .nav-back:hover {
+            text-decoration: underline;
+        }
+        
+        /* Content */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+        }
+        
+        .page-header {
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .page-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .legal-content h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        .legal-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .legal-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .legal-content ul, .legal-content ol {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+        
+        .legal-content li {
+            margin-bottom: 8px;
+        }
+        
+        .legal-content strong {
+            color: var(--text-primary);
+        }
+        
+        .legal-content a {
+            color: var(--accent-purple);
+        }
+        
+        .highlight-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        
+        .highlight-box p {
+            margin-bottom: 0;
+        }
+        
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 32px 24px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-purple);
+        }
+        
+        .footer-copyright {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        
+        @media (max-width: 600px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 100px 20px 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">
+                <svg class="nav-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#667eea"/><stop offset="100%" style="stop-color:#764ba2"/></linearGradient></defs>
+                    <rect x="5" y="5" width="90" height="90" rx="20" fill="url(#g)"/>
+                    <g transform="rotate(-12, 35, 50)"><rect x="15" y="28" width="28" height="36" rx="4" fill="white"/><circle cx="43" cy="46" r="6" fill="white"/><text x="29" y="54" font-family="Arial" font-size="20" font-weight="bold" fill="#667eea" text-anchor="middle">G</text></g>
+                    <g transform="rotate(12, 65, 50)"><rect x="57" y="28" width="28" height="36" rx="4" fill="rgba(255,255,255,0.9)"/><circle cx="57" cy="46" r="6" fill="url(#g)"/><text x="71" y="54" font-family="Arial" font-size="20" font-weight="bold" fill="#764ba2" text-anchor="middle">S</text></g>
+                </svg>
+                <span class="nav-brand-text">Game Shelf</span>
+            </a>
+            <a href="/" class="nav-back">← Back to Home</a>
+        </div>
+    </nav>
+
+    <main class="content">
+        <header class="page-header">
+            <h1 class="page-title">Terms of Service</h1>
+            <p class="page-meta">Effective Date: January 30, 2026 • Last Updated: January 30, 2026</p>
+        </header>
+
+        <div class="legal-content">
+            <h2>1. Agreement to Terms</h2>
+            <p>By accessing or using Game Shelf ("the Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the Service.</p>
+            <p>Game Shelf is operated by Stewartstuff LLC ("we," "us," or "our"). The Service includes the Game Shelf web application, companion games (Quotle, Slate, Rungs, Word Boxing), and related services accessible at gameshelf.co.</p>
+
+            <h2>2. Description of Service</h2>
+            <p>Game Shelf is a puzzle game tracking application that allows users to:</p>
+            <ul>
+                <li>Record and track results from daily puzzle games</li>
+                <li>View statistics and streaks across multiple games</li>
+                <li>Connect with friends and compare results</li>
+                <li>Participate in skill-based competitions ("Battles")</li>
+                <li>Access AI-powered hints for supported games</li>
+                <li>Play original puzzle games created by Game Shelf</li>
+            </ul>
+
+            <h2>3. Eligibility</h2>
+            <p>You must be at least 13 years old to use the Service. By using the Service, you represent that you meet this age requirement. If you are under 18, you represent that you have your parent or guardian's permission to use the Service.</p>
+
+            <h2>4. Account Registration</h2>
+            <h3>4.1 Account Creation</h3>
+            <p>You may use limited features without an account. To access full features (cloud sync, friends, battles, hints), you must sign in with a Google account.</p>
+            
+            <h3>4.2 Account Security</h3>
+            <p>You are responsible for maintaining the security of your account. We are not liable for any loss or damage arising from unauthorized access to your account.</p>
+
+            <h2>5. Virtual Currency</h2>
+            <h3>5.1 Tokens and Coins</h3>
+            <p><strong>Tokens</strong> are virtual items earned through gameplay, referrals, and promotional activities. <strong>Coins</strong> are virtual items that may be purchased with real money.</p>
+            
+            <div class="highlight-box">
+                <p><strong>IMPORTANT: TOKENS AND COINS HAVE NO CASH VALUE.</strong> Virtual currency cannot be exchanged for real money, transferred to other users, sold or traded outside the Service, or refunded except as required by applicable law.</p>
+            </div>
+
+            <h3>5.2 Purchases</h3>
+            <p>All purchases of Coins are final. We process payments through Stripe. By making a purchase, you agree to Stripe's terms of service.</p>
+
+            <h2>6. Battles and Competitions</h2>
+            <h3>6.1 Nature of Battles</h3>
+            <p>Battles are skill-based competitions where participants compete based on puzzle game performance. Battle outcomes are determined by player skill, not chance. <strong>Battles are not gambling</strong> — prizes have no cash value and cannot be converted to real money.</p>
+            
+            <h3>6.2 Fair Play</h3>
+            <p>You agree to play fairly, not use external tools or automation, not share answers with other participants, and not create multiple accounts for unfair advantage.</p>
+
+            <h2>7. AI Hints</h2>
+            <p>Hints are generated using artificial intelligence. <strong>We do not guarantee the accuracy of AI hints.</strong> Hints are provided for entertainment and assistance only. You use hints at your own discretion.</p>
+
+            <h2>8. Third-Party Games</h2>
+            <div class="highlight-box">
+                <p><strong>Game Shelf is not affiliated with, endorsed by, or sponsored by The New York Times, LinkedIn, or any other game publisher.</strong> Game names, logos, and trademarks are the property of their respective owners.</p>
+            </div>
+            <p>Your use of third-party games is subject to those games' own terms of service. We parse share text that you voluntarily paste from third-party games. We do not access third-party games directly or scrape their systems.</p>
+
+            <h2>9. User Conduct</h2>
+            <p>You agree not to:</p>
+            <ul>
+                <li>Violate any applicable law or regulation</li>
+                <li>Infringe any intellectual property or other rights</li>
+                <li>Upload harmful code, viruses, or malware</li>
+                <li>Attempt to gain unauthorized access to our systems</li>
+                <li>Harass, abuse, or harm other users</li>
+                <li>Use offensive or inappropriate display names</li>
+                <li>Circumvent rate limits or security measures</li>
+            </ul>
+
+            <h2>10. Disclaimers</h2>
+            <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. We do not guarantee that the Service will be uninterrupted, secure, or error-free.</p>
+
+            <h2>11. Limitation of Liability</h2>
+            <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, OUR TOTAL LIABILITY FOR ANY CLAIMS ARISING FROM YOUR USE OF THE SERVICE SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE 12 MONTHS PRECEDING THE CLAIM, OR $100, WHICHEVER IS GREATER.</p>
+
+            <h2>12. Dispute Resolution</h2>
+            <p>Before filing any formal dispute, you agree to contact us at <a href="mailto:support@gameshelf.co">support@gameshelf.co</a> and attempt to resolve the dispute informally for at least 30 days.</p>
+            <p>These Terms are governed by the laws of the Commonwealth of Massachusetts, without regard to conflict of law principles.</p>
+
+            <h2>13. Account Termination</h2>
+            <p>You may delete your account at any time through the app settings. We may suspend or terminate your account for violation of these Terms. Upon termination, any virtual currency in your account is forfeited.</p>
+
+            <h2>14. Changes to Terms</h2>
+            <p>We may update these Terms from time to time. We will notify you of material changes by posting the new Terms and updating the "Last Updated" date. Your continued use of the Service after changes constitutes acceptance.</p>
+
+            <h2>15. Contact Us</h2>
+            <p>If you have questions about these Terms, please contact us:</p>
+            <p><strong>Email:</strong> <a href="mailto:support@gameshelf.co">support@gameshelf.co</a><br>
+            <strong>Website:</strong> <a href="https://gameshelf.co">https://gameshelf.co</a></p>
+
+            <p style="margin-top: 48px; font-size: 0.85rem; color: var(--text-muted);">
+                <em>Game Shelf™, Quotle™, Slate™, Rungs™, and Word Boxing™ are trademarks of Stewartstuff LLC.</em>
+            </p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/terms">Terms</a>
+            <a href="/privacy">Privacy</a>
+            <a href="mailto:support@gameshelf.co">Contact</a>
+        </div>
+        <p class="footer-copyright">© 2026 Game Shelf • Stewartstuff LLC</p>
+    </footer>
+</body>
+</html>
