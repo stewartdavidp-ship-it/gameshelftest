@@ -1,10 +1,33 @@
-Game Shelf PWA v1.3.49 Release Notes
+Game Shelf PWA v1.3.50 Release Notes
 =====================================
 
 Release Date: January 30, 2026
 
+ENHANCEMENTS:
+-------------
+
+1. ENHANCED ANALYTICS FOR BETA:
+   Added tracking for key user engagement moments to inform product decisions.
+   
+   **New events tracked:**
+   - morning_review_shown: When Morning Review is displayed (auto vs manual)
+   - morning_review_closed: When closed, with engaged=true if content was viewed
+   - morning_review_setting: When user enables/disables the feature
+   - hint_requested: When AI hint is requested (with game and level)
+   - insight_viewed: When post-game insight is opened
+   - friend_profile_viewed: When tapping a friend in the widget
+   - battle_viewed: When viewing battle details
+   - share_action: When sharing to any platform
+   - tab_switched: When navigating between tabs
+   
+   All events include session ID, platform, and app version for analysis.
+
+---
+
+v1.3.49 (2026-01-30)
+--------------------
+
 BUG FIXES:
-----------
 
 1. HINT GAME SELECTION FIX:
    Fixed bug where wrong game appeared in hint sheet after playing a game.
