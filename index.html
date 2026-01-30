@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.42">
+    <meta name="version" content="1.3.44">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9319,7 +9319,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.42</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.44</span>
             </div>
         </div>
         <div class="header-right">
@@ -9593,7 +9593,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.42</div>
+            <div class="settings-version">Game Shelf PWA v1.3.44</div>
         </div>
     </div>
     
@@ -18923,11 +18923,14 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.42';
+        const APP_VERSION = '1.3.44';
         
         const RELEASE_NOTES = {
-            '1.3.42': [
-                { icon: '🔬', title: 'Font Thickening OCR', desc: 'Thin fonts like Connections stats now enhanced with dilation for reliable reading' }
+            '1.3.44': [
+                { icon: '🎯', title: 'Stats OCR Fixed', desc: 'Now tries both original and inverted images to find stats numbers' }
+            ],
+            '1.3.43': [
+                { icon: '🎯', title: 'Fixed Stats OCR!', desc: 'Connections and other light-background stats now read correctly via smart inversion' }
             ],
             '1.3.36': [
                 { icon: '🔍', title: 'Smarter OCR Processing', desc: 'Fixed stats screenshot parsing - Connections stats now recognized reliably!' }
@@ -29239,12 +29242,8 @@ Hint levels:
             return null;
         }
         
-        // v1.3.42: Preprocess image for better OCR on stats screenshots
-        // Key finding: Tesseract.js on iOS Safari struggles with thin fonts
-        // Solution: Detect light backgrounds, invert, AND dilate to thicken thin strokes
-        async function preprocessImageForOCR(blob, options = {}) {
-            const { invert = false, dilate = false } = options;
-            
+        // v1.3.44: Simple OCR preprocessing - just invert colors
+        async function invertImage(blob) {
             return new Promise((resolve) => {
                 const img = new Image();
                 img.onload = () => {
@@ -29255,61 +29254,17 @@ Hint levels:
                     canvas.height = img.height;
                     ctx.drawImage(img, 0, 0);
                     
-                    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    let data = imageData.data;
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
                     
-                    // Step 1: Invert if needed
-                    if (invert) {
-                        for (let i = 0; i < data.length; i += 4) {
-                            data[i] = 255 - data[i];
-                            data[i + 1] = 255 - data[i + 1];
-                            data[i + 2] = 255 - data[i + 2];
-                        }
-                        ctx.putImageData(imageData, 0, 0);
+                    // Invert all colors
+                    for (let i = 0; i < data.length; i += 4) {
+                        data[i] = 255 - data[i];         // R
+                        data[i + 1] = 255 - data[i + 1]; // G
+                        data[i + 2] = 255 - data[i + 2]; // B
                     }
                     
-                    // Step 2: Dilate (thicken) dark pixels to make thin fonts readable
-                    // This is crucial for thin fonts like Connections uses
-                    if (dilate) {
-                        // First convert to grayscale and threshold
-                        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        data = imageData.data;
-                        
-                        const width = canvas.width;
-                        const height = canvas.height;
-                        
-                        // Create binary version (text = 0, background = 255)
-                        const binary = new Uint8Array(width * height);
-                        for (let i = 0; i < data.length; i += 4) {
-                            const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                            binary[i / 4] = gray < 128 ? 0 : 255;
-                        }
-                        
-                        // Dilate: if any neighbor is dark (0), make this pixel dark
-                        // This thickens the text
-                        const dilated = new Uint8Array(binary);
-                        for (let y = 1; y < height - 1; y++) {
-                            for (let x = 1; x < width - 1; x++) {
-                                const idx = y * width + x;
-                                // Check 3x3 neighborhood
-                                if (binary[idx - width - 1] === 0 || binary[idx - width] === 0 || binary[idx - width + 1] === 0 ||
-                                    binary[idx - 1] === 0 || binary[idx] === 0 || binary[idx + 1] === 0 ||
-                                    binary[idx + width - 1] === 0 || binary[idx + width] === 0 || binary[idx + width + 1] === 0) {
-                                    dilated[idx] = 0;
-                                }
-                            }
-                        }
-                        
-                        // Apply dilated result back
-                        for (let i = 0; i < dilated.length; i++) {
-                            const val = dilated[i];
-                            data[i * 4] = val;
-                            data[i * 4 + 1] = val;
-                            data[i * 4 + 2] = val;
-                        }
-                        
-                        ctx.putImageData(imageData, 0, 0);
-                    }
+                    ctx.putImageData(imageData, 0, 0);
                     
                     canvas.toBlob((processedBlob) => {
                         resolve(processedBlob);
@@ -29319,37 +29274,8 @@ Hint levels:
             });
         }
         
-        // Detect if image is predominantly light (needs inversion for OCR)
-        async function isLightBackground(blob) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    const sampleSize = 100;
-                    canvas.width = sampleSize;
-                    canvas.height = sampleSize;
-                    ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
-                    
-                    const imageData = ctx.getImageData(0, 0, sampleSize, sampleSize);
-                    const data = imageData.data;
-                    
-                    let totalBrightness = 0;
-                    for (let i = 0; i < data.length; i += 4) {
-                        totalBrightness += (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    }
-                    const avgBrightness = totalBrightness / (data.length / 4);
-                    
-                    console.log('📷 Image average brightness:', avgBrightness.toFixed(0), '/ 255');
-                    resolve(avgBrightness > 128);
-                };
-                img.src = URL.createObjectURL(blob);
-            });
-        }
-        
         // Process screenshot from clipboard
-        // v1.3.42: Auto-detect light backgrounds, invert AND dilate for thin fonts
+        // v1.3.44: Always try BOTH original and inverted, use whichever finds more numbers
         async function processScreenshot(blob) {
             try {
                 // Initialize Tesseract worker if needed
@@ -29358,11 +29284,6 @@ Hint levels:
                     ocrWorker = await Tesseract.createWorker('eng');
                 }
                 
-                const hasGoodNumbers = (nums) => {
-                    const hasLarge = nums.some(n => parseInt(n) > 100);
-                    return hasLarge && nums.length >= 4;
-                };
-                
                 const runOCR = async (b) => {
                     const url = URL.createObjectURL(b);
                     const { data } = await ocrWorker.recognize(url);
@@ -29370,59 +29291,48 @@ Hint levels:
                     return data.text;
                 };
                 
-                // Check if image has light background
-                const isLight = await isLightBackground(blob);
-                console.log('📷 Image is light background:', isLight);
-                
-                // v1.3.42: Try multiple preprocessing combinations
-                const attempts = [
-                    { name: 'original', opts: {} },
-                    { name: 'inverted', opts: { invert: true } },
-                    { name: 'dilated', opts: { dilate: true } },
-                    { name: 'inverted+dilated', opts: { invert: true, dilate: true } }
-                ];
-                
-                // Reorder based on background: light images try invert first
-                if (isLight) {
-                    attempts.unshift(attempts.splice(1, 1)[0]); // Move 'inverted' to front
-                    attempts.unshift(attempts.splice(3, 1)[0]); // Move 'inverted+dilated' to front
-                }
-                
                 showToast('🔄 Processing image...', 'info');
                 
-                let bestText = '';
-                let bestNumbers = [];
+                // Always try BOTH and compare results
+                // Step 1: Try original
+                console.log('📷 Trying original image...');
+                const originalText = await runOCR(blob);
+                const originalNumbers = originalText.match(/\d+/g) || [];
+                const originalHasLarge = originalNumbers.some(n => parseInt(n) > 100);
+                console.log('📷 Original numbers:', originalNumbers.slice(0, 10), 'hasLarge:', originalHasLarge);
                 
-                for (const attempt of attempts) {
-                    console.log(`📷 Trying ${attempt.name}...`);
-                    
-                    const processed = Object.keys(attempt.opts).length > 0 
-                        ? await preprocessImageForOCR(blob, attempt.opts)
-                        : blob;
-                    
-                    const text = await runOCR(processed);
-                    const numbers = text.match(/\d+/g) || [];
-                    
-                    console.log(`📷 OCR [${attempt.name}]:`, numbers.slice(0, 10));
-                    
-                    // Keep best result
-                    if (numbers.length > bestNumbers.length || 
-                        (numbers.some(n => parseInt(n) > 100) && !bestNumbers.some(n => parseInt(n) > 100))) {
-                        bestText = text;
-                        bestNumbers = numbers;
-                    }
-                    
-                    // Stop if we found good numbers
-                    if (hasGoodNumbers(numbers)) {
-                        console.log(`📷 Success with ${attempt.name}!`);
-                        bestText = text;
-                        bestNumbers = numbers;
-                        break;
-                    }
+                // Step 2: Try inverted
+                console.log('📷 Trying inverted image...');
+                const invertedBlob = await invertImage(blob);
+                const invertedText = await runOCR(invertedBlob);
+                const invertedNumbers = invertedText.match(/\d+/g) || [];
+                const invertedHasLarge = invertedNumbers.some(n => parseInt(n) > 100);
+                console.log('📷 Inverted numbers:', invertedNumbers.slice(0, 10), 'hasLarge:', invertedHasLarge);
+                
+                // Step 3: Pick the better result
+                let rawOcrText;
+                let numbersFound;
+                
+                // Prefer the one with a large number (likely stats), or more numbers total
+                if (invertedHasLarge && !originalHasLarge) {
+                    console.log('📷 Using INVERTED (found large number)');
+                    rawOcrText = invertedText;
+                    numbersFound = invertedNumbers;
+                } else if (originalHasLarge && !invertedHasLarge) {
+                    console.log('📷 Using ORIGINAL (found large number)');
+                    rawOcrText = originalText;
+                    numbersFound = originalNumbers;
+                } else if (invertedNumbers.length > originalNumbers.length) {
+                    console.log('📷 Using INVERTED (more numbers)');
+                    rawOcrText = invertedText;
+                    numbersFound = invertedNumbers;
+                } else {
+                    console.log('📷 Using ORIGINAL (default)');
+                    rawOcrText = originalText;
+                    numbersFound = originalNumbers;
                 }
                 
-                const rawOcrText = bestText;
-                console.log('📷 Final numbers found:', bestNumbers);
+                console.log('📷 Final numbers found:', numbersFound);
                 
                 if (!rawOcrText || rawOcrText.trim().length < 10) {
                     showToast('📷 Couldn\'t read text from image', 'error');
@@ -29450,7 +29360,7 @@ Hint levels:
                     console.log('📷 Detected likely stats screenshot but parsing failed');
                     console.log('📷 Full OCR text for debugging:', ocrText);
                     
-                    // v1.3.42: Show debug info in the failure prompt
+                    // v1.3.44: Show debug info in the failure prompt
                     // Extract what numbers we DID find for debugging
                     const allNumbers = ocrText.match(/\d+/g) || [];
                     const normalized = ocrText.replace(/\s+/g, ' ');
@@ -29729,7 +29639,7 @@ Hint levels:
         }
         
         // v1.3.35: Show prompt when stats page detected but couldn't parse
-        // v1.3.42: Added debug info to help diagnose OCR issues
+        // v1.3.44: Added debug info to help diagnose OCR issues
         function showStatsParseFailurePrompt(gameType, ocrText) {
             const game = GAMES[gameType];
             if (!game) return;
