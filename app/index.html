@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.4.1">
+    <meta name="version" content="1.4.3">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -419,6 +419,36 @@
         
         .settings-menu.active {
             left: 0;
+        }
+        
+        /* Desktop with enough space: Show menu beside the app container */
+        @media (min-width: 900px) {
+            .settings-overlay {
+                /* Dim only the app area, not the whole screen */
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                max-width: 480px;
+                background: rgba(0,0,0,0.3);
+            }
+            
+            .settings-menu {
+                /* Position to the left of the centered 480px container */
+                /* 50% - 240px (half container) - 10px gap = left edge of menu's right side */
+                left: calc(50% - 240px - 10px);
+                transform: translateX(-100%);
+                opacity: 0;
+                pointer-events: none;
+                box-shadow: 4px 0 30px rgba(0,0,0,0.5);
+                border-radius: 0 12px 12px 0;
+            }
+            
+            .settings-menu.active {
+                left: calc(50% - 240px - 10px);
+                transform: translateX(-100%);
+                opacity: 1;
+                pointer-events: auto;
+            }
         }
         
         .settings-header {
@@ -9336,7 +9366,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.4.1</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.4.3</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -9629,7 +9659,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.4.1</div>
+            <div class="settings-version">Game Shelf PWA v1.4.3</div>
         </div>
     </div>
     
@@ -17590,9 +17620,13 @@
             if (newSetting !== null) {
                 return newSetting === 'true';
             }
-            // Migrate from old setting
+            // Migrate from old setting if it exists
             const oldSetting = localStorage.getItem('gameshelf_feedback_mode');
-            return oldSetting === 'true';
+            if (oldSetting !== null) {
+                return oldSetting === 'true';
+            }
+            // Default to enabled
+            return true;
         }
         
         function initHelpButton() {
@@ -18909,9 +18943,13 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.4.1';
+        const APP_VERSION = '1.4.3';
         
         const RELEASE_NOTES = {
+            '1.4.3': [
+                { icon: '❓', title: 'Help Button On by Default', desc: 'Help button now shows by default for new users' },
+                { icon: '🖥️', title: 'Desktop Menu Fix', desc: 'Settings menu now appears beside the app on desktop instead of covering it' }
+            ],
             '1.4.1': [
                 { icon: '📊', title: 'Enhanced Analytics', desc: 'Better tracking for Morning Review, hints, insights, and social features' }
             ],

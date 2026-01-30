@@ -1,3 +1,37 @@
+Game Shelf PWA v1.4.3 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+HELP BUTTON DEFAULT CHANGE:
+---------------------------
+
+1. HELP BUTTON NOW ON BY DEFAULT:
+   - New users will see the floating help button (❓) by default
+   - Previously defaulted to hidden
+   - Users can still toggle it off in Settings if preferred
+
+Also includes Desktop Menu Fix from v1.4.2.
+
+---
+
+Game Shelf PWA v1.4.2 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+DESKTOP MENU FIX:
+-----------------
+
+1. SETTINGS MENU POSITIONING ON DESKTOP:
+   - On screens 900px+ wide, the settings menu now appears beside the app
+   - Menu slides in to the left of the centered 480px container
+   - No longer covers the main app content on desktop
+   - Overlay only dims the app area, not the entire screen
+   - Falls back to standard slide-over on narrower screens (600-900px)
+
+---
+
 Game Shelf PWA v1.4.1 Release Notes
 =====================================
 

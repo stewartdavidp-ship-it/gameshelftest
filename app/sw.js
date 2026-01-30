@@ -5,7 +5,7 @@
  * Update this on EVERY release to force PWA update.
  */
 
-const CACHE_VERSION = 'v1.4.1';
+const CACHE_VERSION = 'v1.4.3';
 const CACHE_NAME = `gameshelf-pwa-${CACHE_VERSION}`;
 
 // Install - skip waiting immediately to activate new SW
