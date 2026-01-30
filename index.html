@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="1.5.2">
+    <meta name="version" content="1.5.4">
     <title>Game Shelf - Your Daily Puzzle Companion</title>
     <meta name="description" content="Track 36+ daily puzzle games, get AI-powered hints, and play original games.">
     <meta property="og:title" content="Game Shelf - Your Daily Puzzle Companion">
@@ -657,7 +657,7 @@
         
         .product-card.tracker::before { background: var(--accent-gradient); }
         .product-card.ai::before { background: linear-gradient(90deg, #f093fb, #f5576c); }
-        .product-card.games::before { background: linear-gradient(90deg, #4ade80, #22c55e); }
+        .product-card.battles::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
         .product-card.social::before { background: linear-gradient(90deg, #fb923c, #f97316); }
         
         .product-card:hover {
@@ -705,9 +705,9 @@
             background: linear-gradient(135deg, #f093fb, #f5576c); 
             box-shadow: 0 8px 24px rgba(240,147,251,0.3);
         }
-        .product-icon.games { 
-            background: linear-gradient(135deg, #4ade80, #22c55e); 
-            box-shadow: 0 8px 24px rgba(74,222,128,0.3);
+        .product-icon.battles { 
+            background: linear-gradient(135deg, #ef4444, #dc2626); 
+            box-shadow: 0 8px 24px rgba(239,68,68,0.3);
         }
         .product-icon.social { 
             background: linear-gradient(135deg, #fb923c, #f97316); 
@@ -779,7 +779,7 @@
         
         .product-card.tracker .product-cta { color: var(--accent-purple); }
         .product-card.ai .product-cta { color: var(--accent-pink); }
-        .product-card.games .product-cta { color: var(--accent-green); }
+        .product-card.battles .product-cta { color: #ef4444; }
         .product-card.social .product-cta { color: var(--accent-orange); }
         
         .product-cta svg {
@@ -1305,7 +1305,7 @@
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#games" class="nav-link">Games</a>
                 <a href="#about" class="nav-link">About</a>
-                <a href="/app/" class="nav-cta">Open App</a>
+                <a href="/app" class="nav-cta">Open App</a>
             </div>
         </div>
     </nav>
@@ -1346,7 +1346,7 @@
                 </div>
                 <p class="hero-description">Track 36+ puzzle games, get AI-powered hints when you're stuck, and play exclusive originals. All your daily games in one beautiful place.</p>
                 <div class="hero-ctas">
-                    <a href="/app/" class="hero-cta">
+                    <a href="/app" class="hero-cta">
                         <span>Start Playing</span>
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </a>
@@ -1371,7 +1371,7 @@
                 <p class="section-subtitle">One platform with everything you need to enjoy your daily puzzles more</p>
             </div>
             <div class="products-grid">
-                <a href="/app/" class="product-card tracker featured fade-up stagger-1">
+                <a href="/app" class="product-card tracker featured fade-up stagger-1">
                     <div class="product-header">
                         <div class="product-icon tracker">📊</div>
                         <div class="product-info">
@@ -1387,7 +1387,7 @@
                     </div>
                     <div class="product-cta">Start Tracking <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                 </a>
-                <a href="/app/" class="product-card ai fade-up stagger-2">
+                <a href="/app" class="product-card ai fade-up stagger-2">
                     <div class="product-header">
                         <div class="product-icon ai">🤖</div>
                         <div class="product-info">
@@ -1403,34 +1403,33 @@
                     </div>
                     <div class="product-cta">Try AI Features <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                 </a>
-                <a href="#originals" class="product-card games fade-up stagger-3">
+                <a href="/app" class="product-card battles fade-up stagger-3">
                     <div class="product-header">
-                        <div class="product-icon games">🎮</div>
+                        <div class="product-icon battles">⚔️</div>
                         <div class="product-info">
-                            <h3>Original Games</h3>
-                            <div class="product-tagline">Exclusive puzzles</div>
+                            <h3>Battles</h3>
+                            <div class="product-tagline">Compete head-to-head</div>
                         </div>
                     </div>
-                    <p class="product-description">Play games you won't find anywhere else. Four original daily puzzles designed to challenge and delight — all free to play.</p>
+                    <p class="product-description">Challenge friends to daily puzzle battles. Compare scores across games and see who comes out on top. Bragging rights included.</p>
                     <div class="product-features">
-                        <span class="product-feature">Quotle</span>
-                        <span class="product-feature">Slate</span>
-                        <span class="product-feature">Rungs</span>
-                        <span class="product-feature">Word Boxing</span>
+                        <span class="product-feature">Daily matchups</span>
+                        <span class="product-feature">Score comparison</span>
+                        <span class="product-feature">Battle history</span>
                     </div>
-                    <div class="product-cta">Play Now <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                    <div class="product-cta">Start a Battle <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                 </a>
-                <a href="/app/" class="product-card social fade-up stagger-4">
+                <a href="/app" class="product-card social fade-up stagger-4">
                     <div class="product-header">
                         <div class="product-icon social">👥</div>
                         <div class="product-info">
-                            <h3>Social Features</h3>
-                            <div class="product-tagline">Compete & connect</div>
+                            <h3>Friends & Stats</h3>
+                            <div class="product-tagline">Connect & compare</div>
                         </div>
                     </div>
-                    <p class="product-description">Add friends, compare stats, and battle head-to-head. See who's really the puzzle champion among your group.</p>
+                    <p class="product-description">Add friends, track leaderboards, and earn achievements. See how your puzzle skills stack up against your crew.</p>
                     <div class="product-features">
-                        <span class="product-feature">Friend battles</span>
+                        <span class="product-feature">Friend lists</span>
                         <span class="product-feature">Leaderboards</span>
                         <span class="product-feature">Achievements</span>
                     </div>
@@ -1496,22 +1495,22 @@
             </div>
             <div class="originals-label fade-up" id="originals">🎮 Game Shelf Originals — Play Now</div>
             <div class="originals-grid">
-                <a href="/quotle/" class="original-card fade-up stagger-1">
+                <a href="/quotle" class="original-card fade-up stagger-1">
                     <span class="original-icon">💬</span>
                     <h4>Quotle</h4>
                     <p>Guess the famous quote one word at a time</p>
                 </a>
-                <a href="/slate/" class="original-card fade-up stagger-2">
+                <a href="/slate" class="original-card fade-up stagger-2">
                     <span class="original-icon">🪨</span>
                     <h4>Slate</h4>
                     <p>Find 8 hidden words in the grid</p>
                 </a>
-                <a href="/rungs/" class="original-card fade-up stagger-3">
+                <a href="/rungs" class="original-card fade-up stagger-3">
                     <span class="original-icon">🪜</span>
                     <h4>Rungs</h4>
                     <p>Climb the word ladder</p>
                 </a>
-                <a href="/wordboxing/" class="original-card fade-up stagger-4">
+                <a href="/wordboxing" class="original-card fade-up stagger-4">
                     <span class="original-icon">🥊</span>
                     <h4>Word Boxing</h4>
                     <p>Real-time multiplayer battles</p>
@@ -1538,7 +1537,7 @@
                         <p><span class="about-highlight">So I built Game Shelf.</span> It started as a personal project — just a simple tracker for my own puzzle addiction. But it grew into something bigger: AI-powered hints, original games, friend battles, and a community of puzzle lovers.</p>
                         <p>It's currently in beta, and <span class="about-highlight">your feedback is shaping what this becomes</span>. I read every message and I'm building this for people like us.</p>
                     </div>
-                    <a href="/beta/" class="about-cta">Join the Beta →</a>
+                    <a href="/beta" class="about-cta">Join the Beta →</a>
                 </div>
             </div>
         </div>
@@ -1575,30 +1574,30 @@
             <div class="footer-section">
                 <h5>Product</h5>
                 <ul class="footer-links">
-                    <li><a href="/app/">Open App</a></li>
-                    <li><a href="/beta/">Join Beta</a></li>
+                    <li><a href="/app">Open App</a></li>
+                    <li><a href="/beta">Join Beta</a></li>
                     <li><a href="#games">Supported Games</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h5>Our Games</h5>
                 <ul class="footer-links">
-                    <li><a href="/quotle/">Quotle</a></li>
-                    <li><a href="/slate/">Slate</a></li>
-                    <li><a href="/rungs/">Rungs</a></li>
-                    <li><a href="/wordboxing/">Word Boxing</a></li>
+                    <li><a href="/quotle">Quotle</a></li>
+                    <li><a href="/slate">Slate</a></li>
+                    <li><a href="/rungs">Rungs</a></li>
+                    <li><a href="/wordboxing">Word Boxing</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h5>Support</h5>
                 <ul class="footer-links">
                     <li><a href="mailto:support@gameshelf.co">Contact</a></li>
-                    <li><a href="/beta/">Give Feedback</a></li>
+                    <li><a href="/beta">Give Feedback</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p class="footer-copyright">© 2026 Game Shelf • v1.5.2</p>
+            <p class="footer-copyright">© 2026 Game Shelf • v1.5.4</p>
             <p class="footer-contact">Questions? <a href="mailto:support@gameshelf.co">support@gameshelf.co</a></p>
         </div>
     </footer>
