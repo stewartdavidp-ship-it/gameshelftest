@@ -1,7 +1,38 @@
-Game Shelf PWA v1.3.50 Release Notes
+Game Shelf PWA v1.3.51 Release Notes
 =====================================
 
 Release Date: January 30, 2026
+
+NEW FEATURE:
+------------
+
+1. PERSONALIZED MORNING REVIEW GREETING:
+   Morning Review now includes a personalized greeting based on your stats!
+   
+   **How it works:**
+   - When you open Morning Review, Game Shelf gathers your recent game stats
+   - Stats sent to Firebase include: current streaks, yesterday's scores,
+     games played, milestone proximity
+   - AI generates a 1-2 sentence personal check-in based on YOUR data
+   - Examples: "47-day Wordle streak and counting. Locked in."
+              "Wordle in 2 yesterday? Show-off. Let's see an encore."
+              "Connections hasn't seen you in 12 days. Just saying."
+   
+   **Technical details:**
+   - Personal greetings are cached per user per day (won't change if reopened)
+   - If you have no meaningful stats, shows default: "Let's get the day off 
+     to a great start."
+   - Displayed in green highlight box between header and daily intro
+   - ~100 tokens per generation = negligible cost increase
+   
+   **New client function:**
+   - gatherUserStatsForMorningReview() - collects streak, score, and milestone
+     data for all games on user's shelf
+
+---
+
+v1.3.50 (2026-01-30)
+--------------------
 
 ENHANCEMENTS:
 -------------
