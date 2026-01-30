@@ -1,10 +1,29 @@
-Game Shelf PWA v1.3.48 Release Notes
+Game Shelf PWA v1.3.49 Release Notes
 =====================================
 
 Release Date: January 30, 2026
 
 BUG FIXES:
 ----------
+
+1. HINT GAME SELECTION FIX:
+   Fixed bug where wrong game appeared in hint sheet after playing a game.
+   
+   **Problem:** If you had already recorded Connections today and clicked to 
+   play it again, returning to Game Shelf would show Rungs (or another game)
+   in the hint sheet instead of Connections.
+   
+   **Cause:** checkReturnFromGame() was clearing lastLaunchedGame when the 
+   game was already logged today. Then hint selection fell back to localStorage
+   data from GS Originals like Rungs.
+   
+   **Fix:** No longer clears lastLaunchedGame when a game is already logged.
+   User might want hints even after completing (to review, understand, etc.)
+
+---
+
+v1.3.48 (2026-01-30)
+--------------------
 
 1. LOG SHEET MODAL X BUTTON FIX:
    Fixed the X button on the modal not dismissing it.
