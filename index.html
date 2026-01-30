@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.47">
+    <meta name="version" content="1.3.48">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -869,28 +869,6 @@
         .streak-badge {
             color: var(--accent-orange);
             font-weight: 600;
-        }
-        
-        .share-today-btn {
-            width: 100%;
-            margin-top: 12px;
-            padding: 10px 16px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .share-today-btn:active {
-            opacity: 0.9;
-            transform: scale(0.98);
         }
         
         /* Floating Action Button for Share - MOVED TO HEADER */
@@ -9319,7 +9297,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.47</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.48</span>
             </div>
         </div>
         <div class="header-right">
@@ -9593,7 +9571,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.47</div>
+            <div class="settings-version">Game Shelf PWA v1.3.48</div>
         </div>
     </div>
     
@@ -9677,12 +9655,13 @@
                     onmouseleave="handleRecordButtonUp(event)"
                     ontouchstart="handleRecordButtonDown(event)" 
                     ontouchend="handleRecordButtonUp(event)"
-                    ontouchcancel="handleRecordButtonUp(event)">
+                    ontouchcancel="handleRecordButtonUp(event)"
+                    ontouchmove="handleRecordButtonMove(event)">
                     <span style="font-size: 1.3rem;">📋</span>
-                    <span>Record Game</span>
+                    <span>Paste Activity</span>
                 </button>
                 <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 6px;">
-                    Tap to paste from clipboard • Hold for manual entry
+                    Tap to paste • Hold for manual entry
                 </div>
                 <div class="quick-games" id="quick-games">
                     <!-- Populated by JS -->
@@ -9701,10 +9680,6 @@
                     <span id="games-today-text">Play your first game!</span>
                     <span class="streak-badge" id="streak-badge">🔥 0</span>
                 </div>
-                <button class="share-today-btn" id="share-today-btn" onclick="quickShareRecap()" style="display: none;">
-                    <span>📤</span>
-                    <span>Share Today's Recap</span>
-                </button>
             </div>
             
             <div class="widget" id="friends-widget">
@@ -9840,9 +9815,6 @@
             <div class="subtab-content" id="stats-tab-bygame">
                 <div class="section-header" style="margin-bottom: 16px;">
                     <span class="section-title">Game Details</span>
-                    <button class="see-all" onclick="handleRecordGame()" style="background: var(--accent-purple); color: white; border-radius: 8px; padding: 6px 12px;">
-                        📷 Import Stats
-                    </button>
                 </div>
                 
                 <!-- Per-Game Stats List -->
@@ -10287,56 +10259,33 @@
             </div>
             
             <div class="setup-header">
-                <h1>Import Your Stats?</h1>
-                <p>We can pull in your existing progress</p>
+                <h1>You're Almost Ready!</h1>
+                <p>One more thing about tracking your progress</p>
             </div>
             
             <div class="setup-enhance-card">
-                <h3>📊 Screenshot Import</h3>
-                <p>We'll open each game's stats screen using your preferences. Just screenshot and upload to import:</p>
+                <h3>📋 How to Record Games</h3>
+                <p>After playing any game, just:</p>
                 <div class="setup-enhance-benefits">
-                    <div class="setup-benefit"><span class="icon">✓</span> Current streak</div>
-                    <div class="setup-benefit"><span class="icon">✓</span> Games played</div>
-                    <div class="setup-benefit"><span class="icon">✓</span> Win percentage</div>
-                    <div class="setup-benefit"><span class="icon">✓</span> Max streak</div>
+                    <div class="setup-benefit"><span class="icon">1</span> Copy the game's share text or stats</div>
+                    <div class="setup-benefit"><span class="icon">2</span> Return to Game Shelf</div>
+                    <div class="setup-benefit"><span class="icon">3</span> Tap <strong>Paste Activity</strong></div>
                 </div>
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 12px; margin-bottom: 0;">This also helps us verify your launch URLs work correctly.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 12px; margin-bottom: 0;">Game Shelf automatically detects what you copied and handles it - whether it's today's result or your stats!</p>
             </div>
             
             <div class="setup-spacer"></div>
             
             <div class="setup-actions">
-                <button class="setup-btn setup-btn-primary" onclick="setupStartScreenshotFlow()">
-                    Yes, Import Stats
-                </button>
-                <button class="setup-btn setup-btn-ghost" onclick="setupGoToSharing()">
-                    Skip for now
+                <button class="setup-btn setup-btn-primary" onclick="setupGoToSharing()">
+                    Got It →
                 </button>
             </div>
         </div>
         
-        <!-- SETUP SCREEN 5: SCREENSHOT FLOW -->
-        <div class="setup-screen" id="setup-screenshot-flow">
-            <div class="setup-progress">
-                <div class="setup-progress-step complete"></div>
-                <div class="setup-progress-step complete"></div>
-                <div class="setup-progress-step complete"></div>
-                <div class="setup-progress-step active"></div>
-                <div class="setup-progress-step"></div>
-            </div>
-            
-            <div class="setup-header">
-                <h1 id="setup-screenshot-flow-title">Import Stats</h1>
-                <p id="setup-screenshot-flow-subtitle">Game 1 of 3</p>
-            </div>
-            
-            <div class="setup-scroll-content" id="setup-screenshot-flow-content">
-                <!-- Filled by JS based on current game -->
-            </div>
-            
-            <div class="setup-actions" id="setup-screenshot-flow-actions">
-                <!-- Dynamic buttons -->
-            </div>
+        <!-- SETUP SCREEN 5: SCREENSHOT FLOW - DEPRECATED, kept for backwards compat -->
+        <div class="setup-screen" id="setup-screenshot-flow" style="display: none;">
+            <!-- This screen is no longer used - all imports go through Paste Activity -->
         </div>
         
         <!-- SETUP SCREEN 6: LAUNCH FEEDBACK -->
@@ -10652,48 +10601,19 @@
         </div>
     </div>
     
-    <!-- Log Sheet -->
+    <!-- Log Sheet (Manual Entry) -->
     <div class="bottom-sheet-overlay" id="log-sheet" onclick="closeLogSheet(event)">
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 80vh;">
             <div class="bottom-sheet-handle"></div>
             <div class="bottom-sheet-header">
-                <span>📋 Log Game Result</span>
+                <span>✏️ Manual Entry</span>
                 <button class="bottom-sheet-close" onclick="closeLogSheet(event)">×</button>
             </div>
             
-            <!-- Tabs -->
-            <div class="log-tabs">
-                <button class="log-tab active" onclick="switchLogTab('paste')">📋 From Share</button>
-                <button class="log-tab" onclick="switchLogTab('quick')">✏️ Manual</button>
-            </div>
-            
-            <!-- Paste Tab -->
-            <div class="log-tab-content" id="log-tab-paste">
-                <!-- v1.2.7.6: Explicit paste button for iOS (avoids auto-paste permission popup) -->
-                <button id="tap-to-paste-btn" onclick="tapToPaste()" style="width: 100%; padding: 14px; margin-bottom: 12px; background: var(--accent-blue); border: none; border-radius: 10px; color: white; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    📋 Tap to Paste from Clipboard
-                </button>
-                <textarea class="log-textarea" id="log-input" placeholder="Or tap here to type/paste manually...
-
-Example:
-Wordle 1,234 3/6
-⬛⬛🟨⬛⬛
-🟨🟩⬛⬛⬛
-🟩🟩🟩🟩🟩" oninput="parseLogInput()"></textarea>
-                <div class="parse-preview" id="parse-preview">
-                    <div class="parse-game-name" id="parse-game-name"></div>
-                    <div class="parse-score" id="parse-score"></div>
-                </div>
-                <div class="log-buttons">
-                    <button class="log-btn" id="log-btn" onclick="submitLog()">Log Game</button>
-                    <button class="log-btn-secondary" id="bulk-log-btn" onclick="bulkImport()" style="display: none;">Log All Found</button>
-                </div>
-            </div>
-            
-            <!-- Quick Log Tab -->
-            <div class="log-tab-content" id="log-tab-quick" style="display: none;">
+            <!-- Manual Entry Content -->
+            <div class="log-tab-content" id="log-tab-quick">
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-                    Tap a game to quickly log without pasting:
+                    Tap a game to log without pasting:
                 </p>
                 <div id="quick-log-buttons" class="quick-log-buttons">
                     <!-- Populated by renderQuickLogButtons() -->
@@ -12356,33 +12276,19 @@ Wordle 1,234 3/6
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh;">
             <div class="bottom-sheet-handle"></div>
             <div class="bottom-sheet-header">
-                <span>👥 Invite & Connect</span>
+                <span>👥 Add Friends</span>
                 <button class="bottom-sheet-close" onclick="closeAddFriend()">×</button>
             </div>
             
-            <!-- Your Invite Code -->
+            <!-- Share Your Link -->
             <div class="friend-code-display">
-                <div class="friend-code-label">Your Invite Code</div>
-                <div class="friend-code-value" id="my-friend-code">--------</div>
-                <div class="friend-code-actions">
-                    <button class="friend-code-btn secondary" onclick="copyFriendCode()">📋 Copy Code</button>
-                    <button class="friend-code-btn primary" onclick="shareFriendLink()">📤 Share Link</button>
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; text-align: center;">
-                    New users get 🎟️ 100 tokens • You get 🎟️ 50 tokens
-                </div>
-            </div>
-            
-            <!-- Add by Code -->
-            <div class="friend-input-section">
-                <div class="friend-input-label">Enter Friend's Invite Code</div>
-                <input type="text" class="friend-code-input" id="add-friend-code-input" 
-                       placeholder="ABCD1234" maxlength="8" 
-                       oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '')">
-                <button onclick="addFriendByCode()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 12px; color: white; font-weight: 600; font-size: 0.95rem; cursor: pointer; margin-top: 12px;">
-                    Find & Connect
+                <div class="friend-code-label">Share your friend link</div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0 16px; text-align: center;">
+                    Send your link to friends - when they tap it, you'll be connected instantly!
+                </p>
+                <button class="friend-code-btn primary" onclick="shareFriendLink()" style="width: 100%; padding: 14px; font-size: 1rem;">
+                    📤 Share Friend Link
                 </button>
-                <div id="add-friend-error" style="display: none; color: var(--accent-red); padding: 10px; text-align: center; font-size: 0.85rem;"></div>
             </div>
             
             <!-- Find from Contacts -->
@@ -12785,34 +12691,34 @@ Wordle 1,234 3/6
         
         // Share invite link (uses referral link)
         function shareFriendLink() {
-            const link = getReferralLink();
-            const message = `Join me on Game Shelf! 🎮\n\nTrack daily puzzles, compete in battles, and build streaks together.\n\n✨ You'll get 50 bonus tokens when you sign up!\n\n${link}`;
+            if (!currentUser) {
+                showToast('Sign in to share your friend link', 'error');
+                return;
+            }
+            
+            // v1.3.48: Use UID directly for simpler friend links
+            const link = `${window.location.origin}${window.location.pathname}?friend=${currentUser.uid}`;
+            const message = `Add me on Game Shelf! 🎮\n\nTrack daily puzzles, compete in battles, and build streaks together.\n\n${link}`;
             
             if (navigator.share) {
                 navigator.share({
-                    title: 'Join me on Game Shelf!',
+                    title: 'Add me on Game Shelf!',
                     text: message,
                     url: link
                 }).catch(() => {
                     navigator.clipboard.writeText(message).then(() => {
-                        showToast('📋 Invite copied!');
+                        showToast('📋 Friend link copied!');
                     }).catch(() => {
-                        showToast('Could not copy invite', 'error');
+                        showToast('Could not copy link', 'error');
                     });
                 });
             } else {
                 navigator.clipboard.writeText(message).then(() => {
-                    showToast('📋 Invite copied!');
+                    showToast('📋 Friend link copied!');
                 }).catch(() => {
-                    showToast('Could not copy invite', 'error');
+                    showToast('Could not copy link', 'error');
                 });
             }
-            
-            // Track invite sent
-            if (!appData.referral) appData.referral = { invitesSent: 0 };
-            appData.referral.invitesSent++;
-            appData.wallet.tokens += REFERRAL_REWARDS.sent;
-            saveData();
             
             closeAddFriend();
         }
@@ -18923,10 +18829,10 @@ Wordle 1,234 3/6
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.47';
+        const APP_VERSION = '1.3.48';
         
         const RELEASE_NOTES = {
-            '1.3.47': [
+            '1.3.48': [
                 { icon: '🔧', title: 'OCR Engine Fix', desc: 'Fixed Tesseract.js page segmentation mode - numbers now detected correctly' }
             ],
             '1.3.44': [
@@ -19974,7 +19880,7 @@ Wordle 1,234 3/6
                 'showFeedbackSheet': () => showFeedbackSheet(),
                 'showSuggestGameSheet': () => showSuggestGameSheet(),
                 'showRewardsSheet': () => showRewardsSheet(),
-                'showImportStats': () => { switchTab('stats'); switchStatsTab('bygame'); setTimeout(() => handleRecordGame(), 300); },
+                'showPasteActivity': () => { switchTab('home'); setTimeout(() => handleRecordGame(), 300); },
                 
                 // Game Actions
                 'openGame': (gameId) => {
@@ -23749,18 +23655,6 @@ Wordle 1,234 3/6
                             ">
                                 ${todayResult ? '🔄 Play Again' : '▶️ Play Now'}
                             </button>
-                            <button onclick="closeGenericSheet(); handleRecordGame()" style="
-                                width: 100%;
-                                padding: 14px;
-                                background: var(--bg-tertiary);
-                                border: 1px solid var(--border);
-                                border-radius: 10px;
-                                color: var(--text-primary);
-                                font-size: 1rem;
-                                cursor: pointer;
-                            ">
-                                📷 Import Stats from Screenshot
-                            </button>
                         </div>
                     </div>
                 `
@@ -23801,12 +23695,6 @@ Wordle 1,234 3/6
             document.getElementById('progress-bar').style.width = (isNaN(pct) ? 0 : pct) + '%';
             document.getElementById('goal-display').textContent = `${played}/${goal} games`;
             document.getElementById('streak-badge').textContent = `🔥 ${currentStreak}`;
-            
-            // Show/hide share button based on games played
-            const shareBtn = document.getElementById('share-today-btn');
-            if (shareBtn) {
-                shareBtn.style.display = played > 0 ? 'flex' : 'none';
-            }
             
             // Update header share button badge
             const headerShareBtn = document.getElementById('header-share-btn');
@@ -28666,34 +28554,15 @@ Hint levels:
             }
         }
         
-        // ============ LOG SHEET ============
+        // ============ LOG SHEET (Manual Entry) ============
         function openLogSheet() {
-            // v1.2.7.6: Clear any previous content for fresh start
-            const input = document.getElementById('log-input');
-            if (input) input.value = '';
-            const preview = document.getElementById('parse-preview');
-            if (preview) preview.classList.remove('visible');
-            const logBtn = document.getElementById('log-btn');
-            if (logBtn) {
-                logBtn.disabled = false;
-                logBtn.textContent = 'Log Game';
-            }
-            const bulkBtn = document.getElementById('bulk-log-btn');
-            if (bulkBtn) bulkBtn.style.display = 'none';
-            
-            // v1.2.7.6: Show tap-to-paste button (for iOS especially)
-            showTapToPasteButton();
-            
+            // v1.3.48: Simplified to manual entry only
             document.getElementById('log-sheet').classList.add('active');
-            // Reset to paste tab
-            switchLogTab('paste');
             renderQuickLogButtons();
             
-            // v1.2.7.6: Auto-paste clipboard if it contains a game result
-            // (skipped on iOS due to permission popup - they use tap-to-paste button)
-            autoPasteClipboard();
-            
-            document.getElementById('log-input').focus();
+            // Clear any previous quick-log options
+            const quickOptions = document.getElementById('quick-log-options');
+            if (quickOptions) quickOptions.style.display = 'none';
         }
         
         // v1.2.7.6: Auto-paste clipboard content into log sheet
@@ -29245,7 +29114,7 @@ Hint levels:
             return null;
         }
         
-        // v1.3.47: Robust image inversion with debugging and error handling
+        // v1.3.48: Robust image inversion with debugging and error handling
         async function invertImage(blob) {
             return new Promise((resolve, reject) => {
                 const img = new Image();
@@ -29311,14 +29180,14 @@ Hint levels:
         }
         
         // Process screenshot from clipboard
-        // v1.3.47: Try BOTH original and inverted, use whichever PARSES successfully
+        // v1.3.48: Try BOTH original and inverted, use whichever PARSES successfully
         async function processScreenshot(blob) {
             try {
                 // Initialize Tesseract worker if needed
                 if (!ocrWorker) {
                     showToast('🔄 Loading OCR engine...', 'info');
                     ocrWorker = await Tesseract.createWorker('eng');
-                    // v1.3.47: Set PSM 3 (fully automatic page segmentation) for better number recognition
+                    // v1.3.48: Set PSM 3 (fully automatic page segmentation) for better number recognition
                     // PSM 6 (uniform block) misses the large stat numbers, PSM 3/4 find them
                     await ocrWorker.setParameters({
                         tessedit_pageseg_mode: Tesseract.PSM.AUTO  // PSM 3
@@ -30095,26 +29964,28 @@ Hint levels:
                 setTimeout(() => { recordButtonHandled = false; }, 500);
             }
         }
+        // v1.3.48: Cancel long-press if user is scrolling (touchmove)
+        function handleRecordButtonMove(e) {
+            if (recordButtonTimer) {
+                clearTimeout(recordButtonTimer);
+                recordButtonTimer = null;
+                console.log('📋 Long-press cancelled (scrolling)');
+            }
+        }
         
         function closeLogSheet(e) {
-            if (e && e.target.id !== 'log-sheet') return;
+            // Close if: no event, clicked overlay directly, or clicked close button
+            const isOverlayClick = e && e.target.id === 'log-sheet';
+            const isCloseButton = e && e.target.closest('.bottom-sheet-close');
+            if (e && !isOverlayClick && !isCloseButton) return;
             document.getElementById('log-sheet').classList.remove('active');
-            document.getElementById('log-input').value = '';
-            document.getElementById('parse-preview').classList.remove('visible');
             const quickOptions = document.getElementById('quick-log-options');
             if (quickOptions) quickOptions.style.display = 'none';
         }
         
+        // v1.3.48: switchLogTab kept for backwards compatibility but tabs removed from UI
         function switchLogTab(tab) {
-            // Update tab buttons
-            document.querySelectorAll('.log-tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`.log-tab[onclick*="${tab}"]`)?.classList.add('active');
-            
-            // Show/hide content
-            document.getElementById('log-tab-paste').style.display = tab === 'paste' ? 'block' : 'none';
-            document.getElementById('log-tab-quick').style.display = tab === 'quick' ? 'block' : 'none';
-            
-            // Render quick log buttons when switching to quick tab
+            // No-op - tabs removed in v1.3.48
             if (tab === 'quick') {
                 renderQuickLogButtons();
                 const quickOptions = document.getElementById('quick-log-options');
@@ -34723,8 +34594,8 @@ Hint levels:
         {
           "id": "import-stats",
           "q": "How do I import my existing streaks from Wordle or other games?",
-          "a": "If you've been playing games before using Game Shelf, you can import your existing streaks:\n\n1. Go to **Stats tab → 🎮 By Game**\n2. Tap **📷 Import Stats** (top right)\n3. Open the game you want to import (e.g., Wordle)\n4. Go to that game's **stats screen** (usually a chart/stats icon)\n5. **Take a screenshot** of the stats\n6. Return to Game Shelf and select/capture the screenshot\n7. Game Shelf reads your streak and updates automatically\n\n**Supported games:** Wordle, Connections, Tango, Queens, Pinpoint, Crossclimb",
-          "keywords": ["import", "existing", "streak", "sync", "screenshot", "transfer", "wordle stats", "bring over", "migrate"]
+          "a": "You can import your stats the same way you record games - through **Paste Activity**:\n\n1. Open the game (e.g., Wordle) and go to its **stats screen**\n2. **Copy** the stats (share button or screenshot)\n3. Return to Game Shelf\n4. Tap **Paste Activity** on the Home screen\n5. On iOS, tap **Allow Paste** when prompted\n\nGame Shelf automatically detects whether you've pasted a game result or stats, and handles it appropriately.",
+          "keywords": ["import", "existing", "streak", "sync", "screenshot", "transfer", "wordle stats", "bring over", "migrate", "paste"]
         },
         {
           "id": "how-streaks-work",
@@ -34741,7 +34612,7 @@ Hint levels:
         {
           "id": "streak-reset",
           "q": "Why did my streak reset?",
-          "a": "Streaks reset when you **miss a calendar day**. Common causes:\n\n| Cause | What happened |\n|-------|---------------|\n| **Didn't play** | Simply forgot to play that game |\n| **Played but didn't record** | Played but didn't log in Game Shelf |\n| **Recorded after midnight** | Logged it but the day had changed |\n| **Timezone confusion** | Traveled or device clock was wrong |\n\n**Your max streak is preserved**—only current streak resets.\n\n**Fix:** If your actual game streak is higher, use **Import Stats** to sync it.",
+          "a": "Streaks reset when you **miss a calendar day**. Common causes:\n\n| Cause | What happened |\n|-------|---------------|\n| **Didn't play** | Simply forgot to play that game |\n| **Played but didn't record** | Played but didn't log in Game Shelf |\n| **Recorded after midnight** | Logged it but the day had changed |\n| **Timezone confusion** | Traveled or device clock was wrong |\n\n**Your max streak is preserved**—only current streak resets.\n\n**Fix:** If your actual game streak is higher, copy your stats from the game and use **Paste Activity** to sync it.",
           "keywords": ["reset", "lost", "gone", "zero", "disappeared", "why", "missing"]
         },
         {
@@ -34759,7 +34630,7 @@ Hint levels:
         {
           "id": "streak-recovery",
           "q": "Can I recover a lost streak?",
-          "a": "**No automatic recovery.** Game Shelf doesn't have streak freezes or undo.\n\nThis is intentional—streaks represent actual consecutive play, not backfilled data.\n\n**However, you can use Import Stats** if your Game Shelf streak is wrong:\n1. Go to **Stats → By Game → Import Stats**\n2. Screenshot your game's actual stats page\n3. Game Shelf reads the real streak and updates\n\nThis works when:\n- You started Game Shelf after building a streak elsewhere\n- You played but forgot to record\n- A sync issue caused wrong data",
+          "a": "**No automatic recovery.** Game Shelf doesn't have streak freezes or undo.\n\nThis is intentional—streaks represent actual consecutive play, not backfilled data.\n\n**However**, if your Game Shelf streak is wrong, you can sync it:\n1. Open the game and go to its **stats screen**\n2. **Copy** or **screenshot** the stats\n3. Return to Game Shelf and tap **Paste Activity**\n4. Game Shelf reads the real streak and updates\n\nThis works when:\n- You started Game Shelf after building a streak elsewhere\n- You played but forgot to record\n- A sync issue caused wrong data",
           "keywords": ["recover", "restore", "lost", "undo", "freeze", "get back", "fix"]
         },
         {
@@ -34777,7 +34648,7 @@ Hint levels:
         {
           "id": "stats-by-game",
           "q": "How do I see detailed stats for one specific game?",
-          "a": "1. Go to **Stats tab → 🎮 By Game**\n2. Find the game in the list (sorted by current streak)\n3. **Tap the game row**\n\nThe detail sheet shows:\n- Today's status (played or not)\n- Current Streak\n- Max Streak (all-time best)\n- Games Played (total)\n- Win Rate\n- **Play Now** button\n- **Import Stats** button",
+          "a": "1. Go to **Stats tab → 🎮 By Game**\n2. Find the game in the list (sorted by current streak)\n3. **Tap the game row**\n\nThe detail sheet shows:\n- Today's status (played or not)\n- Current Streak\n- Max Streak (all-time best)\n- Games Played (total)\n- Win Rate\n- **Play Now** button",
           "keywords": ["detailed", "specific", "one game", "individual", "breakdown", "per game"]
         },
         {
@@ -34789,7 +34660,7 @@ Hint levels:
         {
           "id": "stats-mismatch",
           "q": "Why are my Game Shelf stats different from the game's own stats?",
-          "a": "Game Shelf only knows about games **you record in the app**. Common mismatches:\n\n| Reason | Example |\n|--------|----------|\n| **Started GS after playing** | You had a 100-day Wordle streak before installing |\n| **Forgot to record** | Played but didn't log it in Game Shelf |\n| **Different devices** | Played on work phone, GS is on personal phone |\n| **Cleared browser** | Local-only data was lost |\n\n**Fix:** Use **Import Stats** to sync your actual streak from the game's stats screen.",
+          "a": "Game Shelf only knows about games **you record in the app**. Common mismatches:\n\n| Reason | Example |\n|--------|----------|\n| **Started GS after playing** | You had a 100-day Wordle streak before installing |\n| **Forgot to record** | Played but didn't log it in Game Shelf |\n| **Different devices** | Played on work phone, GS is on personal phone |\n| **Cleared browser** | Local-only data was lost |\n\n**Fix:** Copy your stats from the game and use **Paste Activity** to sync your actual streak.",
           "keywords": ["different", "wrong", "mismatch", "doesn't match", "incorrect", "sync", "off"]
         }
       ]
@@ -34883,7 +34754,7 @@ Hint levels:
         {
           "id": "ai-help-topics",
           "q": "What can AI Help answer?",
-          "a": "**AI Help knows about Game Shelf features:**\n- Recording and tracking games\n- Adding/removing games from your shelf\n- How battles work\n- Adding friends\n- Streaks and stats\n- Tokens and coins\n- Settings and menu options\n- Import Stats\n- Any other Game Shelf question\n\n**AI Help can NOT answer:**\n- Puzzle solutions (use **AI Hints** instead)\n- Today's Wordle/Connections answer\n- Questions about other apps\n- Billing issues (contact support@gameshelf.co)",
+          "a": "**AI Help knows about Game Shelf features:**\n- Recording and tracking games\n- Adding/removing games from your shelf\n- How battles work\n- Adding friends\n- Streaks and stats\n- Tokens and coins\n- Settings and menu options\n- Importing stats via Paste Activity\n- Any other Game Shelf question\n\n**AI Help can NOT answer:**\n- Puzzle solutions (use **AI Hints** instead)\n- Today's Wordle/Connections answer\n- Questions about other apps\n- Billing issues (contact support@gameshelf.co)",
           "keywords": ["what", "answer", "ask", "topics", "questions", "can", "about"]
         },
         {

@@ -1,3 +1,175 @@
+Game Shelf PWA v1.3.48 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+BUG FIXES:
+----------
+
+1. LOG SHEET MODAL X BUTTON FIX:
+   Fixed the X button on the modal not dismissing it.
+   
+   **Problem:** Clicking the X button did nothing; only tapping outside worked.
+   
+   **Cause:** closeLogSheet() checked if e.target.id === 'log-sheet', but the X 
+   button's target is the button element, not the overlay.
+   
+   **Fix:** Now also checks for clicks on .bottom-sheet-close elements.
+
+2. PASTE ACTIVITY BUTTON SCROLL FIX:
+   Fixed the manual entry modal opening unexpectedly while scrolling.
+   
+   **Problem:** When scrolling up on the main page, if your finger touched the 
+   button for more than 600ms, the modal would pop up.
+   
+   **Cause:** The button has a long-press (600ms) feature to open manual entry,
+   but there was no touchmove handler to cancel it during scrolling.
+   
+   **Fix:** Added ontouchmove handler which cancels the long-press timer if the 
+   user moves their finger (i.e., is scrolling).
+
+UI IMPROVEMENTS:
+----------------
+
+3. RENAMED "RECORD GAME" TO "PASTE ACTIVITY":
+   The main button now says "Paste Activity" which better reflects that it 
+   handles both game results and stats screenshots.
+   
+   Hint text simplified to: "Tap to paste • Hold for manual entry"
+
+4. SIMPLIFIED MANUAL ENTRY MODAL:
+   Removed the redundant tabs from the log sheet modal.
+   
+   **Before:** Modal had two tabs - "Automatic" (paste) and "Manual" (quick log)
+   
+   **After:** Modal goes straight to manual entry (pick game, select score)
+   
+   **Rationale:** The "Automatic" paste functionality is already available via 
+   the main "Paste Activity" button tap. Long-press is specifically for manual 
+   entry, so showing paste options there was redundant.
+   
+   Modal header now says "✏️ Manual Entry" instead of "📋 Log Game Result"
+
+5. REMOVED REDUNDANT "SHARE TODAY'S RECAP" BUTTON:
+   Removed the "Share Today's Recap" button that appeared below Today's Progress.
+   
+   **Rationale:** The header already has a 📤 share button that does the same 
+   thing. Having two buttons was redundant clutter.
+
+6. SIMPLIFIED FRIEND ADDING:
+   Streamlined the friend connection flow to use direct links instead of codes.
+   
+   **Before:** 
+   - Share your 8-character referral code
+   - Friend enters code in "Add Friend" dialog
+   - System looks up referralCodes → gets ownerId → adds friend
+   
+   **After:**
+   - Tap "Share Friend Link" → sends link with your UID
+   - Friend taps link → instantly connected
+   
+   **Changes:**
+   - Friend link now uses `?friend={uid}` directly (no code lookup)
+   - Removed code input field from Add Friend sheet
+   - Simplified UI to focus on link sharing
+   - Removed token rewards from friend invites (kept for referrals)
+
+7. AI HELP SYSTEM PROMPT OPTIMIZATION:
+   Dramatically reduced the AI Help system prompt from 572 lines to 75 lines (87% reduction).
+   
+   **Why this matters:**
+   - Lower API costs (fewer input tokens)
+   - Better AI focus (not overwhelmed with info)
+   - Navigation buttons now at TOP of prompt (previously buried at line 400+)
+   
+   **Key change:** NAVIGATION ACTIONS moved to top with clear examples showing
+   the [ACTION:function|Label] format. AI should now reliably generate clickable
+   navigation buttons.
+   
+   **What was removed:**
+   - Redundant step-by-step guides (info already in feature descriptions)
+   - Excessive few-shot examples (kept 4 key ones)
+   - Detailed UI explanations (AI can figure these out)
+   - Meta information about AI Help itself
+
+8. UNIFIED DATA INPUT - REMOVED SEPARATE "IMPORT STATS" FEATURE:
+   Simplified to ONE way to bring data into Game Shelf: the **Paste Activity** button.
+   
+   **Philosophy:** One button that's smart enough to figure out what you pasted.
+   Whether it's a game result, stats screenshot, or share text - Paste Activity
+   handles it all.
+   
+   **Removed:**
+   - "📷 Import Stats" button from Stats tab
+   - "Import Stats from Screenshot" button from game detail sheets  
+   - Screenshot import flow in setup wizard (replaced with Paste Activity education)
+   
+   **Kept:**
+   - OCR processing (still works when you paste a screenshot)
+   - Stats parsing (auto-detects stats vs game results)
+   - All detection logic (just one entry point now)
+   
+   **Updated FAQ entries:**
+   - import-stats, streak-reset, streak-recovery, stats-by-game, stats-mismatch
+   - All now describe the unified Paste Activity flow
+
+---
+
+Game Shelf PWA v1.3.47 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+OCR PAGE SEGMENTATION FIX - STATS NUMBERS NOW DETECTED:
+-------------------------------------------------------
+Fixed the root cause of stats screenshot parsing failures. Numbers like 
+"562 80 1 29" are now correctly detected from Connections and other game stats.
+
+**The Problem:**
+Stats screenshots were failing to parse - Tesseract.js wasn't detecting the 
+large stat numbers (562, 80, 1, 29) even though labels like "Completed Win% 
+Current Streak" were read correctly. Both original and inverted images failed.
+
+**Root Cause:**
+Tesseract.js defaults to **PSM 6** (assume uniform block of text) which 
+completely misses large standalone numbers. Server-side Tesseract uses 
+**PSM 3** (fully automatic) by default, which finds them.
+
+Testing with pytesseract confirmed:
+- PSM 3 (AUTO): ✅ Finds "562 80 1 29"
+- PSM 4 (SINGLE_COLUMN): ✅ Finds numbers  
+- PSM 6 (SINGLE_BLOCK): ❌ Numbers missing
+- PSM 11/12: ✅ Finds numbers
+
+**Solution:**
+Set explicit page segmentation mode when initializing the Tesseract worker:
+
+```javascript
+await ocrWorker.setParameters({
+    tessedit_pageseg_mode: Tesseract.PSM.AUTO  // PSM 3
+});
+console.log('📷 Tesseract worker initialized with PSM AUTO (3)');
+```
+
+**Console Output (working):**
+```
+📷 Tesseract worker initialized with PSM AUTO (3)
+📷 Original RAW OCR: "... 562 80 1 29 Completed Win% ..."
+📷 Original score: 85 nums: ['562', '80', '1', '29']
+```
+
+**OCR Journey (v1.3.44 → v1.3.47):**
+- v1.3.44: Try both original/inverted → wrong image selected
+- v1.3.45: Quality-based scoring → both images returned garbage  
+- v1.3.46: Debug logging → revealed Tesseract getting no numbers
+- v1.3.47: Set PSM to AUTO (3) → ✅ Numbers detected!
+
+**Files Modified:**
+- gameshelf/index.html - PSM configuration, v1.3.47
+- gameshelf/sw.js - CACHE_VERSION to v1.3.47
+
+---
+
 Game Shelf PWA v1.3.45 Release Notes
 =====================================
 
