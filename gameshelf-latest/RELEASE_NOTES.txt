@@ -1,3 +1,878 @@
+Game Shelf PWA v1.3.51 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+NEW FEATURE:
+------------
+
+1. PERSONALIZED MORNING REVIEW GREETING:
+   Morning Review now includes a personalized greeting based on your stats!
+   
+   **How it works:**
+   - When you open Morning Review, Game Shelf gathers your recent game stats
+   - Stats sent to Firebase include: current streaks, yesterday's scores,
+     games played, milestone proximity
+   - AI generates a 1-2 sentence personal check-in based on YOUR data
+   - Examples: "47-day Wordle streak and counting. Locked in."
+              "Wordle in 2 yesterday? Show-off. Let's see an encore."
+              "Connections hasn't seen you in 12 days. Just saying."
+   
+   **Technical details:**
+   - Personal greetings are cached per user per day (won't change if reopened)
+   - If you have no meaningful stats, shows default: "Let's get the day off 
+     to a great start."
+   - Displayed in green highlight box between header and daily intro
+   - ~100 tokens per generation = negligible cost increase
+   
+   **New client function:**
+   - gatherUserStatsForMorningReview() - collects streak, score, and milestone
+     data for all games on user's shelf
+
+---
+
+v1.3.50 (2026-01-30)
+--------------------
+
+ENHANCEMENTS:
+-------------
+
+1. ENHANCED ANALYTICS FOR BETA:
+   Added tracking for key user engagement moments to inform product decisions.
+   
+   **New events tracked:**
+   - morning_review_shown: When Morning Review is displayed (auto vs manual)
+   - morning_review_closed: When closed, with engaged=true if content was viewed
+   - morning_review_setting: When user enables/disables the feature
+   - hint_requested: When AI hint is requested (with game and level)
+   - insight_viewed: When post-game insight is opened
+   - friend_profile_viewed: When tapping a friend in the widget
+   - battle_viewed: When viewing battle details
+   - share_action: When sharing to any platform
+   - tab_switched: When navigating between tabs
+   
+   All events include session ID, platform, and app version for analysis.
+
+---
+
+v1.3.49 (2026-01-30)
+--------------------
+
+BUG FIXES:
+
+1. HINT GAME SELECTION FIX:
+   Fixed bug where wrong game appeared in hint sheet after playing a game.
+   
+   **Problem:** If you had already recorded Connections today and clicked to 
+   play it again, returning to Game Shelf would show Rungs (or another game)
+   in the hint sheet instead of Connections.
+   
+   **Cause:** checkReturnFromGame() was clearing lastLaunchedGame when the 
+   game was already logged today. Then hint selection fell back to localStorage
+   data from GS Originals like Rungs.
+   
+   **Fix:** No longer clears lastLaunchedGame when a game is already logged.
+   User might want hints even after completing (to review, understand, etc.)
+
+---
+
+v1.3.48 (2026-01-30)
+--------------------
+
+1. LOG SHEET MODAL X BUTTON FIX:
+   Fixed the X button on the modal not dismissing it.
+   
+   **Problem:** Clicking the X button did nothing; only tapping outside worked.
+   
+   **Cause:** closeLogSheet() checked if e.target.id === 'log-sheet', but the X 
+   button's target is the button element, not the overlay.
+   
+   **Fix:** Now also checks for clicks on .bottom-sheet-close elements.
+
+2. PASTE ACTIVITY BUTTON SCROLL FIX:
+   Fixed the manual entry modal opening unexpectedly while scrolling.
+   
+   **Problem:** When scrolling up on the main page, if your finger touched the 
+   button for more than 600ms, the modal would pop up.
+   
+   **Cause:** The button has a long-press (600ms) feature to open manual entry,
+   but there was no touchmove handler to cancel it during scrolling.
+   
+   **Fix:** Added ontouchmove handler which cancels the long-press timer if the 
+   user moves their finger (i.e., is scrolling).
+
+UI IMPROVEMENTS:
+----------------
+
+3. RENAMED "RECORD GAME" TO "PASTE ACTIVITY":
+   The main button now says "Paste Activity" which better reflects that it 
+   handles both game results and stats screenshots.
+   
+   Hint text simplified to: "Tap to paste • Hold for manual entry"
+
+4. SIMPLIFIED MANUAL ENTRY MODAL:
+   Removed the redundant tabs from the log sheet modal.
+   
+   **Before:** Modal had two tabs - "Automatic" (paste) and "Manual" (quick log)
+   
+   **After:** Modal goes straight to manual entry (pick game, select score)
+   
+   **Rationale:** The "Automatic" paste functionality is already available via 
+   the main "Paste Activity" button tap. Long-press is specifically for manual 
+   entry, so showing paste options there was redundant.
+   
+   Modal header now says "✏️ Manual Entry" instead of "📋 Log Game Result"
+
+5. REMOVED REDUNDANT "SHARE TODAY'S RECAP" BUTTON:
+   Removed the "Share Today's Recap" button that appeared below Today's Progress.
+   
+   **Rationale:** The header already has a 📤 share button that does the same 
+   thing. Having two buttons was redundant clutter.
+
+6. SIMPLIFIED FRIEND ADDING:
+   Streamlined the friend connection flow to use direct links instead of codes.
+   
+   **Before:** 
+   - Share your 8-character referral code
+   - Friend enters code in "Add Friend" dialog
+   - System looks up referralCodes → gets ownerId → adds friend
+   
+   **After:**
+   - Tap "Share Friend Link" → sends link with your UID
+   - Friend taps link → instantly connected
+   
+   **Changes:**
+   - Friend link now uses `?friend={uid}` directly (no code lookup)
+   - Removed code input field from Add Friend sheet
+   - Simplified UI to focus on link sharing
+   - Removed token rewards from friend invites (kept for referrals)
+
+7. AI HELP SYSTEM PROMPT OPTIMIZATION:
+   Dramatically reduced the AI Help system prompt from 572 lines to 75 lines (87% reduction).
+   
+   **Why this matters:**
+   - Lower API costs (fewer input tokens)
+   - Better AI focus (not overwhelmed with info)
+   - Navigation buttons now at TOP of prompt (previously buried at line 400+)
+   
+   **Key change:** NAVIGATION ACTIONS moved to top with clear examples showing
+   the [ACTION:function|Label] format. AI should now reliably generate clickable
+   navigation buttons.
+   
+   **What was removed:**
+   - Redundant step-by-step guides (info already in feature descriptions)
+   - Excessive few-shot examples (kept 4 key ones)
+   - Detailed UI explanations (AI can figure these out)
+   - Meta information about AI Help itself
+
+8. UNIFIED DATA INPUT - REMOVED SEPARATE "IMPORT STATS" FEATURE:
+   Simplified to ONE way to bring data into Game Shelf: the **Paste Activity** button.
+   
+   **Philosophy:** One button that's smart enough to figure out what you pasted.
+   Whether it's a game result, stats screenshot, or share text - Paste Activity
+   handles it all.
+   
+   **Removed:**
+   - "📷 Import Stats" button from Stats tab
+   - "Import Stats from Screenshot" button from game detail sheets  
+   - Screenshot import flow in setup wizard (replaced with Paste Activity education)
+   
+   **Kept:**
+   - OCR processing (still works when you paste a screenshot)
+   - Stats parsing (auto-detects stats vs game results)
+   - All detection logic (just one entry point now)
+   
+   **Updated FAQ entries:**
+   - import-stats, streak-reset, streak-recovery, stats-by-game, stats-mismatch
+   - All now describe the unified Paste Activity flow
+
+---
+
+Game Shelf PWA v1.3.47 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+OCR PAGE SEGMENTATION FIX - STATS NUMBERS NOW DETECTED:
+-------------------------------------------------------
+Fixed the root cause of stats screenshot parsing failures. Numbers like 
+"562 80 1 29" are now correctly detected from Connections and other game stats.
+
+**The Problem:**
+Stats screenshots were failing to parse - Tesseract.js wasn't detecting the 
+large stat numbers (562, 80, 1, 29) even though labels like "Completed Win% 
+Current Streak" were read correctly. Both original and inverted images failed.
+
+**Root Cause:**
+Tesseract.js defaults to **PSM 6** (assume uniform block of text) which 
+completely misses large standalone numbers. Server-side Tesseract uses 
+**PSM 3** (fully automatic) by default, which finds them.
+
+Testing with pytesseract confirmed:
+- PSM 3 (AUTO): ✅ Finds "562 80 1 29"
+- PSM 4 (SINGLE_COLUMN): ✅ Finds numbers  
+- PSM 6 (SINGLE_BLOCK): ❌ Numbers missing
+- PSM 11/12: ✅ Finds numbers
+
+**Solution:**
+Set explicit page segmentation mode when initializing the Tesseract worker:
+
+```javascript
+await ocrWorker.setParameters({
+    tessedit_pageseg_mode: Tesseract.PSM.AUTO  // PSM 3
+});
+console.log('📷 Tesseract worker initialized with PSM AUTO (3)');
+```
+
+**Console Output (working):**
+```
+📷 Tesseract worker initialized with PSM AUTO (3)
+📷 Original RAW OCR: "... 562 80 1 29 Completed Win% ..."
+📷 Original score: 85 nums: ['562', '80', '1', '29']
+```
+
+**OCR Journey (v1.3.44 → v1.3.47):**
+- v1.3.44: Try both original/inverted → wrong image selected
+- v1.3.45: Quality-based scoring → both images returned garbage  
+- v1.3.46: Debug logging → revealed Tesseract getting no numbers
+- v1.3.47: Set PSM to AUTO (3) → ✅ Numbers detected!
+
+**Files Modified:**
+- gameshelf/index.html - PSM configuration, v1.3.47
+- gameshelf/sw.js - CACHE_VERSION to v1.3.47
+
+---
+
+Game Shelf PWA v1.3.45 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+OCR IMAGE SELECTION FIX - DARK MODE SCREENSHOTS:
+------------------------------------------------
+Fixed an issue where dark mode screenshots (light text on dark background) were
+not being processed correctly, even though the inverted version would work.
+
+**The Problem:**
+When pasting a dark mode screenshot, the system would try both original and 
+inverted images but often selected the wrong one. The original naive selection
+logic compared raw number counts, which could be fooled by OCR noise producing
+random digits in the wrong image.
+
+**Root Cause:**
+The selection logic used simple heuristics (has large number, number count) that
+didn't account for OCR quality. A garbage OCR result with random digits could
+"win" over a clean inverted result with actual stats numbers.
+
+**Solution - Quality-Based Scoring:**
+New `scoreOCRForStats()` function evaluates each OCR result based on:
+
+1. **Stat Keywords** (+10 each): completed/played, win%, current streak, max streak
+2. **Valid 4-Number Sequence** (+50): The key pattern [played][%][current][max]
+   with validation (win% ≤ 100, played ≥ streaks)  
+3. **Large Number Bonus** (+5): Having a number > 100 (games played count)
+
+The image with the higher score is selected, ensuring meaningful stats content
+wins over OCR noise.
+
+**Console Output:**
+```
+📷 Original score: 5 nums: ['2', '29', ...]
+📷 Inverted score: 85 nums: ['562', '80', '1', '29']
+📷 Using INVERTED (score: 85 > 5)
+```
+
+**Files Modified:**
+- gameshelf/index.html - New scoring logic in processScreenshot(), v1.3.45
+- gameshelf/sw.js - CACHE_VERSION to v1.3.45
+
+---
+
+Game Shelf PWA v1.3.36 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+SMARTER OCR PROCESSING - ROBUST STATS RECOGNITION:
+--------------------------------------------------
+Fixed an issue where Connections stats screenshots were not being parsed correctly,
+even though the numbers were clearly visible.
+
+**The Problem:**
+Standard Connections stats screenshots (showing "562 80 1 29" followed by 
+"Completed Win% Current Streak Max Streak") were triggering the "couldn't read 
+the numbers clearly" error. The OCR was working, but the parsing logic wasn't 
+handling the extracted text properly in all cases.
+
+**Root Causes Identified:**
+1. Character confusion: OCR sometimes interprets "1" as "l" (lowercase L) or "I"
+2. Character confusion: OCR sometimes interprets "0" as "O" (uppercase O)
+3. Layout variations: Browser Tesseract.js may split numbers across lines differently
+4. Pattern matching: The "29 Completed" text was incorrectly matching the gamesPlayed
+   pattern before the proper 4-number sequence could be found
+
+**Solutions Implemented:**
+
+1. **OCR Text Preprocessing** - New preprocessOCRText() function:
+   - Fixes common character confusions (l/I → 1, O → 0) in number contexts
+   - Only applies corrections when characters are adjacent to digits
+   - Normalizes whitespace while preserving line structure
+   - Logs preprocessing steps for debugging
+
+2. **Aggressive Number Sequence Finder** - New findStatsNumberSequence() function:
+   - Multiple strategies to find the 4-number stats sequence
+   - Strategy 1: Traditional 4-consecutive-numbers pattern
+   - Strategy 2: Keyword proximity - finds numbers before "Completed/Win/Streak"
+   - Validates number relationships (played >= streaks, win% <= 100)
+   - Prefers later matches to skip status bar times (e.g., "2:29")
+
+3. **Enhanced Debug Logging**:
+   - Logs raw OCR output
+   - Logs preprocessing transformations  
+   - Logs each parsing strategy attempted
+   - Logs all number candidates found
+   - Makes troubleshooting much easier
+
+MORNING REVIEW BUG FIX:
+-----------------------
+Fixed "Can't find variable: userData" error that occurred when Morning Review 
+tried to access the user's game shelf. Changed incorrect `userData` reference 
+to `appData.games.map(g => g.id)`.
+
+**Technical Details:**
+- New functions: preprocessOCRText(), findStatsNumberSequence()
+- Added Step 3c to parseStatsFromOCR() as final fallback
+- Fixed getMorningReviewGames() to use correct variable
+- Console logs now provide detailed parsing trace
+
+**Files Modified:**
+- gameshelf/index.html - OCR enhancement + Morning Review fix, v1.3.36
+- gameshelf/sw.js - CACHE_VERSION to v1.3.36
+
+---
+
+Game Shelf PWA v1.3.35 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+MORNING REVIEW - AI-POWERED DAILY PREVIEW:
+------------------------------------------
+New feature that gives users a spoiler-free preview of today's puzzles to build 
+excitement before their morning puzzling session.
+
+**How It Works:**
+- First login of the day triggers the Morning Review automatically
+- AI searches for today's puzzles and generates personalized hype snippets
+- Each game gets 1-2 sentences teasing the vibe without spoiling answers
+- Content is cached - first user generates, all others get instant results
+- Only shows games that are on the user's shelf (personalized)
+
+**Supported Games:**
+- NYT: Wordle, Connections, Strands, Mini, Spelling Bee
+- LinkedIn: Queens, Pinpoint
+- Indies: Quordle, Octordle, Waffle
+
+**UI Features:**
+- Beautiful modal with game-by-game snippets
+- Overall "vibe rating" (1-5 🌶️ emojis)
+- Energetic intro and motivational outro
+- "Yesterday's Review" option for historical viewing
+- Settings toggle to enable/disable
+- Quick access in Settings → Morning Review → View Today's Review
+
+**Technical Details:**
+- New Firebase Function: getMorningReview
+- Cache structure: morning-review/{date}/meta + games
+- 7-day cache retention (vs 2-day for hints)
+- Spliced per-user based on shelf games
+- Analytics tracking for usage patterns
+
+**Settings:**
+- New toggle in Settings submenu: "Show Daily Preview"
+- "View Today's Review" link opens modal on demand
+- Defaults to enabled for all users
+
+
+=====================================
+
+Game Shelf PWA v1.3.34 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+ROBUST OCR ENGINE - FALSE POSITIVE FIX:
+---------------------------------------
+Critical fix for OCR screenshot parsing that was causing false game detection.
+
+**The Problem:**
+When importing a Connections stats screenshot, the app was incorrectly detecting 
+it as a Mini Crossword time score. The phone's status bar time (e.g., "2:29") 
+was being matched by the overly-greedy Mini parser regex.
+
+**Root Cause:**
+The Mini parser regex `(\d+):(\d+)|Mini\s*Crossword` would match ANY time pattern,
+including times from the phone's status bar, clocks in screenshots, etc.
+
+**The Fix (Multi-Layer Defense):**
+
+1. **Strict Mini Regex** - Now requires actual Mini context:
+   - Must have "Mini Crossword", "The Mini", or "NYT Mini" near the time
+   - Bare time patterns like "2:29" are no longer matched
+   - Time must be within 50-100 chars of Mini mention
+
+2. **Game Conflict Detection** - Mini parser now rejects if:
+   - Text contains "Connections Bot" or "Connections archive"
+   - Text contains "current streak...max streak" (stats page indicator)
+   - Text contains strong indicators of other games
+
+3. **Stats Page Priority** - Enhanced stats detection:
+   - New `isLikelyStatsScreenshot()` function detects stats pages
+   - If stats-like but unparseable, shows helpful prompt instead of misdetecting
+   - New `detectSplitLineLayout()` handles OCR where numbers and labels are on separate lines
+
+4. **Parse Result Validation** - New validation layer:
+   - `validateParseResult()` checks if detected game makes sense given full text
+   - Compares game indicators - rejects if stronger indicators for different game
+   - Prevents any parser from claiming content that clearly belongs to another game
+
+5. **Sanity Checks** - Additional guardrails:
+   - Mini times must be <30 minutes, seconds <60
+   - Stats numbers must pass validation (games played > streaks, win% ≤100)
+
+**Technical Details:**
+- New functions: detectSplitLineLayout(), isLikelyStatsScreenshot(), 
+  parseMultipleGamesValidated(), validateParseResult(), showStatsParseFailurePrompt()
+- Mini regex changed from greedy pattern to context-requiring pattern
+- Added otherGameIndicators blocklist in Mini extract()
+
+**Files Modified:**
+- gameshelf/index.html - OCR engine overhaul, v1.3.34
+- gameshelf/sw.js - CACHE_VERSION to v1.3.34
+
+---
+
+Game Shelf PWA v1.3.33 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+SMARTER STATS IMPORT:
+---------------------
+Complete rewrite of the Import Stats OCR engine for better reliability:
+
+**Intelligent Game Detection:**
+- Fuzzy keyword matching - finds game names anywhere in text
+- No longer relies on specific phrases like "GUESS DISTRIBUTION"
+- Detects "Connections" from "Connections Bot", "Connections archive", etc.
+- Works with new/unknown stats page layouts
+
+**Universal Stats Extraction:**
+- Pattern-based extraction for common stat terms
+- Recognizes: played, completed, win %, streak, max, best, longest
+- 4-number layout detection (common stats row pattern)
+- Multiple fallback methods for reliability
+
+**Game Picker Fallback:**
+- If stats detected but game unknown, prompts user to select
+- Shows extracted stats preview before confirming
+- Quick selection from games on user's shelf
+
+**Technical Details:**
+- STATS_GAME_KEYWORDS: extensible keyword map per game
+- UNIVERSAL_STAT_PATTERNS: regex patterns for each stat type  
+- detectGameFromText(): fuzzy matching with confidence scores
+- detectFourNumberLayout(): heuristic for [played][win%][streak][max] rows
+- showGamePickerForStats(): fallback UI when game unknown
+
+---
+
+Game Shelf PWA v1.3.32 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI HELP RAG IMPROVEMENTS (Phase 5):
+-----------------------------------
+* Increased FAQ context from 3 to 5 results for better AI Help answers
+* Added synonym expansion for query matching
+  - "sync" now also matches "import", "transfer", "migrate"
+  - "balance" now also matches "wallet", "tokens", "coins"
+  - And many more common synonyms
+* Added category boosting for high-priority FAQ categories
+  - Getting Started and Troubleshooting get 2x boost
+  - Recording and Streaks get 1.5x boost
+* Added FAQ entry for "What's the lightbulb icon?" (Daily Insights)
+* Overall: AI Help should now provide more accurate, relevant answers
+
+---
+
+Game Shelf PWA v1.3.30 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+SHARE TEXT IMPROVEMENTS:
+------------------------
+* Insight share now uses 🧩 emoji (matches other share footers)
+* Fixed URL to gameshelf.co (was incorrectly gameshelf.app)
+* Share format now:
+  "Today's Connections (Jan 29) was 🎯 FAIR!
+   What did you think?
+   🧩 Tracked with Game Shelf
+   gameshelf.co"
+
+ALSO FIXED:
+-----------
+* All gameshelf.app references updated to gameshelf.co throughout app
+
+---
+
+Game Shelf PWA v1.3.29 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+BUG FIX - INSIGHT BUTTON LOCATION:
+----------------------------------
+* "View Today's Insight" button now appears in the "Already Played" sheet
+* Previously only showed in long-press menu, now shows when tapping completed game
+* Natural flow: see 💡 icon → tap card → see insight option
+
+---
+
+Game Shelf PWA v1.3.28 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+DAILY INSIGHTS (NEW FEATURE):
+-----------------------------
+* AI-powered post-puzzle analysis for Connections
+* Shows after you log a game - tap the game card to see "View Today's Insight"
+* Analysis includes:
+  - Difficulty rating (1-5 🔥)
+  - Sneakiness level (Low/Medium/High)
+  - Category breakdown with traps/red herrings
+  - Verdict: was the puzzle fair?
+
+COMMUNITY REACTIONS:
+--------------------
+* React to insights: 🎯 Fair / 🙄 BS / 🤯 Brutal
+* See how other players voted
+* "Share Your Take" button to share your reaction
+
+TECHNICAL DETAILS:
+------------------
+* 💡 icon appears on game cards when insight is available
+* Firebase functions: getDailyInsight, submitInsightReaction, getInsightReaction
+* Cache structure: daily-insights/{date}/{gameId}/
+* Reactions stored per-user per-day
+* First request triggers AI generation (3-5 seconds)
+* Subsequent users get cached version instantly
+
+EXPANSION PLANS:
+----------------
+Currently Connections only. Can expand to other games based on user feedback.
+
+---
+
+Game Shelf PWA v1.3.27 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+EXPANDED FAQ SYSTEM:
+-------------------
+* Expanded FAQ from 48 to 136 questions across 15 categories
+* New categories added:
+  - Navigation (10 questions)
+  - Home Screen (8 questions) 
+  - Games Tab (8 questions)
+  - AI Help (7 questions)
+  - Share Tab (7 questions)
+* All existing categories expanded with additional questions
+* Improved keyword coverage for better search matching
+* All answers verified against actual app functionality
+
+FAQ CATEGORY BREAKDOWN:
+-----------------------
+1. Getting Started: 10 questions
+2. Navigation: 10 questions
+3. Home Screen: 8 questions
+4. Recording Games: 10 questions
+5. Games Tab: 8 questions
+6. Streaks & Stats: 12 questions (includes Import Stats)
+7. AI Hints: 10 questions
+8. AI Help: 7 questions
+9. Battles: 11 questions
+10. Friends & Social: 8 questions
+11. Share Tab: 7 questions
+12. Tokens & Coins: 10 questions
+13. Account & Sync: 8 questions
+14. Troubleshooting: 12 questions
+15. Privacy & Data: 5 questions
+
+TECHNICAL DETAILS:
+------------------
+* FAQ data updated from version 1.0 to 2.0
+* JSON structure unchanged (backwards compatible)
+* All questions include expanded keyword arrays
+* Part of Help Documentation Project Phase 3
+
+---
+
+Game Shelf PWA v1.3.26 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+TUTORIAL SYSTEM OVERHAUL:
+-------------------------
+* Fixed tutorial targeting hidden FAB buttons (moved to header)
+  - #share-fab → #header-share-btn
+  - #hint-fab → #header-hint-btn
+* Fixed .share-hub-header target (didn't exist) → .share-results-section
+* Fixed #browse-categories - now switches to Discover subtab first
+* Fixed desktop positioning - spotlight/card now account for body offset
+* Added .tutorial-highlighted class with brightness + purple background
+* Properly cleans up highlight class on skip/finish
+
+ACTIVE TAB VISIBILITY:
+----------------------
+* Increased active tab background opacity from 15% to 25%
+* Now clearly visible in dark mode
+
+TECHNICAL DETAILS:
+------------------
+Desktop positioning fix:
+* getBoundingClientRect() returns viewport coords
+* With body transform, fixed elements are relative to body
+* Now calculates bodyRect offset and subtracts from positioning
+
+Tutorial highlight class:
+* filter: brightness(1.4)
+* background: rgba(102, 126, 234, 0.25)
+* box-shadow: 0 0 20px 5px rgba(102, 126, 234, 0.4)
+* z-index: 2001 to appear above overlay
+
+---
+
+Game Shelf PWA v1.3.25 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+TUTORIAL DARK MODE FIX (ATTEMPT):
+---------------------------------
+* Added .tutorial-highlighted class to brighten actual target elements
+* Uses filter: brightness(1.4) on the element being highlighted
+* Class applied via JS when positioning tutorial spotlight
+* Class removed when moving between steps or ending tutorial
+
+Note: This was intermediate version - see v1.3.26 for complete fix.
+
+---
+
+Game Shelf PWA v1.3.24 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+DARK MODE VISIBILITY FIX:
+-------------------------
+* Tutorial spotlight now has strong inner glow to illuminate dark content
+* Added pulsing animation enhancement with brighter glow effect
+* Active nav tab now has visible purple background pill (15% opacity)
+* Tab background uses border-radius for softer pill shape
+
+TECHNICAL DETAILS:
+------------------
+Tutorial spotlight CSS changes:
+* Added `inset 0 0 20px 5px rgba(102, 126, 234, 0.25)` for inner illumination
+* Added stronger outer glow `0 0 30px 8px rgba(102, 126, 234, 0.5)`
+* Pulse animation enhanced with brighter 50% state glow
+
+Active nav tab CSS changes:
+* Added `background: rgba(102, 126, 234, 0.15)` to .nav-tab.active
+* Added `border-radius: 12px` and `margin: 4px 2px` for pill shape
+* Added `transition: background 0.2s` for smooth state changes
+
+---
+
+Game Shelf PWA v1.3.23 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+DESKTOP ENHANCEMENT:
+--------------------
+* Added desktop containment - app is centered in a 480px container on wide screens
+* Desktop side areas now have themed background (dark/light mode aware)
+* Added dismissible banner reminding desktop users the app is mobile-first
+* Banner only shows once per device (dismissed state saved to localStorage)
+* Uses CSS transform trick to contain all fixed-position elements within the app bounds
+* No changes to mobile experience - all changes are behind @media (min-width: 600px)
+
+TECHNICAL DETAILS:
+------------------
+* body gets max-width: 480px and transform: translateX(-50%) on desktop
+* This makes position: fixed children relative to body instead of viewport
+* html background color adjusts to match light/dark mode
+* Desktop banner CSS is display: none on mobile, flex on desktop
+* Added isDesktopScreen() helper function
+* Platform detection already tracked 'desktop' in analytics
+
+---
+
+Game Shelf PWA v1.3.22 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI HELP IMPROVEMENTS:
+--------------------
+* AI Help now knows about the Import Stats feature
+* Added step-by-step guide for importing existing streaks/stats
+* Added FAQ entry: "Can I import my existing streak from Wordle?"
+* Added showImportStats navigation action
+* Fixed incorrect response that said "Game Shelf can't sync your Wordle streak"
+
+SYSTEM PROMPT UPDATES:
+----------------------
+* Added "Import Stats from Other Apps" section with steps
+* Added few-shot example for import/sync questions
+* AI now correctly directs users to Stats → By Game → Import Stats
+
+---
+
+Game Shelf PWA v1.3.21 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+UI IMPROVEMENT:
+---------------
+* Active tab label is now bold for better visibility
+* Previously only color changed (purple) - now also font-weight: 700
+* Makes it clearer which tab you're currently on
+
+---
+
+Game Shelf PWA v1.3.20 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+BUG FIX:
+--------
+* Fixed "Can't find variable: getGameInfo" error in AI Help
+* The error occurred when gathering user context for AI requests
+* Root cause: Code referenced non-existent getGameInfo() function
+* Fix: Changed to use GAMES[gameId] lookup instead
+
+---
+
+Game Shelf PWA v1.3.19 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI NAVIGATION ACTIONS:
+----------------------
+* AI Help can now provide clickable navigation buttons
+* When AI explains how to do something, it includes a button to go there
+* Example: "How do I create a battle?" → includes [Create Battle →] button
+* Buttons close AI Help sheet and navigate to the right place
+
+AVAILABLE ACTIONS:
+------------------
+* Tab navigation (Home, Games, Stats, Battles, Share)
+* Subtab navigation (Shelf, Discover, Overview, etc.)
+* Open sheets (Create Battle, Add Friend, Wallet, Feedback, etc.)
+* Find/open specific games
+* Open game hints
+
+TECHNICAL:
+----------
+* Action token format: [ACTION:functionName:param|Label]
+* Token parser in formatAIHelpResponse()
+* executeAIHelpAction() handler with 15+ actions
+* Event delegation for action button clicks
+* Analytics tracking for action usage (ai-help-actions)
+* Malformed tokens stripped gracefully
+
+SYSTEM PROMPT:
+--------------
+* Added NAVIGATION ACTIONS section with available actions
+* Added rules for when to include actions
+* Added examples with action buttons
+* AI only includes action when user wants to DO something
+
+---
+
+Game Shelf PWA v1.3.18 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+MULTI-TURN AI HELP CONVERSATIONS:
+---------------------------------
+* AI Help now supports follow-up questions
+* First question costs 5 tokens (same as before)
+* Up to 3 follow-ups are FREE
+* Conversation displayed as chat thread with user/AI bubbles
+* "New question" button starts fresh conversation (5 tokens)
+
+UI CHANGES:
+-----------
+* Redesigned AI Help sheet with conversation thread layout
+* User messages shown as purple bubbles (right side)
+* AI responses shown as gray bubbles (left side)
+* Follow-up input appears after AI responds
+* Shows remaining free follow-ups
+
+FIREBASE UPDATES:
+-----------------
+* getAIHelp function now accepts messages array for context
+* Analytics tracks isFollowup and turnCount
+* Each turn counts toward daily rate limit (20/day)
+
+TECHNICAL:
+----------
+* buildContextualPrompt helper function extracted
+* Conversation history passed to Claude API
+* Max 10 messages in history (safety limit)
+
+---
+
+Game Shelf PWA v1.3.17 Release Notes
+=====================================
+
+Release Date: January 29, 2026
+
+AI HELP IMPROVEMENTS:
+---------------------
+* Added feedback collection (👍/👎) after AI responses
+* Optional comment field for negative feedback
+* Improved system prompt with few-shot examples
+* Better handling of vague questions (asks for clarification)
+* Updated navigation references for all subtabs
+
+ENHANCED AI CONTEXT:
+--------------------
+* Passes user's current tab/subtab to AI
+* Passes user's shelf games for personalized help
+* Passes token balance for hint-related questions
+* RAG-lite: Searches FAQ and passes relevant Q&As to AI
+
+FIREBASE UPDATES:
+-----------------
+* New ai-help-feedback path for feedback storage
+* Enhanced analytics with user context
+
+---
+
 Game Shelf PWA v1.3.16 Release Notes
 =====================================
 
