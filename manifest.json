@@ -2,13 +2,13 @@
   "name": "Game Shelf",
   "short_name": "Game Shelf",
   "description": "Track your daily puzzle games",
-  "start_url": "./index.html",
+  "start_url": "/app/index.html",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "background_color": "#0a0a0f",
   "theme_color": "#667eea",
   "orientation": "portrait-primary",
-  "scope": "./",
+  "scope": "/app/",
   "lang": "en-US",
   
   "icons": [
@@ -43,24 +43,24 @@
       "name": "Log Game",
       "short_name": "Log",
       "description": "Quickly log today's game results",
-      "url": "./index.html?action=log"
+      "url": "/app/index.html?action=log"
     },
     {
       "name": "Share Results",
       "short_name": "Share",
       "description": "Share your daily results",
-      "url": "./index.html?tab=share"
+      "url": "/app/index.html?tab=share"
     },
     {
       "name": "Play Wordle",
       "short_name": "Wordle",
       "description": "Launch Wordle",
-      "url": "./index.html?game=wordle"
+      "url": "/app/index.html?game=wordle"
     }
   ],
   
   "share_target": {
-    "action": "./index.html?share-target=true",
+    "action": "/app/index.html?share-target=true",
     "method": "GET",
     "params": {
       "title": "title",

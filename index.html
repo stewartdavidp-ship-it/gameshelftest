@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.3.54">
+    <meta name="version" content="1.4.0">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9336,7 +9336,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.3.54</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.4.0</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -9611,7 +9611,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.3.54</div>
+            <div class="settings-version">Game Shelf PWA v1.4.0</div>
         </div>
     </div>
     
@@ -12741,7 +12741,7 @@
                 return;
             }
             
-            // v1.3.54: Use UID directly for simpler friend links
+            // v1.4.0: Use UID directly for simpler friend links
             const link = `${window.location.origin}${window.location.pathname}?friend=${currentUser.uid}`;
             const message = `Add me on Game Shelf! 🎮\n\nTrack daily puzzles, compete in battles, and build streaks together.\n\n${link}`;
             
@@ -18877,10 +18877,10 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.3.54';
+        const APP_VERSION = '1.4.0';
         
         const RELEASE_NOTES = {
-            '1.3.54': [
+            '1.4.0': [
                 { icon: '📊', title: 'Enhanced Analytics', desc: 'Better tracking for Morning Review, hints, insights, and social features' }
             ],
             '1.3.47': [
@@ -25481,7 +25481,7 @@
                 return;
             }
             
-            // v1.3.54: Removed auto-clear for already-logged games
+            // v1.4.0: Removed auto-clear for already-logged games
             // User might want hints even after completing the game
             // The lastLaunchedGame is still useful for hint selection
             
@@ -28740,7 +28740,7 @@ Hint levels:
         
         // ============ LOG SHEET (Manual Entry) ============
         function openLogSheet() {
-            // v1.3.54: Simplified to manual entry only
+            // v1.4.0: Simplified to manual entry only
             document.getElementById('log-sheet').classList.add('active');
             renderQuickLogButtons();
             
@@ -29298,7 +29298,7 @@ Hint levels:
             return null;
         }
         
-        // v1.3.54: Robust image inversion with debugging and error handling
+        // v1.4.0: Robust image inversion with debugging and error handling
         async function invertImage(blob) {
             return new Promise((resolve, reject) => {
                 const img = new Image();
@@ -29364,14 +29364,14 @@ Hint levels:
         }
         
         // Process screenshot from clipboard
-        // v1.3.54: Try BOTH original and inverted, use whichever PARSES successfully
+        // v1.4.0: Try BOTH original and inverted, use whichever PARSES successfully
         async function processScreenshot(blob) {
             try {
                 // Initialize Tesseract worker if needed
                 if (!ocrWorker) {
                     showToast('🔄 Loading OCR engine...', 'info');
                     ocrWorker = await Tesseract.createWorker('eng');
-                    // v1.3.54: Set PSM 3 (fully automatic page segmentation) for better number recognition
+                    // v1.4.0: Set PSM 3 (fully automatic page segmentation) for better number recognition
                     // PSM 6 (uniform block) misses the large stat numbers, PSM 3/4 find them
                     await ocrWorker.setParameters({
                         tessedit_pageseg_mode: Tesseract.PSM.AUTO  // PSM 3
@@ -30148,7 +30148,7 @@ Hint levels:
                 setTimeout(() => { recordButtonHandled = false; }, 500);
             }
         }
-        // v1.3.54: Cancel long-press if user is scrolling (touchmove)
+        // v1.4.0: Cancel long-press if user is scrolling (touchmove)
         function handleRecordButtonMove(e) {
             if (recordButtonTimer) {
                 clearTimeout(recordButtonTimer);
@@ -30167,9 +30167,9 @@ Hint levels:
             if (quickOptions) quickOptions.style.display = 'none';
         }
         
-        // v1.3.54: switchLogTab kept for backwards compatibility but tabs removed from UI
+        // v1.4.0: switchLogTab kept for backwards compatibility but tabs removed from UI
         function switchLogTab(tab) {
-            // No-op - tabs removed in v1.3.54
+            // No-op - tabs removed in v1.4.0
             if (tab === 'quick') {
                 renderQuickLogButtons();
                 const quickOptions = document.getElementById('quick-log-options');
@@ -34489,7 +34489,7 @@ Hint levels:
         {
           "id": "install-app",
           "q": "How do I install Game Shelf on my phone?",
-          "a": "Game Shelf is a **web app** (PWA) that installs directly from your browser—no App Store needed.\n\n**iPhone/iPad (Safari):**\n1. Open **gameshelf.co** in Safari\n2. Tap the **Share** button (square with arrow)\n3. Scroll down and tap **Add to Home Screen**\n4. Tap **Add**\n\n**Android (Chrome):**\n1. Open **gameshelf.co** in Chrome\n2. Tap the **three-dot menu** (top right)\n3. Tap **Add to Home Screen** or **Install App**\n4. Tap **Install**\n\n**Desktop (Chrome/Edge):**\n1. Open **gameshelf.co**\n2. Click the **install icon** in the address bar\n3. Click **Install**\n\nOnce installed, Game Shelf works like a native app with its own icon.",
+          "a": "Game Shelf is a **web app** (PWA) that installs directly from your browser—no App Store needed.\n\n**iPhone/iPad (Safari):**\n1. Open **gameshelf.co/app** in Safari\n2. Tap the **Share** button (square with arrow)\n3. Scroll down and tap **Add to Home Screen**\n4. Tap **Add**\n\n**Android (Chrome):**\n1. Open **gameshelf.co/app** in Chrome\n2. Tap the **three-dot menu** (top right)\n3. Tap **Add to Home Screen** or **Install App**\n4. Tap **Install**\n\n**Desktop (Chrome/Edge):**\n1. Open **gameshelf.co/app**\n2. Click the **install icon** in the address bar\n3. Click **Install**\n\nOnce installed, Game Shelf works like a native app with its own icon.",
           "keywords": ["install", "download", "app", "home screen", "pwa", "add", "phone", "iphone", "android", "safari", "chrome", "how to get"]
         },
         {
@@ -34513,7 +34513,7 @@ Hint levels:
         {
           "id": "website-vs-app",
           "q": "What's the difference between the website and the app?",
-          "a": "**They're the same thing!** Game Shelf is a Progressive Web App (PWA), meaning the website *becomes* the app when you install it.\n\n**Why no App Store?**\n- Faster updates (no approval delays)\n- Works on all platforms\n- No download size—it's already loaded\n\nWhether you use gameshelf.co in a browser or install it to your home screen, you get the full experience.",
+          "a": "**They're the same thing!** Game Shelf is a Progressive Web App (PWA), meaning the website *becomes* the app when you install it.\n\n**Why no App Store?**\n- Faster updates (no approval delays)\n- Works on all platforms\n- No download size—it's already loaded\n\nWhether you use gameshelf.co/app in a browser or install it to your home screen, you get the full experience.",
           "keywords": ["website", "app", "difference", "app store", "play store", "native", "pwa", "same", "web app"]
         },
         {
@@ -35343,7 +35343,7 @@ Hint levels:
         {
           "id": "pwa-not-updating",
           "q": "The app seems stuck on an old version.",
-          "a": "**For PWA (installed to home screen):**\n\n1. Menu → Advanced → **Force Update Check**\n2. If that doesn't work: Close app completely, reopen\n3. Last resort: Uninstall PWA, revisit gameshelf.co, reinstall\n\n**Check version:** Menu → scroll to bottom → see version number\n\n**Desktop:** Try hard refresh (Ctrl+Shift+R or Cmd+Shift+R)",
+          "a": "**For PWA (installed to home screen):**\n\n1. Menu → Advanced → **Force Update Check**\n2. If that doesn't work: Close app completely, reopen\n3. Last resort: Uninstall PWA, revisit gameshelf.co/app, reinstall\n\n**Check version:** Menu → scroll to bottom → see version number\n\n**Desktop:** Try hard refresh (Ctrl+Shift+R or Cmd+Shift+R)",
           "keywords": ["update", "old version", "stuck", "pwa", "refresh", "outdated"]
         },
         {
