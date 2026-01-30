@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="1.5.8">
+    <meta name="version" content="1.5.9">
     <title>Game Shelf - Your Daily Puzzle Companion</title>
     <meta name="description" content="Track 36+ daily puzzle games, get AI-powered hints, and play original games.">
     <meta property="og:title" content="Game Shelf - Your Daily Puzzle Companion">
@@ -1170,16 +1170,21 @@
             max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 2fr repeat(3, 1fr);
+            grid-template-columns: 2fr repeat(4, 1fr);
             gap: 48px;
         }
         
-        @media (max-width: 800px) { 
-            .footer-inner { grid-template-columns: 1fr 1fr; gap: 36px; } 
+        @media (max-width: 900px) { 
+            .footer-inner { grid-template-columns: 1fr 1fr 1fr; gap: 36px; } 
+            .footer-brand { grid-column: span 3; } 
+        }
+        
+        @media (max-width: 600px) { 
+            .footer-inner { grid-template-columns: 1fr 1fr; gap: 28px; } 
             .footer-brand { grid-column: span 2; } 
         }
         
-        @media (max-width: 500px) { 
+        @media (max-width: 400px) { 
             .footer-inner { grid-template-columns: 1fr; } 
             .footer-brand { grid-column: span 1; } 
         }
@@ -1604,7 +1609,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p class="footer-copyright">© 2026 Game Shelf • v1.5.8</p>
+            <p class="footer-copyright">© 2026 Game Shelf • v1.5.9</p>
             <p class="footer-disclaimer" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">
                 Not affiliated with The New York Times, LinkedIn, or any game publisher.
             </p>
