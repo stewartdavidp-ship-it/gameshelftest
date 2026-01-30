@@ -1,3 +1,26 @@
+Game Shelf PWA v1.3.53 Release Notes
+=====================================
+
+Release Date: January 30, 2026
+
+DEBUG BUILD:
+------------
+
+1. MORNING REVIEW DEBUG LOGGING:
+   Added extensive console logging to diagnose why personalized greetings
+   aren't being generated. 
+   
+   Open browser DevTools console and trigger Morning Review to see:
+   - What game IDs are being requested
+   - What keys exist in appData.stats
+   - Full appData.stats contents
+   - Yesterday's history data
+   - Final userStats object being sent to Firebase
+   
+   Look for log lines starting with "🌅 [MR Debug]"
+
+---
+
 Game Shelf PWA v1.3.51 Release Notes
 =====================================
 
