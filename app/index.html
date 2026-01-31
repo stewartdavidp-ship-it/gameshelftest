@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.5.0">
+    <meta name="version" content="1.6.0">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -6941,6 +6941,249 @@
             padding: 5px;
         }
         
+        /* ============ Challenge Type Selector (v1.6.0) ============ */
+        .challenge-type-option {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 16px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+        
+        .challenge-type-option:hover {
+            border-color: var(--accent-purple);
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .challenge-type-option:active {
+            transform: scale(0.98);
+        }
+        
+        .challenge-type-icon {
+            font-size: 2.2rem;
+            width: 50px;
+            text-align: center;
+        }
+        
+        .challenge-type-info {
+            flex: 1;
+        }
+        
+        .challenge-type-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .challenge-type-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        
+        .challenge-type-arrow {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+        
+        /* ============ Rush Setup Sheet (v1.6.0) ============ */
+        .rush-duration-select {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .rush-duration-option {
+            flex: 1;
+            padding: 16px 12px;
+            text-align: center;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .rush-duration-option:active {
+            transform: scale(0.97);
+        }
+        
+        .rush-duration-option.selected {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: var(--accent-purple);
+        }
+        
+        .rush-duration-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        
+        .rush-duration-option.selected .rush-duration-value {
+            color: var(--accent-purple);
+        }
+        
+        .rush-duration-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        
+        .rush-order-select {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .rush-order-option {
+            flex: 1;
+            padding: 14px 12px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .rush-order-option:active {
+            transform: scale(0.97);
+        }
+        
+        .rush-order-option.selected {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: var(--accent-purple);
+        }
+        
+        .rush-order-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .rush-order-option.selected .rush-order-name {
+            color: var(--accent-purple);
+        }
+        
+        .rush-order-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .rush-mode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .rush-mode-badge.active {
+            background: rgba(102, 126, 234, 0.15);
+            color: var(--accent-purple);
+        }
+        
+        .rush-mode-badge.coming-soon {
+            opacity: 0.5;
+        }
+        
+        .rush-games-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .rush-game-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+        
+        .rush-game-icon {
+            font-size: 1.3rem;
+        }
+        
+        .rush-game-name {
+            flex: 1;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .rush-game-order {
+            width: 24px;
+            height: 24px;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        
+        .rush-summary-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1));
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .rush-summary-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        
+        .rush-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 0.85rem;
+        }
+        
+        .rush-summary-label {
+            color: var(--text-muted);
+        }
+        
+        .rush-summary-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .rush-tip {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 10px;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .rush-tip-icon {
+            font-size: 1.1rem;
+        }
+        
         /* Referral System */
         .referral-earnings {
             background: linear-gradient(135deg, var(--accent-purple), #764ba2);
@@ -9366,7 +9609,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.5.0</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.6.0</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -9659,7 +9902,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.5.0</div>
+            <div class="settings-version">Game Shelf PWA v1.6.0</div>
         </div>
     </div>
     
@@ -12071,6 +12314,186 @@
             
             <button id="create-battle-btn" class="share-close-btn btn-disabled" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; margin-top: 10px; opacity: 0.5; pointer-events: none; cursor: not-allowed;" onclick="createBattle()">Create Battle</button>
             <button class="share-close-btn" style="margin-top: 10px;" onclick="closeCreateBattle()">Cancel</button>
+        </div>
+    </div>
+    
+    <!-- Challenge Type Selector (v1.6.0) -->
+    <div class="bottom-sheet-overlay" id="challenge-type-sheet" onclick="closeChallengeTypeSelector()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="bottom-sheet-handle"></div>
+            <div class="bottom-sheet-header">
+                <span>⚔️ New Challenge</span>
+                <button class="bottom-sheet-close" onclick="closeChallengeTypeSelector()">×</button>
+            </div>
+            
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
+                Choose your challenge type
+            </p>
+            
+            <div class="challenge-type-option" onclick="selectChallengeType('battle')">
+                <div class="challenge-type-icon">⚔️</div>
+                <div class="challenge-type-info">
+                    <div class="challenge-type-name">Multi-Day Battle</div>
+                    <div class="challenge-type-desc">Compete with friends over 1-14 days. Track daily puzzle scores and crown a champion.</div>
+                </div>
+                <div class="challenge-type-arrow">›</div>
+            </div>
+            
+            <div class="challenge-type-option" onclick="selectChallengeType('rush')">
+                <div class="challenge-type-icon">⚡</div>
+                <div class="challenge-type-info">
+                    <div class="challenge-type-name">Timed Challenge</div>
+                    <div class="challenge-type-desc">Race against the clock! Complete puzzles in a 10-30 minute sprint.</div>
+                </div>
+                <div class="challenge-type-arrow">›</div>
+            </div>
+            
+            <button class="share-close-btn" style="margin-top: 20px;" onclick="closeChallengeTypeSelector()">Cancel</button>
+        </div>
+    </div>
+    
+    <!-- Rush Setup Sheet (v1.6.0) -->
+    <div class="bottom-sheet-overlay" id="create-rush-sheet" onclick="closeCreateRush()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 90vh; overflow-y: auto;">
+            <div class="bottom-sheet-handle"></div>
+            <div class="bottom-sheet-header">
+                <span>⚡ Timed Challenge</span>
+                <button class="bottom-sheet-close" onclick="closeCreateRush()">×</button>
+            </div>
+            
+            <!-- Duration Selection -->
+            <div class="battle-form-group">
+                <label class="battle-form-label">Duration</label>
+                <div class="rush-duration-select" id="rush-duration-select">
+                    <div class="rush-duration-option" data-duration="10" onclick="selectRushDuration(this)">
+                        <div class="rush-duration-value">10</div>
+                        <div class="rush-duration-label">minutes</div>
+                    </div>
+                    <div class="rush-duration-option selected" data-duration="20" onclick="selectRushDuration(this)">
+                        <div class="rush-duration-value">20</div>
+                        <div class="rush-duration-label">minutes</div>
+                    </div>
+                    <div class="rush-duration-option" data-duration="30" onclick="selectRushDuration(this)">
+                        <div class="rush-duration-value">30</div>
+                        <div class="rush-duration-label">minutes</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Game Selection -->
+            <div class="battle-form-group">
+                <label class="battle-form-label">Select Games</label>
+                <button class="select-games-btn" onclick="openRushGameSelector()">
+                    <span>🎮</span>
+                    <span id="rush-selected-games-count">Select games...</span>
+                </button>
+                <div class="rush-games-list" id="rush-games-preview">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Order Mode -->
+            <div class="battle-form-group">
+                <label class="battle-form-label">Play Order</label>
+                <div class="rush-order-select" id="rush-order-select">
+                    <div class="rush-order-option" data-order="fixed" onclick="selectRushOrder(this)">
+                        <div class="rush-order-name">📋 Fixed Order</div>
+                        <div class="rush-order-desc">Play games in sequence</div>
+                    </div>
+                    <div class="rush-order-option selected" data-order="any" onclick="selectRushOrder(this)">
+                        <div class="rush-order-name">🔀 Any Order</div>
+                        <div class="rush-order-desc">Choose as you go</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mode Selection (Solo only for now) -->
+            <div class="battle-form-group">
+                <label class="battle-form-label">Mode</label>
+                <div style="display: flex; gap: 10px;">
+                    <div class="rush-mode-badge active">
+                        <span>👤</span>
+                        <span>Solo Challenge</span>
+                    </div>
+                    <div class="rush-mode-badge coming-soon">
+                        <span>👥</span>
+                        <span>Group (Coming Soon)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Summary Card -->
+            <div class="rush-summary-card" id="rush-summary-card">
+                <div class="rush-summary-title">📋 Challenge Summary</div>
+                <div class="rush-summary-row">
+                    <span class="rush-summary-label">Duration</span>
+                    <span class="rush-summary-value" id="rush-summary-duration">20 minutes</span>
+                </div>
+                <div class="rush-summary-row">
+                    <span class="rush-summary-label">Games</span>
+                    <span class="rush-summary-value" id="rush-summary-games">0 selected</span>
+                </div>
+                <div class="rush-summary-row">
+                    <span class="rush-summary-label">Order</span>
+                    <span class="rush-summary-value" id="rush-summary-order">Any order</span>
+                </div>
+            </div>
+            
+            <!-- Tip -->
+            <div class="rush-tip">
+                <span class="rush-tip-icon">💡</span>
+                <span>Tip: Set a phone timer for an audio alert when your challenge ends!</span>
+            </div>
+            
+            <button id="start-rush-btn" class="share-close-btn btn-disabled" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; margin-top: 16px; opacity: 0.5; pointer-events: none; cursor: not-allowed;" onclick="createAndStartRush()">
+                ⚡ Start Challenge
+            </button>
+            <button class="share-close-btn" style="margin-top: 10px;" onclick="closeCreateRush()">Cancel</button>
+        </div>
+    </div>
+    
+    <!-- Rush Game Selector Modal (v1.6.0) -->
+    <div class="game-selector-overlay" id="rush-game-selector-overlay" onclick="closeRushGameSelector()">
+        <div class="game-selector-modal" onclick="event.stopPropagation()">
+            <div class="game-selector-header">
+                <h3>🎮 Select Games for Rush</h3>
+                <button class="game-selector-close" onclick="closeRushGameSelector()">✕</button>
+            </div>
+            <div class="game-selector-body" id="rush-game-selector-body">
+                <!-- Populated dynamically -->
+            </div>
+            <div class="game-selector-footer">
+                <div class="game-selector-count">
+                    <span id="rush-game-selector-count-text">0 games selected</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 8px;">(max 8)</span>
+                </div>
+                <button class="game-selector-done" onclick="confirmRushGameSelection()">Done</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Rush Confirmation Modal (v1.6.0) -->
+    <div class="bottom-sheet-overlay" id="rush-confirm-sheet" onclick="closeRushConfirm()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="text-align: center;">
+            <div class="bottom-sheet-handle"></div>
+            
+            <div style="font-size: 4rem; margin: 20px 0;">⚡</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px;">Ready?</div>
+            <div style="color: var(--text-secondary); margin-bottom: 24px;">
+                Your <span id="rush-confirm-duration" style="font-weight: 700; color: var(--accent-purple);">20-minute</span> challenge starts now!
+            </div>
+            
+            <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: left;">
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Games to complete:</div>
+                <div id="rush-confirm-games" style="font-size: 0.9rem; color: var(--text-primary);">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+            
+            <button class="share-close-btn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 1.1rem; padding: 16px;" onclick="confirmStartRush()">
+                🚀 Start Now!
+            </button>
+            <button class="share-close-btn" style="margin-top: 10px;" onclick="closeRushConfirm()">Cancel</button>
         </div>
     </div>
     
@@ -18999,9 +19422,14 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.5.0';
+        const APP_VERSION = '1.6.0';
         
         const RELEASE_NOTES = {
+            '1.6.0': [
+                '⚡ NEW: Timed Challenges! Race against the clock in 10-30 minute puzzle sprints',
+                '🎯 Choose your games, set your duration, and see how many you can complete',
+                '📊 New challenge type selector when creating battles'
+            ],
             '1.5.0': [
                 { icon: '⏱️', title: 'Game Timing', desc: 'Track how long you take to solve puzzles - see your average, best, and recent times!' }
             ],
@@ -21304,6 +21732,30 @@
                 showToast('Sign in to create battles', 'error');
                 return;
             }
+            // v1.6.0: Show challenge type selector instead of going directly to battle creation
+            showChallengeTypeSelector();
+        }
+        
+        // v1.6.0: Challenge Type Selector
+        function showChallengeTypeSelector() {
+            document.getElementById('challenge-type-sheet').classList.add('active');
+        }
+        
+        function closeChallengeTypeSelector() {
+            document.getElementById('challenge-type-sheet').classList.remove('active');
+        }
+        
+        function selectChallengeType(type) {
+            closeChallengeTypeSelector();
+            if (type === 'battle') {
+                showCreateBattleSheet();
+            } else if (type === 'rush') {
+                showCreateRush();
+            }
+        }
+        
+        // v1.6.0: Direct battle creation (called after selecting battle type)
+        function showCreateBattleSheet() {
             // Reset form
             document.getElementById('battle-name-input').value = '';
             document.getElementById('battle-duration').value = '3';
@@ -21560,6 +22012,360 @@
         function closeCreateBattle() {
             document.getElementById('create-battle-sheet').classList.remove('active');
         }
+        
+        // ============ RUSH (TIMED CHALLENGE) SYSTEM v1.6.0 ============
+        let rushSelectedGames = [];
+        let rushConfig = {
+            durationMinutes: 20,
+            gameOrder: 'any',
+            mode: 'solo'
+        };
+        
+        // Default recommended games for rush
+        const RUSH_DEFAULT_GAMES = ['wordle', 'connections', 'strands', 'mini'];
+        const RUSH_MAX_GAMES = 8;
+        
+        function showCreateRush() {
+            // Reset rush configuration
+            rushSelectedGames = [...RUSH_DEFAULT_GAMES];
+            rushConfig = {
+                durationMinutes: 20,
+                gameOrder: 'any',
+                mode: 'solo'
+            };
+            
+            // Reset duration selection
+            document.querySelectorAll('#rush-duration-select .rush-duration-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.duration === '20');
+            });
+            
+            // Reset order selection
+            document.querySelectorAll('#rush-order-select .rush-order-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.order === 'any');
+            });
+            
+            // Update UI
+            updateRushGamesPreview();
+            updateRushSummary();
+            updateStartRushButton();
+            
+            document.getElementById('create-rush-sheet').classList.add('active');
+        }
+        
+        function closeCreateRush() {
+            document.getElementById('create-rush-sheet').classList.remove('active');
+        }
+        
+        function selectRushDuration(el) {
+            document.querySelectorAll('#rush-duration-select .rush-duration-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            el.classList.add('selected');
+            rushConfig.durationMinutes = parseInt(el.dataset.duration);
+            updateRushSummary();
+        }
+        
+        function selectRushOrder(el) {
+            document.querySelectorAll('#rush-order-select .rush-order-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            el.classList.add('selected');
+            rushConfig.gameOrder = el.dataset.order;
+            updateRushSummary();
+        }
+        
+        function openRushGameSelector() {
+            renderRushGameSelector();
+            document.getElementById('rush-game-selector-overlay').classList.add('active');
+        }
+        
+        function closeRushGameSelector() {
+            document.getElementById('rush-game-selector-overlay').classList.remove('active');
+        }
+        
+        function renderRushGameSelector() {
+            const body = document.getElementById('rush-game-selector-body');
+            if (!body) return;
+            
+            let html = '';
+            
+            for (const [category, gameIds] of Object.entries(BATTLE_GAME_CATEGORIES)) {
+                const validGames = gameIds.filter(id => GAMES[id]);
+                if (validGames.length === 0) continue;
+                
+                html += `<div class="game-category">`;
+                html += `<div class="game-category-title">${category}</div>`;
+                html += `<div class="game-category-grid">`;
+                
+                for (const gameId of validGames) {
+                    const game = GAMES[gameId];
+                    const isSelected = rushSelectedGames.includes(gameId);
+                    const orderNum = isSelected ? rushSelectedGames.indexOf(gameId) + 1 : '';
+                    html += `
+                        <div class="game-select-item ${isSelected ? 'selected' : ''}" 
+                             data-game="${gameId}" 
+                             onclick="toggleRushGame(this, '${gameId}')">
+                            <span class="game-select-icon">${game.icon}</span>
+                            <span class="game-select-name">${game.name}</span>
+                            <span class="game-select-check">${isSelected && rushConfig.gameOrder === 'fixed' ? orderNum : '✓'}</span>
+                        </div>
+                    `;
+                }
+                
+                html += `</div></div>`;
+            }
+            
+            body.innerHTML = html;
+            updateRushGameSelectorCount();
+        }
+        
+        function toggleRushGame(el, gameId) {
+            const isSelected = rushSelectedGames.includes(gameId);
+            
+            if (isSelected) {
+                rushSelectedGames = rushSelectedGames.filter(id => id !== gameId);
+                el.classList.remove('selected');
+            } else {
+                if (rushSelectedGames.length >= RUSH_MAX_GAMES) {
+                    showToast(`Maximum ${RUSH_MAX_GAMES} games for timed challenge`, 'error');
+                    return;
+                }
+                rushSelectedGames.push(gameId);
+                el.classList.add('selected');
+            }
+            
+            updateRushGameSelectorCount();
+            
+            // Re-render to update order numbers if in fixed mode
+            if (rushConfig.gameOrder === 'fixed') {
+                renderRushGameSelector();
+            }
+        }
+        
+        function updateRushGameSelectorCount() {
+            const count = rushSelectedGames.length;
+            const countText = document.getElementById('rush-game-selector-count-text');
+            if (countText) {
+                countText.textContent = `${count} game${count !== 1 ? 's' : ''} selected`;
+            }
+        }
+        
+        function confirmRushGameSelection() {
+            closeRushGameSelector();
+            updateRushGamesPreview();
+            updateRushSummary();
+            updateStartRushButton();
+        }
+        
+        function updateRushGamesPreview() {
+            const preview = document.getElementById('rush-games-preview');
+            const countBtn = document.getElementById('rush-selected-games-count');
+            
+            if (rushSelectedGames.length === 0) {
+                countBtn.textContent = 'Select games...';
+                preview.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem; padding: 8px;">No games selected yet</div>';
+                return;
+            }
+            
+            countBtn.textContent = `${rushSelectedGames.length} game${rushSelectedGames.length !== 1 ? 's' : ''} selected`;
+            
+            let html = '';
+            rushSelectedGames.forEach((gameId, idx) => {
+                const game = GAMES[gameId];
+                if (game) {
+                    html += `
+                        <div class="rush-game-item">
+                            <span class="rush-game-icon">${game.icon}</span>
+                            <span class="rush-game-name">${game.name}</span>
+                            ${rushConfig.gameOrder === 'fixed' ? `<span class="rush-game-order">${idx + 1}</span>` : ''}
+                        </div>
+                    `;
+                }
+            });
+            preview.innerHTML = html;
+        }
+        
+        function updateRushSummary() {
+            document.getElementById('rush-summary-duration').textContent = `${rushConfig.durationMinutes} minutes`;
+            document.getElementById('rush-summary-games').textContent = rushSelectedGames.length > 0 
+                ? `${rushSelectedGames.length} selected` 
+                : '0 selected';
+            document.getElementById('rush-summary-order').textContent = rushConfig.gameOrder === 'fixed' 
+                ? 'Fixed sequence' 
+                : 'Any order';
+            
+            // Also update games preview when order changes
+            updateRushGamesPreview();
+        }
+        
+        function updateStartRushButton() {
+            const btn = document.getElementById('start-rush-btn');
+            const canStart = rushSelectedGames.length >= 1;
+            
+            if (canStart) {
+                btn.classList.remove('btn-disabled');
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+                btn.style.cursor = 'pointer';
+            } else {
+                btn.classList.add('btn-disabled');
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+                btn.style.cursor = 'not-allowed';
+            }
+        }
+        
+        function createAndStartRush() {
+            if (rushSelectedGames.length < 1) {
+                showToast('Select at least 1 game', 'error');
+                return;
+            }
+            
+            // Show confirmation modal
+            document.getElementById('rush-confirm-duration').textContent = `${rushConfig.durationMinutes}-minute`;
+            
+            // Build games list for confirmation
+            let gamesHtml = rushSelectedGames.map((gameId, idx) => {
+                const game = GAMES[gameId];
+                const orderPrefix = rushConfig.gameOrder === 'fixed' ? `${idx + 1}. ` : '• ';
+                return `<div style="padding: 4px 0;">${orderPrefix}${game?.icon || '🎮'} ${game?.name || gameId}</div>`;
+            }).join('');
+            document.getElementById('rush-confirm-games').innerHTML = gamesHtml;
+            
+            closeCreateRush();
+            document.getElementById('rush-confirm-sheet').classList.add('active');
+        }
+        
+        function closeRushConfirm() {
+            document.getElementById('rush-confirm-sheet').classList.remove('active');
+        }
+        
+        async function confirmStartRush() {
+            if (!currentUser) {
+                showToast('Sign in to start a challenge', 'error');
+                return;
+            }
+            
+            closeRushConfirm();
+            
+            // Generate rush ID
+            const rushId = 'rush_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            const now = Date.now();
+            const durationMs = rushConfig.durationMinutes * 60 * 1000;
+            
+            // Create rush object
+            const rush = {
+                id: rushId,
+                type: 'time-rush',
+                mode: 'solo',
+                createdBy: currentUser.odometerId,
+                createdAt: now,
+                
+                config: {
+                    durationMinutes: rushConfig.durationMinutes,
+                    durationMs: durationMs,
+                    games: [...rushSelectedGames],
+                    gameOrder: rushConfig.gameOrder
+                },
+                
+                participants: {
+                    [currentUser.odometerId]: {
+                        odataId: currentUser.odometerId,
+                        rushStartedAt: now,
+                        rushEndsAt: now + durationMs,
+                        effectiveEndsAt: now + durationMs,
+                        pausedAt: null,
+                        pauseUsed: false,
+                        totalPauseMs: 0,
+                        currentGameIndex: 0,
+                        completedGames: [],
+                        gamesCompleted: 0,
+                        gamesAttempted: 0,
+                        status: 'active'
+                    }
+                },
+                
+                status: 'active'
+            };
+            
+            // Save to local state
+            if (!appData.rushes) {
+                appData.rushes = {};
+            }
+            appData.rushes[rushId] = rush;
+            appData.activeRush = {
+                rushId: rushId,
+                mode: 'solo',
+                durationMinutes: rushConfig.durationMinutes,
+                games: [...rushSelectedGames],
+                gameOrder: rushConfig.gameOrder,
+                startedAt: now,
+                endsAt: now + durationMs,
+                pausedAt: null,
+                pauseUsed: false,
+                totalPauseMs: 0,
+                completedGames: [],
+                currentGameIndex: 0,
+                timeRemainingMs: durationMs,
+                isExpired: false
+            };
+            
+            // Save to Firebase
+            try {
+                await db.ref(`rushes/${currentUser.odometerId}/${rushId}`).set(rush);
+                console.log('⚡ Rush created and saved to Firebase:', rushId);
+            } catch (error) {
+                console.error('Failed to save rush to Firebase:', error);
+                // Continue anyway - local state is saved
+            }
+            
+            // Save local state
+            saveData();
+            
+            // Show success and notify user
+            showToast(`⚡ ${rushConfig.durationMinutes}-min challenge started!`, 'success');
+            
+            // TODO: Session 3 will show the active rush modal
+            // For now, just log that the rush has started
+            console.log('⚡ Rush started:', appData.activeRush);
+            
+            // In Session 3, this is where we'd show the active rush modal
+            // showActiveRushModal();
+        }
+        
+        // Generate rush code (for group rushes - future use)
+        function generateRushCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = 'R'; // Prefix with R for Rush
+            for (let i = 0; i < 5; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+        
+        // Check for active rush on app load (will be expanded in Session 3)
+        function checkForActiveRush() {
+            if (appData.activeRush && appData.activeRush.rushId) {
+                const now = Date.now();
+                const timeRemaining = appData.activeRush.endsAt - now;
+                
+                if (timeRemaining > 0) {
+                    appData.activeRush.timeRemainingMs = timeRemaining;
+                    appData.activeRush.isExpired = false;
+                    console.log('⚡ Active rush found:', formatDuration(Math.floor(timeRemaining / 1000)), 'remaining');
+                    // TODO: Session 3 - show active rush modal
+                    // showActiveRushModal();
+                } else {
+                    // Rush expired
+                    appData.activeRush.isExpired = true;
+                    console.log('⚡ Rush expired, completing...');
+                    // TODO: Session 4 - handle rush completion
+                    // completeExpiredRush();
+                }
+            }
+        }
+        
+        // ============ END RUSH SYSTEM ============
         
         function showJoinBattle() {
             if (!currentUser) {
@@ -34566,6 +35372,9 @@ Hint levels:
             handleShareTarget();
             bindClipboardButtons();
             loadUserBattles();
+            
+            // v1.6.0: Check for active rush on startup
+            checkForActiveRush();
             
             // Load sent nudges from localStorage
             loadSentNudges();

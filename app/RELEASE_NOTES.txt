@@ -1,3 +1,56 @@
+Game Shelf PWA v1.6.0 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+NEW FEATURE - TIMED CHALLENGES:
+-------------------------------
+
+1. CHALLENGE TYPE SELECTOR:
+   - "Create Battle" now shows a choice between:
+     • Multi-Day Battle (existing battle system)
+     • Timed Challenge (NEW - race against the clock)
+   - Clean separation between competitive modes
+
+2. TIMED CHALLENGE SETUP:
+   - Choose duration: 10, 20, or 30 minutes
+   - Select up to 8 games for your challenge
+   - Choose play order: Fixed sequence or Any order
+   - Summary card shows your configuration
+   - Pro tip reminder to set a phone timer
+
+3. RUSH DATA MODEL:
+   - New Firebase schema at /rushes/{userId}/{rushId}
+   - Local state: appData.activeRush for quick access
+   - Tracks: config, participants, timing, status
+   - Ready for group rushes in future update
+
+4. SESSION 2 COMPLETE:
+   - Challenge type selector UI
+   - Rush setup sheet with all configuration options
+   - Game selector (reuses battle game selector pattern)
+   - Confirmation modal before starting
+   - Firebase persistence for rush data
+   - Local state management
+
+WHAT'S NEXT (Future Sessions):
+------------------------------
+- Session 3: Active rush modal, game flow, time tracking during rush
+- Session 4: Rush completion, results display, stats saving
+- Session 5: Pause functionality, personal bests
+- Session 6: Rush history, stats integration
+- Session 7: Group rushes with friends
+
+TECHNICAL DETAILS:
+------------------
+- Builds on v1.5.0 timing infrastructure
+- Rush config stored both locally and in Firebase
+- Games list limited to 8 for focused sprints
+- Duration options: 10/20/30 minutes (fixed, not custom)
+- Solo mode only for now (group mode UI shows "Coming Soon")
+
+---
+
 Game Shelf PWA v1.5.0 Release Notes
 =====================================
 
