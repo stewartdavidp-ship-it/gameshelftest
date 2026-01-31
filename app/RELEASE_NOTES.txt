@@ -1,10 +1,179 @@
+Game Shelf PWA v1.6.2 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+BUG FIXES - RUSH COMPLETION (Session 4 Fixes):
+----------------------------------------------
+
+1. FIXED: Rush not checking on app return
+   - Rush modal now properly appears when returning to the app
+   - Added checkForActiveRush() to visibilitychange handler
+
+2. FIXED: Time's Up modal never appearing
+   - handleExpiredRushRecord() now integrated into logGame()
+   - Late game recording properly intercepted and handled
+
+3. FIXED: Race condition with clipboard detection
+   - Delayed rush completion by 3 seconds on return
+   - Allows clipboard processing to happen before rush is cleared
+   - Time's Up modal can now properly handle late games
+
+4. FIXED: Infinite loop in late game recording
+   - Added _recordingLateRushGame flag to prevent re-trigger
+   - recordLateGame() now properly clears state before logging
+
+5. FIXED: Rush stats not syncing from cloud
+   - Added rushStats merge in loadFromCloud()
+   - Personal bests and streaks now sync across devices
+
+6. FIXED: currentUser.odometerId undefined
+   - Changed all rush code to use currentUser.uid
+   - Firebase paths now consistent with rest of app
+
+7. FIXED: saveToCloud() function didn't exist
+   - Changed calls to correct syncToCloud() function
+
+8. FIXED: Abandoned rush stats not syncing
+   - abandonRush() now syncs rushStats to Firebase
+
+TECHNICAL DETAILS:
+------------------
+- visibilitychange handler now calls checkForActiveRush()
+- 3-second delay before completing expired rush on return
+- window._recordingLateRushGame flag prevents Time's Up loop
+- rushStats merge in loadFromCloud() takes max of counts/bests
+- All Firebase paths use currentUser.uid consistently
+
+---
+
+Game Shelf PWA v1.6.1 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+NEW FEATURE - RUSH COMPLETION (Session 4 Complete):
+---------------------------------------------------
+
+1. RUSH COMPLETE MODAL:
+   - Beautiful results display showing games completed
+   - Per-game breakdown with times and results
+   - Shows counted games (✅), missed games (❌), and skipped games (⏭️)
+   - Stats summary: total time, average game time
+   - Personal best detection and celebration (🏆)
+   - Share Results button for social sharing
+
+2. TIME'S UP MODAL:
+   - Appears when user returns after rush expired with a pending game
+   - Shows how long ago the rush ended
+   - Option to "Record Anyway" (saves to history but doesn't count)
+   - Option to "Discard" the late result
+   - Graceful handling of edge cases
+
+3. RUSH STATS TRACKING:
+   - New appData.rushStats object tracks rush performance
+   - Personal bests tracked per duration (10/20/30 min)
+   - Streak tracking for consecutive rush days
+   - Stats sync to Firebase for cloud backup
+
+4. EARLY FINISH:
+   - "Finish Rush" button appears when all games done
+   - Can end rush early with confirmation
+   - Stats calculated based on completed games
+
+5. IMPROVED ABANDON FLOW:
+   - Abandoned rushes now tracked in stats
+   - Firebase status properly updated to 'abandoned'
+
+WHAT'S NEXT:
+------------
+- Session 5: Personal bests, celebration animations
+- Session 6: Rush history view, stats integration
+- Session 7: Group rushes with friends
+
+TECHNICAL DETAILS:
+------------------
+- completeRush() handles all completion scenarios (timer, return, early)
+- calculateRushStats() computes final game counts and times
+- saveRushStats() persists to local storage and Firebase
+- handleExpiredRushRecord() manages late game recording flow
+- showRushComplete() and showTimesUpModal() display results
+- Share functionality uses native Share API with clipboard fallback
+
+---
+
 Game Shelf PWA v1.6.0 Release Notes
 =====================================
 
 Release Date: January 31, 2026
 
-NEW FEATURE - TIMED CHALLENGES:
--------------------------------
+NEW FEATURE - TIMED CHALLENGES (Session 3 Complete):
+----------------------------------------------------
+
+1. ACTIVE RUSH MODAL:
+   - Beautiful gradient header with live countdown timer
+   - Progress bar showing games completed vs total
+   - Game list with status indicators (completed, current, pending)
+   - Visual feedback: green checkmarks, purple highlight for current game
+   - Timer changes color as time runs low (yellow at 3min, red at 1min)
+
+2. GAME FLOW DURING RUSH:
+   - "Play [Game]" button launches the current game
+   - Automatic tracking of game launch timestamps
+   - Games record with full timing data (launch → record duration)
+   - "Skip this game" option to move to next
+   - Rush modal reappears automatically after recording
+
+3. RUSH TIMER SYSTEM:
+   - Accurate countdown with mm:ss format
+   - Timer continues when app is backgrounded (timestamp-based)
+   - 30-second grace period after deadline
+   - Minimizable to floating indicator
+   - Tap indicator to restore full modal
+
+4. PAUSE FUNCTIONALITY:
+   - One pause allowed per rush (max 5 minutes)
+   - Pause extends deadline by actual pause duration
+   - Visual state shows when pause is used/available
+   - Auto-resume after 5 minutes if still paused
+
+5. INTEGRATION WITH EXISTING SYSTEMS:
+   - Game history entries now include rush context (rushId, rushCounted)
+   - Timing data source marked as 'rush' for rush games
+   - Clipboard detection still works alongside rush modal
+   - Firebase sync for rush progress
+
+6. NEW UI COMPONENTS:
+   - .active-rush-modal - Full-screen rush control center
+   - .rush-indicator - Minimized floating timer badge
+   - .rush-game-row - Game progress list items
+   - .rush-play-btn - Primary action button
+   - Timer color states: normal, warning (yellow), critical (red)
+
+WHAT'S NEXT:
+------------
+- Session 4: Rush completion modal, results display, stats saving
+- Session 5: Personal bests, celebration animations
+- Session 6: Rush history, stats integration
+- Session 7: Group rushes with friends
+
+TECHNICAL DETAILS:
+------------------
+- Timer uses setInterval + timestamp calculation (not setTimeout)
+- Grace period: 30 seconds after deadline for late recordings
+- Rush context stored in game history for future analytics
+- Pause extends endsAt timestamp by actual pause duration
+- Modal minimizes to indicator, not closed, to preserve state
+
+---
+
+Game Shelf PWA v1.6.0 Release Notes (Session 2)
+===============================================
+
+Release Date: January 31, 2026
+
+NEW FEATURE - TIMED CHALLENGES SETUP:
+-------------------------------------
 
 1. CHALLENGE TYPE SELECTOR:
    - "Create Battle" now shows a choice between:
@@ -24,30 +193,6 @@ NEW FEATURE - TIMED CHALLENGES:
    - Local state: appData.activeRush for quick access
    - Tracks: config, participants, timing, status
    - Ready for group rushes in future update
-
-4. SESSION 2 COMPLETE:
-   - Challenge type selector UI
-   - Rush setup sheet with all configuration options
-   - Game selector (reuses battle game selector pattern)
-   - Confirmation modal before starting
-   - Firebase persistence for rush data
-   - Local state management
-
-WHAT'S NEXT (Future Sessions):
-------------------------------
-- Session 3: Active rush modal, game flow, time tracking during rush
-- Session 4: Rush completion, results display, stats saving
-- Session 5: Pause functionality, personal bests
-- Session 6: Rush history, stats integration
-- Session 7: Group rushes with friends
-
-TECHNICAL DETAILS:
-------------------
-- Builds on v1.5.0 timing infrastructure
-- Rush config stored both locally and in Firebase
-- Games list limited to 8 for focused sprints
-- Duration options: 10/20/30 minutes (fixed, not custom)
-- Solo mode only for now (group mode UI shows "Coming Soon")
 
 ---
 

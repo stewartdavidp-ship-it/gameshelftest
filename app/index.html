@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.6.0">
+    <meta name="version" content="1.6.2">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7184,6 +7184,658 @@
             font-size: 1.1rem;
         }
         
+        /* Active Rush Modal (v1.6.0 Session 3) */
+        .active-rush-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        
+        .active-rush-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .active-rush-content {
+            background: var(--bg-secondary);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .active-rush-modal.active .active-rush-content {
+            transform: translateY(0);
+        }
+        
+        .active-rush-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .active-rush-timer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .active-rush-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .active-rush-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .rush-pause-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        
+        .rush-pause-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .rush-pause-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .active-rush-time {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .active-rush-time.warning {
+            color: #fbbf24;
+            animation: rushTimePulse 1s ease-in-out infinite;
+        }
+        
+        .active-rush-time.critical {
+            color: #ef4444;
+            animation: rushTimePulse 0.5s ease-in-out infinite;
+        }
+        
+        @keyframes rushTimePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .active-rush-progress {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .active-rush-progress-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .active-rush-progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .active-rush-progress-text {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            white-space: nowrap;
+        }
+        
+        .active-rush-body {
+            padding: 20px;
+        }
+        
+        .rush-games-progress {
+            margin-bottom: 20px;
+        }
+        
+        .rush-game-row {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+        
+        .rush-game-row.completed {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .rush-game-row.current {
+            background: rgba(102, 126, 234, 0.15);
+            border: 2px solid var(--accent-purple);
+        }
+        
+        .rush-game-row.skipped {
+            opacity: 0.5;
+        }
+        
+        .rush-game-row.pending {
+            opacity: 0.6;
+        }
+        
+        .rush-game-status {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            margin-right: 12px;
+        }
+        
+        .rush-game-status.completed {
+            color: #22c55e;
+        }
+        
+        .rush-game-status.current {
+            color: var(--accent-purple);
+        }
+        
+        .rush-game-info {
+            flex: 1;
+        }
+        
+        .rush-game-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .rush-game-result {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        .rush-game-time {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .rush-action-area {
+            padding: 0 20px 20px;
+        }
+        
+        .rush-play-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        
+        .rush-play-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .rush-play-btn:active {
+            transform: translateY(0);
+        }
+        
+        .rush-play-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .rush-secondary-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 12px;
+        }
+        
+        .rush-secondary-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 8px;
+            transition: color 0.2s;
+        }
+        
+        .rush-secondary-btn:hover {
+            color: var(--text-primary);
+        }
+        
+        .rush-minimize-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        
+        /* Minimized Rush Indicator */
+        .rush-indicator {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+        
+        .rush-indicator.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .rush-indicator-time {
+            font-weight: 700;
+            color: white;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .rush-indicator-progress {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Rush Complete Modal (v1.6.2 Session 4) */
+        .rush-complete-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+        
+        .rush-complete-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .rush-complete-content {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .rush-complete-modal.active .rush-complete-content {
+            transform: scale(1);
+        }
+        
+        .rush-complete-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 24px 20px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .rush-complete-icon {
+            font-size: 3rem;
+            margin-bottom: 8px;
+        }
+        
+        .rush-complete-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .rush-complete-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .rush-complete-body {
+            padding: 20px;
+        }
+        
+        .rush-complete-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .rush-complete-games-count {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+            line-height: 1;
+        }
+        
+        .rush-complete-games-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        .rush-complete-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 16px 0;
+        }
+        
+        .rush-complete-games-list {
+            margin-bottom: 16px;
+        }
+        
+        .rush-complete-game-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .rush-complete-game-row.counted {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 3px solid #22c55e;
+        }
+        
+        .rush-complete-game-row.missed {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+        }
+        
+        .rush-complete-game-row.skipped {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--text-muted);
+            opacity: 0.6;
+        }
+        
+        .rush-complete-game-status {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+        
+        .rush-complete-game-info {
+            flex: 1;
+        }
+        
+        .rush-complete-game-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .rush-complete-game-result {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .rush-complete-game-time {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .rush-complete-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .rush-complete-stat {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .rush-complete-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .rush-complete-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        .rush-complete-personal-best {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .rush-complete-pb-icon {
+            font-size: 2rem;
+            margin-bottom: 4px;
+        }
+        
+        .rush-complete-pb-text {
+            font-weight: 700;
+            color: #f59e0b;
+            font-size: 1rem;
+        }
+        
+        .rush-complete-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .rush-complete-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        
+        .rush-complete-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .rush-complete-btn:active {
+            transform: translateY(0);
+        }
+        
+        .rush-complete-btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+        }
+        
+        .rush-complete-btn.secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        /* Time's Up Modal */
+        .times-up-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+        
+        .times-up-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .times-up-content {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .times-up-modal.active .times-up-content {
+            transform: scale(1);
+        }
+        
+        .times-up-header {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            padding: 24px 20px;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .times-up-icon {
+            font-size: 3rem;
+            margin-bottom: 8px;
+        }
+        
+        .times-up-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+        }
+        
+        .times-up-body {
+            padding: 24px 20px;
+        }
+        
+        .times-up-message {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .times-up-game {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+        
+        .times-up-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        
+        .times-up-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .times-up-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        
+        .times-up-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .times-up-btn.record {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .times-up-btn.discard {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
+            color: white;
+        }
+        
         /* Referral System */
         .referral-earnings {
             background: linear-gradient(135deg, var(--accent-purple), #764ba2);
@@ -9609,7 +10261,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.6.0</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.6.2</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -9902,7 +10554,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.6.0</div>
+            <div class="settings-version">Game Shelf PWA v1.6.2</div>
         </div>
     </div>
     
@@ -12494,6 +13146,124 @@
                 🚀 Start Now!
             </button>
             <button class="share-close-btn" style="margin-top: 10px;" onclick="closeRushConfirm()">Cancel</button>
+        </div>
+    </div>
+    
+    <!-- Active Rush Modal (v1.6.0 Session 3) -->
+    <div class="active-rush-modal" id="active-rush-modal" onclick="minimizeActiveRush()">
+        <div class="active-rush-content" onclick="event.stopPropagation()">
+            <!-- Header with timer -->
+            <div class="active-rush-header">
+                <button class="rush-minimize-btn" onclick="minimizeActiveRush()">▼ Minimize</button>
+                <div class="active-rush-timer-row">
+                    <div class="active-rush-title">
+                        <span>⚡</span>
+                        <span>RUSH ACTIVE</span>
+                    </div>
+                    <div class="active-rush-controls">
+                        <button class="rush-pause-btn" id="rush-pause-btn" onclick="toggleRushPause()">
+                            <span id="rush-pause-icon">⏸️</span>
+                            <span id="rush-pause-text">Pause</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="active-rush-time" id="active-rush-time">20:00</div>
+                <div class="active-rush-progress">
+                    <div class="active-rush-progress-bar">
+                        <div class="active-rush-progress-fill" id="active-rush-progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="active-rush-progress-text" id="active-rush-progress-text">0/4 games</div>
+                </div>
+            </div>
+            
+            <!-- Game progress list -->
+            <div class="active-rush-body">
+                <div class="rush-games-progress" id="rush-games-progress">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+            
+            <!-- Action area -->
+            <div class="rush-action-area">
+                <button class="rush-play-btn" id="rush-play-btn" onclick="playCurrentRushGame()">
+                    <span>▶</span>
+                    <span id="rush-play-btn-text">Play Wordle</span>
+                </button>
+                <div class="rush-secondary-actions">
+                    <button class="rush-secondary-btn" id="rush-skip-btn" onclick="skipCurrentRushGame()">Skip this game</button>
+                    <button class="rush-secondary-btn" onclick="abandonRush()">Abandon Rush</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Minimized Rush Indicator (v1.6.0 Session 3) -->
+    <div class="rush-indicator" id="rush-indicator" onclick="showActiveRushModal()">
+        <span>⚡</span>
+        <span class="rush-indicator-time" id="rush-indicator-time">20:00</span>
+        <span class="rush-indicator-progress" id="rush-indicator-progress">0/4</span>
+    </div>
+    
+    <!-- Rush Complete Modal (v1.6.2 Session 4) -->
+    <div class="rush-complete-modal" id="rush-complete-modal" onclick="closeRushComplete()">
+        <div class="rush-complete-content" onclick="event.stopPropagation()">
+            <div class="rush-complete-header">
+                <div class="rush-complete-icon" id="rush-complete-icon">🏁</div>
+                <div class="rush-complete-title" id="rush-complete-title">Rush Complete!</div>
+                <div class="rush-complete-subtitle" id="rush-complete-subtitle">20-minute challenge finished</div>
+            </div>
+            <div class="rush-complete-body">
+                <div class="rush-complete-summary">
+                    <div class="rush-complete-games-count" id="rush-complete-games-count">3/4</div>
+                    <div class="rush-complete-games-label">games completed</div>
+                </div>
+                
+                <div class="rush-complete-divider"></div>
+                
+                <div class="rush-complete-games-list" id="rush-complete-games-list">
+                    <!-- Populated dynamically -->
+                </div>
+                
+                <div class="rush-complete-stats" id="rush-complete-stats">
+                    <div class="rush-complete-stat">
+                        <div class="rush-complete-stat-value" id="rush-complete-total-time">20:00</div>
+                        <div class="rush-complete-stat-label">Total Time</div>
+                    </div>
+                    <div class="rush-complete-stat">
+                        <div class="rush-complete-stat-value" id="rush-complete-avg-time">3:45</div>
+                        <div class="rush-complete-stat-label">Avg Game</div>
+                    </div>
+                </div>
+                
+                <div class="rush-complete-personal-best" id="rush-complete-pb" style="display: none;">
+                    <div class="rush-complete-pb-icon">🏆</div>
+                    <div class="rush-complete-pb-text" id="rush-complete-pb-text">NEW PERSONAL BEST!</div>
+                </div>
+                
+                <div class="rush-complete-actions">
+                    <button class="rush-complete-btn secondary" onclick="closeRushComplete()">Done</button>
+                    <button class="rush-complete-btn primary" onclick="shareRushResults()">Share Results</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Time's Up Modal (v1.6.2 Session 4) -->
+    <div class="times-up-modal" id="times-up-modal">
+        <div class="times-up-content">
+            <div class="times-up-header">
+                <div class="times-up-icon">⏱️</div>
+                <div class="times-up-title">TIME'S UP!</div>
+            </div>
+            <div class="times-up-body">
+                <div class="times-up-message">Your rush ended <span id="times-up-ago">2:15</span> ago.</div>
+                <div class="times-up-game" id="times-up-game">This Wordle result won't count</div>
+                <div class="times-up-note">We'll still save it to your history.</div>
+                <div class="times-up-actions">
+                    <button class="times-up-btn record" onclick="recordLateGame()">Record Anyway</button>
+                    <button class="times-up-btn discard" onclick="discardLateGame()">Discard</button>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -17381,6 +18151,23 @@
             // Also dismiss return prompt if visible for this game
             dismissReturnPromptIfShowing(result.gameId);
             
+            // v1.6.2: Check if rush is expired and user is trying to record a rush game
+            // This shows the Time's Up modal and returns true if handled
+            if (handleExpiredRushRecord(result.gameId, result)) {
+                console.log(`⚡ Rush: Late game ${result.gameId} - showing Time's Up modal`);
+                return false; // Don't log yet - user will choose Record Anyway or Discard
+            }
+            
+            // v1.6.0: Check if this game is part of an active rush
+            const inActiveRush = isGameInActiveRush(result.gameId);
+            let rushCounted = false;
+            
+            if (inActiveRush) {
+                // Record the game in the rush
+                rushCounted = recordRushGame(result.gameId, result);
+                console.log(`⚡ Rush: Game ${result.gameId} recorded (counted: ${rushCounted})`);
+            }
+            
             // Update history
             if (!appData.history[today]) {
                 appData.history[today] = {};
@@ -17392,20 +18179,31 @@
             
             // Check if we have launch time from active game tracking
             const activeGame = getActiveGame();
-            if (activeGame && activeGame.gameId === result.gameId && activeGame.launchTime) {
-                const sessionDurationMs = recordedAt - activeGame.launchTime;
+            
+            // v1.6.0: Also check rush launch data
+            const rushLaunchData = appData.activeRush?.gameLaunches?.[result.gameId];
+            const launchTime = rushLaunchData?.launchedAt || (activeGame?.gameId === result.gameId ? activeGame.launchTime : null);
+            
+            if (launchTime) {
+                const sessionDurationMs = recordedAt - launchTime;
                 const sessionDurationSeconds = Math.round(sessionDurationMs / 1000);
                 
                 // Only record timing if it seems reasonable (between 5 seconds and 2 hours)
                 if (sessionDurationSeconds >= 5 && sessionDurationSeconds <= 7200) {
                     timingData = {
-                        sessionStartedAt: activeGame.launchTime,
+                        sessionStartedAt: launchTime,
                         sessionRecordedAt: recordedAt,
                         sessionDurationSeconds: sessionDurationSeconds,
-                        source: 'normal'  // Will be 'rush' or 'battle' in future
+                        source: inActiveRush ? 'rush' : 'normal'
                     };
                 }
             }
+            
+            // v1.6.0: Add rush context to history entry
+            const rushContext = inActiveRush ? {
+                rushId: appData.activeRush.rushId,
+                rushCounted: rushCounted
+            } : null;
             
             appData.history[today][result.gameId] = {
                 score: result.score,
@@ -17414,7 +18212,8 @@
                 time: new Date().toISOString(),
                 grid: result.grid || null,  // Save the emoji grid for sharing
                 shareText: result.shareText || null,  // Save original share text if available
-                timing: timingData  // v1.5.0: Timing data (null if not tracked)
+                timing: timingData,  // v1.5.0: Timing data (null if not tracked)
+                rush: rushContext  // v1.6.0: Rush context (null if not in rush)
             };
             
             // v1.5.0: Update game timing stats
@@ -17505,6 +18304,15 @@
             
             // Update battle scores if in active battle (pass full result for win/perfect tracking)
             updateBattleScore(result.gameId, result.numericScore || 1, result);
+            
+            // v1.6.0: Update rush UI if game was part of active rush
+            if (inActiveRush) {
+                updateRushModalUI();
+                // Show rush modal again to continue
+                if (!rushModalMinimized) {
+                    showActiveRushModal();
+                }
+            }
             
             saveData();
             syncToCloud();
@@ -17635,15 +18443,38 @@
                         console.log('[SYNC] GameTiming synced from cloud');
                     }
                     
+                    // v1.6.2: Merge rushStats (cloud wins for personal bests, merge streaks)
+                    if (cloudData.rushStats) {
+                        if (!appData.rushStats) {
+                            appData.rushStats = cloudData.rushStats;
+                        } else {
+                            // Merge: take higher values for counts and bests
+                            const local = appData.rushStats;
+                            const cloud = cloudData.rushStats;
+                            appData.rushStats = {
+                                totalRushes: Math.max(local.totalRushes || 0, cloud.totalRushes || 0),
+                                completedRushes: Math.max(local.completedRushes || 0, cloud.completedRushes || 0),
+                                abandonedRushes: Math.max(local.abandonedRushes || 0, cloud.abandonedRushes || 0),
+                                best10min: Math.max(local.best10min || 0, cloud.best10min || 0),
+                                best20min: Math.max(local.best20min || 0, cloud.best20min || 0),
+                                best30min: Math.max(local.best30min || 0, cloud.best30min || 0),
+                                currentStreak: cloud.currentStreak || local.currentStreak || 0,
+                                longestStreak: Math.max(local.longestStreak || 0, cloud.longestStreak || 0),
+                                lastRushDate: cloud.lastRushDate || local.lastRushDate
+                            };
+                        }
+                        console.log('[SYNC] RushStats synced from cloud:', appData.rushStats);
+                    }
+                    
                     console.log('[SYNC] Merge complete. Saving...');
                     saveData();
                     
                     // Push merged data back to cloud to ensure consistency
-                    saveToCloud();
+                    syncToCloud();
                 } else {
                     console.log('[SYNC] No cloud data found - pushing local to cloud');
                     // No cloud data - push local data to cloud
-                    saveToCloud();
+                    syncToCloud();
                 }
             } catch (e) {
                 console.error('Load from cloud error:', e);
@@ -19422,7 +20253,7 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.6.0';
+        const APP_VERSION = '1.6.2';
         
         const RELEASE_NOTES = {
             '1.6.0': [
@@ -22258,7 +23089,7 @@
                 id: rushId,
                 type: 'time-rush',
                 mode: 'solo',
-                createdBy: currentUser.odometerId,
+                createdBy: currentUser.uid,
                 createdAt: now,
                 
                 config: {
@@ -22269,8 +23100,8 @@
                 },
                 
                 participants: {
-                    [currentUser.odometerId]: {
-                        odataId: currentUser.odometerId,
+                    [currentUser.uid]: {
+                        odataId: currentUser.uid,
                         rushStartedAt: now,
                         rushEndsAt: now + durationMs,
                         effectiveEndsAt: now + durationMs,
@@ -22312,7 +23143,7 @@
             
             // Save to Firebase
             try {
-                await db.ref(`rushes/${currentUser.odometerId}/${rushId}`).set(rush);
+                await db.ref(`rushes/${currentUser.uid}/${rushId}`).set(rush);
                 console.log('⚡ Rush created and saved to Firebase:', rushId);
             } catch (error) {
                 console.error('Failed to save rush to Firebase:', error);
@@ -22325,12 +23156,9 @@
             // Show success and notify user
             showToast(`⚡ ${rushConfig.durationMinutes}-min challenge started!`, 'success');
             
-            // TODO: Session 3 will show the active rush modal
-            // For now, just log that the rush has started
+            // Session 3: Show the active rush modal
             console.log('⚡ Rush started:', appData.activeRush);
-            
-            // In Session 3, this is where we'd show the active rush modal
-            // showActiveRushModal();
+            showActiveRushModal();
         }
         
         // Generate rush code (for group rushes - future use)
@@ -22343,27 +23171,1017 @@
             return code;
         }
         
-        // Check for active rush on app load (will be expanded in Session 3)
+        // ============ SESSION 3: ACTIVE RUSH MODAL & GAME FLOW ============
+        let rushTimerInterval = null;
+        let rushModalMinimized = false;
+        
+        // Check for active rush on app load/return
         function checkForActiveRush() {
             if (appData.activeRush && appData.activeRush.rushId) {
                 const now = Date.now();
-                const timeRemaining = appData.activeRush.endsAt - now;
+                
+                // Account for pause time if currently paused
+                let effectiveEndsAt = appData.activeRush.endsAt;
+                if (appData.activeRush.pausedAt) {
+                    // Currently paused - calculate pause credit (max 5 min)
+                    const pauseDuration = now - appData.activeRush.pausedAt;
+                    const maxPauseMs = 5 * 60 * 1000;
+                    const pauseCredit = Math.min(pauseDuration, maxPauseMs);
+                    effectiveEndsAt = appData.activeRush.endsAt + pauseCredit;
+                    
+                    // If pause exceeded 5 minutes, auto-resume with max credit
+                    if (pauseDuration > maxPauseMs) {
+                        console.log('⚡ Rush: Pause exceeded 5 min, auto-resuming');
+                        appData.activeRush.endsAt += maxPauseMs;
+                        appData.activeRush.totalPauseMs = (appData.activeRush.totalPauseMs || 0) + maxPauseMs;
+                        appData.activeRush.pausedAt = null;
+                        effectiveEndsAt = appData.activeRush.endsAt;
+                        saveData();
+                    }
+                }
+                
+                const timeRemaining = effectiveEndsAt - now;
                 
                 if (timeRemaining > 0) {
                     appData.activeRush.timeRemainingMs = timeRemaining;
                     appData.activeRush.isExpired = false;
-                    console.log('⚡ Active rush found:', formatDuration(Math.floor(timeRemaining / 1000)), 'remaining');
-                    // TODO: Session 3 - show active rush modal
-                    // showActiveRushModal();
+                    console.log('⚡ Active rush found:', formatRushTime(timeRemaining), 'remaining');
+                    
+                    // Show the active rush modal
+                    showActiveRushModal();
                 } else {
-                    // Rush expired
-                    appData.activeRush.isExpired = true;
-                    console.log('⚡ Rush expired, completing...');
-                    // TODO: Session 4 - handle rush completion
-                    // completeExpiredRush();
+                    // Rush expired - check grace period (30 seconds)
+                    const gracePeriodMs = 30000;
+                    if (timeRemaining > -gracePeriodMs) {
+                        // Within grace period - still allow recording
+                        appData.activeRush.timeRemainingMs = 0;
+                        appData.activeRush.isExpired = false;
+                        appData.activeRush.inGracePeriod = true;
+                        console.log('⚡ Rush in grace period');
+                        showActiveRushModal();
+                    } else {
+                        // Rush expired beyond grace period
+                        appData.activeRush.isExpired = true;
+                        console.log('⚡ Rush expired, will complete after clipboard check...');
+                        
+                        // v1.6.2: Delay completion to allow clipboard processing to happen first
+                        // If user has clipboard data from a rush game, Time's Up modal will handle it
+                        // The timeout gives time for clipboard detection to trigger logGame
+                        setTimeout(() => {
+                            // Only complete if rush hasn't been handled by Time's Up modal
+                            if (appData.activeRush && appData.activeRush.isExpired) {
+                                console.log('⚡ Rush: No late game detected, completing now');
+                                completeRush('return');
+                            }
+                        }, 3000);
+                    }
                 }
             }
         }
+        
+        // Format time for rush display (mm:ss)
+        function formatRushTime(ms) {
+            if (ms <= 0) return '0:00';
+            const totalSeconds = Math.ceil(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Show the active rush modal
+        function showActiveRushModal() {
+            if (!appData.activeRush) return;
+            
+            rushModalMinimized = false;
+            document.getElementById('rush-indicator').classList.remove('active');
+            
+            updateRushModalUI();
+            startRushTimer();
+            
+            document.getElementById('active-rush-modal').classList.add('active');
+        }
+        
+        // Hide the active rush modal (minimize to indicator)
+        function minimizeActiveRush() {
+            rushModalMinimized = true;
+            document.getElementById('active-rush-modal').classList.remove('active');
+            document.getElementById('rush-indicator').classList.add('active');
+        }
+        
+        // Close rush modal completely (only on rush end)
+        function closeActiveRushModal() {
+            rushModalMinimized = false;
+            stopRushTimer();
+            document.getElementById('active-rush-modal').classList.remove('active');
+            document.getElementById('rush-indicator').classList.remove('active');
+        }
+        
+        // Start the rush timer
+        function startRushTimer() {
+            stopRushTimer(); // Clear any existing timer
+            rushTimerInterval = setInterval(updateRushTimer, 1000);
+            updateRushTimer(); // Immediate update
+        }
+        
+        // Stop the rush timer
+        function stopRushTimer() {
+            if (rushTimerInterval) {
+                clearInterval(rushTimerInterval);
+                rushTimerInterval = null;
+            }
+        }
+        
+        // Update the rush timer display
+        function updateRushTimer() {
+            if (!appData.activeRush) {
+                stopRushTimer();
+                return;
+            }
+            
+            const now = Date.now();
+            const rush = appData.activeRush;
+            
+            // If paused, show pause remaining instead of rush time
+            if (rush.pausedAt) {
+                const pauseDuration = now - rush.pausedAt;
+                const maxPauseMs = 5 * 60 * 1000;
+                const pauseRemaining = Math.max(0, maxPauseMs - pauseDuration);
+                
+                const timeDisplay = document.getElementById('active-rush-time');
+                const indicatorTime = document.getElementById('rush-indicator-time');
+                
+                if (pauseRemaining > 0) {
+                    const pauseFormatted = `⏸️ ${formatRushTime(pauseRemaining)}`;
+                    if (timeDisplay) {
+                        timeDisplay.textContent = pauseFormatted;
+                        timeDisplay.classList.remove('warning', 'critical');
+                        timeDisplay.classList.add('warning'); // Yellow for pause
+                    }
+                    if (indicatorTime) {
+                        indicatorTime.textContent = pauseFormatted;
+                    }
+                } else {
+                    // Pause expired - auto resume
+                    console.log('⚡ Rush: Pause timer expired, auto-resuming');
+                    rush.endsAt += maxPauseMs;
+                    rush.totalPauseMs = (rush.totalPauseMs || 0) + maxPauseMs;
+                    rush.pausedAt = null;
+                    saveData();
+                    updateRushModalUI();
+                }
+                return;
+            }
+            
+            const timeRemaining = rush.endsAt - now;
+            rush.timeRemainingMs = timeRemaining;
+            
+            // Update time display
+            const timeDisplay = document.getElementById('active-rush-time');
+            const indicatorTime = document.getElementById('rush-indicator-time');
+            const formattedTime = formatRushTime(Math.max(0, timeRemaining));
+            
+            if (timeDisplay) {
+                timeDisplay.textContent = formattedTime;
+                
+                // Add warning/critical classes
+                timeDisplay.classList.remove('warning', 'critical');
+                if (timeRemaining <= 60000) { // Last minute
+                    timeDisplay.classList.add('critical');
+                } else if (timeRemaining <= 180000) { // Last 3 minutes
+                    timeDisplay.classList.add('warning');
+                }
+            }
+            
+            if (indicatorTime) {
+                indicatorTime.textContent = formattedTime;
+            }
+            
+            // Check for expiration
+            if (timeRemaining <= 0) {
+                const gracePeriodMs = 30000;
+                if (timeRemaining > -gracePeriodMs) {
+                    // In grace period
+                    appData.activeRush.inGracePeriod = true;
+                    if (timeDisplay) {
+                        timeDisplay.textContent = 'GRACE';
+                        timeDisplay.classList.add('critical');
+                    }
+                } else {
+                    // Rush fully expired
+                    appData.activeRush.isExpired = true;
+                    stopRushTimer();
+                    // Session 4: Show completion modal
+                    completeRush('timer');
+                }
+            }
+        }
+        
+        // Update the rush modal UI (games list, progress, etc.)
+        function updateRushModalUI() {
+            if (!appData.activeRush) return;
+            
+            const rush = appData.activeRush;
+            const completedGames = rush.completedGames || [];
+            const skippedGames = rush.skippedGames || [];
+            const games = rush.games || [];
+            
+            // Update progress bar and text
+            const progressFill = document.getElementById('active-rush-progress-fill');
+            const progressText = document.getElementById('active-rush-progress-text');
+            const indicatorProgress = document.getElementById('rush-indicator-progress');
+            
+            const completedCount = completedGames.length;
+            const totalCount = games.length;
+            const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+            
+            if (progressFill) {
+                progressFill.style.width = `${progressPercent}%`;
+            }
+            if (progressText) {
+                progressText.textContent = `${completedCount}/${totalCount} games`;
+            }
+            if (indicatorProgress) {
+                indicatorProgress.textContent = `${completedCount}/${totalCount}`;
+            }
+            
+            // Update pause button state
+            const pauseBtn = document.getElementById('rush-pause-btn');
+            const pauseIcon = document.getElementById('rush-pause-icon');
+            const pauseText = document.getElementById('rush-pause-text');
+            
+            if (pauseBtn) {
+                if (rush.pauseUsed && !rush.pausedAt) {
+                    pauseBtn.disabled = true;
+                    pauseText.textContent = 'Used';
+                } else if (rush.pausedAt) {
+                    pauseIcon.textContent = '▶️';
+                    pauseText.textContent = 'Resume';
+                } else {
+                    pauseIcon.textContent = '⏸️';
+                    pauseText.textContent = 'Pause';
+                }
+            }
+            
+            // Build games list
+            const gamesContainer = document.getElementById('rush-games-progress');
+            if (!gamesContainer) return;
+            
+            let gamesHtml = '';
+            let currentGameId = null;
+            let currentGameIndex = -1;
+            
+            games.forEach((gameId, index) => {
+                const game = GAMES[gameId];
+                const isCompleted = completedGames.some(g => g.gameId === gameId);
+                const isSkipped = skippedGames.includes(gameId);
+                const completedData = completedGames.find(g => g.gameId === gameId);
+                
+                let status = 'pending';
+                let statusIcon = '○';
+                
+                if (isCompleted) {
+                    status = 'completed';
+                    statusIcon = '✅';
+                } else if (isSkipped) {
+                    status = 'skipped';
+                    statusIcon = '⏭️';
+                } else if (currentGameId === null) {
+                    // First non-completed, non-skipped game is current
+                    status = 'current';
+                    statusIcon = '→';
+                    currentGameId = gameId;
+                    currentGameIndex = index;
+                }
+                
+                // For fixed order mode, check if we can play this game
+                const isLocked = rush.gameOrder === 'fixed' && index > 0 && !games.slice(0, index).every(gId => 
+                    completedGames.some(g => g.gameId === gId) || skippedGames.includes(gId)
+                );
+                
+                gamesHtml += `
+                    <div class="rush-game-row ${status} ${isLocked ? 'locked' : ''}">
+                        <div class="rush-game-status ${status}">${statusIcon}</div>
+                        <div class="rush-game-info">
+                            <div class="rush-game-title">
+                                <span>${game?.icon || '🎮'}</span>
+                                <span>${game?.name || gameId}</span>
+                            </div>
+                            ${isCompleted && completedData ? `
+                                <div class="rush-game-result">${completedData.result || 'Completed'}</div>
+                            ` : isSkipped ? `
+                                <div class="rush-game-result">Skipped</div>
+                            ` : status === 'current' ? `
+                                <div class="rush-game-result">Next up</div>
+                            ` : ''}
+                        </div>
+                        ${isCompleted && completedData?.durationSeconds ? `
+                            <div class="rush-game-time">${formatDuration(completedData.durationSeconds)}</div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            gamesContainer.innerHTML = gamesHtml;
+            
+            // Update play button
+            const playBtn = document.getElementById('rush-play-btn');
+            const playBtnText = document.getElementById('rush-play-btn-text');
+            const skipBtn = document.getElementById('rush-skip-btn');
+            
+            if (playBtn && playBtnText) {
+                if (currentGameId) {
+                    const currentGame = GAMES[currentGameId];
+                    playBtnText.textContent = `Play ${currentGame?.name || currentGameId}`;
+                    playBtn.disabled = false;
+                    playBtn.onclick = () => playRushGame(currentGameId);
+                    if (skipBtn) skipBtn.style.display = 'inline';
+                } else {
+                    // All games completed or skipped - show finish button
+                    playBtnText.textContent = '🏁 Finish Rush';
+                    playBtn.disabled = false;
+                    playBtn.onclick = () => finishRushEarly();
+                    if (skipBtn) skipBtn.style.display = 'none';
+                }
+            }
+            
+            // Store current game for reference
+            appData.activeRush.currentGameId = currentGameId;
+            appData.activeRush.currentGameIndex = currentGameIndex;
+        }
+        
+        // Play a game during rush
+        function playRushGame(gameId) {
+            if (!appData.activeRush || appData.activeRush.isExpired) {
+                showToast('Rush has expired', 'error');
+                return;
+            }
+            
+            const game = GAMES[gameId];
+            if (!game) return;
+            
+            // Record launch timestamp for timing
+            const launchTime = Date.now();
+            
+            // Store in activeRush for when user returns
+            if (!appData.activeRush.gameLaunches) {
+                appData.activeRush.gameLaunches = {};
+            }
+            appData.activeRush.gameLaunches[gameId] = {
+                launchedAt: launchTime,
+                recordedAt: null
+            };
+            
+            // Also set as lastLaunchedGame for clipboard detection
+            lastLaunchedGame = gameId;
+            lastLaunchTime = launchTime;
+            
+            // Persist to localStorage
+            persistActiveGame(gameId);
+            saveData();
+            
+            console.log(`⚡ Rush: Launching ${game.name} at ${new Date(launchTime).toLocaleTimeString()}`);
+            
+            // Minimize the modal
+            minimizeActiveRush();
+            
+            // Launch the game
+            const launchUrl = getGameUrl(gameId) || game.url;
+            openGameUrl(launchUrl);
+        }
+        
+        // Play the current rush game (button click handler)
+        function playCurrentRushGame() {
+            if (!appData.activeRush?.currentGameId) {
+                showToast('No game to play', 'error');
+                return;
+            }
+            playRushGame(appData.activeRush.currentGameId);
+        }
+        
+        // Skip the current rush game
+        function skipCurrentRushGame() {
+            if (!appData.activeRush) return;
+            
+            const currentGameId = appData.activeRush.currentGameId;
+            if (!currentGameId) return;
+            
+            const game = GAMES[currentGameId];
+            
+            // Add to skipped games
+            if (!appData.activeRush.skippedGames) {
+                appData.activeRush.skippedGames = [];
+            }
+            appData.activeRush.skippedGames.push(currentGameId);
+            
+            console.log(`⚡ Rush: Skipped ${game?.name || currentGameId}`);
+            showToast(`Skipped ${game?.name || 'game'}`);
+            
+            saveData();
+            updateRushModalUI();
+        }
+        
+        // Record a game result during rush
+        function recordRushGame(gameId, result) {
+            if (!appData.activeRush) return false;
+            
+            const rush = appData.activeRush;
+            const now = Date.now();
+            
+            // Get launch time if we have it
+            const launchData = rush.gameLaunches?.[gameId];
+            const launchedAt = launchData?.launchedAt || now;
+            const durationSeconds = Math.round((now - launchedAt) / 1000);
+            
+            // Check if rush is expired (with grace period)
+            const timeRemaining = rush.endsAt - now;
+            const gracePeriodMs = 30000;
+            const countedInRush = timeRemaining > -gracePeriodMs;
+            
+            // Create completed game entry
+            const completedGame = {
+                gameId: gameId,
+                launchedAt: launchedAt,
+                recordedAt: now,
+                durationSeconds: durationSeconds,
+                result: result.score || 'Completed',
+                score: result.numericScore || 0,
+                countedInRush: countedInRush,
+                missedBy: countedInRush ? null : Math.abs(timeRemaining) - gracePeriodMs
+            };
+            
+            // Add to completed games
+            if (!rush.completedGames) {
+                rush.completedGames = [];
+            }
+            
+            // Don't add duplicates
+            if (!rush.completedGames.some(g => g.gameId === gameId)) {
+                rush.completedGames.push(completedGame);
+            }
+            
+            // Update launch data
+            if (launchData) {
+                launchData.recordedAt = now;
+            }
+            
+            console.log(`⚡ Rush: Recorded ${gameId} - ${result.score} (${durationSeconds}s, counted: ${countedInRush})`);
+            
+            saveData();
+            
+            // Update Firebase
+            if (currentUser && rush.rushId) {
+                const rushRef = db.ref(`rushes/${currentUser.uid}/${rush.rushId}/participants/${currentUser.uid}`);
+                rushRef.update({
+                    completedGames: rush.completedGames,
+                    gamesCompleted: rush.completedGames.length
+                }).catch(err => console.error('Failed to update rush in Firebase:', err));
+            }
+            
+            return countedInRush;
+        }
+        
+        // Toggle rush pause
+        function toggleRushPause() {
+            if (!appData.activeRush) return;
+            
+            const rush = appData.activeRush;
+            const now = Date.now();
+            
+            if (rush.pausedAt) {
+                // Resume from pause
+                const pauseDuration = now - rush.pausedAt;
+                const maxPauseMs = 5 * 60 * 1000; // 5 minutes max
+                const actualPause = Math.min(pauseDuration, maxPauseMs);
+                
+                // Extend the end time
+                rush.endsAt += actualPause;
+                rush.totalPauseMs = (rush.totalPauseMs || 0) + actualPause;
+                rush.pausedAt = null;
+                
+                console.log(`⚡ Rush: Resumed after ${Math.round(actualPause / 1000)}s pause`);
+                showToast('Rush resumed!');
+                
+                // Timer is already running (shows pause countdown), just update UI
+            } else if (!rush.pauseUsed) {
+                // Start pause
+                rush.pausedAt = now;
+                rush.pauseUsed = true;
+                
+                console.log('⚡ Rush: Paused');
+                showToast('Rush paused (5 min max)');
+                
+                // Keep timer running to show pause countdown
+            } else {
+                showToast('Pause already used', 'error');
+            }
+            
+            saveData();
+            updateRushModalUI();
+        }
+        
+        // Abandon the current rush
+        async function abandonRush() {
+            if (!appData.activeRush) return;
+            
+            const confirmed = await showConfirm(
+                'Are you sure you want to abandon this rush? Your progress will be lost.',
+                'Abandon Rush?'
+            );
+            
+            if (!confirmed) return;
+            
+            const rush = appData.activeRush;
+            
+            // Update Firebase status
+            if (currentUser && rush.rushId) {
+                try {
+                    await db.ref(`rushes/${currentUser.uid}/${rush.rushId}`).update({
+                        status: 'abandoned',
+                        'participants': {
+                            [currentUser.uid]: {
+                                ...rush,
+                                status: 'abandoned'
+                            }
+                        }
+                    });
+                } catch (err) {
+                    console.error('Failed to update abandoned rush:', err);
+                }
+            }
+            
+            // Update abandoned count in stats
+            if (!appData.rushStats) {
+                appData.rushStats = { abandonedRushes: 0 };
+            }
+            appData.rushStats.abandonedRushes = (appData.rushStats.abandonedRushes || 0) + 1;
+            
+            // Clear local state
+            appData.activeRush = null;
+            saveData();
+            
+            // Sync rush stats to cloud
+            if (currentUser) {
+                try {
+                    await db.ref(`users/${currentUser.uid}/rushStats`).set(appData.rushStats);
+                } catch (err) {
+                    console.error('Failed to sync abandoned rush stats:', err);
+                }
+            }
+            
+            closeActiveRushModal();
+            showToast('Rush abandoned');
+        }
+        
+        // Finish rush early (when all games are done)
+        async function finishRushEarly() {
+            if (!appData.activeRush) return;
+            
+            const rush = appData.activeRush;
+            const completedCount = (rush.completedGames || []).length;
+            const skippedCount = (rush.skippedGames || []).length;
+            const totalGames = rush.games?.length || 0;
+            
+            // Confirm if not all games were completed
+            if (completedCount < totalGames && completedCount + skippedCount >= totalGames) {
+                // All games are either completed or skipped
+                completeRush('early');
+            } else if (completedCount < totalGames) {
+                const remaining = totalGames - completedCount - skippedCount;
+                const confirmed = await showConfirm(
+                    `You still have ${remaining} game${remaining > 1 ? 's' : ''} left. Finish rush early?`,
+                    'Finish Early?'
+                );
+                if (confirmed) {
+                    completeRush('early');
+                }
+            } else {
+                // All games completed
+                completeRush('complete');
+            }
+        }
+        
+        // Helper: Check if there's an active rush when recording a game
+        function isGameInActiveRush(gameId) {
+            if (!appData.activeRush) return false;
+            if (appData.activeRush.isExpired) return false; // Don't count if expired
+            return appData.activeRush.games?.includes(gameId);
+        }
+        
+        // Helper: Get rush context for a game (for adding to game history)
+        function getRushContext(gameId) {
+            if (!appData.activeRush) return null;
+            if (!appData.activeRush.games?.includes(gameId)) return null;
+            
+            return {
+                rushId: appData.activeRush.rushId,
+                inRush: true
+            };
+        }
+        
+        // ============ SESSION 4: RUSH COMPLETION ============
+        
+        // State for late game recording
+        let pendingLateGame = null;
+        
+        // Complete an expired rush - called when timer expires or user returns after expiration
+        async function completeRush(trigger = 'timer') {
+            if (!appData.activeRush) return;
+            
+            const rush = appData.activeRush;
+            const now = Date.now();
+            
+            console.log(`⚡ Rush completing (trigger: ${trigger})`);
+            
+            // Calculate final stats
+            const rushStats = calculateRushStats(rush);
+            
+            // Check for personal best
+            const isPersonalBest = checkRushPersonalBest(rush.durationMinutes, rushStats.gamesCompleted);
+            
+            // Update Firebase with completed status
+            if (currentUser && rush.rushId) {
+                try {
+                    const rushRef = db.ref(`rushes/${currentUser.uid}/${rush.rushId}`);
+                    await rushRef.update({
+                        status: 'completed',
+                        completedAt: now,
+                        [`participants/${currentUser.uid}/status`]: 'completed',
+                        [`participants/${currentUser.uid}/gamesCompleted`]: rushStats.gamesCompleted,
+                        [`participants/${currentUser.uid}/gamesAttempted`]: rushStats.gamesAttempted,
+                        [`participants/${currentUser.uid}/avgGameTime`]: rushStats.avgGameTime,
+                        [`participants/${currentUser.uid}/completedGames`]: rush.completedGames || []
+                    });
+                    console.log('⚡ Rush marked complete in Firebase');
+                } catch (err) {
+                    console.error('Failed to update rush completion:', err);
+                }
+            }
+            
+            // Save rush stats to user profile
+            await saveRushStats(rush, rushStats, isPersonalBest);
+            
+            // Close the active rush modal
+            closeActiveRushModal();
+            
+            // Show completion modal
+            showRushComplete(rush, rushStats, isPersonalBest);
+            
+            // Clear local rush state
+            appData.activeRush = null;
+            saveData();
+        }
+        
+        // Calculate rush statistics
+        function calculateRushStats(rush) {
+            const completedGames = rush.completedGames || [];
+            const skippedGames = rush.skippedGames || [];
+            const allGames = rush.games || [];
+            
+            // Count games that were counted in rush (within time limit)
+            const countedGames = completedGames.filter(g => g.countedInRush);
+            const missedGames = completedGames.filter(g => !g.countedInRush);
+            
+            // Calculate timing
+            const totalDurationSeconds = countedGames.reduce((sum, g) => sum + (g.durationSeconds || 0), 0);
+            const avgGameTime = countedGames.length > 0 ? Math.round(totalDurationSeconds / countedGames.length) : 0;
+            
+            // Games attempted = completed + skipped (but not pending/unplayed)
+            const gamesAttempted = completedGames.length + skippedGames.length;
+            
+            return {
+                gamesCompleted: countedGames.length,
+                gamesMissed: missedGames.length,
+                gamesSkipped: skippedGames.length,
+                gamesAttempted: gamesAttempted,
+                totalGames: allGames.length,
+                avgGameTime: avgGameTime,
+                totalTime: rush.durationMinutes * 60,
+                completedGames: completedGames,
+                skippedGames: skippedGames,
+                countedGames: countedGames,
+                missedGames: missedGames
+            };
+        }
+        
+        // Check if this rush is a personal best
+        function checkRushPersonalBest(durationMinutes, gamesCompleted) {
+            if (!appData.rushStats) return gamesCompleted > 0;
+            
+            const key = `best${durationMinutes}min`;
+            const currentBest = appData.rushStats[key] || 0;
+            
+            return gamesCompleted > currentBest;
+        }
+        
+        // Save rush stats to user profile
+        async function saveRushStats(rush, stats, isPersonalBest) {
+            // Initialize rushStats if needed
+            if (!appData.rushStats) {
+                appData.rushStats = {
+                    totalRushes: 0,
+                    completedRushes: 0,
+                    abandonedRushes: 0,
+                    best10min: 0,
+                    best20min: 0,
+                    best30min: 0,
+                    currentStreak: 0,
+                    longestStreak: 0,
+                    lastRushDate: null
+                };
+            }
+            
+            const today = getTodayString();
+            const rs = appData.rushStats;
+            
+            // Update counts
+            rs.totalRushes = (rs.totalRushes || 0) + 1;
+            rs.completedRushes = (rs.completedRushes || 0) + 1;
+            
+            // Update personal best if applicable
+            if (isPersonalBest) {
+                const key = `best${rush.durationMinutes}min`;
+                rs[key] = stats.gamesCompleted;
+            }
+            
+            // Update streak
+            if (rs.lastRushDate) {
+                const lastDate = new Date(rs.lastRushDate);
+                const todayDate = new Date(today);
+                const daysDiff = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff === 1) {
+                    // Consecutive day - extend streak
+                    rs.currentStreak = (rs.currentStreak || 0) + 1;
+                } else if (daysDiff > 1) {
+                    // Streak broken
+                    rs.currentStreak = 1;
+                }
+                // If same day, don't change streak
+            } else {
+                // First rush
+                rs.currentStreak = 1;
+            }
+            
+            // Update longest streak
+            if (rs.currentStreak > (rs.longestStreak || 0)) {
+                rs.longestStreak = rs.currentStreak;
+            }
+            
+            rs.lastRushDate = today;
+            
+            console.log('⚡ Rush stats updated:', rs);
+            
+            // Save locally
+            saveData();
+            
+            // Sync to cloud
+            if (currentUser) {
+                try {
+                    await db.ref(`users/${currentUser.uid}/rushStats`).set(rs);
+                    console.log('⚡ Rush stats synced to cloud');
+                } catch (err) {
+                    console.error('Failed to sync rush stats:', err);
+                }
+            }
+        }
+        
+        // Show the rush completion modal
+        function showRushComplete(rush, stats, isPersonalBest) {
+            const modal = document.getElementById('rush-complete-modal');
+            if (!modal) return;
+            
+            // Set header info
+            const allDone = stats.gamesCompleted === stats.totalGames;
+            document.getElementById('rush-complete-icon').textContent = allDone ? '🎉' : '🏁';
+            document.getElementById('rush-complete-title').textContent = allDone ? 'Perfect Rush!' : 'Rush Complete!';
+            document.getElementById('rush-complete-subtitle').textContent = `${rush.durationMinutes}-minute challenge finished`;
+            
+            // Set games count
+            document.getElementById('rush-complete-games-count').textContent = 
+                `${stats.gamesCompleted}/${stats.totalGames}`;
+            
+            // Build games list
+            const gamesList = document.getElementById('rush-complete-games-list');
+            let gamesHtml = '';
+            
+            // Show completed games
+            for (const game of stats.completedGames) {
+                const gameInfo = GAMES[game.gameId];
+                const gameName = gameInfo?.name || game.gameId;
+                const timeStr = formatDuration(game.durationSeconds || 0);
+                const resultStr = game.result || 'Completed';
+                
+                if (game.countedInRush) {
+                    gamesHtml += `
+                        <div class="rush-complete-game-row counted">
+                            <div class="rush-complete-game-status">✅</div>
+                            <div class="rush-complete-game-info">
+                                <div class="rush-complete-game-name">${escapeHtml(gameName)}</div>
+                                <div class="rush-complete-game-result">${escapeHtml(resultStr)}</div>
+                            </div>
+                            <div class="rush-complete-game-time">${timeStr}</div>
+                        </div>
+                    `;
+                } else {
+                    const missedByStr = game.missedBy ? formatDuration(Math.round(game.missedBy / 1000)) : '';
+                    gamesHtml += `
+                        <div class="rush-complete-game-row missed">
+                            <div class="rush-complete-game-status">❌</div>
+                            <div class="rush-complete-game-info">
+                                <div class="rush-complete-game-name">${escapeHtml(gameName)}</div>
+                                <div class="rush-complete-game-result">Missed by ${missedByStr}</div>
+                            </div>
+                            <div class="rush-complete-game-time">${timeStr}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Show skipped games
+            for (const gameId of stats.skippedGames) {
+                const gameInfo = GAMES[gameId];
+                const gameName = gameInfo?.name || gameId;
+                
+                gamesHtml += `
+                    <div class="rush-complete-game-row skipped">
+                        <div class="rush-complete-game-status">⏭️</div>
+                        <div class="rush-complete-game-info">
+                            <div class="rush-complete-game-name">${escapeHtml(gameName)}</div>
+                            <div class="rush-complete-game-result">Skipped</div>
+                        </div>
+                        <div class="rush-complete-game-time">—</div>
+                    </div>
+                `;
+            }
+            
+            // Show unplayed games (not started at all)
+            const playedIds = [...stats.completedGames.map(g => g.gameId), ...stats.skippedGames];
+            for (const gameId of rush.games) {
+                if (!playedIds.includes(gameId)) {
+                    const gameInfo = GAMES[gameId];
+                    const gameName = gameInfo?.name || gameId;
+                    
+                    gamesHtml += `
+                        <div class="rush-complete-game-row skipped">
+                            <div class="rush-complete-game-status">⏸️</div>
+                            <div class="rush-complete-game-info">
+                                <div class="rush-complete-game-name">${escapeHtml(gameName)}</div>
+                                <div class="rush-complete-game-result">Not started</div>
+                            </div>
+                            <div class="rush-complete-game-time">—</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            gamesList.innerHTML = gamesHtml;
+            
+            // Set stats
+            document.getElementById('rush-complete-total-time').textContent = 
+                `${rush.durationMinutes}:00`;
+            document.getElementById('rush-complete-avg-time').textContent = 
+                stats.gamesCompleted > 0 ? formatDuration(stats.avgGameTime) : '—';
+            
+            // Show personal best if applicable
+            const pbElement = document.getElementById('rush-complete-pb');
+            if (isPersonalBest && stats.gamesCompleted > 0) {
+                document.getElementById('rush-complete-pb-text').textContent = 
+                    `🏆 NEW PERSONAL BEST for ${rush.durationMinutes}-min rush!`;
+                pbElement.style.display = 'block';
+            } else {
+                pbElement.style.display = 'none';
+            }
+            
+            // Store for sharing
+            window.lastRushResults = { rush, stats, isPersonalBest };
+            
+            // Show modal
+            modal.classList.add('active');
+        }
+        
+        // Close rush complete modal
+        function closeRushComplete() {
+            document.getElementById('rush-complete-modal').classList.remove('active');
+            window.lastRushResults = null;
+        }
+        
+        // Share rush results
+        function shareRushResults() {
+            if (!window.lastRushResults) return;
+            
+            const { rush, stats, isPersonalBest } = window.lastRushResults;
+            
+            // Build share text
+            let shareText = `⚡ Game Shelf Rush\n`;
+            shareText += `${rush.durationMinutes}-min challenge\n\n`;
+            shareText += `✅ ${stats.gamesCompleted}/${stats.totalGames} games\n`;
+            
+            if (stats.gamesCompleted > 0) {
+                shareText += `⏱️ Avg: ${formatDuration(stats.avgGameTime)}\n`;
+            }
+            
+            if (isPersonalBest) {
+                shareText += `🏆 New Personal Best!\n`;
+            }
+            
+            shareText += `\nhttps://gameshelf.co/app`;
+            
+            // Try native share first, fall back to clipboard
+            if (navigator.share) {
+                navigator.share({ text: shareText }).catch(() => {
+                    copyToClipboard(shareText);
+                });
+            } else {
+                copyToClipboard(shareText);
+            }
+            
+            closeRushComplete();
+        }
+        
+        // Show Time's Up modal for late game recording
+        function showTimesUpModal(gameId, result, missedBy) {
+            const gameInfo = GAMES[gameId];
+            const gameName = gameInfo?.name || gameId;
+            
+            // Store pending game info
+            pendingLateGame = { gameId, result };
+            
+            // Update modal content
+            document.getElementById('times-up-ago').textContent = formatDuration(Math.round(missedBy / 1000));
+            document.getElementById('times-up-game').textContent = `This ${gameName} result won't count`;
+            
+            // Show modal
+            document.getElementById('times-up-modal').classList.add('active');
+        }
+        
+        // Close Time's Up modal
+        function closeTimesUpModal() {
+            document.getElementById('times-up-modal').classList.remove('active');
+            pendingLateGame = null;
+        }
+        
+        // Record a late game (after rush expired)
+        function recordLateGame() {
+            if (!pendingLateGame) {
+                closeTimesUpModal();
+                return;
+            }
+            
+            const { result } = pendingLateGame;
+            const rush = appData.activeRush; // Save reference before clearing pending
+            
+            // Clear pending BEFORE logging to prevent re-trigger of Time's Up modal
+            pendingLateGame = null;
+            
+            // Temporarily mark that we're recording a late game (prevents handleExpiredRushRecord loop)
+            const wasRecordingLate = window._recordingLateRushGame;
+            window._recordingLateRushGame = true;
+            
+            // Log the game normally (it won't count in rush since rush is expired)
+            if (logGame(result, 'late-rush')) {
+                showToast('Game recorded (not counted in rush)');
+            }
+            
+            window._recordingLateRushGame = wasRecordingLate;
+            
+            closeTimesUpModal();
+            
+            // If rush is still active (just expired), complete it
+            if (rush && rush.isExpired && appData.activeRush) {
+                completeRush('late-record');
+            }
+        }
+        
+        // Discard a late game
+        function discardLateGame() {
+            showToast('Game discarded');
+            closeTimesUpModal();
+            
+            // If rush is still active (just expired), complete it
+            if (appData.activeRush && appData.activeRush.isExpired) {
+                completeRush('discard');
+            }
+        }
+        
+        // Check if user is trying to record a game after rush expired
+        function handleExpiredRushRecord(gameId, result) {
+            // Don't re-trigger if we're already recording a late game
+            if (window._recordingLateRushGame) return false;
+            
+            if (!appData.activeRush) return false;
+            if (!appData.activeRush.isExpired) return false;
+            if (!appData.activeRush.games?.includes(gameId)) return false;
+            
+            const now = Date.now();
+            const missedBy = now - appData.activeRush.endsAt;
+            
+            // Show the time's up modal
+            showTimesUpModal(gameId, result, missedBy);
+            
+            return true; // Indicates we handled it
+        }
+        
+        // ============ END SESSION 4 ============
         
         // ============ END RUSH SYSTEM ============
         
@@ -24482,7 +26300,7 @@
                 
                 // Sync to cloud
                 if (currentUser) {
-                    await saveToCloud();
+                    await syncToCloud();
                 }
                 
                 // Log activity
@@ -29049,6 +30867,11 @@ Hint levels:
         
         // Check clipboard on return and show prompt if content changed
         async function checkClipboardOnReturn() {
+            // v1.6.0: If there's an active rush, check and show it first
+            if (appData.activeRush && appData.activeRush.rushId && !appData.activeRush.isExpired) {
+                checkForActiveRush();
+            }
+            
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             
             // On iOS, we can't read clipboard without a user gesture
@@ -35465,6 +37288,9 @@ Hint levels:
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'visible') {
                     console.log('📱 App became visible');
+                    
+                    // v1.6.2: Check for active rush FIRST (may show rush modal or complete expired rush)
+                    checkForActiveRush();
                     
                     // Check if user returned from a game (for prompting on next game click)
                     setTimeout(checkReturnFromGame, 1500);
