@@ -1,5 +1,52 @@
-Game Shelf PWA v1.7.0 Release Notes
+Game Shelf PWA v1.7.1 Release Notes
 =====================================
+
+Release Date: January 31, 2026
+
+BUG FIXES - RUSH CODE WALKTHROUGH:
+----------------------------------
+
+1. FIXED: Race condition with Time's Up modal
+   - Time's Up modal now cancels the auto-completion timeout
+   - Previously, the rush could complete while user was deciding
+   - Modal now stays visible until user chooses Record or Discard
+   - Added rushCompletionTimeout tracking variable
+
+2. FIXED: Firebase gamesCompleted count inaccurate
+   - Firebase now only counts games with countedInRush: true
+   - Previously included late games that didn't actually count
+   - Rush history in Firebase now shows accurate scores
+
+3. FIXED: pauseUsed not set on auto-resume from background
+   - When pause auto-expires during backgrounding, pauseUsed now set
+   - Prevents users from pausing again after auto-resume
+   - More consistent pause behavior
+
+4. FIXED: No validation for empty game list
+   - Rush creation now validates at least one game is selected
+   - Shows "Select at least one game" error toast
+   - Prevents creation of broken/empty rushes
+
+TECHNICAL DETAILS:
+------------------
+- rushCompletionTimeout variable tracks the 3-second completion delay
+- showTimesUpModal() now clears the timeout before displaying
+- recordRushGame() filters for countedInRush before counting
+- checkForActiveRush() sets pauseUsed = true on auto-resume
+- confirmStartRush() validates rushSelectedGames.length > 0
+
+CODE LOCATIONS:
+---------------
+- Timeout tracking: line ~23315 (rushCompletionTimeout variable)
+- Timeout cancellation: line ~24562 (showTimesUpModal)
+- Firebase count fix: line ~23795 (recordRushGame)
+- Pause flag fix: line ~23337 (checkForActiveRush auto-resume)
+- Validation fix: line ~23212 (confirmStartRush)
+
+---
+
+Game Shelf PWA v1.7.0 Release Notes
+====================================
 
 Release Date: January 31, 2026
 

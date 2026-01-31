@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.7.0">
+    <meta name="version" content="1.7.1">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -10298,7 +10298,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.7.0</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.7.1</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -10591,7 +10591,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.7.0</div>
+            <div class="settings-version">Game Shelf PWA v1.7.1</div>
         </div>
     </div>
     
@@ -20375,9 +20375,12 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.7.0';
+        const APP_VERSION = '1.7.1';
         
         const RELEASE_NOTES = {
+            '1.7.1': [
+                { icon: '🐛', title: 'Rush Bug Fixes', desc: 'Fixed race condition with Time\'s Up modal, accurate game counts in Firebase, and better pause handling' }
+            ],
             '1.7.0': [
                 { icon: '🎉', title: 'Confetti Celebration!', desc: 'Personal bests now trigger beautiful confetti animations and victory sounds' },
                 { icon: '🔊', title: 'Rush Sounds', desc: 'New audio cues for rush start, game completion, time warnings, and more' },
@@ -23205,6 +23208,12 @@
                 return;
             }
             
+            // v1.7.1: Validate that at least one game is selected
+            if (!rushSelectedGames || rushSelectedGames.length === 0) {
+                showToast('Select at least one game', 'error');
+                return;
+            }
+            
             closeRushConfirm();
             
             // Generate rush ID
@@ -23303,6 +23312,7 @@
         // ============ SESSION 3: ACTIVE RUSH MODAL & GAME FLOW ============
         let rushTimerInterval = null;
         let rushModalMinimized = false;
+        let rushCompletionTimeout = null;  // v1.7.1: Track timeout to prevent race condition with Time's Up modal
         
         // Check for active rush on app load/return
         function checkForActiveRush() {
@@ -23324,6 +23334,7 @@
                         appData.activeRush.endsAt += maxPauseMs;
                         appData.activeRush.totalPauseMs = (appData.activeRush.totalPauseMs || 0) + maxPauseMs;
                         appData.activeRush.pausedAt = null;
+                        appData.activeRush.pauseUsed = true;  // v1.7.1: Mark pause as used on auto-resume
                         effectiveEndsAt = appData.activeRush.endsAt;
                         saveData();
                     }
@@ -23356,7 +23367,12 @@
                         // v1.6.2: Delay completion to allow clipboard processing to happen first
                         // If user has clipboard data from a rush game, Time's Up modal will handle it
                         // The timeout gives time for clipboard detection to trigger logGame
-                        setTimeout(() => {
+                        // v1.7.1: Track timeout so Time's Up modal can cancel it
+                        if (rushCompletionTimeout) {
+                            clearTimeout(rushCompletionTimeout);
+                        }
+                        rushCompletionTimeout = setTimeout(() => {
+                            rushCompletionTimeout = null;
                             // Only complete if rush hasn't been handled by Time's Up modal
                             if (appData.activeRush && appData.activeRush.isExpired) {
                                 console.log('⚡ Rush: No late game detected, completing now');
@@ -23775,9 +23791,11 @@
             // Update Firebase
             if (currentUser && rush.rushId) {
                 const rushRef = db.ref(`rushes/${currentUser.uid}/${rush.rushId}/participants/${currentUser.uid}`);
+                // v1.7.1: Only count games that were recorded within time limit
+                const countedGamesCount = rush.completedGames.filter(g => g.countedInRush).length;
                 rushRef.update({
                     completedGames: rush.completedGames,
-                    gamesCompleted: rush.completedGames.length
+                    gamesCompleted: countedGamesCount
                 }).catch(err => console.error('Failed to update rush in Firebase:', err));
             }
             
@@ -24539,6 +24557,13 @@
         function showTimesUpModal(gameId, result, missedBy) {
             const gameInfo = GAMES[gameId];
             const gameName = gameInfo?.name || gameId;
+            
+            // v1.7.1: Cancel the rush completion timeout - user needs time to interact with this modal
+            if (rushCompletionTimeout) {
+                clearTimeout(rushCompletionTimeout);
+                rushCompletionTimeout = null;
+                console.log('⚡ Rush: Cancelled auto-completion, showing Time\'s Up modal');
+            }
             
             // Store pending game info
             pendingLateGame = { gameId, result };
