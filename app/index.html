@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.8.0">
+    <meta name="version" content="1.8.1">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -8092,6 +8092,71 @@
             border-color: var(--accent-purple);
         }
         
+        /* Scheduled Rush Card in Battles Tab */
+        .scheduled-rush-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .scheduled-rush-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .scheduled-rush-card-icon {
+            font-size: 1.8rem;
+        }
+        
+        .scheduled-rush-card-info {
+            flex: 1;
+        }
+        
+        .scheduled-rush-card-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .scheduled-rush-card-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        .scheduled-rush-card-btn {
+            background: linear-gradient(135deg, var(--accent-purple), #667eea);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: transform 0.1s, opacity 0.1s;
+        }
+        
+        .scheduled-rush-card-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .scheduled-rush-card-btn:active {
+            transform: translateY(0);
+            opacity: 0.9;
+        }
+        
         /* Schedule Quick Start Button */
         .rush-schedule-quick-btn {
             width: 100%;
@@ -10564,7 +10629,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.7.1</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.8.1</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -10880,7 +10945,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.7.1</div>
+            <div class="settings-version">Game Shelf PWA v1.8.1</div>
         </div>
     </div>
     
@@ -11194,6 +11259,20 @@
                                 <span class="action-icon">🔍</span>
                                 <span class="action-text">Join</span>
                             </div>
+                        </div>
+                        
+                        <!-- Scheduled Rush Card (v1.8.0) -->
+                        <div id="scheduled-rush-card" class="scheduled-rush-card" style="display: none;">
+                            <div class="scheduled-rush-card-header">
+                                <div class="scheduled-rush-card-icon">📅</div>
+                                <div class="scheduled-rush-card-info">
+                                    <div class="scheduled-rush-card-title">Today's Scheduled Rush</div>
+                                    <div class="scheduled-rush-card-desc" id="scheduled-rush-card-desc">20 min • 4 games</div>
+                                </div>
+                            </div>
+                            <button class="scheduled-rush-card-btn" onclick="startScheduledRushFromCard()">
+                                <span>⚡</span> Start Now
+                            </button>
                         </div>
                         
                         <div id="battles-list">
@@ -20833,7 +20912,7 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.8.0';
+        const APP_VERSION = '1.8.1';
         
         const RELEASE_NOTES = {
             '1.8.0': [
@@ -25480,7 +25559,7 @@
             const now = new Date();
             const today = getTodayString();
             
-            // Skip if already prompted today
+            // Skip if already prompted/notified today
             if (sched.lastPromptDate === today) return;
             
             // Skip if already started a rush today via schedule
@@ -25490,22 +25569,67 @@
             const dayOfWeek = now.getDay(); // 0 = Sunday
             if (!sched.daysOfWeek?.includes(dayOfWeek)) return;
             
-            // Check if we're within the time window
+            // Calculate time difference from scheduled time
             const [schedHours, schedMinutes] = sched.time.split(':').map(Number);
             const schedTimeMinutes = schedHours * 60 + schedMinutes;
             const nowMinutes = now.getHours() * 60 + now.getMinutes();
             const windowMinutes = sched.windowMinutes || 30;
             
-            const diff = Math.abs(nowMinutes - schedTimeMinutes);
+            // Calculate minutes since scheduled time (positive = after, negative = before)
+            let minutesSinceScheduled = nowMinutes - schedTimeMinutes;
             
             // Handle midnight wraparound
-            const isInWindow = diff <= windowMinutes || (1440 - diff) <= windowMinutes;
+            if (minutesSinceScheduled > 720) minutesSinceScheduled -= 1440;  // e.g., 23:00 schedule, now 01:00
+            if (minutesSinceScheduled < -720) minutesSinceScheduled += 1440; // e.g., 01:00 schedule, now 23:00
             
-            if (!isInWindow) return;
+            const isBeforeWindow = minutesSinceScheduled < -windowMinutes;
+            const isInWindow = minutesSinceScheduled >= -windowMinutes && minutesSinceScheduled <= windowMinutes;
+            const isWithinOneHourAfter = minutesSinceScheduled > windowMinutes && minutesSinceScheduled <= (windowMinutes + 60);
+            const isMissed = minutesSinceScheduled > (windowMinutes + 60);
             
-            // All checks passed - show the prompt!
-            console.log('⚡ Scheduled rush: Time to prompt user!');
-            showScheduledRushPrompt();
+            console.log('⚡ Scheduled rush check:', { 
+                schedTime: sched.time, 
+                nowMinutes, 
+                minutesSinceScheduled,
+                isBeforeWindow,
+                isInWindow, 
+                isWithinOneHourAfter, 
+                isMissed 
+            });
+            
+            if (isBeforeWindow) {
+                // Too early - do nothing
+                return;
+            }
+            
+            if (isInWindow) {
+                // Within ±30 min window - show prompt modal
+                console.log('⚡ Scheduled rush: Within window - showing prompt');
+                showScheduledRushPrompt();
+                return;
+            }
+            
+            if (isWithinOneHourAfter) {
+                // Within 1 hour after window - auto-start the rush
+                console.log('⚡ Scheduled rush: Within 1 hour after - auto-starting');
+                showToast('Starting your scheduled rush...', 'success');
+                // Small delay so user sees the toast
+                setTimeout(() => {
+                    startScheduledRush();
+                }, 1000);
+                return;
+            }
+            
+            if (isMissed) {
+                // More than 1 hour after - show missed toast
+                console.log('⚡ Scheduled rush: Missed - showing toast');
+                showToast('You missed today\'s scheduled rush. Tap Battles to start one.', 'warning');
+                
+                // Mark as prompted so we don't show this toast again today
+                appData.rushSchedule.lastPromptDate = today;
+                saveData();
+                return;
+            }
         }
         
         function showScheduledRushPrompt() {
@@ -25587,6 +25711,70 @@
         function openScheduledRushConfigFromPrompt() {
             document.getElementById('scheduled-rush-prompt').classList.remove('active');
             showScheduledRushConfig();
+        }
+        
+        // Start rush from the Battles tab card
+        function startScheduledRushFromCard() {
+            const sched = appData.rushSchedule;
+            if (!sched?.enabled) return;
+            
+            // Filter to only valid games
+            const validGames = sched.games.filter(id => GAMES[id]);
+            if (validGames.length === 0) {
+                showToast('No valid games in schedule. Please update your schedule.', 'error');
+                return;
+            }
+            
+            // Set up rush config from schedule
+            rushSelectedGames = [...validGames];
+            rushConfig = {
+                durationMinutes: sched.durationMinutes,
+                gameOrder: sched.gameOrder,
+                mode: 'solo'
+            };
+            
+            // Mark as started today
+            appData.rushSchedule.lastStartedDate = getTodayString();
+            saveData();
+            syncToCloud();
+            
+            // Hide the card
+            updateScheduledRushCard();
+            
+            // Start the rush!
+            startRush();
+        }
+        
+        // Update the scheduled rush card visibility in Battles tab
+        function updateScheduledRushCard() {
+            const card = document.getElementById('scheduled-rush-card');
+            if (!card) return;
+            
+            const sched = appData.rushSchedule;
+            const today = getTodayString();
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            
+            // Show card if:
+            // - Schedule is enabled
+            // - Today is a scheduled day
+            // - Haven't started a scheduled rush today
+            // - No active rush
+            const shouldShow = sched?.enabled && 
+                               sched.daysOfWeek?.includes(dayOfWeek) && 
+                               sched.lastStartedDate !== today &&
+                               !appData.activeRush;
+            
+            if (shouldShow) {
+                // Update description
+                const desc = document.getElementById('scheduled-rush-card-desc');
+                if (desc && sched.games) {
+                    desc.textContent = `${sched.durationMinutes} min • ${sched.games.length} game${sched.games.length !== 1 ? 's' : ''}`;
+                }
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
         }
         
         // ============ END SCHEDULED RUSH SYSTEM ============
@@ -26507,6 +26695,9 @@
         function renderBattles() {
             const container = document.getElementById('battles-list');
             if (!container) return;
+            
+            // v1.8.0: Update scheduled rush card visibility
+            updateScheduledRushCard();
             
             const activeBattles = userBattles.filter(b => b.status === 'active');
             const pendingBattles = userBattles.filter(b => b.status === 'pending' && b.createdBy === currentUser?.uid);
@@ -38607,6 +38798,7 @@ Hint levels:
             
             // v1.8.0: Initialize scheduled rush setting and check for prompt
             initScheduledRushSetting();
+            updateScheduledRushCard();
             // Delay scheduled rush check to let activity summary show first
             setTimeout(checkScheduledRush, 3000);
             
