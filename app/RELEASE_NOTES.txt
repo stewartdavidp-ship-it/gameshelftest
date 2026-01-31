@@ -1,3 +1,44 @@
+Game Shelf PWA v1.5.0 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+NEW FEATURE - GAME TIMING:
+--------------------------
+
+1. AUTOMATIC TIME TRACKING:
+   - Game Shelf now tracks how long you take to solve each puzzle
+   - Time starts when you tap "Play" in Game Shelf
+   - Time stops when you record your result
+   - Only records reasonable times (5 seconds to 2 hours)
+
+2. TIMING STATS DISPLAY:
+   - Stats tab overview shows your average time across all games
+   - Per-game stats list shows average time for each game
+   - Game detail sheet shows Best, Average, and Worst times
+   - Based on timed games only (games logged before this update won't have times)
+
+3. NEW DATA FIELDS:
+   - History entries now include timing data (sessionStartedAt, sessionRecordedAt, sessionDurationSeconds)
+   - New gameTiming object tracks per-game timing stats
+   - All timing data syncs to cloud and merges properly
+
+TECHNICAL DETAILS:
+------------------
+- Timing captured using existing activeGame localStorage mechanism
+- No background timers needed - uses timestamp comparison
+- Backward compatible: games without timing data display normally
+- Timing stats accumulate over time (best, worst, avg, recent 30 days)
+
+FUTURE USE:
+-----------
+This timing infrastructure is the foundation for upcoming features:
+- Timed puzzle challenges ("Time Rush" mode)
+- Speed-based achievements
+- Competitive timing in battles
+
+---
+
 Game Shelf PWA v1.4.4 Release Notes
 =====================================
 

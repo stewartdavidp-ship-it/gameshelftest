@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.4.4">
+    <meta name="version" content="1.5.0">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -9366,7 +9366,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.4.4</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.5.0</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -9659,7 +9659,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.4.4</div>
+            <div class="settings-version">Game Shelf PWA v1.5.0</div>
         </div>
     </div>
     
@@ -16962,14 +16962,42 @@
             if (!appData.history[today]) {
                 appData.history[today] = {};
             }
+            
+            // v1.5.0: Calculate timing data for this game session
+            const recordedAt = Date.now();
+            let timingData = null;
+            
+            // Check if we have launch time from active game tracking
+            const activeGame = getActiveGame();
+            if (activeGame && activeGame.gameId === result.gameId && activeGame.launchTime) {
+                const sessionDurationMs = recordedAt - activeGame.launchTime;
+                const sessionDurationSeconds = Math.round(sessionDurationMs / 1000);
+                
+                // Only record timing if it seems reasonable (between 5 seconds and 2 hours)
+                if (sessionDurationSeconds >= 5 && sessionDurationSeconds <= 7200) {
+                    timingData = {
+                        sessionStartedAt: activeGame.launchTime,
+                        sessionRecordedAt: recordedAt,
+                        sessionDurationSeconds: sessionDurationSeconds,
+                        source: 'normal'  // Will be 'rush' or 'battle' in future
+                    };
+                }
+            }
+            
             appData.history[today][result.gameId] = {
                 score: result.score,
                 won: result.won,
                 numericScore: result.numericScore || 0,
                 time: new Date().toISOString(),
                 grid: result.grid || null,  // Save the emoji grid for sharing
-                shareText: result.shareText || null  // Save original share text if available
+                shareText: result.shareText || null,  // Save original share text if available
+                timing: timingData  // v1.5.0: Timing data (null if not tracked)
             };
+            
+            // v1.5.0: Update game timing stats
+            if (timingData) {
+                updateGameTimingStats(result.gameId, timingData.sessionDurationSeconds);
+            }
             
             // Update stats
             if (!appData.stats[result.gameId]) {
@@ -17154,6 +17182,34 @@
                         // For tokens, take the higher value (could be earned locally or from cloud)
                         appData.wallet.tokens = Math.max(appData.wallet.tokens || 0, cloudData.wallet.tokens || 0);
                         console.log('[SYNC] Wallet synced from cloud:', appData.wallet);
+                    }
+                    
+                    // v1.5.0: Merge gameTiming (cloud wins but preserve local if not in cloud)
+                    if (cloudData.gameTiming) {
+                        if (!appData.gameTiming) appData.gameTiming = {};
+                        Object.entries(cloudData.gameTiming).forEach(([gameId, timing]) => {
+                            if (!appData.gameTiming[gameId]) {
+                                // No local timing for this game - use cloud
+                                appData.gameTiming[gameId] = timing;
+                            } else {
+                                // Merge: cloud wins but keep larger totals
+                                const local = appData.gameTiming[gameId];
+                                appData.gameTiming[gameId] = {
+                                    totalSeconds: Math.max(local.totalSeconds || 0, timing.totalSeconds || 0),
+                                    totalGames: Math.max(local.totalGames || 0, timing.totalGames || 0),
+                                    bestSeconds: timing.bestSeconds && local.bestSeconds 
+                                        ? Math.min(timing.bestSeconds, local.bestSeconds) 
+                                        : (timing.bestSeconds || local.bestSeconds),
+                                    worstSeconds: timing.worstSeconds && local.worstSeconds 
+                                        ? Math.max(timing.worstSeconds, local.worstSeconds) 
+                                        : (timing.worstSeconds || local.worstSeconds),
+                                    avgSeconds: timing.avgSeconds || local.avgSeconds,
+                                    recentTimes: timing.recentTimes || local.recentTimes || [],
+                                    last30Days: timing.last30Days || local.last30Days
+                                };
+                            }
+                        });
+                        console.log('[SYNC] GameTiming synced from cloud');
                     }
                     
                     console.log('[SYNC] Merge complete. Saving...');
@@ -18943,9 +18999,12 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.4.4';
+        const APP_VERSION = '1.5.0';
         
         const RELEASE_NOTES = {
+            '1.5.0': [
+                { icon: '⏱️', title: 'Game Timing', desc: 'Track how long you take to solve puzzles - see your average, best, and recent times!' }
+            ],
             '1.4.4': [
                 { icon: '🔕', title: 'Less Intrusive Updates', desc: "What's New no longer auto-pops up - check Help when you see the badge" }
             ],
@@ -20784,6 +20843,128 @@
             });
             return isNaN(maxCurrent) ? 0 : maxCurrent;
         }
+        
+        // ============ v1.5.0: GAME TIMING STATS ============
+        
+        // Update timing stats for a game after recording a result
+        function updateGameTimingStats(gameId, durationSeconds) {
+            if (!gameId || !durationSeconds || durationSeconds < 5) return;
+            
+            // Initialize timing stats structure if needed
+            if (!appData.gameTiming) {
+                appData.gameTiming = {};
+            }
+            
+            if (!appData.gameTiming[gameId]) {
+                appData.gameTiming[gameId] = {
+                    totalSeconds: 0,
+                    totalGames: 0,
+                    bestSeconds: null,
+                    worstSeconds: null,
+                    recentTimes: []  // Last 30 times for rolling average
+                };
+            }
+            
+            const timing = appData.gameTiming[gameId];
+            
+            // Update totals
+            timing.totalSeconds += durationSeconds;
+            timing.totalGames++;
+            
+            // Update best/worst
+            if (timing.bestSeconds === null || durationSeconds < timing.bestSeconds) {
+                timing.bestSeconds = durationSeconds;
+            }
+            if (timing.worstSeconds === null || durationSeconds > timing.worstSeconds) {
+                timing.worstSeconds = durationSeconds;
+            }
+            
+            // Add to recent times (keep last 30)
+            timing.recentTimes.push({
+                seconds: durationSeconds,
+                date: getTodayString(),
+                timestamp: Date.now()
+            });
+            if (timing.recentTimes.length > 30) {
+                timing.recentTimes.shift();
+            }
+            
+            // Calculate averages
+            timing.avgSeconds = Math.round(timing.totalSeconds / timing.totalGames);
+            
+            // Calculate 30-day average from recent times
+            const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+            const recent30d = timing.recentTimes.filter(t => t.timestamp > thirtyDaysAgo);
+            if (recent30d.length > 0) {
+                const recent30dTotal = recent30d.reduce((sum, t) => sum + t.seconds, 0);
+                timing.last30Days = {
+                    avgSeconds: Math.round(recent30dTotal / recent30d.length),
+                    count: recent30d.length
+                };
+            }
+            
+            console.log(`⏱️ Updated timing for ${gameId}: ${durationSeconds}s (avg: ${timing.avgSeconds}s, best: ${timing.bestSeconds}s)`);
+        }
+        
+        // Get timing stats for a specific game
+        function getGameTimingStats(gameId) {
+            if (!appData.gameTiming || !appData.gameTiming[gameId]) {
+                return null;
+            }
+            return appData.gameTiming[gameId];
+        }
+        
+        // Get overall timing stats across all games
+        function getOverallTimingStats() {
+            if (!appData.gameTiming) return null;
+            
+            let totalGames = 0;
+            let totalSeconds = 0;
+            let gamesWithTiming = 0;
+            let fastestGame = null;
+            let fastestTime = Infinity;
+            
+            Object.entries(appData.gameTiming).forEach(([gameId, timing]) => {
+                if (timing.totalGames > 0) {
+                    totalGames += timing.totalGames;
+                    totalSeconds += timing.totalSeconds;
+                    gamesWithTiming++;
+                    
+                    if (timing.bestSeconds < fastestTime) {
+                        fastestTime = timing.bestSeconds;
+                        fastestGame = gameId;
+                    }
+                }
+            });
+            
+            if (totalGames === 0) return null;
+            
+            return {
+                totalGames,
+                avgSeconds: Math.round(totalSeconds / totalGames),
+                gamesWithTiming,
+                fastestGame,
+                fastestTime: fastestTime === Infinity ? null : fastestTime
+            };
+        }
+        
+        // Format seconds as human-readable time (e.g., "2:35" or "45s")
+        function formatDuration(seconds) {
+            if (!seconds && seconds !== 0) return '—';
+            if (seconds < 60) return `${seconds}s`;
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Check if this is a new personal best time for a game
+        function isNewPersonalBest(gameId, durationSeconds) {
+            const timing = getGameTimingStats(gameId);
+            if (!timing || timing.totalGames < 2) return false;  // Need at least 2 games to have a "best"
+            return durationSeconds < timing.bestSeconds;
+        }
+        
+        // ============ END TIMING STATS ============
         
         // v1.3.0: Validate streaks on app startup
         // Reset any streaks where the user missed a day (lastPlayed is not today or yesterday)
@@ -23631,7 +23812,11 @@
             const totalWins = Object.values(appData.stats).reduce((sum, s) => sum + (s.gamesWon || 0), 0);
             const overallWinRate = totalPlayed > 0 ? Math.round((totalWins / totalPlayed) * 100) : 0;
             
-            // Render summary cards
+            // v1.5.0: Get overall timing stats
+            const overallTiming = getOverallTimingStats();
+            const avgTimeDisplay = overallTiming ? formatDuration(overallTiming.avgSeconds) : '—';
+            
+            // Render summary cards (v1.5.0: Added timing card)
             summaryContainer.innerHTML = `
                 <div style="background: var(--bg-secondary); border-radius: 12px; padding: 16px; text-align: center;">
                     <div style="font-size: 2rem; font-weight: 700; color: var(--accent-purple);">${todayPlayed}</div>
@@ -23649,17 +23834,23 @@
                     <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary);">${overallWinRate}%</div>
                     <div style="font-size: 0.75rem; color: var(--text-muted);">Win Rate</div>
                 </div>
+                <div style="background: var(--bg-secondary); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--accent-blue);">⏱️ ${avgTimeDisplay}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Avg Time</div>
+                </div>
             `;
             
-            // Render per-game stats
+            // Render per-game stats (v1.5.0: Added timing info)
             const gamesWithStats = appData.games
                 .map(g => {
                     const game = GAMES[g.id];
                     const stats = appData.stats[g.id] || {};
+                    const timing = getGameTimingStats(g.id);
                     return {
                         id: g.id,
                         game: game,
                         stats: stats,
+                        timing: timing,
                         currentStreak: stats.currentStreak || 0,
                         maxStreak: stats.maxStreak || 0,
                         gamesPlayed: stats.gamesPlayed || 0,
@@ -23683,6 +23874,8 @@
             listContainer.innerHTML = gamesWithStats.map(g => {
                 const winRate = g.gamesPlayed > 0 ? Math.round((g.gamesWon / g.gamesPlayed) * 100) : 0;
                 const todayResult = getTodayHistory()[g.id];
+                // v1.5.0: Show timing if available
+                const avgTimeStr = g.timing ? formatDuration(g.timing.avgSeconds) : null;
                 
                 return `
                     <div class="stats-game-row" onclick="showGameStatsDetail('${g.id}')" style="
@@ -23702,7 +23895,7 @@
                                 ${todayResult ? '<span style="font-size: 0.7rem; background: var(--accent-green); color: white; padding: 2px 6px; border-radius: 4px;">Today ✓</span>' : ''}
                             </div>
                             <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
-                                ${g.gamesPlayed} played • ${winRate}% wins
+                                ${g.gamesPlayed} played • ${winRate}% wins${avgTimeStr ? ` • ⏱️ ${avgTimeStr}` : ''}
                             </div>
                         </div>
                         <div style="text-align: right;">
@@ -23724,10 +23917,45 @@
             const game = GAMES[gameId];
             const stats = appData.stats[gameId] || {};
             const todayResult = getTodayHistory()[gameId];
+            const timing = getGameTimingStats(gameId);  // v1.5.0
             
             if (!game) return;
             
             const winRate = stats.gamesPlayed > 0 ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100) : 0;
+            
+            // v1.5.0: Build timing section HTML
+            let timingSection = '';
+            if (timing && timing.totalGames > 0) {
+                timingSection = `
+                    <!-- Timing Stats Section (v1.5.0) -->
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 10px;">⏱️ Time Stats</div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                            <div style="background: var(--bg-tertiary); border-radius: 10px; padding: 12px; text-align: center;">
+                                <div style="font-size: 1.3rem; font-weight: 700; color: var(--accent-green);">${formatDuration(timing.bestSeconds)}</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Best</div>
+                            </div>
+                            <div style="background: var(--bg-tertiary); border-radius: 10px; padding: 12px; text-align: center;">
+                                <div style="font-size: 1.3rem; font-weight: 700; color: var(--accent-blue);">${formatDuration(timing.avgSeconds)}</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Average</div>
+                            </div>
+                            <div style="background: var(--bg-tertiary); border-radius: 10px; padding: 12px; text-align: center;">
+                                <div style="font-size: 1.3rem; font-weight: 700; color: var(--text-muted);">${formatDuration(timing.worstSeconds)}</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">Worst</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 6px;">
+                            Based on ${timing.totalGames} timed ${timing.totalGames === 1 ? 'game' : 'games'}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // v1.5.0: Show today's time if available
+            let todayTimeStr = '';
+            if (todayResult?.timing?.sessionDurationSeconds) {
+                todayTimeStr = ` in <strong>${formatDuration(todayResult.timing.sessionDurationSeconds)}</strong>`;
+            }
             
             showGenericSheet({
                 title: `${game.icon} ${game.name} Stats`,
@@ -23736,7 +23964,7 @@
                         <!-- Current Status -->
                         ${todayResult ? `
                             <div style="background: var(--accent-green); color: white; padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
-                                ✓ Played today: <strong>${todayResult.score}</strong>
+                                ✓ Played today: <strong>${todayResult.score}</strong>${todayTimeStr}
                             </div>
                         ` : `
                             <div style="background: var(--bg-tertiary); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 20px; color: var(--text-muted);">
@@ -23763,6 +23991,8 @@
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">Win Rate</div>
                             </div>
                         </div>
+                        
+                        ${timingSection}
                         
                         <!-- Action Buttons -->
                         <div style="display: flex; flex-direction: column; gap: 10px;">
