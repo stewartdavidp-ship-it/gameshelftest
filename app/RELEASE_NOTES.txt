@@ -1,3 +1,78 @@
+Game Shelf PWA v1.8.0 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+NEW FEATURE - SCHEDULED RUSH (Phase 5):
+---------------------------------------
+
+1. DAILY RUSH REMINDER
+   - Enable in Settings → Scheduled Rush
+   - Set your preferred time for daily rush prompt
+   - Get reminded within ±30 minute window of scheduled time
+   - Configure which days of the week to be reminded
+
+2. SCHEDULE CONFIGURATION
+   - Time picker for rush time (24h format stored, 12h displayed)
+   - Duration selection: 10, 20, or 30 minutes
+   - Days of week selector with visual buttons
+   - Game selection using existing game selector UI
+   - Game order: Any or Fixed
+
+3. SCHEDULED RUSH PROMPT MODAL
+   - Beautiful modal with purple gradient header
+   - Shows configured games as chips
+   - "Start Rush" button for one-tap start
+   - "Not Now" dismisses until tomorrow
+   - "Edit Schedule" link to adjust settings
+   - Rush start sound plays when prompt appears
+
+4. QUICK START FROM SCHEDULE
+   - "Use My Schedule" button in Create Rush screen
+   - Only shows when schedule is enabled with games
+   - One tap to start rush with saved configuration
+
+DATA MODEL:
+-----------
+New: appData.rushSchedule
+{
+  enabled: false,
+  time: '07:00',           // 24h format, local time
+  durationMinutes: 20,
+  games: ['wordle', 'connections', 'strands', 'mini-crossword'],
+  gameOrder: 'any',
+  daysOfWeek: [0, 1, 2, 3, 4, 5, 6],  // 0=Sunday
+  windowMinutes: 30,
+  lastPromptDate: null,    // Prevents multiple prompts same day
+  lastStartedDate: null    // Tracks when schedule was used
+}
+
+TECHNICAL DETAILS:
+------------------
+- checkScheduledRush() runs 3 seconds after init
+- Time window calculation handles midnight wraparound
+- lastPromptDate prevents re-prompt on same day
+- lastStartedDate tracks schedule use vs manual rush
+- Invalid games filtered before starting (handles removed games)
+- Cloud sync for schedule settings across devices
+
+BUG FIXES FROM CODE WALKTHROUGH:
+--------------------------------
+1. Dismissing prompt now syncs to cloud (prevents re-prompt on other devices)
+2. Quick start properly updates lastStartedDate
+3. Invalid games filtered before rush start (in case games removed from GAMES object)
+
+CODE LOCATIONS:
+---------------
+- Data model: line ~16943 (createDefaultData)
+- Settings UI: line ~10511 (settings-section)
+- Prompt modal: line ~13360 (scheduled-rush-prompt)
+- Config modal: line ~13390 (scheduled-rush-config-sheet)
+- Core functions: line ~25130 (toggleScheduledRush through startScheduledRush)
+- Cloud sync: line ~18980 (loadFromCloud rushSchedule merge)
+
+---
+
 Game Shelf PWA v1.7.1 Release Notes
 =====================================
 

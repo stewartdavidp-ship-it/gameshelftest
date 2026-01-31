@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.7.1">
+    <meta name="version" content="1.8.0">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7873,6 +7873,272 @@
             color: white;
         }
         
+        /* Scheduled Rush Prompt Modal (v1.8.0) */
+        .scheduled-rush-prompt-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10002;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+        
+        .scheduled-rush-prompt-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scheduled-rush-prompt-content {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .scheduled-rush-prompt-modal.active .scheduled-rush-prompt-content {
+            transform: scale(1);
+        }
+        
+        .scheduled-rush-prompt-header {
+            background: linear-gradient(135deg, var(--accent-purple), #667eea);
+            padding: 28px 20px;
+        }
+        
+        .scheduled-rush-prompt-icon {
+            font-size: 3rem;
+            margin-bottom: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .scheduled-rush-prompt-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .scheduled-rush-prompt-subtitle {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .scheduled-rush-prompt-games {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .scheduled-rush-prompt-game {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .scheduled-rush-prompt-game-icon {
+            font-size: 1.1rem;
+        }
+        
+        .scheduled-rush-prompt-actions {
+            padding: 0 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .scheduled-rush-prompt-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .scheduled-rush-prompt-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .scheduled-rush-prompt-btn.primary {
+            background: linear-gradient(135deg, var(--accent-purple), #667eea);
+            border: none;
+            color: white;
+        }
+        
+        .scheduled-rush-prompt-btn.secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        .scheduled-rush-prompt-link {
+            display: block;
+            padding: 12px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .scheduled-rush-prompt-link:hover {
+            color: var(--accent-purple);
+        }
+        
+        /* Scheduled Rush Config Styles */
+        .rush-config-section {
+            margin-bottom: 24px;
+        }
+        
+        .rush-config-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .rush-config-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+        
+        .rush-time-picker input[type="time"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .rush-time-picker input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8);
+            cursor: pointer;
+        }
+        
+        .rush-days-picker {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+        
+        .rush-day-option {
+            flex: 1;
+            aspect-ratio: 1;
+            max-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .rush-day-option:hover {
+            border-color: var(--accent-purple);
+        }
+        
+        .rush-day-option.selected {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+            color: white;
+        }
+        
+        .rush-games-select-btn {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        
+        .rush-games-select-btn:hover {
+            border-color: var(--accent-purple);
+        }
+        
+        /* Schedule Quick Start Button */
+        .rush-schedule-quick-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            border: 2px solid var(--accent-purple);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .rush-schedule-quick-btn:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.25), rgba(118, 75, 162, 0.25));
+            transform: translateY(-1px);
+        }
+        
+        .rush-schedule-quick-icon {
+            font-size: 1.5rem;
+        }
+        
+        .rush-schedule-quick-text {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .rush-schedule-quick-title {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .rush-schedule-quick-desc {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        .rush-schedule-quick-arrow {
+            font-size: 1.2rem;
+            color: var(--accent-purple);
+        }
+        
         /* Referral System */
         .referral-earnings {
             background: linear-gradient(135deg, var(--accent-purple), #764ba2);
@@ -10508,6 +10774,29 @@
                             <span class="menu-chevron">›</span>
                         </a>
                     </div>
+                    
+                    <!-- Scheduled Rush -->
+                    <div class="settings-section">
+                        <div class="settings-section-title">⚡ Scheduled Rush</div>
+                        <div class="settings-toggle-row">
+                            <label>
+                                <span class="icon">📅</span>
+                                <span>Daily Rush Reminder</span>
+                            </label>
+                            <input type="checkbox" id="scheduled-rush-toggle" onchange="toggleScheduledRush(this.checked)">
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0 36px;">
+                            Get prompted to start your rush at a set time
+                        </p>
+                        <div id="scheduled-rush-settings" style="display: none; margin-top: 12px; padding-left: 36px;">
+                            <a class="settings-link" onclick="toggleSettingsMenu(); setTimeout(showScheduledRushConfig, 300)">
+                                <span class="icon">⚙️</span>
+                                Configure Schedule
+                                <span class="menu-chevron">›</span>
+                            </a>
+                            <div id="scheduled-rush-summary" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 8px;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -13078,6 +13367,19 @@
                 <button class="bottom-sheet-close" onclick="closeCreateRush()">×</button>
             </div>
             
+            <!-- Quick Start from Schedule (v1.8.0) -->
+            <div id="rush-schedule-quick-start" style="display: none; padding: 0 20px 16px;">
+                <button class="rush-schedule-quick-btn" onclick="quickStartFromSchedule()">
+                    <span class="rush-schedule-quick-icon">📅</span>
+                    <span class="rush-schedule-quick-text">
+                        <span class="rush-schedule-quick-title">Use My Schedule</span>
+                        <span class="rush-schedule-quick-desc" id="rush-schedule-quick-desc">20 min • 4 games</span>
+                    </span>
+                    <span class="rush-schedule-quick-arrow">→</span>
+                </button>
+                <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">— or customize below —</div>
+            </div>
+            
             <!-- Duration Selection -->
             <div class="battle-form-group">
                 <label class="battle-form-label">Duration</label>
@@ -13331,6 +13633,132 @@
                     <button class="times-up-btn record" onclick="recordLateGame()">Record Anyway</button>
                     <button class="times-up-btn discard" onclick="discardLateGame()">Discard</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scheduled Rush Prompt Modal (v1.8.0) -->
+    <div class="scheduled-rush-prompt-modal" id="scheduled-rush-prompt">
+        <div class="scheduled-rush-prompt-content" onclick="event.stopPropagation()">
+            <div class="scheduled-rush-prompt-header">
+                <div class="scheduled-rush-prompt-icon">⚡</div>
+                <div class="scheduled-rush-prompt-title">Daily Rush Time!</div>
+                <div class="scheduled-rush-prompt-subtitle" id="scheduled-rush-prompt-subtitle">Your 20-minute challenge awaits</div>
+            </div>
+            <div class="scheduled-rush-prompt-games" id="scheduled-rush-prompt-games">
+                <!-- Games list populated by JS -->
+            </div>
+            <div class="scheduled-rush-prompt-actions">
+                <button class="scheduled-rush-prompt-btn primary" onclick="startScheduledRush()">
+                    <span>⚡</span> Start Rush
+                </button>
+                <button class="scheduled-rush-prompt-btn secondary" onclick="dismissScheduledRushPrompt()">Not Now</button>
+            </div>
+            <a class="scheduled-rush-prompt-link" onclick="openScheduledRushConfigFromPrompt()">Edit Schedule</a>
+        </div>
+    </div>
+    
+    <!-- Scheduled Rush Config Modal (v1.8.0) -->
+    <div class="bottom-sheet-overlay" id="scheduled-rush-config-sheet" onclick="closeScheduledRushConfig()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 85vh;">
+            <div class="bottom-sheet-handle"></div>
+            <div class="bottom-sheet-header">
+                <span>⚡ Schedule Daily Rush</span>
+                <button class="bottom-sheet-close" onclick="closeScheduledRushConfig()">×</button>
+            </div>
+            
+            <div style="padding: 0 20px 20px; overflow-y: auto;">
+                <!-- Time Picker -->
+                <div class="rush-config-section">
+                    <div class="rush-config-label">Rush Time</div>
+                    <div class="rush-time-picker">
+                        <input type="time" id="rush-schedule-time" value="07:00" 
+                               onchange="updateScheduledRushTime(this.value)">
+                    </div>
+                    <div class="rush-config-hint">You'll be prompted within ±30 minutes of this time</div>
+                </div>
+                
+                <!-- Duration -->
+                <div class="rush-config-section">
+                    <div class="rush-config-label">Duration</div>
+                    <div class="rush-duration-select" id="schedule-duration-select">
+                        <div class="rush-duration-option" data-duration="10" onclick="selectScheduleDuration(this)">
+                            <span class="rush-duration-value">10</span>
+                            <span class="rush-duration-unit">min</span>
+                        </div>
+                        <div class="rush-duration-option selected" data-duration="20" onclick="selectScheduleDuration(this)">
+                            <span class="rush-duration-value">20</span>
+                            <span class="rush-duration-unit">min</span>
+                        </div>
+                        <div class="rush-duration-option" data-duration="30" onclick="selectScheduleDuration(this)">
+                            <span class="rush-duration-value">30</span>
+                            <span class="rush-duration-unit">min</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Days of Week -->
+                <div class="rush-config-section">
+                    <div class="rush-config-label">Days</div>
+                    <div class="rush-days-picker" id="rush-days-picker">
+                        <div class="rush-day-option selected" data-day="0" onclick="toggleScheduleDay(this)">S</div>
+                        <div class="rush-day-option selected" data-day="1" onclick="toggleScheduleDay(this)">M</div>
+                        <div class="rush-day-option selected" data-day="2" onclick="toggleScheduleDay(this)">T</div>
+                        <div class="rush-day-option selected" data-day="3" onclick="toggleScheduleDay(this)">W</div>
+                        <div class="rush-day-option selected" data-day="4" onclick="toggleScheduleDay(this)">T</div>
+                        <div class="rush-day-option selected" data-day="5" onclick="toggleScheduleDay(this)">F</div>
+                        <div class="rush-day-option selected" data-day="6" onclick="toggleScheduleDay(this)">S</div>
+                    </div>
+                </div>
+                
+                <!-- Games -->
+                <div class="rush-config-section">
+                    <div class="rush-config-label">Games</div>
+                    <button class="rush-games-select-btn" onclick="openScheduleGameSelector()">
+                        <span id="schedule-games-count">4 games selected</span>
+                        <span class="menu-chevron">›</span>
+                    </button>
+                    <div class="rush-games-list" id="schedule-games-preview">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Game Order -->
+                <div class="rush-config-section">
+                    <div class="rush-config-label">Game Order</div>
+                    <div class="rush-order-select" id="schedule-order-select">
+                        <div class="rush-order-option selected" data-order="any" onclick="selectScheduleOrder(this)">
+                            <span class="rush-order-icon">🔀</span>
+                            <span class="rush-order-label">Any Order</span>
+                        </div>
+                        <div class="rush-order-option" data-order="fixed" onclick="selectScheduleOrder(this)">
+                            <span class="rush-order-icon">📋</span>
+                            <span class="rush-order-label">Fixed Order</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Save Button -->
+                <button class="rush-start-btn" style="margin-top: 20px;" onclick="saveScheduledRushConfig()">
+                    Save Schedule
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Schedule Game Selector (reuses rush selector styles) -->
+    <div class="game-selector-overlay" id="schedule-game-selector-overlay" onclick="closeScheduleGameSelector()">
+        <div class="game-selector-sheet" onclick="event.stopPropagation()">
+            <div class="game-selector-header">
+                <span>Select Games</span>
+                <button class="game-selector-close" onclick="closeScheduleGameSelector()">×</button>
+            </div>
+            <div class="game-selector-body" id="schedule-game-selector-body">
+                <!-- Populated by JS -->
+            </div>
+            <div class="game-selector-footer">
+                <span id="schedule-game-selector-count-text">0 games selected</span>
+                <button class="game-selector-done" onclick="confirmScheduleGameSelection()">Done</button>
             </div>
         </div>
     </div>
@@ -16903,6 +17331,7 @@
                         wallet: { ...defaults.wallet, ...(parsed.wallet || {}) },
                         settings: { ...defaults.settings, ...(parsed.settings || {}) },
                         referral: { ...defaults.referral, ...(parsed.referral || {}) },
+                        rushSchedule: { ...defaults.rushSchedule, ...(parsed.rushSchedule || {}) },
                         // Ensure these are at least empty objects/arrays
                         stats: parsed.stats || {},
                         history: parsed.history || {},
@@ -16950,6 +17379,17 @@
                     friendsJoined: 0,
                     friendsEngaged: 0,
                     totalEarned: 0
+                },
+                rushSchedule: {
+                    enabled: false,
+                    time: '07:00',
+                    durationMinutes: 20,
+                    games: ['wordle', 'connections', 'strands', 'mini-crossword'],
+                    gameOrder: 'any',
+                    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                    windowMinutes: 30,
+                    lastPromptDate: null,
+                    lastStartedDate: null
                 }
             };
         }
@@ -18534,6 +18974,24 @@
                             };
                         }
                         console.log('[SYNC] RushStats synced from cloud:', appData.rushStats);
+                    }
+                    
+                    // v1.8.0: Merge rushSchedule (cloud wins for enabled state and config)
+                    if (cloudData.rushSchedule) {
+                        if (!appData.rushSchedule) {
+                            appData.rushSchedule = cloudData.rushSchedule;
+                        } else {
+                            // Cloud wins for schedule config, but preserve local prompt dates
+                            const local = appData.rushSchedule;
+                            const cloud = cloudData.rushSchedule;
+                            appData.rushSchedule = {
+                                ...cloud,
+                                // Keep local prompt/started dates if more recent
+                                lastPromptDate: local.lastPromptDate > cloud.lastPromptDate ? local.lastPromptDate : cloud.lastPromptDate,
+                                lastStartedDate: local.lastStartedDate > cloud.lastStartedDate ? local.lastStartedDate : cloud.lastStartedDate
+                            };
+                        }
+                        console.log('[SYNC] RushSchedule synced from cloud:', appData.rushSchedule);
                     }
                     
                     console.log('[SYNC] Merge complete. Saving...');
@@ -20375,9 +20833,14 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.7.1';
+        const APP_VERSION = '1.8.0';
         
         const RELEASE_NOTES = {
+            '1.8.0': [
+                { icon: '📅', title: 'Scheduled Rush', desc: 'Set a daily rush time and get prompted to start your challenge automatically!' },
+                { icon: '⏰', title: 'Flexible Schedule', desc: 'Pick your preferred time, days of the week, duration, and games' },
+                { icon: '🔔', title: 'Smart Prompts', desc: 'Get reminded within a ±30 minute window of your scheduled time' }
+            ],
             '1.7.1': [
                 { icon: '🐛', title: 'Rush Bug Fixes', desc: 'Fixed race condition with Time\'s Up modal, accurate game counts in Firebase, and better pause handling' }
             ],
@@ -23011,7 +23474,57 @@
             updateRushSummary();
             updateStartRushButton();
             
+            // v1.8.0: Show schedule quick-start if enabled
+            updateScheduleQuickStart();
+            
             document.getElementById('create-rush-sheet').classList.add('active');
+        }
+        
+        // v1.8.0: Update the schedule quick-start button visibility and text
+        function updateScheduleQuickStart() {
+            const quickStartDiv = document.getElementById('rush-schedule-quick-start');
+            if (!quickStartDiv) return;
+            
+            if (appData.rushSchedule?.enabled && appData.rushSchedule?.games?.length > 0) {
+                const sched = appData.rushSchedule;
+                const desc = document.getElementById('rush-schedule-quick-desc');
+                if (desc) {
+                    desc.textContent = `${sched.durationMinutes} min • ${sched.games.length} game${sched.games.length !== 1 ? 's' : ''}`;
+                }
+                quickStartDiv.style.display = 'block';
+            } else {
+                quickStartDiv.style.display = 'none';
+            }
+        }
+        
+        // v1.8.0: Quick start rush from saved schedule
+        function quickStartFromSchedule() {
+            if (!appData.rushSchedule?.enabled) return;
+            
+            const sched = appData.rushSchedule;
+            
+            // Filter to only valid games (in case games were removed)
+            const validGames = sched.games.filter(id => GAMES[id]);
+            if (validGames.length === 0) {
+                showToast('No valid games in schedule. Please update your schedule.', 'error');
+                return;
+            }
+            
+            // Set config from schedule
+            rushSelectedGames = [...validGames];
+            rushConfig = {
+                durationMinutes: sched.durationMinutes,
+                gameOrder: sched.gameOrder,
+                mode: 'solo'
+            };
+            
+            // Mark as started today (so prompt doesn't show later)
+            appData.rushSchedule.lastStartedDate = getTodayString();
+            saveData();
+            
+            // Close create sheet and start rush
+            closeCreateRush();
+            startRush();
         }
         
         function closeCreateRush() {
@@ -24643,9 +25156,440 @@
             return true; // Indicates we handled it
         }
         
-        // ============ END SESSION 4 ============
+        // ============ SCHEDULED RUSH SYSTEM (v1.8.0) ============
         
-        // ============ END RUSH SYSTEM ============
+        // Temporary storage for schedule editing
+        let scheduleSelectedGames = [];
+        
+        // Toggle scheduled rush on/off
+        function toggleScheduledRush(enabled) {
+            if (!appData.rushSchedule) {
+                appData.rushSchedule = createDefaultData().rushSchedule;
+            }
+            appData.rushSchedule.enabled = enabled;
+            
+            // Show/hide schedule settings
+            const settingsDiv = document.getElementById('scheduled-rush-settings');
+            if (settingsDiv) {
+                settingsDiv.style.display = enabled ? 'block' : 'none';
+            }
+            
+            // Update summary if enabled
+            if (enabled) {
+                updateScheduledRushSummary();
+            }
+            
+            saveData();
+            syncToCloud();
+            
+            if (enabled) {
+                showToast('Daily rush enabled! Configure your schedule.', 'success');
+            }
+        }
+        
+        // Initialize scheduled rush toggle on settings load
+        function initScheduledRushSetting() {
+            const toggle = document.getElementById('scheduled-rush-toggle');
+            const settingsDiv = document.getElementById('scheduled-rush-settings');
+            
+            if (toggle && appData.rushSchedule) {
+                toggle.checked = appData.rushSchedule.enabled;
+                if (settingsDiv) {
+                    settingsDiv.style.display = appData.rushSchedule.enabled ? 'block' : 'none';
+                }
+                if (appData.rushSchedule.enabled) {
+                    updateScheduledRushSummary();
+                }
+            }
+        }
+        
+        // Update the summary text in settings
+        function updateScheduledRushSummary() {
+            const summaryEl = document.getElementById('scheduled-rush-summary');
+            if (!summaryEl || !appData.rushSchedule) return;
+            
+            const sched = appData.rushSchedule;
+            const timeStr = formatScheduleTime(sched.time);
+            const daysStr = formatScheduleDays(sched.daysOfWeek);
+            const gamesCount = sched.games?.length || 0;
+            
+            summaryEl.innerHTML = `
+                <div style="margin-bottom: 4px;">⏰ ${timeStr} • ${sched.durationMinutes} min</div>
+                <div style="margin-bottom: 4px;">📅 ${daysStr}</div>
+                <div>🎮 ${gamesCount} game${gamesCount !== 1 ? 's' : ''}</div>
+            `;
+        }
+        
+        // Format time for display (07:00 -> 7:00 AM)
+        function formatScheduleTime(time24) {
+            if (!time24) return '7:00 AM';
+            const [hours, minutes] = time24.split(':').map(Number);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const hours12 = hours % 12 || 12;
+            return `${hours12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+        }
+        
+        // Format days for display
+        function formatScheduleDays(days) {
+            if (!days || days.length === 0) return 'No days selected';
+            if (days.length === 7) return 'Every day';
+            
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            
+            // Check for weekdays only
+            if (days.length === 5 && [1,2,3,4,5].every(d => days.includes(d))) {
+                return 'Weekdays';
+            }
+            
+            // Check for weekends only
+            if (days.length === 2 && days.includes(0) && days.includes(6)) {
+                return 'Weekends';
+            }
+            
+            return days.sort((a,b) => a - b).map(d => dayNames[d]).join(', ');
+        }
+        
+        // Show schedule configuration modal
+        function showScheduledRushConfig() {
+            if (!appData.rushSchedule) {
+                appData.rushSchedule = createDefaultData().rushSchedule;
+            }
+            
+            const sched = appData.rushSchedule;
+            
+            // Initialize temp games list
+            scheduleSelectedGames = [...(sched.games || ['wordle', 'connections', 'strands', 'mini-crossword'])];
+            
+            // Set time
+            const timeInput = document.getElementById('rush-schedule-time');
+            if (timeInput) timeInput.value = sched.time || '07:00';
+            
+            // Set duration
+            document.querySelectorAll('#schedule-duration-select .rush-duration-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.duration === String(sched.durationMinutes || 20));
+            });
+            
+            // Set days
+            document.querySelectorAll('#rush-days-picker .rush-day-option').forEach(opt => {
+                const day = parseInt(opt.dataset.day);
+                opt.classList.toggle('selected', (sched.daysOfWeek || [0,1,2,3,4,5,6]).includes(day));
+            });
+            
+            // Set order
+            document.querySelectorAll('#schedule-order-select .rush-order-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.order === (sched.gameOrder || 'any'));
+            });
+            
+            // Update games preview
+            updateScheduleGamesPreview();
+            
+            // Show modal
+            document.getElementById('scheduled-rush-config-sheet').classList.add('active');
+        }
+        
+        function closeScheduledRushConfig() {
+            document.getElementById('scheduled-rush-config-sheet').classList.remove('active');
+        }
+        
+        function updateScheduledRushTime(value) {
+            // Just store it - will be saved when user clicks Save
+        }
+        
+        function selectScheduleDuration(el) {
+            document.querySelectorAll('#schedule-duration-select .rush-duration-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            el.classList.add('selected');
+        }
+        
+        function toggleScheduleDay(el) {
+            el.classList.toggle('selected');
+        }
+        
+        function selectScheduleOrder(el) {
+            document.querySelectorAll('#schedule-order-select .rush-order-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            el.classList.add('selected');
+        }
+        
+        function openScheduleGameSelector() {
+            renderScheduleGameSelector();
+            document.getElementById('schedule-game-selector-overlay').classList.add('active');
+        }
+        
+        function closeScheduleGameSelector() {
+            document.getElementById('schedule-game-selector-overlay').classList.remove('active');
+        }
+        
+        function renderScheduleGameSelector() {
+            const body = document.getElementById('schedule-game-selector-body');
+            if (!body) return;
+            
+            let html = '';
+            
+            for (const [category, gameIds] of Object.entries(BATTLE_GAME_CATEGORIES)) {
+                const validGames = gameIds.filter(id => GAMES[id]);
+                if (validGames.length === 0) continue;
+                
+                html += `<div class="game-category">`;
+                html += `<div class="game-category-title">${category}</div>`;
+                html += `<div class="game-category-grid">`;
+                
+                for (const gameId of validGames) {
+                    const game = GAMES[gameId];
+                    const isSelected = scheduleSelectedGames.includes(gameId);
+                    html += `
+                        <div class="game-select-item ${isSelected ? 'selected' : ''}" 
+                             data-game="${gameId}" 
+                             onclick="toggleScheduleGame(this, '${gameId}')">
+                            <span class="game-select-icon">${game.icon}</span>
+                            <span class="game-select-name">${game.name}</span>
+                            <span class="game-select-check">✓</span>
+                        </div>
+                    `;
+                }
+                
+                html += `</div></div>`;
+            }
+            
+            body.innerHTML = html;
+            updateScheduleGameSelectorCount();
+        }
+        
+        function toggleScheduleGame(el, gameId) {
+            const isSelected = scheduleSelectedGames.includes(gameId);
+            
+            if (isSelected) {
+                scheduleSelectedGames = scheduleSelectedGames.filter(id => id !== gameId);
+                el.classList.remove('selected');
+            } else {
+                if (scheduleSelectedGames.length >= 8) {
+                    showToast('Maximum 8 games for scheduled rush', 'error');
+                    return;
+                }
+                scheduleSelectedGames.push(gameId);
+                el.classList.add('selected');
+            }
+            
+            updateScheduleGameSelectorCount();
+        }
+        
+        function updateScheduleGameSelectorCount() {
+            const count = scheduleSelectedGames.length;
+            const countText = document.getElementById('schedule-game-selector-count-text');
+            if (countText) {
+                countText.textContent = `${count} game${count !== 1 ? 's' : ''} selected`;
+            }
+        }
+        
+        function confirmScheduleGameSelection() {
+            closeScheduleGameSelector();
+            updateScheduleGamesPreview();
+        }
+        
+        function updateScheduleGamesPreview() {
+            const preview = document.getElementById('schedule-games-preview');
+            const countBtn = document.getElementById('schedule-games-count');
+            
+            if (scheduleSelectedGames.length === 0) {
+                if (countBtn) countBtn.textContent = 'Select games...';
+                if (preview) preview.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem; padding: 8px;">No games selected</div>';
+                return;
+            }
+            
+            if (countBtn) countBtn.textContent = `${scheduleSelectedGames.length} game${scheduleSelectedGames.length !== 1 ? 's' : ''} selected`;
+            
+            if (preview) {
+                let html = '';
+                scheduleSelectedGames.forEach((gameId) => {
+                    const game = GAMES[gameId];
+                    if (game) {
+                        html += `
+                            <div class="rush-game-item">
+                                <span class="rush-game-icon">${game.icon}</span>
+                                <span class="rush-game-name">${game.name}</span>
+                            </div>
+                        `;
+                    }
+                });
+                preview.innerHTML = html;
+            }
+        }
+        
+        function saveScheduledRushConfig() {
+            // Validate at least one game selected
+            if (scheduleSelectedGames.length === 0) {
+                showToast('Select at least one game', 'error');
+                return;
+            }
+            
+            // Validate at least one day selected
+            const selectedDays = [];
+            document.querySelectorAll('#rush-days-picker .rush-day-option.selected').forEach(opt => {
+                selectedDays.push(parseInt(opt.dataset.day));
+            });
+            
+            if (selectedDays.length === 0) {
+                showToast('Select at least one day', 'error');
+                return;
+            }
+            
+            // Get values
+            const time = document.getElementById('rush-schedule-time').value;
+            const durationEl = document.querySelector('#schedule-duration-select .rush-duration-option.selected');
+            const duration = durationEl ? parseInt(durationEl.dataset.duration) : 20;
+            const orderEl = document.querySelector('#schedule-order-select .rush-order-option.selected');
+            const order = orderEl ? orderEl.dataset.order : 'any';
+            
+            // Save to appData
+            appData.rushSchedule = {
+                ...appData.rushSchedule,
+                enabled: true,
+                time: time,
+                durationMinutes: duration,
+                games: [...scheduleSelectedGames],
+                gameOrder: order,
+                daysOfWeek: selectedDays,
+                windowMinutes: 30
+            };
+            
+            saveData();
+            syncToCloud();
+            
+            // Update toggle and summary
+            const toggle = document.getElementById('scheduled-rush-toggle');
+            if (toggle) toggle.checked = true;
+            const settingsDiv = document.getElementById('scheduled-rush-settings');
+            if (settingsDiv) settingsDiv.style.display = 'block';
+            updateScheduledRushSummary();
+            
+            closeScheduledRushConfig();
+            showToast('Schedule saved!', 'success');
+        }
+        
+        // Check if we should show scheduled rush prompt on app open
+        function checkScheduledRush() {
+            // Skip if not enabled
+            if (!appData.rushSchedule?.enabled) return;
+            
+            // Skip if already have an active rush
+            if (appData.activeRush) return;
+            
+            const sched = appData.rushSchedule;
+            const now = new Date();
+            const today = getTodayString();
+            
+            // Skip if already prompted today
+            if (sched.lastPromptDate === today) return;
+            
+            // Skip if already started a rush today via schedule
+            if (sched.lastStartedDate === today) return;
+            
+            // Check if today is a scheduled day
+            const dayOfWeek = now.getDay(); // 0 = Sunday
+            if (!sched.daysOfWeek?.includes(dayOfWeek)) return;
+            
+            // Check if we're within the time window
+            const [schedHours, schedMinutes] = sched.time.split(':').map(Number);
+            const schedTimeMinutes = schedHours * 60 + schedMinutes;
+            const nowMinutes = now.getHours() * 60 + now.getMinutes();
+            const windowMinutes = sched.windowMinutes || 30;
+            
+            const diff = Math.abs(nowMinutes - schedTimeMinutes);
+            
+            // Handle midnight wraparound
+            const isInWindow = diff <= windowMinutes || (1440 - diff) <= windowMinutes;
+            
+            if (!isInWindow) return;
+            
+            // All checks passed - show the prompt!
+            console.log('⚡ Scheduled rush: Time to prompt user!');
+            showScheduledRushPrompt();
+        }
+        
+        function showScheduledRushPrompt() {
+            const sched = appData.rushSchedule;
+            
+            // Update subtitle
+            const subtitle = document.getElementById('scheduled-rush-prompt-subtitle');
+            if (subtitle) {
+                subtitle.textContent = `Your ${sched.durationMinutes}-minute challenge awaits`;
+            }
+            
+            // Build games list
+            const gamesContainer = document.getElementById('scheduled-rush-prompt-games');
+            if (gamesContainer && sched.games) {
+                let html = '';
+                sched.games.forEach(gameId => {
+                    const game = GAMES[gameId];
+                    if (game) {
+                        html += `
+                            <div class="scheduled-rush-prompt-game">
+                                <span class="scheduled-rush-prompt-game-icon">${game.icon}</span>
+                                <span>${game.name}</span>
+                            </div>
+                        `;
+                    }
+                });
+                gamesContainer.innerHTML = html;
+            }
+            
+            // Show modal
+            document.getElementById('scheduled-rush-prompt').classList.add('active');
+            
+            // Play sound
+            if (appData.settings?.soundEnabled !== false) {
+                SoundManager.play('rushStart');
+            }
+        }
+        
+        function dismissScheduledRushPrompt() {
+            document.getElementById('scheduled-rush-prompt').classList.remove('active');
+            
+            // Mark as prompted today so we don't show again
+            appData.rushSchedule.lastPromptDate = getTodayString();
+            saveData();
+            syncToCloud();
+            
+            showToast('Rush dismissed. See you tomorrow!');
+        }
+        
+        function startScheduledRush() {
+            document.getElementById('scheduled-rush-prompt').classList.remove('active');
+            
+            const sched = appData.rushSchedule;
+            
+            // Filter to only valid games (in case games were removed)
+            const validGames = sched.games.filter(id => GAMES[id]);
+            if (validGames.length === 0) {
+                showToast('No valid games in schedule. Please update your schedule.', 'error');
+                return;
+            }
+            
+            // Set up rush config from schedule
+            rushSelectedGames = [...validGames];
+            rushConfig = {
+                durationMinutes: sched.durationMinutes,
+                gameOrder: sched.gameOrder,
+                mode: 'solo'
+            };
+            
+            // Mark as started today
+            appData.rushSchedule.lastStartedDate = getTodayString();
+            saveData();
+            syncToCloud();
+            
+            // Start the rush!
+            startRush();
+        }
+        
+        function openScheduledRushConfigFromPrompt() {
+            document.getElementById('scheduled-rush-prompt').classList.remove('active');
+            showScheduledRushConfig();
+        }
+        
+        // ============ END SCHEDULED RUSH SYSTEM ============
         
         function showJoinBattle() {
             if (!currentUser) {
@@ -37660,6 +38604,11 @@ Hint levels:
             
             // v1.6.0: Check for active rush on startup
             checkForActiveRush();
+            
+            // v1.8.0: Initialize scheduled rush setting and check for prompt
+            initScheduledRushSetting();
+            // Delay scheduled rush check to let activity summary show first
+            setTimeout(checkScheduledRush, 3000);
             
             // Load sent nudges from localStorage
             loadSentNudges();
