@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.6.2">
+    <meta name="version" content="1.7.0">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7683,17 +7683,54 @@
             padding: 16px;
             text-align: center;
             margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .rush-complete-personal-best.celebrating {
+            animation: pbPulse 0.6s ease-out;
+        }
+        
+        @keyframes pbPulse {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.05); }
+            60% { transform: scale(0.98); }
+            100% { transform: scale(1); }
         }
         
         .rush-complete-pb-icon {
             font-size: 2rem;
             margin-bottom: 4px;
+            display: inline-block;
+        }
+        
+        .rush-complete-pb-icon.celebrating {
+            animation: trophyBounce 0.8s ease-out;
+        }
+        
+        @keyframes trophyBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            20% { transform: translateY(-15px) rotate(-10deg); }
+            40% { transform: translateY(-8px) rotate(8deg); }
+            60% { transform: translateY(-12px) rotate(-5deg); }
+            80% { transform: translateY(-4px) rotate(3deg); }
         }
         
         .rush-complete-pb-text {
             font-weight: 700;
             color: #f59e0b;
             font-size: 1rem;
+        }
+        
+        /* Confetti Canvas (v1.7.0) */
+        #rush-confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10002;
         }
         
         .rush-complete-actions {
@@ -10261,7 +10298,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.6.2</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.7.0</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -10554,7 +10591,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.6.2</div>
+            <div class="settings-version">Game Shelf PWA v1.7.0</div>
         </div>
     </div>
     
@@ -10780,6 +10817,9 @@
                 <button class="subtab-btn" data-stats-tab="bygame" onclick="switchStatsTab('bygame')">
                     🎮 By Game
                 </button>
+                <button class="subtab-btn" data-stats-tab="rushes" onclick="switchStatsTab('rushes')">
+                    ⚡ Rushes
+                </button>
             </div>
             
             <!-- Overview Subtab -->
@@ -10802,6 +10842,31 @@
                 
                 <!-- Per-Game Stats List -->
                 <div id="stats-game-list" style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Rushes Subtab (v1.7.0) -->
+            <div class="subtab-content" id="stats-tab-rushes">
+                <div class="section-header" style="margin-bottom: 16px;">
+                    <span class="section-title">⚡ Rush Stats</span>
+                </div>
+                
+                <!-- Rush Records Cards -->
+                <div id="rush-stats-records" style="margin-bottom: 20px;">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Rush Streak Section -->
+                <div id="rush-stats-streak" style="margin-bottom: 20px;">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Rush History Section -->
+                <div class="section-header" style="margin-bottom: 12px;">
+                    <span class="section-title">Recent Rushes</span>
+                </div>
+                <div id="rush-history-list" style="display: flex; flex-direction: column; gap: 10px;">
                     <!-- Populated by JS -->
                 </div>
             </div>
@@ -13204,6 +13269,9 @@
         <span class="rush-indicator-progress" id="rush-indicator-progress">0/4</span>
     </div>
     
+    <!-- Confetti Canvas (v1.7.0) -->
+    <canvas id="rush-confetti-canvas"></canvas>
+    
     <!-- Rush Complete Modal (v1.6.2 Session 4) -->
     <div class="rush-complete-modal" id="rush-complete-modal" onclick="closeRushComplete()">
         <div class="rush-complete-content" onclick="event.stopPropagation()">
@@ -13936,6 +14004,8 @@
                 renderStatsSummary();
             } else if (tabName === 'bygame') {
                 renderStatsGameList();
+            } else if (tabName === 'rushes') {
+                renderRushStatsTab(); // v1.7.0
             }
         }
         
@@ -19609,7 +19679,13 @@
                 success: 'chime1',
                 error: 'notify2',
                 notification: 'ding',
-                sync: 'whoosh'
+                sync: 'whoosh',
+                // v1.7.0: Rush event sounds
+                rushStart: 'rushStart',
+                rushGameComplete: 'rushComplete',
+                rushWarning: 'rushWarning',
+                rushTimeUp: 'rushTimeUp',
+                rushPersonalBest: 'rushPersonalBest'
             },
             
             // User preferences
@@ -19853,6 +19929,52 @@
                                 { freq: 300, time: 0, dur: 0.08, type: 'sine', vol: 0.4 },
                                 { freq: 400, time: 0.1, dur: 0.06, type: 'sine', vol: 0.3 },
                                 { freq: 500, time: 0.18, dur: 0.04, type: 'sine', vol: 0.2 }
+                            ]);
+                            break;
+                        // v1.7.0: Rush-specific sounds
+                        case 'rushStart':
+                            // Energetic starting gun / race start feel
+                            this._playTone(ctx, masterGain, [
+                                { freq: 440, time: 0, dur: 0.08, type: 'square', vol: 0.3 },
+                                { freq: 554, time: 0.1, dur: 0.08, type: 'square', vol: 0.35 },
+                                { freq: 659, time: 0.2, dur: 0.08, type: 'square', vol: 0.4 },
+                                { freq: 880, time: 0.3, dur: 0.25, type: 'sawtooth', vol: 0.35 }
+                            ]);
+                            break;
+                        case 'rushComplete':
+                            // Quick satisfying ding for each game recorded during rush
+                            this._playTone(ctx, masterGain, [
+                                { freq: 880, time: 0, dur: 0.08, type: 'sine', vol: 0.35 },
+                                { freq: 1320, time: 0.06, dur: 0.15, type: 'sine', vol: 0.3 }
+                            ]);
+                            break;
+                        case 'rushWarning':
+                            // Urgent tick-tock warning (3 min / 1 min remaining)
+                            this._playTone(ctx, masterGain, [
+                                { freq: 600, time: 0, dur: 0.1, type: 'triangle', vol: 0.3 },
+                                { freq: 500, time: 0.15, dur: 0.1, type: 'triangle', vol: 0.25 }
+                            ]);
+                            break;
+                        case 'rushTimeUp':
+                            // Time's up - dramatic descending tone
+                            this._playTone(ctx, masterGain, [
+                                { freq: 880, time: 0, dur: 0.15, type: 'sawtooth', vol: 0.3 },
+                                { freq: 660, time: 0.15, dur: 0.15, type: 'sawtooth', vol: 0.25 },
+                                { freq: 440, time: 0.3, dur: 0.2, type: 'sawtooth', vol: 0.2 },
+                                { freq: 330, time: 0.45, dur: 0.25, type: 'sawtooth', vol: 0.15 }
+                            ]);
+                            break;
+                        case 'rushPersonalBest':
+                            // Triumphant celebration fanfare for PB
+                            this._playTone(ctx, masterGain, [
+                                { freq: 523, time: 0, dur: 0.15, type: 'square', vol: 0.3 },
+                                { freq: 659, time: 0.15, dur: 0.15, type: 'square', vol: 0.32 },
+                                { freq: 784, time: 0.3, dur: 0.15, type: 'square', vol: 0.34 },
+                                { freq: 1047, time: 0.45, dur: 0.4, type: 'sawtooth', vol: 0.35 },
+                                // Sparkle overlay
+                                { freq: 1568, time: 0.5, dur: 0.1, type: 'sine', vol: 0.2 },
+                                { freq: 2093, time: 0.6, dur: 0.1, type: 'sine', vol: 0.15 },
+                                { freq: 2637, time: 0.7, dur: 0.15, type: 'sine', vol: 0.1 }
                             ]);
                             break;
                         case 'none':
@@ -20253,9 +20375,15 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.6.2';
+        const APP_VERSION = '1.7.0';
         
         const RELEASE_NOTES = {
+            '1.7.0': [
+                { icon: '🎉', title: 'Confetti Celebration!', desc: 'Personal bests now trigger beautiful confetti animations and victory sounds' },
+                { icon: '🔊', title: 'Rush Sounds', desc: 'New audio cues for rush start, game completion, time warnings, and more' },
+                { icon: '📊', title: 'Rush Stats Tab', desc: 'View your rush records, streaks, and history in the new Stats → Rushes tab' },
+                { icon: '🏆', title: 'Personal Best Tracking', desc: 'See your best games completed for 10, 20, and 30-minute rushes' }
+            ],
             '1.6.0': [
                 '⚡ NEW: Timed Challenges! Race against the clock in 10-30 minute puzzle sprints',
                 '🎯 Choose your games, set your duration, and see how many you can complete',
@@ -23158,6 +23286,7 @@
             
             // Session 3: Show the active rush modal
             console.log('⚡ Rush started:', appData.activeRush);
+            playSound('rushStart'); // v1.7.0: Play rush start sound
             showActiveRushModal();
         }
         
@@ -23347,8 +23476,18 @@
                 timeDisplay.classList.remove('warning', 'critical');
                 if (timeRemaining <= 60000) { // Last minute
                     timeDisplay.classList.add('critical');
+                    // v1.7.0: Play warning sound at exactly 1 minute (with 2 second tolerance)
+                    if (timeRemaining > 58000 && timeRemaining <= 60000 && !rush._warned1min) {
+                        rush._warned1min = true;
+                        playSound('rushWarning');
+                    }
                 } else if (timeRemaining <= 180000) { // Last 3 minutes
                     timeDisplay.classList.add('warning');
+                    // v1.7.0: Play warning sound at exactly 3 minutes (with 2 second tolerance)
+                    if (timeRemaining > 178000 && timeRemaining <= 180000 && !rush._warned3min) {
+                        rush._warned3min = true;
+                        playSound('rushWarning');
+                    }
                 }
             }
             
@@ -23626,6 +23765,11 @@
             
             console.log(`⚡ Rush: Recorded ${gameId} - ${result.score} (${durationSeconds}s, counted: ${countedInRush})`);
             
+            // v1.7.0: Play sound for game recorded during rush
+            if (countedInRush) {
+                playSound('rushComplete');
+            }
+            
             saveData();
             
             // Update Firebase
@@ -23792,6 +23936,11 @@
             
             console.log(`⚡ Rush completing (trigger: ${trigger})`);
             
+            // v1.7.0: Play time's up sound if ended by timer (not early finish)
+            if (trigger === 'timer' || trigger === 'expired') {
+                playSound('rushTimeUp');
+            }
+            
             // Calculate final stats
             const rushStats = calculateRushStats(rush);
             
@@ -23945,6 +24094,201 @@
             }
         }
         
+        // v1.7.0: Render the Rushes subtab in Stats
+        function renderRushStatsTab() {
+            const recordsContainer = document.getElementById('rush-stats-records');
+            const streakContainer = document.getElementById('rush-stats-streak');
+            const historyContainer = document.getElementById('rush-history-list');
+            
+            if (!recordsContainer || !streakContainer || !historyContainer) return;
+            
+            const rs = appData.rushStats || {};
+            const totalRushes = rs.totalRushes || 0;
+            
+            // Render Personal Best Records
+            const best10 = rs.best10min || 0;
+            const best20 = rs.best20min || 0;
+            const best30 = rs.best30min || 0;
+            
+            recordsContainer.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
+                    <div style="background: var(--bg-secondary); border-radius: 12px; padding: 14px; text-align: center;">
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;">10 min</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: ${best10 > 0 ? 'var(--accent-green)' : 'var(--text-muted)'};">
+                            ${best10 > 0 ? best10 : '—'}
+                        </div>
+                        <div style="font-size: 0.65rem; color: var(--text-muted);">games</div>
+                    </div>
+                    <div style="background: var(--bg-secondary); border-radius: 12px; padding: 14px; text-align: center; border: 2px solid var(--accent-purple);">
+                        <div style="font-size: 0.7rem; color: var(--accent-purple); margin-bottom: 4px;">20 min 🏆</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: ${best20 > 0 ? 'var(--accent-purple)' : 'var(--text-muted)'};">
+                            ${best20 > 0 ? best20 : '—'}
+                        </div>
+                        <div style="font-size: 0.65rem; color: var(--text-muted);">games</div>
+                    </div>
+                    <div style="background: var(--bg-secondary); border-radius: 12px; padding: 14px; text-align: center;">
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;">30 min</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: ${best30 > 0 ? 'var(--accent-blue)' : 'var(--text-muted)'};">
+                            ${best30 > 0 ? best30 : '—'}
+                        </div>
+                        <div style="font-size: 0.65rem; color: var(--text-muted);">games</div>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <div style="background: var(--bg-secondary); border-radius: 12px; padding: 14px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary);">${totalRushes}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Total Rushes</div>
+                    </div>
+                    <div style="background: var(--bg-secondary); border-radius: 12px; padding: 14px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary);">${rs.completedRushes || 0}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Completed</div>
+                    </div>
+                </div>
+            `;
+            
+            // Render Streak Section
+            const currentStreak = rs.currentStreak || 0;
+            const longestStreak = rs.longestStreak || 0;
+            const lastRushDate = rs.lastRushDate || null;
+            
+            let streakStatusText = '';
+            let streakStatusColor = 'var(--text-muted)';
+            
+            if (currentStreak > 0) {
+                const today = getLocalDateStr();
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = getLocalDateStr(yesterday);
+                
+                if (lastRushDate === today) {
+                    streakStatusText = "Today's rush complete! ✓";
+                    streakStatusColor = 'var(--accent-green)';
+                } else if (lastRushDate === yesterdayStr) {
+                    streakStatusText = 'Do a rush today to keep your streak!';
+                    streakStatusColor = 'var(--accent-orange)';
+                } else {
+                    streakStatusText = 'Streak lost - start a new one!';
+                    streakStatusColor = 'var(--text-muted)';
+                }
+            }
+            
+            streakContainer.innerHTML = `
+                <div style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1)); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 12px; padding: 16px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                        <div style="font-size: 0.85rem; font-weight: 600; color: #fbbf24;">🔥 Rush Streak</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Best: ${longestStreak} days</div>
+                    </div>
+                    <div style="font-size: 2.5rem; font-weight: 800; color: ${currentStreak > 0 ? '#fbbf24' : 'var(--text-muted)'}; margin-bottom: 4px;">
+                        ${currentStreak}
+                    </div>
+                    <div style="font-size: 0.8rem; color: ${streakStatusColor};">
+                        ${streakStatusText || 'Complete a rush to start a streak!'}
+                    </div>
+                </div>
+            `;
+            
+            // Render Rush History (load from Firebase)
+            renderRushHistory(historyContainer);
+        }
+        
+        // v1.7.0: Load and render rush history
+        async function renderRushHistory(container) {
+            if (!currentUser) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px 20px; color: var(--text-muted);">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">🔒</div>
+                        <div>Sign in to see your rush history</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+                    <div style="font-size: 1rem;">Loading...</div>
+                </div>
+            `;
+            
+            try {
+                const rushesRef = db.ref(`rushes/${currentUser.uid}`);
+                const snapshot = await rushesRef.orderByChild('completedAt').limitToLast(20).once('value');
+                const rushes = snapshot.val();
+                
+                if (!rushes || Object.keys(rushes).length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px 20px; color: var(--text-muted);">
+                            <div style="font-size: 2.5rem; margin-bottom: 12px;">⚡</div>
+                            <div style="font-size: 1rem; margin-bottom: 6px;">No rushes yet</div>
+                            <div style="font-size: 0.85rem;">Start a timed challenge from the Battles tab!</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Sort by completedAt descending
+                const rushList = Object.entries(rushes)
+                    .map(([id, rush]) => ({ id, ...rush }))
+                    .filter(r => r.completedAt) // Only completed rushes
+                    .sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0))
+                    .slice(0, 15);
+                
+                if (rushList.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px 20px; color: var(--text-muted);">
+                            <div style="font-size: 2.5rem; margin-bottom: 12px;">⚡</div>
+                            <div style="font-size: 1rem; margin-bottom: 6px;">No completed rushes yet</div>
+                            <div style="font-size: 0.85rem;">Finish a timed challenge to see your history!</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = rushList.map(rush => {
+                    const participant = rush.participants?.[currentUser.uid] || {};
+                    const gamesCompleted = participant.gamesCompleted || 0;
+                    const totalGames = rush.config?.games?.length || 0;
+                    const duration = rush.config?.durationMinutes || 20;
+                    const date = new Date(rush.completedAt);
+                    const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                    const allDone = gamesCompleted === totalGames && totalGames > 0;
+                    
+                    return `
+                        <div style="background: var(--bg-secondary); border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.8rem; width: 44px; text-align: center;">
+                                ${allDone ? '🎉' : '⚡'}
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                                    ${duration}-min Rush
+                                    ${allDone ? '<span style="font-size: 0.65rem; background: var(--accent-green); color: white; padding: 2px 6px; border-radius: 4px;">Perfect</span>' : ''}
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                                    ${dateStr} at ${timeStr}
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 1.1rem; font-weight: 700; color: ${gamesCompleted > 0 ? 'var(--accent-purple)' : 'var(--text-muted)'};">
+                                    ${gamesCompleted}/${totalGames}
+                                </div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted);">games</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (err) {
+                console.error('Failed to load rush history:', err);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px 20px; color: var(--text-muted);">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">⚠️</div>
+                        <div>Failed to load history</div>
+                    </div>
+                `;
+            }
+        }
+        
         // Show the rush completion modal
         function showRushComplete(rush, stats, isPersonalBest) {
             const modal = document.getElementById('rush-complete-modal');
@@ -24057,6 +24401,99 @@
             
             // Show modal
             modal.classList.add('active');
+            
+            // v1.7.0: Play completion sound and trigger celebration
+            if (isPersonalBest && stats.gamesCompleted > 0) {
+                playSound('rushPersonalBest');
+                triggerRushConfetti();
+                // Add celebration classes
+                setTimeout(() => {
+                    pbElement.classList.add('celebrating');
+                    document.querySelector('.rush-complete-pb-icon')?.classList.add('celebrating');
+                }, 100);
+            } else {
+                playSound('complete');
+            }
+        }
+        
+        // v1.7.0: Confetti celebration for personal bests
+        function triggerRushConfetti() {
+            const canvas = document.getElementById('rush-confetti-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const confetti = [];
+            const colors = ['#fbbf24', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6', '#10b981', '#ec4899'];
+            const confettiCount = 150;
+            
+            // Create confetti particles
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 10,
+                    tiltAngle: Math.random() * Math.PI,
+                    tiltAngleIncrement: Math.random() * 0.07 + 0.05,
+                    drift: Math.random() * 2 - 1,
+                    velocity: Math.random() * 4 + 3
+                });
+            }
+            
+            let animationFrame;
+            const startTime = Date.now();
+            const duration = 3500; // 3.5 seconds
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                if (elapsed > duration) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    cancelAnimationFrame(animationFrame);
+                    return;
+                }
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Fade out near the end
+                const fadeStart = duration - 500;
+                const alpha = elapsed > fadeStart ? 1 - (elapsed - fadeStart) / 500 : 1;
+                ctx.globalAlpha = alpha;
+                
+                for (const p of confetti) {
+                    p.y += p.velocity;
+                    p.x += p.drift;
+                    p.tiltAngle += p.tiltAngleIncrement;
+                    p.tilt = Math.sin(p.tiltAngle) * 15;
+                    
+                    ctx.beginPath();
+                    ctx.fillStyle = p.color;
+                    ctx.ellipse(
+                        p.x + p.tilt, 
+                        p.y, 
+                        p.r, 
+                        p.r / 2, 
+                        p.tiltAngle, 
+                        0, 
+                        2 * Math.PI
+                    );
+                    ctx.fill();
+                    
+                    // Reset if off screen
+                    if (p.y > canvas.height + 20) {
+                        p.y = -20;
+                        p.x = Math.random() * canvas.width;
+                    }
+                }
+                
+                ctx.globalAlpha = 1;
+                animationFrame = requestAnimationFrame(animate);
+            }
+            
+            animate();
         }
         
         // Close rush complete modal

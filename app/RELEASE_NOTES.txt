@@ -1,3 +1,64 @@
+Game Shelf PWA v1.7.0 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+NEW FEATURES - PHASE 3: RUSH POLISH & STATS (Sessions 5-6)
+----------------------------------------------------------
+
+1. CONFETTI CELEBRATION FOR PERSONAL BESTS:
+   - Beautiful confetti animation triggers on new personal bests
+   - Trophy icon bounces with celebration animation
+   - PB card pulses to highlight achievement
+   - Canvas-based animation with smooth 3.5-second duration
+
+2. RUSH SOUND EFFECTS:
+   - New rush-specific sounds added to SoundManager:
+     • rushStart: Energetic race-start fanfare when rush begins
+     • rushComplete: Quick satisfying ding when recording a game
+     • rushWarning: Tick-tock alert at 3 min and 1 min remaining
+     • rushTimeUp: Dramatic descending tone when rush expires
+     • rushPersonalBest: Triumphant fanfare with sparkle overlay
+   - Sounds play automatically at appropriate moments
+
+3. RUSHES SUBTAB IN STATS:
+   - New "⚡ Rushes" subtab added to Stats screen
+   - Personal Best Records section:
+     • Shows best games completed for 10/20/30 min rushes
+     • 20-min highlighted as primary/recommended duration
+     • Total rushes and completed count
+   - Rush Streak section:
+     • Current streak with motivational status message
+     • Longest streak ever achieved
+     • Today's rush status indicator
+   - Recent Rushes history:
+     • Last 15 completed rushes from Firebase
+     • Shows date, time, duration, and games completed
+     • "Perfect" badge for rushes with all games completed
+
+4. ENHANCED PERSONAL BEST TRACKING:
+   - Warning flags prevent duplicate warning sounds
+   - rush._warned3min and rush._warned1min track sound triggers
+   - Celebration classes added to PB elements
+
+TECHNICAL DETAILS:
+------------------
+- triggerRushConfetti() creates 150 particles with physics
+- Canvas element #rush-confetti-canvas positioned over modal
+- renderRushStatsTab() populates all three sections
+- renderRushHistory() loads from Firebase with pagination
+- New CSS animations: pbPulse, trophyBounce
+- SoundManager.defaults extended with 5 new rush events
+
+CODE LOCATIONS:
+---------------
+- Confetti: triggerRushConfetti() after showRushComplete()
+- Sounds: SoundManager case statements for rush* sounds
+- Stats Tab: renderRushStatsTab(), renderRushHistory()
+- HTML: #stats-tab-rushes, #rush-confetti-canvas
+
+---
+
 Game Shelf PWA v1.6.2 Release Notes
 =====================================
 
