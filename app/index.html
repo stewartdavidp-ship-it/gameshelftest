@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.8.1">
+    <meta name="version" content="1.9.0">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -7079,20 +7079,188 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 12px;
+            padding: 10px 16px;
             background: var(--bg-tertiary);
-            border-radius: 20px;
-            font-size: 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
             color: var(--text-muted);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .rush-mode-badge:hover {
+            background: rgba(102, 126, 234, 0.1);
         }
         
         .rush-mode-badge.active {
             background: rgba(102, 126, 234, 0.15);
             color: var(--accent-purple);
+            border-color: var(--accent-purple);
         }
         
-        .rush-mode-badge.coming-soon {
-            opacity: 0.5;
+        /* Group Rush specific styles */
+        .rush-group-options {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .rush-group-options.visible {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        .rush-group-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .rush-start-time-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .rush-start-time-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+        
+        .rush-friends-select {
+            margin-top: 16px;
+        }
+        
+        .rush-friends-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 8px;
+        }
+        
+        .rush-friend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .rush-friend-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .rush-friend-item.selected {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid var(--accent-purple);
+        }
+        
+        .rush-friend-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            overflow: hidden;
+        }
+        
+        .rush-friend-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .rush-friend-name {
+            flex: 1;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .rush-friend-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: transparent;
+        }
+        
+        .rush-friend-item.selected .rush-friend-check {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+            color: white;
+        }
+        
+        .rush-invite-code-section {
+            margin-top: 16px;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .rush-invite-code {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent-purple);
+            font-family: monospace;
+        }
+        
+        .rush-invite-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+        
+        .rush-invite-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.1s;
+        }
+        
+        .rush-invite-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .rush-invite-btn.copy {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .rush-invite-btn.share {
+            background: linear-gradient(135deg, var(--accent-purple), #764ba2);
+            color: white;
+        }
+        
+        .rush-no-friends {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
         
         .rush-games-list {
@@ -7182,6 +7350,128 @@
         
         .rush-tip-icon {
             font-size: 1.1rem;
+        }
+        
+        /* Join Rush Modal (v1.9.0 Part B) */
+        .join-rush-code-input {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: monospace;
+        }
+        
+        .join-rush-code-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+        
+        .join-rush-code-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.5;
+            letter-spacing: 2px;
+        }
+        
+        .join-rush-code-input.error {
+            border-color: var(--danger);
+            animation: shake 0.3s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .join-rush-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-purple), #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        
+        .join-rush-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .join-rush-btn:not(:disabled):active {
+            transform: scale(0.98);
+        }
+        
+        .join-rush-preview {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            display: none;
+        }
+        
+        .join-rush-preview.visible {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .join-rush-preview-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .join-rush-preview-host {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .join-rush-preview-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        .join-rush-preview-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .join-rush-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            text-align: center;
+            display: none;
+        }
+        
+        .join-rush-error.visible {
+            display: block;
         }
         
         /* Active Rush Modal (v1.6.0 Session 3) */
@@ -7766,6 +8056,303 @@
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
+        }
+        
+        /* Group Rush Results Modal (v1.9.0 Part C) */
+        .group-rush-results-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+        
+        .group-rush-results-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .group-rush-results-content {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .group-rush-results-modal.active .group-rush-results-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .group-rush-results-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 24px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .group-rush-results-header.winner {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .group-rush-results-icon {
+            font-size: 3rem;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        
+        .group-rush-results-icon.winner {
+            animation: trophyBounce 0.8s ease-out;
+        }
+        
+        .group-rush-results-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .group-rush-results-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .group-rush-results-body {
+            padding: 20px;
+        }
+        
+        .group-rush-your-score {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .group-rush-your-score-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .group-rush-your-score-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+        }
+        
+        .group-rush-your-stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 8px;
+        }
+        
+        .group-rush-your-stat {
+            text-align: center;
+        }
+        
+        .group-rush-your-stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .group-rush-your-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .group-rush-leaderboard {
+            margin-bottom: 20px;
+        }
+        
+        .group-rush-leaderboard-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .group-rush-leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .group-rush-leaderboard-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .group-rush-leaderboard-row.you {
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        .group-rush-leaderboard-row.winner {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .group-rush-rank {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        
+        .group-rush-rank.first {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        
+        .group-rush-rank.second {
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            color: white;
+        }
+        
+        .group-rush-rank.third {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: white;
+        }
+        
+        .group-rush-rank.other {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+        
+        .group-rush-participant {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        
+        .group-rush-participant-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .group-rush-participant-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .group-rush-participant-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .group-rush-participant-you {
+            font-size: 0.7rem;
+            color: var(--accent-purple);
+            margin-left: 4px;
+        }
+        
+        .group-rush-score {
+            text-align: right;
+            flex-shrink: 0;
+        }
+        
+        .group-rush-score-value {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .group-rush-score-detail {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .group-rush-status-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+        }
+        
+        .group-rush-status-badge.playing {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .group-rush-status-badge.abandoned {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .group-rush-results-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .group-rush-results-waiting {
+            text-align: center;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .group-rush-results-waiting-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .group-rush-results-waiting-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--accent-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
         }
         
         /* Time's Up Modal */
@@ -10629,7 +11216,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.8.1</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.0</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -10945,7 +11532,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.8.1</div>
+            <div class="settings-version">Game Shelf PWA v1.9.0</div>
         </div>
     </div>
     
@@ -13433,6 +14020,13 @@
                 <div class="challenge-type-arrow">›</div>
             </div>
             
+            <!-- v1.9.0 Part B: Join Rush option -->
+            <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                <button onclick="closeChallengeTypeSelector(); showJoinRush();" style="background: none; border: none; color: var(--accent-purple); font-size: 0.9rem; cursor: pointer; padding: 8px 16px;">
+                    🎮 Have an invite code? <strong>Join a Rush</strong>
+                </button>
+            </div>
+            
             <button class="share-close-btn" style="margin-top: 20px;" onclick="closeChallengeTypeSelector()">Cancel</button>
         </div>
     </div>
@@ -13505,18 +14099,46 @@
                 </div>
             </div>
             
-            <!-- Mode Selection (Solo only for now) -->
+            <!-- Mode Selection -->
             <div class="battle-form-group">
                 <label class="battle-form-label">Mode</label>
                 <div style="display: flex; gap: 10px;">
-                    <div class="rush-mode-badge active">
+                    <div class="rush-mode-badge active" data-mode="solo" onclick="selectRushMode(this)">
                         <span>👤</span>
-                        <span>Solo Challenge</span>
+                        <span>Solo</span>
                     </div>
-                    <div class="rush-mode-badge coming-soon">
+                    <div class="rush-mode-badge" data-mode="group" onclick="selectRushMode(this)">
                         <span>👥</span>
-                        <span>Group (Coming Soon)</span>
+                        <span>Group</span>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Group Rush Options (hidden by default) -->
+            <div class="rush-group-options" id="rush-group-options">
+                <!-- Start Time -->
+                <div class="rush-start-time-section">
+                    <label class="rush-group-label">⏰ Start Time</label>
+                    <input type="datetime-local" 
+                           class="rush-start-time-input" 
+                           id="rush-start-time"
+                           onchange="validateRushStartTime()">
+                    <div id="rush-start-time-error" style="color: var(--danger); font-size: 0.8rem; margin-top: 4px; display: none;"></div>
+                </div>
+                
+                <!-- Friend Selection -->
+                <div class="rush-friends-select">
+                    <label class="rush-group-label">👥 Invite Friends (optional)</label>
+                    <div class="rush-friends-list" id="rush-friends-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Invite Code Preview -->
+                <div class="rush-invite-code-section" id="rush-invite-preview" style="display: none;">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Share this code</div>
+                    <div class="rush-invite-code" id="rush-preview-code">R-XXXXX</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Friends can join with this code</div>
                 </div>
             </div>
             
@@ -13592,6 +14214,142 @@
                 🚀 Start Now!
             </button>
             <button class="share-close-btn" style="margin-top: 10px;" onclick="closeRushConfirm()">Cancel</button>
+        </div>
+    </div>
+    
+    <!-- Group Rush Waiting Room Modal (v1.9.0 Session 7) -->
+    <div class="bottom-sheet-overlay" id="group-rush-waiting-room" onclick="event.stopPropagation()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 90vh; overflow-y: auto;">
+            <div class="bottom-sheet-handle"></div>
+            <div class="bottom-sheet-header">
+                <span>👥 Group Rush</span>
+                <button class="bottom-sheet-close" onclick="closeGroupRushWaitingRoom()">×</button>
+            </div>
+            
+            <!-- Countdown to start -->
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 0.9rem; color: var(--text-muted);">Rush starts in</div>
+                <div id="group-rush-countdown" style="font-size: 2.5rem; font-weight: 800; color: var(--accent-purple); margin: 8px 0;">--:--:--</div>
+                <div id="group-rush-start-time" style="font-size: 0.85rem; color: var(--text-secondary);"></div>
+            </div>
+            
+            <!-- Rush Details Card -->
+            <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Duration</span>
+                    <span id="group-rush-duration" style="color: var(--text-primary); font-weight: 600;">20 min</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Games</span>
+                    <span id="group-rush-games-count" style="color: var(--text-primary); font-weight: 600;">4 games</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Order</span>
+                    <span id="group-rush-order" style="color: var(--text-primary); font-weight: 600;">Any order</span>
+                </div>
+            </div>
+            
+            <!-- Invite Code Section -->
+            <div class="rush-invite-code-section" style="margin-bottom: 16px;">
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Invite Code</div>
+                <div id="group-rush-invite-code" class="rush-invite-code">R-XXXXX</div>
+                <div class="rush-invite-actions">
+                    <button class="rush-invite-btn copy" onclick="copyGroupRushInvite()">📋 Copy</button>
+                    <button class="rush-invite-btn share" onclick="shareGroupRushInvite()">📤 Share</button>
+                </div>
+            </div>
+            
+            <!-- Participants List -->
+            <div style="margin-bottom: 16px;">
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
+                    Participants <span id="group-rush-participant-count" style="color: var(--text-muted);">(1)</span>
+                </div>
+                <div id="group-rush-participants" class="rush-friends-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Games List -->
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Games</div>
+                <div id="group-rush-games-list" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <button id="group-rush-leave-btn" class="share-close-btn" style="background: var(--bg-tertiary); border: 1px solid var(--danger); color: var(--danger);" onclick="leaveGroupRush()">
+                Leave Rush
+            </button>
+            
+            <!-- Status message -->
+            <div id="group-rush-status" style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 12px;">
+                Waiting for more players to join...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Join Rush Modal (v1.9.0 Part B) -->
+    <div class="bottom-sheet-overlay" id="join-rush-sheet" onclick="closeJoinRush()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="bottom-sheet-handle"></div>
+            <div class="bottom-sheet-header">
+                <span>🎮 Join Time Rush</span>
+                <button class="bottom-sheet-close" onclick="closeJoinRush()">×</button>
+            </div>
+            
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px;">
+                Enter the invite code to join a friend's Time Rush challenge.
+            </p>
+            
+            <!-- Code Input -->
+            <input type="text" 
+                   id="join-rush-code-input" 
+                   class="join-rush-code-input" 
+                   placeholder="R-XXXXX" 
+                   maxlength="7"
+                   autocomplete="off"
+                   autocapitalize="characters"
+                   oninput="handleJoinRushCodeInput(this)">
+            
+            <div id="join-rush-error" class="join-rush-error"></div>
+            
+            <!-- Rush Preview (appears after code lookup) -->
+            <div id="join-rush-preview" class="join-rush-preview">
+                <div class="join-rush-preview-header">
+                    <div class="join-rush-preview-host">
+                        <div class="join-rush-preview-avatar" id="join-rush-host-avatar">👤</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.9rem;" id="join-rush-host-name">Host Name</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Host</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Duration</span>
+                    <span id="join-rush-duration" style="color: var(--text-primary); font-weight: 600;">20 min</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Games</span>
+                    <span id="join-rush-games" style="color: var(--text-primary); font-weight: 600;">4 games</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Starts</span>
+                    <span id="join-rush-start-time" style="color: var(--accent-purple); font-weight: 600;">--:--</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Participants</span>
+                    <span id="join-rush-participants" style="color: var(--text-primary); font-weight: 600;">1</span>
+                </div>
+            </div>
+            
+            <button id="join-rush-btn" class="join-rush-btn" onclick="confirmJoinRush()" disabled>
+                Join Rush
+            </button>
+            
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 16px;">
+                💡 Ask your friend for their invite code or use a shared link
+            </p>
         </div>
     </div>
     
@@ -13692,6 +14450,55 @@
                 <div class="rush-complete-actions">
                     <button class="rush-complete-btn secondary" onclick="closeRushComplete()">Done</button>
                     <button class="rush-complete-btn primary" onclick="shareRushResults()">Share Results</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Group Rush Results Modal (v1.9.0 Part C) -->
+    <div class="group-rush-results-modal" id="group-rush-results-modal" onclick="closeGroupRushResults()">
+        <div class="group-rush-results-content" onclick="event.stopPropagation()">
+            <div class="group-rush-results-header" id="group-rush-results-header">
+                <div class="group-rush-results-icon" id="group-rush-results-icon">🏁</div>
+                <div class="group-rush-results-title" id="group-rush-results-title">Rush Complete!</div>
+                <div class="group-rush-results-subtitle" id="group-rush-results-subtitle">20-minute group challenge</div>
+            </div>
+            
+            <div class="group-rush-results-body">
+                <!-- Your Score Summary -->
+                <div class="group-rush-your-score">
+                    <div class="group-rush-your-score-label">Your Score</div>
+                    <div class="group-rush-your-score-value" id="group-rush-your-score">0</div>
+                    <div class="group-rush-your-stats">
+                        <div class="group-rush-your-stat">
+                            <div class="group-rush-your-stat-value" id="group-rush-your-games">0/4</div>
+                            <div class="group-rush-your-stat-label">Games</div>
+                        </div>
+                        <div class="group-rush-your-stat">
+                            <div class="group-rush-your-stat-value" id="group-rush-your-rate">0%</div>
+                            <div class="group-rush-your-stat-label">Success</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Waiting indicator (shown while others still playing) -->
+                <div class="group-rush-results-waiting" id="group-rush-results-waiting" style="display: none;">
+                    <span class="group-rush-results-waiting-spinner"></span>
+                    <span class="group-rush-results-waiting-text">Waiting for others to finish...</span>
+                </div>
+                
+                <!-- Leaderboard -->
+                <div class="group-rush-leaderboard">
+                    <div class="group-rush-leaderboard-title">Leaderboard</div>
+                    <div class="group-rush-leaderboard-list" id="group-rush-leaderboard-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="group-rush-results-actions">
+                    <button class="rush-complete-btn secondary" onclick="closeGroupRushResults()">Done</button>
+                    <button class="rush-complete-btn primary" onclick="shareGroupRushResults()">Share Results</button>
                 </div>
             </div>
         </div>
@@ -19233,6 +20040,9 @@
                 
                 // Check if morning review should show (first login of day)
                 checkMorningReview();
+                
+                // v1.9.0: Check for pending rush code from invite link
+                checkPendingRushCode();
             }
             
             isInitialAuthCheck = false;
@@ -20912,9 +21722,14 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.8.1';
+        const APP_VERSION = '1.9.0';
         
         const RELEASE_NOTES = {
+            '1.9.0': [
+                { icon: '👥', title: 'Group Rush', desc: 'Challenge friends to race together! Create a rush, share the invite code, and compete at the same time.' },
+                { icon: '🔗', title: 'Rush Invites', desc: 'Share invite codes or links to invite friends. Join with a code from the Create menu.' },
+                { icon: '⏰', title: 'Scheduled Start', desc: 'Set a start time up to 7 days ahead. Everyone joins the waiting room and starts together.' }
+            ],
             '1.8.0': [
                 { icon: '📅', title: 'Scheduled Rush', desc: 'Set a daily rush time and get prompted to start your challenge automatically!' },
                 { icon: '⏰', title: 'Flexible Schedule', desc: 'Pick your preferred time, days of the week, duration, and games' },
@@ -23538,6 +24353,10 @@
                 mode: 'solo'
             };
             
+            // v1.9.0: Reset group rush state
+            rushInvitedFriends = [];
+            rushInviteCode = null;
+            
             // Reset duration selection
             document.querySelectorAll('#rush-duration-select .rush-duration-option').forEach(opt => {
                 opt.classList.toggle('selected', opt.dataset.duration === '20');
@@ -23547,6 +24366,12 @@
             document.querySelectorAll('#rush-order-select .rush-order-option').forEach(opt => {
                 opt.classList.toggle('selected', opt.dataset.order === 'any');
             });
+            
+            // v1.9.0: Reset mode selection to Solo
+            document.querySelectorAll('.rush-mode-badge').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.mode === 'solo');
+            });
+            document.getElementById('rush-group-options')?.classList.remove('visible');
             
             // Update UI
             updateRushGamesPreview();
@@ -23627,6 +24452,238 @@
             rushConfig.gameOrder = el.dataset.order;
             updateRushSummary();
         }
+        
+        // ============ SESSION 7: GROUP RUSH FUNCTIONS ============
+        
+        let rushInvitedFriends = [];  // Array of friend UIDs to invite
+        let rushInviteCode = null;    // Generated invite code for this rush
+        
+        // Select rush mode (solo or group)
+        function selectRushMode(el) {
+            document.querySelectorAll('.rush-mode-badge').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            el.classList.add('active');
+            
+            const mode = el.dataset.mode;
+            rushConfig.mode = mode;
+            
+            // Show/hide group options
+            const groupOptions = document.getElementById('rush-group-options');
+            if (mode === 'group') {
+                groupOptions.classList.add('visible');
+                populateRushFriendsList();
+                setDefaultRushStartTime();
+                generateRushInviteCode();
+            } else {
+                groupOptions.classList.remove('visible');
+                rushInvitedFriends = [];
+                rushInviteCode = null;
+            }
+            
+            updateRushSummary();
+            updateStartRushButton();
+        }
+        
+        // Set default start time (15 minutes from now, rounded to nearest 5 min)
+        function setDefaultRushStartTime() {
+            const input = document.getElementById('rush-start-time');
+            if (!input) return;
+            
+            const now = new Date();
+            // Add 15 minutes and round to next 5 minute mark
+            now.setMinutes(Math.ceil((now.getMinutes() + 15) / 5) * 5);
+            now.setSeconds(0);
+            now.setMilliseconds(0);
+            
+            // Format for datetime-local input (YYYY-MM-DDTHH:MM)
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            input.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            
+            // Set min to now (can't schedule in the past)
+            const minNow = new Date();
+            minNow.setMinutes(minNow.getMinutes() + 5); // At least 5 min in future
+            const minYear = minNow.getFullYear();
+            const minMonth = String(minNow.getMonth() + 1).padStart(2, '0');
+            const minDay = String(minNow.getDate()).padStart(2, '0');
+            const minHours = String(minNow.getHours()).padStart(2, '0');
+            const minMinutes = String(minNow.getMinutes()).padStart(2, '0');
+            input.min = `${minYear}-${minMonth}-${minDay}T${minHours}:${minMinutes}`;
+            
+            // Max is 7 days from now
+            const maxDate = new Date();
+            maxDate.setDate(maxDate.getDate() + 7);
+            const maxYear = maxDate.getFullYear();
+            const maxMonth = String(maxDate.getMonth() + 1).padStart(2, '0');
+            const maxDay = String(maxDate.getDate()).padStart(2, '0');
+            input.max = `${maxYear}-${maxMonth}-${maxDay}T23:59`;
+            
+            validateRushStartTime();
+        }
+        
+        // Validate start time is in the future
+        function validateRushStartTime() {
+            const input = document.getElementById('rush-start-time');
+            const errorDiv = document.getElementById('rush-start-time-error');
+            if (!input || !errorDiv) return true;
+            
+            const selectedTime = new Date(input.value);
+            const now = new Date();
+            const minFuture = new Date(now.getTime() + 5 * 60 * 1000); // 5 min from now
+            
+            if (!input.value) {
+                errorDiv.textContent = 'Please select a start time';
+                errorDiv.style.display = 'block';
+                updateStartRushButton();
+                return false;
+            }
+            
+            if (selectedTime < minFuture) {
+                errorDiv.textContent = 'Start time must be at least 5 minutes in the future';
+                errorDiv.style.display = 'block';
+                updateStartRushButton();
+                return false;
+            }
+            
+            const maxFuture = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+            if (selectedTime > maxFuture) {
+                errorDiv.textContent = 'Start time cannot be more than 7 days away';
+                errorDiv.style.display = 'block';
+                updateStartRushButton();
+                return false;
+            }
+            
+            errorDiv.style.display = 'none';
+            updateStartRushButton();
+            return true;
+        }
+        
+        // Generate invite code for group rush
+        function generateRushInviteCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = 'R-';
+            for (let i = 0; i < 5; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            rushInviteCode = code;
+            
+            // Update preview
+            const previewDiv = document.getElementById('rush-invite-preview');
+            const codeEl = document.getElementById('rush-preview-code');
+            if (previewDiv && codeEl) {
+                codeEl.textContent = code;
+                previewDiv.style.display = 'block';
+            }
+            
+            return code;
+        }
+        
+        // Populate friends list for rush invites
+        function populateRushFriendsList() {
+            const listEl = document.getElementById('rush-friends-list');
+            if (!listEl) return;
+            
+            if (!friendsData || friendsData.length === 0) {
+                listEl.innerHTML = `
+                    <div class="rush-no-friends">
+                        <div style="font-size: 1.5rem; margin-bottom: 8px;">👥</div>
+                        <div>No friends yet</div>
+                        <div style="font-size: 0.8rem; margin-top: 4px; color: var(--text-muted);">
+                            Share the invite code to let others join!
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            friendsData.forEach(friend => {
+                const isSelected = rushInvitedFriends.includes(friend.odataId);
+                const displayName = escapeHtml(friend.displayName || 'Player');
+                const photoURL = friend.photoURL || friend.shelfData?.photoURL;
+                
+                html += `
+                    <div class="rush-friend-item ${isSelected ? 'selected' : ''}" 
+                         data-friend-id="${friend.odataId}"
+                         onclick="toggleRushFriendInvite('${friend.odataId}')">
+                        <div class="rush-friend-avatar">
+                            ${photoURL 
+                                ? `<img src="${escapeHtml(photoURL)}" alt="" onerror="this.parentElement.innerHTML='👤'">` 
+                                : '👤'}
+                        </div>
+                        <div class="rush-friend-name">${displayName}</div>
+                        <div class="rush-friend-check">✓</div>
+                    </div>
+                `;
+            });
+            
+            listEl.innerHTML = html;
+        }
+        
+        // Toggle friend invite selection
+        function toggleRushFriendInvite(friendId) {
+            const index = rushInvitedFriends.indexOf(friendId);
+            if (index > -1) {
+                rushInvitedFriends.splice(index, 1);
+            } else {
+                rushInvitedFriends.push(friendId);
+            }
+            
+            // Update UI
+            const item = document.querySelector(`.rush-friend-item[data-friend-id="${friendId}"]`);
+            if (item) {
+                item.classList.toggle('selected', rushInvitedFriends.includes(friendId));
+            }
+            
+            updateRushSummary();
+        }
+        
+        // Copy rush invite code
+        function copyRushInviteCode() {
+            if (!rushInviteCode) return;
+            
+            const inviteText = `Join my Game Shelf Time Rush! 🎮⚡\n\nCode: ${rushInviteCode}\n\nJoin at: ${window.location.origin}/app?rush=${rushInviteCode}`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(inviteText);
+                showToast('Invite code copied!');
+            } else {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = inviteText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('Invite code copied!');
+            }
+        }
+        
+        // Share rush invite
+        function shareRushInvite() {
+            if (!rushInviteCode) return;
+            
+            const shareData = {
+                title: 'Join my Time Rush!',
+                text: `Join my Game Shelf Time Rush! 🎮⚡ Code: ${rushInviteCode}`,
+                url: `${window.location.origin}/app?rush=${rushInviteCode}`
+            };
+            
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => {
+                    copyRushInviteCode();
+                });
+            } else {
+                copyRushInviteCode();
+            }
+        }
+        
+        // ============ END SESSION 7: GROUP RUSH FUNCTIONS ============
         
         function openRushGameSelector() {
             renderRushGameSelector();
@@ -23754,7 +24811,26 @@
         
         function updateStartRushButton() {
             const btn = document.getElementById('start-rush-btn');
-            const canStart = rushSelectedGames.length >= 1;
+            let canStart = rushSelectedGames.length >= 1;
+            
+            // For group mode, also need valid start time
+            if (rushConfig.mode === 'group') {
+                const startTimeInput = document.getElementById('rush-start-time');
+                if (!startTimeInput || !startTimeInput.value) {
+                    canStart = false;
+                } else {
+                    const selectedTime = new Date(startTimeInput.value);
+                    const minFuture = new Date(Date.now() + 5 * 60 * 1000);
+                    if (selectedTime < minFuture) {
+                        canStart = false;
+                    }
+                }
+                
+                // Update button text for group mode
+                btn.innerHTML = '⚡ Create Group Rush';
+            } else {
+                btn.innerHTML = '⚡ Start Challenge';
+            }
             
             if (canStart) {
                 btn.classList.remove('btn-disabled');
@@ -23775,7 +24851,13 @@
                 return;
             }
             
-            // Show confirmation modal
+            // For group mode, go to group creation flow
+            if (rushConfig.mode === 'group') {
+                createGroupRush();
+                return;
+            }
+            
+            // Solo mode - show confirmation modal
             document.getElementById('rush-confirm-duration').textContent = `${rushConfig.durationMinutes}-minute`;
             
             // Build games list for confirmation
@@ -23789,6 +24871,852 @@
             closeCreateRush();
             document.getElementById('rush-confirm-sheet').classList.add('active');
         }
+        
+        // ============ GROUP RUSH CREATION ============
+        
+        async function createGroupRush() {
+            if (!currentUser) {
+                showToast('Sign in to create a group rush', 'error');
+                return;
+            }
+            
+            // Validate start time
+            if (!validateRushStartTime()) {
+                return;
+            }
+            
+            const startTimeInput = document.getElementById('rush-start-time');
+            const startTime = new Date(startTimeInput.value).getTime();
+            
+            // Generate rush ID
+            const rushId = 'grush_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            const now = Date.now();
+            const durationMs = rushConfig.durationMinutes * 60 * 1000;
+            
+            // Create group rush object
+            const groupRush = {
+                id: rushId,
+                type: 'time-rush',
+                mode: 'group',
+                createdBy: currentUser.uid,
+                creatorName: currentUser.displayName || 'Player',
+                createdAt: now,
+                
+                config: {
+                    durationMinutes: rushConfig.durationMinutes,
+                    durationMs: durationMs,
+                    games: [...rushSelectedGames],
+                    gameOrder: rushConfig.gameOrder
+                },
+                
+                // Group-specific fields
+                startTime: startTime,
+                inviteCode: rushInviteCode,
+                status: 'pending',
+                
+                participants: {
+                    [currentUser.uid]: {
+                        odataId: currentUser.uid,
+                        displayName: currentUser.displayName || 'Player',
+                        photoURL: currentUser.photoURL || null,
+                        joinedAt: now,
+                        status: 'pending',
+                        rushStartedAt: null,
+                        rushEndsAt: null,
+                        effectiveEndsAt: null,
+                        completedGames: [],
+                        gamesCompleted: 0,
+                        gamesAttempted: 0,
+                        finalScore: null,
+                        rank: null
+                    }
+                },
+                
+                invitedFriends: rushInvitedFriends.length > 0 ? [...rushInvitedFriends] : null,
+                
+                results: null
+            };
+            
+            try {
+                // Save to Firebase under group rushes path
+                await db.ref(`group-rushes/${rushId}`).set(groupRush);
+                
+                // Also index by invite code for lookup
+                await db.ref(`rush-codes/${rushInviteCode}`).set({
+                    rushId: rushId,
+                    createdAt: now,
+                    startTime: startTime
+                });
+                
+                // Send notifications to invited friends (if any)
+                if (rushInvitedFriends.length > 0) {
+                    // TODO: Implement push notifications in future
+                    console.log('Would notify friends:', rushInvitedFriends);
+                }
+                
+                // Store locally for quick access
+                if (!appData.groupRushes) {
+                    appData.groupRushes = {};
+                }
+                appData.groupRushes[rushId] = groupRush;
+                saveData();
+                
+                closeCreateRush();
+                
+                // Show success and the waiting room
+                showToast(`👥 Group rush created! Code: ${rushInviteCode}`, 'success');
+                
+                // Show waiting room modal
+                showGroupRushWaitingRoom(rushId, groupRush);
+                
+            } catch (error) {
+                console.error('Failed to create group rush:', error);
+                showToast('Error creating group rush', 'error');
+            }
+        }
+        
+        // ============ GROUP RUSH WAITING ROOM ============
+        
+        let currentGroupRushId = null;
+        let groupRushCountdownInterval = null;
+        let groupRushListener = null;
+        
+        function showGroupRushWaitingRoom(rushId, rushData) {
+            currentGroupRushId = rushId;
+            
+            // Populate modal with rush data
+            document.getElementById('group-rush-invite-code').textContent = rushData.inviteCode;
+            document.getElementById('group-rush-duration').textContent = `${rushData.config.durationMinutes} min`;
+            document.getElementById('group-rush-games-count').textContent = `${rushData.config.games.length} games`;
+            document.getElementById('group-rush-order').textContent = rushData.config.gameOrder === 'fixed' ? 'Fixed order' : 'Any order';
+            
+            // Format start time
+            const startDate = new Date(rushData.startTime);
+            document.getElementById('group-rush-start-time').textContent = startDate.toLocaleString([], {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+            
+            // Populate games list
+            const gamesListEl = document.getElementById('group-rush-games-list');
+            gamesListEl.innerHTML = rushData.config.games.map(gameId => {
+                const game = GAMES[gameId];
+                return `<span style="background: var(--bg-secondary); padding: 6px 12px; border-radius: 16px; font-size: 0.85rem;">${game?.icon || '🎮'} ${game?.name || gameId}</span>`;
+            }).join('');
+            
+            // Render participants
+            renderGroupRushParticipants(rushData.participants);
+            
+            // Start countdown timer
+            startGroupRushCountdown(rushData.startTime);
+            
+            // Set up real-time listener for participants
+            setupGroupRushListener(rushId);
+            
+            // Show modal
+            document.getElementById('group-rush-waiting-room').classList.add('active');
+        }
+        
+        function closeGroupRushWaitingRoom() {
+            document.getElementById('group-rush-waiting-room').classList.remove('active');
+            
+            // Clear countdown
+            if (groupRushCountdownInterval) {
+                clearInterval(groupRushCountdownInterval);
+                groupRushCountdownInterval = null;
+            }
+            
+            // Remove participant listener
+            if (groupRushListener && currentGroupRushId) {
+                db.ref(`group-rushes/${currentGroupRushId}/participants`).off('value', groupRushListener);
+                groupRushListener = null;
+            }
+            
+            // v1.9.0 Part B: Remove status listener
+            if (groupRushStatusListener && currentGroupRushId) {
+                db.ref(`group-rushes/${currentGroupRushId}/status`).off('value', groupRushStatusListener);
+                groupRushStatusListener = null;
+            }
+            
+            currentGroupRushId = null;
+        }
+        
+        function renderGroupRushParticipants(participants) {
+            const listEl = document.getElementById('group-rush-participants');
+            const countEl = document.getElementById('group-rush-participant-count');
+            
+            if (!participants) {
+                listEl.innerHTML = '<div class="rush-no-friends">No participants yet</div>';
+                countEl.textContent = '(0)';
+                return;
+            }
+            
+            const participantList = Object.values(participants);
+            countEl.textContent = `(${participantList.length})`;
+            
+            let html = '';
+            participantList.forEach(p => {
+                const isCreator = p.odataId === currentUser?.uid;
+                const displayName = escapeHtml(p.displayName || 'Player');
+                
+                html += `
+                    <div class="rush-friend-item" style="cursor: default;">
+                        <div class="rush-friend-avatar">
+                            ${p.photoURL 
+                                ? `<img src="${escapeHtml(p.photoURL)}" alt="" onerror="this.parentElement.innerHTML='👤'">` 
+                                : '👤'}
+                        </div>
+                        <div class="rush-friend-name">
+                            ${displayName}
+                            ${isCreator ? '<span style="color: var(--accent-purple); font-size: 0.75rem; margin-left: 4px;">👑 Host</span>' : ''}
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">
+                            ${p.status === 'pending' ? '⏳ Waiting' : '✓ Ready'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            listEl.innerHTML = html;
+        }
+        
+        function startGroupRushCountdown(startTime) {
+            // Clear any existing interval
+            if (groupRushCountdownInterval) {
+                clearInterval(groupRushCountdownInterval);
+            }
+            
+            function updateCountdown() {
+                const now = Date.now();
+                const diff = startTime - now;
+                
+                const countdownEl = document.getElementById('group-rush-countdown');
+                const statusEl = document.getElementById('group-rush-status');
+                
+                if (diff <= 0) {
+                    // Time to start!
+                    countdownEl.textContent = 'STARTING!';
+                    countdownEl.style.color = 'var(--success)';
+                    statusEl.textContent = 'Rush is starting now!';
+                    
+                    clearInterval(groupRushCountdownInterval);
+                    groupRushCountdownInterval = null;
+                    
+                    // Auto-start the rush after brief delay
+                    setTimeout(() => {
+                        startGroupRushForParticipant();
+                    }, 1500);
+                    return;
+                }
+                
+                // Format countdown
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                if (hours > 0) {
+                    countdownEl.textContent = `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                } else {
+                    countdownEl.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                }
+                
+                // Update status based on time remaining
+                if (diff < 60000) {
+                    statusEl.textContent = 'Get ready! Starting soon...';
+                    countdownEl.style.color = 'var(--warning)';
+                } else {
+                    statusEl.textContent = 'Waiting for more players to join...';
+                }
+            }
+            
+            // Update immediately and then every second
+            updateCountdown();
+            groupRushCountdownInterval = setInterval(updateCountdown, 1000);
+        }
+        
+        function setupGroupRushListener(rushId) {
+            // Listen for participant changes
+            groupRushListener = db.ref(`group-rushes/${rushId}/participants`).on('value', (snapshot) => {
+                const participants = snapshot.val();
+                if (participants) {
+                    renderGroupRushParticipants(participants);
+                    
+                    // Also update local cache
+                    if (appData.groupRushes && appData.groupRushes[rushId]) {
+                        appData.groupRushes[rushId].participants = participants;
+                    }
+                }
+            });
+            
+            // v1.9.0 Part B: Listen for status changes (active, cancelled)
+            groupRushStatusListener = db.ref(`group-rushes/${rushId}/status`).on('value', (snapshot) => {
+                const status = snapshot.val();
+                console.log('📡 Group rush status changed:', status);
+                
+                if (status === 'active') {
+                    // Rush has started! Close waiting room and begin
+                    beginGroupRushPlay(rushId);
+                } else if (status === 'cancelled') {
+                    // Rush was cancelled
+                    showToast('Rush was cancelled', 'info');
+                    closeGroupRushWaitingRoom();
+                }
+            });
+        }
+        
+        // v1.9.0 Part B: Variable for status listener
+        let groupRushStatusListener = null;
+        
+        // v1.9.0 Part B: Begin playing a group rush after status changes to active
+        async function beginGroupRushPlay(rushId) {
+            if (!currentUser) return;
+            
+            try {
+                // Get latest rush data
+                const snapshot = await db.ref(`group-rushes/${rushId}`).once('value');
+                const rushData = snapshot.val();
+                
+                if (!rushData || rushData.status !== 'active') return;
+                
+                const myData = rushData.participants?.[currentUser.uid];
+                if (!myData) return;
+                
+                console.log('🚀 Beginning group rush play!');
+                
+                // Create local activeRush object matching solo rush structure
+                const activeRush = {
+                    rushId: rushId,
+                    mode: 'group',
+                    durationMinutes: rushData.config.durationMinutes,
+                    durationMs: rushData.config.durationMs,
+                    games: rushData.config.games,
+                    gameOrder: rushData.config.gameOrder,
+                    
+                    startedAt: myData.rushStartedAt,
+                    endsAt: myData.rushEndsAt,
+                    effectiveEndsAt: myData.effectiveEndsAt,
+                    
+                    pausedAt: null,
+                    pauseUsed: false,
+                    totalPauseMs: 0,
+                    
+                    completedGames: [],
+                    currentGameIndex: 0,
+                    
+                    // Group rush specific
+                    groupRushId: rushId,
+                    createdBy: rushData.createdBy,
+                    participantCount: Object.keys(rushData.participants).length
+                };
+                
+                // Store locally
+                appData.activeRush = activeRush;
+                saveData();
+                
+                // Close waiting room
+                closeGroupRushWaitingRoom();
+                
+                // Clean up status listener (we'll re-listen if needed)
+                if (groupRushStatusListener) {
+                    db.ref(`group-rushes/${rushId}/status`).off('value', groupRushStatusListener);
+                    groupRushStatusListener = null;
+                }
+                
+                // Show the active rush modal
+                showToast('Group rush started!', 'success');
+                SoundManager.play('positive');
+                
+                // Render the rush modal  
+                showActiveRush();
+                
+            } catch (error) {
+                console.error('Error beginning group rush:', error);
+                showToast('Error starting rush', 'error');
+            }
+        }
+        
+        async function leaveGroupRush() {
+            if (!currentGroupRushId || !currentUser) return;
+            
+            const rushId = currentGroupRushId;
+            
+            try {
+                // Check if we're the creator
+                const snapshot = await db.ref(`group-rushes/${rushId}`).once('value');
+                const rushData = snapshot.val();
+                
+                if (rushData?.createdBy === currentUser.uid) {
+                    // Creator is leaving - cancel the rush
+                    if (!confirm('You created this rush. Leaving will cancel it for everyone. Are you sure?')) {
+                        return;
+                    }
+                    
+                    // Update status to cancelled
+                    await db.ref(`group-rushes/${rushId}`).update({
+                        status: 'cancelled',
+                        cancelledReason: 'creator-left',
+                        cancelledAt: Date.now()
+                    });
+                    
+                    // Remove invite code mapping
+                    if (rushData.inviteCode) {
+                        await db.ref(`rush-codes/${rushData.inviteCode}`).remove();
+                    }
+                    
+                    showToast('Group rush cancelled');
+                } else {
+                    // Regular participant leaving
+                    await db.ref(`group-rushes/${rushId}/participants/${currentUser.uid}`).remove();
+                    showToast('Left the group rush');
+                }
+                
+                // Remove from local storage
+                if (appData.groupRushes && appData.groupRushes[rushId]) {
+                    delete appData.groupRushes[rushId];
+                    saveData();
+                }
+                
+                closeGroupRushWaitingRoom();
+                
+            } catch (error) {
+                console.error('Error leaving group rush:', error);
+                showToast('Error leaving rush', 'error');
+            }
+        }
+        
+        // Called when countdown reaches zero - handles auto-cancel and status transitions
+        async function startGroupRushForParticipant() {
+            // v1.9.0 Part B: Use proper start logic with auto-cancel
+            await handleGroupRushStartTime();
+        }
+        
+        // Copy/share functions for waiting room
+        function copyGroupRushInvite() {
+            const code = document.getElementById('group-rush-invite-code')?.textContent;
+            if (!code) return;
+            
+            const inviteText = `Join my Game Shelf Time Rush! 🎮⚡\n\nCode: ${code}\n\nJoin at: ${window.location.origin}/app?rush=${code}`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(inviteText);
+                showToast('Invite copied!');
+            }
+        }
+        
+        function shareGroupRushInvite() {
+            const code = document.getElementById('group-rush-invite-code')?.textContent;
+            if (!code) return;
+            
+            const shareData = {
+                title: 'Join my Time Rush!',
+                text: `Join my Game Shelf Time Rush! 🎮⚡ Code: ${code}`,
+                url: `${window.location.origin}/app?rush=${code}`
+            };
+            
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => copyGroupRushInvite());
+            } else {
+                copyGroupRushInvite();
+            }
+        }
+        
+        // ============ END GROUP RUSH WAITING ROOM ============
+        
+        // ============ JOIN GROUP RUSH (v1.9.0 Part B) ============
+        let pendingJoinRushData = null;  // Holds rush data while user confirms join
+        
+        function showJoinRush(prefillCode = null) {
+            const sheet = document.getElementById('join-rush-sheet');
+            const input = document.getElementById('join-rush-code-input');
+            const preview = document.getElementById('join-rush-preview');
+            const error = document.getElementById('join-rush-error');
+            const btn = document.getElementById('join-rush-btn');
+            
+            // Reset state
+            input.value = prefillCode ? prefillCode.toUpperCase() : '';
+            input.classList.remove('error');
+            preview.classList.remove('visible');
+            error.classList.remove('visible');
+            btn.disabled = true;
+            pendingJoinRushData = null;
+            
+            sheet.classList.add('active');
+            
+            // If prefilled, look up the code
+            if (prefillCode) {
+                handleJoinRushCodeInput(input);
+            } else {
+                setTimeout(() => input.focus(), 100);
+            }
+        }
+        
+        function closeJoinRush() {
+            document.getElementById('join-rush-sheet').classList.remove('active');
+            pendingJoinRushData = null;
+        }
+        
+        // Debounce for code lookup
+        let joinRushLookupTimeout = null;
+        
+        function handleJoinRushCodeInput(input) {
+            const code = input.value.toUpperCase().trim();
+            const preview = document.getElementById('join-rush-preview');
+            const error = document.getElementById('join-rush-error');
+            const btn = document.getElementById('join-rush-btn');
+            
+            // Clear previous state
+            input.classList.remove('error');
+            error.classList.remove('visible');
+            preview.classList.remove('visible');
+            btn.disabled = true;
+            pendingJoinRushData = null;
+            
+            // Format the code (auto-add R- prefix if needed)
+            if (code.length > 0 && !code.startsWith('R-') && code.length <= 5) {
+                const formatted = code.length === 5 ? 'R-' + code : code;
+                if (formatted !== code) {
+                    input.value = formatted;
+                    return handleJoinRushCodeInput(input);
+                }
+            }
+            
+            // Need full code (R-XXXXX = 7 chars)
+            if (code.length < 7) return;
+            
+            // Debounce the lookup
+            if (joinRushLookupTimeout) clearTimeout(joinRushLookupTimeout);
+            
+            joinRushLookupTimeout = setTimeout(async () => {
+                await lookupRushCode(code);
+            }, 300);
+        }
+        
+        async function lookupRushCode(code) {
+            const input = document.getElementById('join-rush-code-input');
+            const preview = document.getElementById('join-rush-preview');
+            const error = document.getElementById('join-rush-error');
+            const btn = document.getElementById('join-rush-btn');
+            
+            try {
+                // Look up code in Firebase
+                const codeSnapshot = await db.ref(`rush-codes/${code}`).once('value');
+                const codeData = codeSnapshot.val();
+                
+                if (!codeData || !codeData.rushId) {
+                    showJoinRushError('Invalid code. Check with your friend.');
+                    return;
+                }
+                
+                // Get the full rush data
+                const rushSnapshot = await db.ref(`group-rushes/${codeData.rushId}`).once('value');
+                const rushData = rushSnapshot.val();
+                
+                if (!rushData) {
+                    showJoinRushError('Rush not found. It may have been cancelled.');
+                    return;
+                }
+                
+                // Check status
+                if (rushData.status === 'cancelled') {
+                    showJoinRushError('This rush was cancelled.');
+                    return;
+                }
+                
+                if (rushData.status === 'completed') {
+                    showJoinRushError('This rush has already ended.');
+                    return;
+                }
+                
+                if (rushData.status === 'active') {
+                    showJoinRushError('This rush is already in progress.');
+                    return;
+                }
+                
+                // Check if rush start time has passed
+                if (rushData.startTime && rushData.startTime < Date.now()) {
+                    showJoinRushError('This rush has already started.');
+                    return;
+                }
+                
+                // Check if user is already a participant
+                if (currentUser && rushData.participants && rushData.participants[currentUser.uid]) {
+                    showJoinRushError('You\'re already in this rush!');
+                    // Show the waiting room instead
+                    closeJoinRush();
+                    showGroupRushWaitingRoom(codeData.rushId, rushData);
+                    return;
+                }
+                
+                // Store for confirmation
+                pendingJoinRushData = {
+                    rushId: codeData.rushId,
+                    ...rushData
+                };
+                
+                // Populate preview
+                populateJoinRushPreview(rushData);
+                preview.classList.add('visible');
+                btn.disabled = false;
+                
+            } catch (err) {
+                console.error('Error looking up rush code:', err);
+                showJoinRushError('Error looking up code. Try again.');
+            }
+        }
+        
+        function showJoinRushError(message) {
+            const input = document.getElementById('join-rush-code-input');
+            const error = document.getElementById('join-rush-error');
+            
+            input.classList.add('error');
+            error.textContent = message;
+            error.classList.add('visible');
+        }
+        
+        function populateJoinRushPreview(rushData) {
+            // Host info
+            const hostAvatar = document.getElementById('join-rush-host-avatar');
+            const hostName = document.getElementById('join-rush-host-name');
+            
+            hostName.textContent = rushData.creatorName || 'Unknown';
+            
+            // Check if there's a photoURL in participants for the creator
+            const creatorData = rushData.participants?.[rushData.createdBy];
+            if (creatorData?.photoURL) {
+                hostAvatar.innerHTML = `<img src="${creatorData.photoURL}" alt="">`;
+            } else {
+                hostAvatar.innerHTML = (rushData.creatorName || 'U').charAt(0).toUpperCase();
+            }
+            
+            // Rush details
+            document.getElementById('join-rush-duration').textContent = `${rushData.config?.durationMinutes || 20} min`;
+            document.getElementById('join-rush-games').textContent = `${rushData.config?.games?.length || 0} games`;
+            
+            // Start time
+            const startTime = rushData.startTime;
+            if (startTime) {
+                const startDate = new Date(startTime);
+                const now = new Date();
+                const isToday = startDate.toDateString() === now.toDateString();
+                const timeStr = startDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                
+                if (isToday) {
+                    document.getElementById('join-rush-start-time').textContent = `Today at ${timeStr}`;
+                } else {
+                    const dateStr = startDate.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+                    document.getElementById('join-rush-start-time').textContent = `${dateStr} at ${timeStr}`;
+                }
+            }
+            
+            // Participant count
+            const participantCount = rushData.participants ? Object.keys(rushData.participants).length : 0;
+            document.getElementById('join-rush-participants').textContent = participantCount;
+        }
+        
+        async function confirmJoinRush() {
+            if (!pendingJoinRushData) return;
+            
+            if (!currentUser) {
+                showToast('Sign in to join a rush', 'error');
+                document.getElementById('signin-sheet').classList.add('active');
+                return;
+            }
+            
+            const btn = document.getElementById('join-rush-btn');
+            btn.disabled = true;
+            btn.textContent = 'Joining...';
+            
+            try {
+                const rushId = pendingJoinRushData.rushId;
+                
+                // Add user to participants
+                await db.ref(`group-rushes/${rushId}/participants/${currentUser.uid}`).set({
+                    odataId: currentUser.uid,
+                    displayName: currentUser.displayName || 'Anonymous',
+                    photoURL: currentUser.photoURL || null,
+                    joinedAt: Date.now(),
+                    status: 'pending'
+                });
+                
+                // Store locally
+                if (!appData.groupRushes) appData.groupRushes = {};
+                appData.groupRushes[rushId] = pendingJoinRushData;
+                saveData();
+                
+                showToast('Joined the rush!', 'success');
+                closeJoinRush();
+                
+                // Fetch latest and show waiting room
+                const snapshot = await db.ref(`group-rushes/${rushId}`).once('value');
+                const latestData = snapshot.val();
+                showGroupRushWaitingRoom(rushId, latestData);
+                
+            } catch (error) {
+                console.error('Error joining rush:', error);
+                showToast('Error joining rush', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Join Rush';
+            }
+        }
+        
+        // Check URL params for rush invite code on load
+        function checkRushUrlParam() {
+            const params = new URLSearchParams(window.location.search);
+            const rushCode = params.get('rush');
+            
+            if (rushCode) {
+                console.log('🎮 Rush invite code detected:', rushCode);
+                
+                // Clean the URL to avoid confusion on refresh
+                const cleanUrl = window.location.pathname;
+                window.history.replaceState({}, '', cleanUrl);
+                
+                // Wait for auth to settle, then show join dialog
+                setTimeout(() => {
+                    if (currentUser) {
+                        showJoinRush(rushCode);
+                    } else {
+                        // Store for after sign-in
+                        sessionStorage.setItem('pendingRushCode', rushCode);
+                        showToast('Sign in to join the rush', 'info');
+                        document.getElementById('signin-sheet').classList.add('active');
+                    }
+                }, 500);
+            }
+        }
+        
+        // After sign-in, check for pending rush code
+        function checkPendingRushCode() {
+            const code = sessionStorage.getItem('pendingRushCode');
+            if (code) {
+                sessionStorage.removeItem('pendingRushCode');
+                showJoinRush(code);
+            }
+        }
+        
+        // ============ AUTO-CANCEL & STATUS TRANSITIONS (v1.9.0 Part B) ============
+        
+        // Called when countdown reaches zero in waiting room
+        async function handleGroupRushStartTime() {
+            if (!currentGroupRushId || !currentUser) return;
+            
+            const rushId = currentGroupRushId;
+            
+            try {
+                const snapshot = await db.ref(`group-rushes/${rushId}`).once('value');
+                const rushData = snapshot.val();
+                
+                if (!rushData || rushData.status !== 'pending') {
+                    console.log('Rush no longer pending, status:', rushData?.status);
+                    return;
+                }
+                
+                const participantCount = rushData.participants ? Object.keys(rushData.participants).length : 0;
+                const isCreator = rushData.createdBy === currentUser.uid;
+                
+                // Check for auto-cancel condition: only creator + 5 min grace passed
+                if (participantCount === 1 && isCreator) {
+                    // Start 5-minute grace period
+                    console.log('⏳ Only creator present. Starting 5-minute grace period...');
+                    
+                    // Update status message
+                    const statusEl = document.getElementById('group-rush-status');
+                    if (statusEl) {
+                        statusEl.innerHTML = '⏳ Waiting 5 minutes for others to join...';
+                        statusEl.style.color = 'var(--warning)';
+                    }
+                    
+                    // Check again in 5 minutes
+                    setTimeout(async () => {
+                        await checkAutoCancelGrace(rushId);
+                    }, 5 * 60 * 1000);
+                    
+                    return;
+                }
+                
+                // Multiple participants - transition to active
+                if (participantCount > 1) {
+                    if (isCreator) {
+                        // Creator initiates the status change
+                        await transitionGroupRushToActive(rushId, rushData);
+                    }
+                    // Non-creators will be notified via Firebase listener
+                }
+                
+            } catch (error) {
+                console.error('Error handling rush start time:', error);
+            }
+        }
+        
+        async function checkAutoCancelGrace(rushId) {
+            if (!currentUser) return;
+            
+            try {
+                const snapshot = await db.ref(`group-rushes/${rushId}`).once('value');
+                const rushData = snapshot.val();
+                
+                if (!rushData || rushData.status !== 'pending') {
+                    return; // Already handled
+                }
+                
+                const participantCount = rushData.participants ? Object.keys(rushData.participants).length : 0;
+                const isCreator = rushData.createdBy === currentUser.uid;
+                
+                if (participantCount === 1 && isCreator) {
+                    // Still only creator after grace period - auto-cancel
+                    console.log('⛔ Auto-cancelling rush - no one else joined');
+                    
+                    await db.ref(`group-rushes/${rushId}`).update({
+                        status: 'cancelled',
+                        cancelledReason: 'no-participants',
+                        cancelledAt: Date.now()
+                    });
+                    
+                    // Clean up invite code
+                    if (rushData.inviteCode) {
+                        await db.ref(`rush-codes/${rushData.inviteCode}`).remove();
+                    }
+                    
+                    showToast('Rush cancelled - no one joined', 'info');
+                    closeGroupRushWaitingRoom();
+                    
+                } else if (participantCount > 1 && isCreator) {
+                    // Others joined during grace - start the rush
+                    await transitionGroupRushToActive(rushId, rushData);
+                }
+                
+            } catch (error) {
+                console.error('Error in auto-cancel check:', error);
+            }
+        }
+        
+        async function transitionGroupRushToActive(rushId, rushData) {
+            const now = Date.now();
+            const durationMs = rushData.config?.durationMs || (20 * 60 * 1000);
+            
+            // Update all participants' timing fields
+            const participantUpdates = {};
+            for (const uid of Object.keys(rushData.participants || {})) {
+                participantUpdates[`participants/${uid}/rushStartedAt`] = now;
+                participantUpdates[`participants/${uid}/rushEndsAt`] = now + durationMs;
+                participantUpdates[`participants/${uid}/effectiveEndsAt`] = now + durationMs;
+                participantUpdates[`participants/${uid}/status`] = 'active';
+            }
+            
+            // Update rush status
+            await db.ref(`group-rushes/${rushId}`).update({
+                status: 'active',
+                actualStartTime: now,
+                ...participantUpdates
+            });
+            
+            console.log('🚀 Group rush transitioned to active!');
+        }
+        
+        // ============ END JOIN GROUP RUSH ============
         
         function closeRushConfirm() {
             document.getElementById('rush-confirm-sheet').classList.remove('active');
@@ -24445,19 +26373,31 @@
             if (!confirmed) return;
             
             const rush = appData.activeRush;
+            const isGroupRush = rush.mode === 'group';
             
             // Update Firebase status
             if (currentUser && rush.rushId) {
                 try {
-                    await db.ref(`rushes/${currentUser.uid}/${rush.rushId}`).update({
-                        status: 'abandoned',
-                        'participants': {
-                            [currentUser.uid]: {
-                                ...rush,
-                                status: 'abandoned'
+                    if (isGroupRush) {
+                        // v1.9.0 Part C: Update group rush participant status
+                        const groupRushId = rush.groupRushId || rush.rushId;
+                        await db.ref(`group-rushes/${groupRushId}/participants/${currentUser.uid}`).update({
+                            status: 'abandoned',
+                            abandonedAt: Date.now(),
+                            finalScore: -1  // Ranked last
+                        });
+                        console.log('⚡ Group rush participation abandoned');
+                    } else {
+                        await db.ref(`rushes/${currentUser.uid}/${rush.rushId}`).update({
+                            status: 'abandoned',
+                            'participants': {
+                                [currentUser.uid]: {
+                                    ...rush,
+                                    status: 'abandoned'
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 } catch (err) {
                     console.error('Failed to update abandoned rush:', err);
                 }
@@ -24543,8 +26483,9 @@
             
             const rush = appData.activeRush;
             const now = Date.now();
+            const isGroupRush = rush.mode === 'group';
             
-            console.log(`⚡ Rush completing (trigger: ${trigger})`);
+            console.log(`⚡ Rush completing (trigger: ${trigger}, mode: ${rush.mode})`);
             
             // v1.7.0: Play time's up sound if ended by timer (not early finish)
             if (trigger === 'timer' || trigger === 'expired') {
@@ -24554,36 +26495,61 @@
             // Calculate final stats
             const rushStats = calculateRushStats(rush);
             
-            // Check for personal best
-            const isPersonalBest = checkRushPersonalBest(rush.durationMinutes, rushStats.gamesCompleted);
+            // v1.9.0 Part C: Calculate group rush score
+            const groupScore = isGroupRush ? calculateGroupRushScore(rushStats, rush) : null;
+            
+            // Check for personal best (solo only)
+            const isPersonalBest = !isGroupRush && checkRushPersonalBest(rush.durationMinutes, rushStats.gamesCompleted);
             
             // Update Firebase with completed status
             if (currentUser && rush.rushId) {
                 try {
-                    const rushRef = db.ref(`rushes/${currentUser.uid}/${rush.rushId}`);
-                    await rushRef.update({
-                        status: 'completed',
-                        completedAt: now,
-                        [`participants/${currentUser.uid}/status`]: 'completed',
-                        [`participants/${currentUser.uid}/gamesCompleted`]: rushStats.gamesCompleted,
-                        [`participants/${currentUser.uid}/gamesAttempted`]: rushStats.gamesAttempted,
-                        [`participants/${currentUser.uid}/avgGameTime`]: rushStats.avgGameTime,
-                        [`participants/${currentUser.uid}/completedGames`]: rush.completedGames || []
-                    });
-                    console.log('⚡ Rush marked complete in Firebase');
+                    if (isGroupRush) {
+                        // v1.9.0 Part C: Update group rush participant data
+                        const groupRushRef = db.ref(`group-rushes/${rush.groupRushId || rush.rushId}/participants/${currentUser.uid}`);
+                        await groupRushRef.update({
+                            status: 'completed',
+                            completedAt: now,
+                            gamesCompleted: rushStats.gamesCompleted,
+                            gamesAttempted: rushStats.gamesAttempted,
+                            avgGameTime: rushStats.avgGameTime,
+                            successRate: rushStats.successRate || 0,
+                            finalScore: groupScore,
+                            completedGames: rush.completedGames || []
+                        });
+                        console.log('⚡ Group rush participant marked complete in Firebase');
+                    } else {
+                        // Solo rush - update as before
+                        const rushRef = db.ref(`rushes/${currentUser.uid}/${rush.rushId}`);
+                        await rushRef.update({
+                            status: 'completed',
+                            completedAt: now,
+                            [`participants/${currentUser.uid}/status`]: 'completed',
+                            [`participants/${currentUser.uid}/gamesCompleted`]: rushStats.gamesCompleted,
+                            [`participants/${currentUser.uid}/gamesAttempted`]: rushStats.gamesAttempted,
+                            [`participants/${currentUser.uid}/avgGameTime`]: rushStats.avgGameTime,
+                            [`participants/${currentUser.uid}/completedGames`]: rush.completedGames || []
+                        });
+                        console.log('⚡ Rush marked complete in Firebase');
+                    }
                 } catch (err) {
                     console.error('Failed to update rush completion:', err);
                 }
             }
             
-            // Save rush stats to user profile
+            // Save rush stats to user profile (both solo and group)
             await saveRushStats(rush, rushStats, isPersonalBest);
             
             // Close the active rush modal
             closeActiveRushModal();
             
-            // Show completion modal
-            showRushComplete(rush, rushStats, isPersonalBest);
+            // Show completion modal - different for group vs solo
+            if (isGroupRush) {
+                // v1.9.0 Part C: Show group results
+                showGroupRushResults(rush, rushStats, groupScore);
+            } else {
+                showRushComplete(rush, rushStats, isPersonalBest);
+            }
             
             // Clear local rush state
             appData.activeRush = null;
@@ -24618,7 +26584,9 @@
                 completedGames: completedGames,
                 skippedGames: skippedGames,
                 countedGames: countedGames,
-                missedGames: missedGames
+                missedGames: missedGames,
+                // v1.9.0 Part C: Success rate for group scoring
+                successRate: allGames.length > 0 ? (countedGames.length / allGames.length) : 0
             };
         }
         
@@ -25144,6 +27112,278 @@
             
             closeRushComplete();
         }
+        
+        // ============ GROUP RUSH RESULTS (v1.9.0 Part C) ============
+        
+        let groupRushResultsListener = null;
+        let lastGroupRushResults = null;
+        
+        // Calculate group rush score: (gamesCompleted × 60) + (successRate × 40)
+        function calculateGroupRushScore(stats, rush) {
+            const gamesScore = stats.gamesCompleted * 60;
+            const successRate = stats.successRate || 0; // 0-1
+            const rateScore = Math.round(successRate * 40);
+            return gamesScore + rateScore;
+        }
+        
+        // Show group rush results modal
+        async function showGroupRushResults(rush, stats, myScore) {
+            const modal = document.getElementById('group-rush-results-modal');
+            if (!modal) return;
+            
+            const groupRushId = rush.groupRushId || rush.rushId;
+            
+            // Store for sharing
+            lastGroupRushResults = { rush, stats, myScore };
+            
+            // Set my score summary
+            document.getElementById('group-rush-your-score').textContent = myScore;
+            document.getElementById('group-rush-your-games').textContent = `${stats.gamesCompleted}/${stats.totalGames}`;
+            document.getElementById('group-rush-your-rate').textContent = `${Math.round((stats.successRate || 0) * 100)}%`;
+            
+            // Set subtitle
+            document.getElementById('group-rush-results-subtitle').textContent = 
+                `${rush.durationMinutes}-minute group challenge`;
+            
+            // Show modal immediately
+            modal.classList.add('active');
+            
+            // Initial render of leaderboard
+            await updateGroupRushLeaderboard(groupRushId, myScore);
+            
+            // Listen for other participants completing
+            if (groupRushResultsListener) {
+                db.ref(`group-rushes/${groupRushId}/participants`).off('value', groupRushResultsListener);
+            }
+            
+            groupRushResultsListener = db.ref(`group-rushes/${groupRushId}/participants`).on('value', async (snapshot) => {
+                await updateGroupRushLeaderboard(groupRushId, myScore);
+            });
+            
+            // Play completion sound
+            playSound('complete');
+        }
+        
+        // Update the leaderboard with current participant data
+        async function updateGroupRushLeaderboard(groupRushId, myScore) {
+            try {
+                const snapshot = await db.ref(`group-rushes/${groupRushId}`).once('value');
+                const rushData = snapshot.val();
+                
+                if (!rushData || !rushData.participants) return;
+                
+                const participants = rushData.participants;
+                const now = Date.now();
+                const rushEnded = rushData.actualStartTime && 
+                    (now > rushData.actualStartTime + (rushData.config?.durationMs || 20 * 60 * 1000));
+                
+                // Build leaderboard entries
+                const entries = [];
+                let stillPlaying = 0;
+                
+                for (const [uid, pData] of Object.entries(participants)) {
+                    const isMe = currentUser && uid === currentUser.uid;
+                    const status = pData.status || 'pending';
+                    
+                    if (status === 'active') {
+                        stillPlaying++;
+                    }
+                    
+                    // Calculate score - use their finalScore or calculate from their stats
+                    let score = 0;
+                    if (pData.finalScore !== null && pData.finalScore !== undefined) {
+                        score = pData.finalScore;
+                    } else if (status === 'completed' && pData.gamesCompleted !== undefined) {
+                        const successRate = pData.successRate || 0;
+                        score = (pData.gamesCompleted * 60) + Math.round(successRate * 40);
+                    } else if (status === 'abandoned') {
+                        score = -1; // Will rank last
+                    }
+                    
+                    entries.push({
+                        odataId: uid,
+                        displayName: pData.displayName || 'Unknown',
+                        photoURL: pData.photoURL,
+                        status: status,
+                        score: score,
+                        gamesCompleted: pData.gamesCompleted || 0,
+                        successRate: pData.successRate || 0,
+                        completedAt: pData.completedAt || null,
+                        isMe: isMe
+                    });
+                }
+                
+                // Sort: by score (desc), then by completedAt (asc) for ties
+                entries.sort((a, b) => {
+                    if (a.score !== b.score) return b.score - a.score;
+                    // Tie-breaker: faster completion wins
+                    if (a.completedAt && b.completedAt) return a.completedAt - b.completedAt;
+                    if (a.completedAt) return -1;
+                    if (b.completedAt) return 1;
+                    return 0;
+                });
+                
+                // Show/hide waiting indicator
+                const waitingEl = document.getElementById('group-rush-results-waiting');
+                if (waitingEl) {
+                    if (stillPlaying > 0 && !rushEnded) {
+                        waitingEl.style.display = 'block';
+                        waitingEl.querySelector('.group-rush-results-waiting-text').textContent = 
+                            `Waiting for ${stillPlaying} player${stillPlaying > 1 ? 's' : ''} to finish...`;
+                    } else {
+                        waitingEl.style.display = 'none';
+                    }
+                }
+                
+                // Update header based on my position
+                const myEntry = entries.find(e => e.isMe);
+                const myRank = entries.indexOf(myEntry) + 1;
+                const isWinner = myRank === 1 && entries.length > 1 && stillPlaying === 0;
+                
+                const headerEl = document.getElementById('group-rush-results-header');
+                const iconEl = document.getElementById('group-rush-results-icon');
+                const titleEl = document.getElementById('group-rush-results-title');
+                
+                if (isWinner) {
+                    headerEl.classList.add('winner');
+                    iconEl.textContent = '🏆';
+                    iconEl.classList.add('winner');
+                    titleEl.textContent = 'You Won!';
+                    
+                    // Trigger celebration if not already
+                    if (!headerEl.dataset.celebrated) {
+                        headerEl.dataset.celebrated = 'true';
+                        playSound('rushPersonalBest');
+                        triggerRushConfetti();
+                    }
+                } else if (stillPlaying === 0) {
+                    headerEl.classList.remove('winner');
+                    iconEl.classList.remove('winner');
+                    iconEl.textContent = '🏁';
+                    titleEl.textContent = myRank === 1 ? 'Rush Complete!' : `You finished #${myRank}`;
+                } else {
+                    headerEl.classList.remove('winner');
+                    iconEl.classList.remove('winner');
+                    iconEl.textContent = '🏁';
+                    titleEl.textContent = 'Rush Complete!';
+                }
+                
+                // Render leaderboard
+                renderGroupRushLeaderboard(entries);
+                
+            } catch (error) {
+                console.error('Error updating group rush leaderboard:', error);
+            }
+        }
+        
+        // Render the leaderboard list
+        function renderGroupRushLeaderboard(entries) {
+            const listEl = document.getElementById('group-rush-leaderboard-list');
+            if (!listEl) return;
+            
+            let html = '';
+            
+            entries.forEach((entry, index) => {
+                const rank = index + 1;
+                const rankClass = rank === 1 ? 'first' : rank === 2 ? 'second' : rank === 3 ? 'third' : 'other';
+                const rowClass = entry.isMe ? 'you' : (rank === 1 ? 'winner' : '');
+                
+                // Avatar
+                let avatarHtml;
+                if (entry.photoURL) {
+                    avatarHtml = `<img src="${escapeHtml(entry.photoURL)}" alt="">`;
+                } else {
+                    avatarHtml = (entry.displayName || 'U').charAt(0).toUpperCase();
+                }
+                
+                // Score display
+                let scoreHtml;
+                if (entry.status === 'abandoned') {
+                    scoreHtml = `
+                        <div class="group-rush-status-badge abandoned">Abandoned</div>
+                    `;
+                } else if (entry.status === 'active') {
+                    scoreHtml = `
+                        <div class="group-rush-status-badge playing">Playing...</div>
+                    `;
+                } else {
+                    scoreHtml = `
+                        <div class="group-rush-score-value">${entry.score}</div>
+                        <div class="group-rush-score-detail">${entry.gamesCompleted} games</div>
+                    `;
+                }
+                
+                html += `
+                    <div class="group-rush-leaderboard-row ${rowClass}">
+                        <div class="group-rush-rank ${rankClass}">${rank}</div>
+                        <div class="group-rush-participant">
+                            <div class="group-rush-participant-avatar">${avatarHtml}</div>
+                            <div class="group-rush-participant-name">
+                                ${escapeHtml(entry.displayName)}
+                                ${entry.isMe ? '<span class="group-rush-participant-you">(you)</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="group-rush-score">
+                            ${scoreHtml}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            listEl.innerHTML = html;
+        }
+        
+        // Close group rush results modal
+        function closeGroupRushResults() {
+            const modal = document.getElementById('group-rush-results-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                
+                // Clean up header state
+                const headerEl = document.getElementById('group-rush-results-header');
+                if (headerEl) {
+                    headerEl.classList.remove('winner');
+                    delete headerEl.dataset.celebrated;
+                }
+            }
+            
+            // Stop listening for updates
+            if (groupRushResultsListener && lastGroupRushResults) {
+                const groupRushId = lastGroupRushResults.rush.groupRushId || lastGroupRushResults.rush.rushId;
+                db.ref(`group-rushes/${groupRushId}/participants`).off('value', groupRushResultsListener);
+                groupRushResultsListener = null;
+            }
+            
+            lastGroupRushResults = null;
+        }
+        
+        // Share group rush results
+        function shareGroupRushResults() {
+            if (!lastGroupRushResults) return;
+            
+            const { rush, stats, myScore } = lastGroupRushResults;
+            
+            // Build share text
+            let shareText = `⚡ Game Shelf Group Rush\\n`;
+            shareText += `${rush.durationMinutes}-min challenge\\n\\n`;
+            shareText += `📊 Score: ${myScore}\\n`;
+            shareText += `✅ ${stats.gamesCompleted}/${stats.totalGames} games\\n`;
+            shareText += `🎯 ${Math.round((stats.successRate || 0) * 100)}% success rate\\n`;
+            shareText += `\\nhttps://gameshelf.co/app`;
+            
+            // Try native share first, fall back to clipboard
+            if (navigator.share) {
+                navigator.share({ text: shareText }).catch(() => {
+                    copyToClipboard(shareText);
+                });
+            } else {
+                copyToClipboard(shareText);
+            }
+            
+            closeGroupRushResults();
+        }
+        
+        // ============ END GROUP RUSH RESULTS ============
         
         // Show Time's Up modal for late game recording
         function showTimesUpModal(gameId, result, missedBy) {
@@ -38796,6 +41036,9 @@ Hint levels:
             // v1.6.0: Check for active rush on startup
             checkForActiveRush();
             
+            // v1.9.0: Check for rush invite code in URL (?rush=R-XXXXX)
+            checkRushUrlParam();
+            
             // v1.8.0: Initialize scheduled rush setting and check for prompt
             initScheduledRushSetting();
             updateScheduledRushCard();
@@ -38979,7 +41222,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.2.63 initialized - Test helpers enabled');
+            console.log('🧩 Game Shelf PWA v1.9.0 initialized');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
