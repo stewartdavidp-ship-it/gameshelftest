@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.9.0">
+    <meta name="version" content="1.9.1">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -11216,7 +11216,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.0</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.1</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -11532,7 +11532,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.9.0</div>
+            <div class="settings-version">Game Shelf PWA v1.9.1</div>
         </div>
     </div>
     
@@ -21722,7 +21722,7 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.9.0';
+        const APP_VERSION = '1.9.1';
         
         const RELEASE_NOTES = {
             '1.9.0': [
@@ -24459,7 +24459,7 @@
         let rushInviteCode = null;    // Generated invite code for this rush
         
         // Select rush mode (solo or group)
-        function selectRushMode(el) {
+        async function selectRushMode(el) {
             document.querySelectorAll('.rush-mode-badge').forEach(opt => {
                 opt.classList.remove('active');
             });
@@ -24474,7 +24474,7 @@
                 groupOptions.classList.add('visible');
                 populateRushFriendsList();
                 setDefaultRushStartTime();
-                generateRushInviteCode();
+                await generateRushInviteCode();
             } else {
                 groupOptions.classList.remove('visible');
                 rushInvitedFriends = [];
@@ -24564,12 +24564,35 @@
         }
         
         // Generate invite code for group rush
-        function generateRushInviteCode() {
+        // v1.9.1: Added uniqueness check to prevent collisions
+        async function generateRushInviteCode() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            let code = 'R-';
-            for (let i = 0; i < 5; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            let code = '';
+            let attempts = 0;
+            const maxAttempts = 5;
+            
+            while (attempts < maxAttempts) {
+                code = 'R-';
+                for (let i = 0; i < 5; i++) {
+                    code += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                
+                // Check if code already exists in Firebase
+                try {
+                    const snapshot = await db.ref(`rush-codes/${code}`).once('value');
+                    if (!snapshot.exists()) {
+                        // Code is unique, use it
+                        break;
+                    }
+                    console.log(`⚠️ Rush code ${code} already exists, regenerating...`);
+                    attempts++;
+                } catch (err) {
+                    // If we can't check, just use the code (very low collision probability)
+                    console.warn('Could not verify code uniqueness:', err);
+                    break;
+                }
             }
+            
             rushInviteCode = code;
             
             // Update preview
@@ -25181,6 +25204,13 @@
                 
                 if (!rushData || rushData.status !== 'active') return;
                 
+                // v1.9.1: Add null checks for config
+                if (!rushData.config) {
+                    console.error('Rush data missing config:', rushId);
+                    showToast('Error: Rush data is incomplete', 'error');
+                    return;
+                }
+                
                 const myData = rushData.participants?.[currentUser.uid];
                 if (!myData) return;
                 
@@ -25190,17 +25220,17 @@
                 const activeRush = {
                     rushId: rushId,
                     mode: 'group',
-                    durationMinutes: rushData.config.durationMinutes,
-                    durationMs: rushData.config.durationMs,
-                    games: rushData.config.games,
-                    gameOrder: rushData.config.gameOrder,
+                    durationMinutes: rushData.config.durationMinutes || 20,
+                    durationMs: rushData.config.durationMs || (20 * 60 * 1000),
+                    games: rushData.config.games || [],
+                    gameOrder: rushData.config.gameOrder || 'any',
                     
                     startedAt: myData.rushStartedAt,
                     endsAt: myData.rushEndsAt,
                     effectiveEndsAt: myData.effectiveEndsAt,
                     
                     pausedAt: null,
-                    pauseUsed: false,
+                    pauseUsed: true,  // v1.9.1: Mark as used to disable pause for group rush
                     totalPauseMs: 0,
                     
                     completedGames: [],
@@ -25209,7 +25239,7 @@
                     // Group rush specific
                     groupRushId: rushId,
                     createdBy: rushData.createdBy,
-                    participantCount: Object.keys(rushData.participants).length
+                    participantCount: Object.keys(rushData.participants || {}).length
                 };
                 
                 // Store locally
@@ -25435,9 +25465,11 @@
                     return;
                 }
                 
-                // Check if rush start time has passed
-                if (rushData.startTime && rushData.startTime < Date.now()) {
-                    showJoinRushError('This rush has already started.');
+                // v1.9.1: Allow joining if status is still 'pending' even if start time passed
+                // (this allows joining during the 5-min grace period)
+                // Only block if start time passed AND status is no longer pending
+                if (rushData.status !== 'pending') {
+                    showJoinRushError('This rush is no longer accepting participants.');
                     return;
                 }
                 
@@ -26080,20 +26112,27 @@
             }
             
             // Update pause button state
+            // v1.9.1: Hide pause button for group rush (no way to coordinate pause fairly)
             const pauseBtn = document.getElementById('rush-pause-btn');
             const pauseIcon = document.getElementById('rush-pause-icon');
             const pauseText = document.getElementById('rush-pause-text');
             
             if (pauseBtn) {
-                if (rush.pauseUsed && !rush.pausedAt) {
-                    pauseBtn.disabled = true;
-                    pauseText.textContent = 'Used';
-                } else if (rush.pausedAt) {
-                    pauseIcon.textContent = '▶️';
-                    pauseText.textContent = 'Resume';
+                if (rush.mode === 'group') {
+                    // Hide pause for group rush
+                    pauseBtn.style.display = 'none';
                 } else {
-                    pauseIcon.textContent = '⏸️';
-                    pauseText.textContent = 'Pause';
+                    pauseBtn.style.display = '';
+                    if (rush.pauseUsed && !rush.pausedAt) {
+                        pauseBtn.disabled = true;
+                        pauseText.textContent = 'Used';
+                    } else if (rush.pausedAt) {
+                        pauseIcon.textContent = '▶️';
+                        pauseText.textContent = 'Resume';
+                    } else {
+                        pauseIcon.textContent = '⏸️';
+                        pauseText.textContent = 'Pause';
+                    }
                 }
             }
             
@@ -26506,7 +26545,8 @@
                 try {
                     if (isGroupRush) {
                         // v1.9.0 Part C: Update group rush participant data
-                        const groupRushRef = db.ref(`group-rushes/${rush.groupRushId || rush.rushId}/participants/${currentUser.uid}`);
+                        const groupRushId = rush.groupRushId || rush.rushId;
+                        const groupRushRef = db.ref(`group-rushes/${groupRushId}/participants/${currentUser.uid}`);
                         await groupRushRef.update({
                             status: 'completed',
                             completedAt: now,
@@ -26518,6 +26558,27 @@
                             completedGames: rush.completedGames || []
                         });
                         console.log('⚡ Group rush participant marked complete in Firebase');
+                        
+                        // v1.9.1: Clean up invite code if this is the last participant completing
+                        // Only the creator should clean up, and only after all are done
+                        if (rush.createdBy === currentUser.uid) {
+                            try {
+                                const rushSnapshot = await db.ref(`group-rushes/${groupRushId}`).once('value');
+                                const rushData = rushSnapshot.val();
+                                if (rushData) {
+                                    const participants = rushData.participants || {};
+                                    const allDone = Object.values(participants).every(p => 
+                                        p.status === 'completed' || p.status === 'abandoned'
+                                    );
+                                    if (allDone && rushData.inviteCode) {
+                                        await db.ref(`rush-codes/${rushData.inviteCode}`).remove();
+                                        console.log('⚡ Cleaned up invite code:', rushData.inviteCode);
+                                    }
+                                }
+                            } catch (cleanupErr) {
+                                console.warn('Could not clean up invite code:', cleanupErr);
+                            }
+                        }
                     } else {
                         // Solo rush - update as before
                         const rushRef = db.ref(`rushes/${currentUser.uid}/${rush.rushId}`);
@@ -27237,7 +27298,8 @@
                 
                 // Update header based on my position
                 const myEntry = entries.find(e => e.isMe);
-                const myRank = entries.indexOf(myEntry) + 1;
+                // v1.9.1: Add null check for edge case where user not in participants
+                const myRank = myEntry ? entries.indexOf(myEntry) + 1 : 0;
                 const isWinner = myRank === 1 && entries.length > 1 && stillPlaying === 0;
                 
                 const headerEl = document.getElementById('group-rush-results-header');
@@ -27260,7 +27322,7 @@
                     headerEl.classList.remove('winner');
                     iconEl.classList.remove('winner');
                     iconEl.textContent = '🏁';
-                    titleEl.textContent = myRank === 1 ? 'Rush Complete!' : `You finished #${myRank}`;
+                    titleEl.textContent = myRank >= 1 ? `You finished #${myRank}` : 'Rush Complete!';
                 } else {
                     headerEl.classList.remove('winner');
                     iconEl.classList.remove('winner');
@@ -27364,12 +27426,13 @@
             const { rush, stats, myScore } = lastGroupRushResults;
             
             // Build share text
-            let shareText = `⚡ Game Shelf Group Rush\\n`;
-            shareText += `${rush.durationMinutes}-min challenge\\n\\n`;
-            shareText += `📊 Score: ${myScore}\\n`;
-            shareText += `✅ ${stats.gamesCompleted}/${stats.totalGames} games\\n`;
-            shareText += `🎯 ${Math.round((stats.successRate || 0) * 100)}% success rate\\n`;
-            shareText += `\\nhttps://gameshelf.co/app`;
+            // v1.9.1: Fixed newlines (was using escaped \\n instead of \n)
+            let shareText = `⚡ Game Shelf Group Rush\n`;
+            shareText += `${rush.durationMinutes}-min challenge\n\n`;
+            shareText += `📊 Score: ${myScore}\n`;
+            shareText += `✅ ${stats.gamesCompleted}/${stats.totalGames} games\n`;
+            shareText += `🎯 ${Math.round((stats.successRate || 0) * 100)}% success rate\n`;
+            shareText += `\nhttps://gameshelf.co/app`;
             
             // Try native share first, fall back to clipboard
             if (navigator.share) {
@@ -41222,7 +41285,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.9.0 initialized');
+            console.log('🧩 Game Shelf PWA v1.9.1 initialized');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
