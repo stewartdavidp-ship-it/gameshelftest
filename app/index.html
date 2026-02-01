@@ -21798,6 +21798,7 @@
         const RELEASE_NOTES = {
             '1.9.5': [
                 { icon: '🐛', title: 'Sprint Return Fix', desc: 'Sprint modal now reliably reappears after returning from playing a game on iOS' },
+                { icon: '📋', title: 'Record Result Button', desc: 'Sprint modal shows "Record Result" instead of "Play" when returning from a game you already launched' },
                 { icon: '⚡', title: 'Sprint Recovery Banner', desc: 'Active sprint banner on home screen so you never lose track of a running sprint' }
             ],
             '1.9.4': [
@@ -26307,6 +26308,10 @@
                     completedGames.some(g => g.gameId === gId) || skippedGames.includes(gId)
                 );
                 
+                // v1.9.5: Check if current game was already launched
+                const rowLaunchData = (status === 'current') ? sprint.gameLaunches?.[gameId] : null;
+                const rowWasLaunched = rowLaunchData?.launchedAt && !rowLaunchData?.recordedAt;
+                
                 gamesHtml += `
                     <div class="sprint-game-row ${status} ${isLocked ? 'locked' : ''}">
                         <div class="sprint-game-status ${status}">${statusIcon}</div>
@@ -26320,7 +26325,7 @@
                             ` : isSkipped ? `
                                 <div class="sprint-game-result">Skipped</div>
                             ` : status === 'current' ? `
-                                <div class="sprint-game-result">Next up</div>
+                                <div class="sprint-game-result">${rowWasLaunched ? '📋 Awaiting result' : 'Next up'}</div>
                             ` : ''}
                         </div>
                         ${isCompleted && completedData?.durationSeconds ? `
@@ -26340,9 +26345,25 @@
             if (playBtn && playBtnText) {
                 if (currentGameId) {
                     const currentGame = GAMES[currentGameId];
-                    playBtnText.textContent = `Play ${currentGame?.name || currentGameId}`;
-                    playBtn.disabled = false;
-                    playBtn.onclick = () => playSprintGame(currentGameId);
+                    
+                    // v1.9.5: Check if this game was already launched but not yet recorded
+                    const launchData = sprint.gameLaunches?.[currentGameId];
+                    const wasLaunched = launchData?.launchedAt && !launchData?.recordedAt;
+                    
+                    if (wasLaunched) {
+                        // Game was launched - show Record Result button instead of Play
+                        playBtnText.textContent = `📋 Record ${currentGame?.name || currentGameId} Result`;
+                        playBtn.disabled = false;
+                        playBtn.onclick = () => {
+                            // Minimize sprint modal, then trigger clipboard paste
+                            minimizeActiveSprint();
+                            handleRecordGame();
+                        };
+                    } else {
+                        playBtnText.textContent = `Play ${currentGame?.name || currentGameId}`;
+                        playBtn.disabled = false;
+                        playBtn.onclick = () => playSprintGame(currentGameId);
+                    }
                     if (skipBtn) skipBtn.style.display = 'inline';
                 } else {
                     // All games completed or skipped - show finish button
