@@ -1,3 +1,36 @@
+Game Shelf PWA v1.9.7 Release Notes
+=====================================
+
+Release Date: February 1, 2026
+
+SPRINT FIXES:
+-------------
+
+1. ANY ORDER: SMART LAUNCHED-GAME DETECTION
+   - Sprint modal now tracks which game was actually launched via gameLaunches
+   - When returning from playing a game (e.g. Rungs), the modal correctly
+     shows "Record Rungs Result" instead of defaulting to first pending game
+   - The most recently launched, unrecorded game always becomes the current game
+
+2. ALREADY-PLAYED GAME SPRINT CREDIT
+   - If a game was played earlier today (outside sprint) and then included in
+     a sprint, recording it now properly credits the sprint
+   - Previously showed "Already recorded" toast and dumped user to home screen
+   - New 'sprint-credited' outcome in processShareText handles this gracefully
+   - Sprint modal re-shows after crediting
+
+3. SPRINT GAME SELECTOR: FILTER PLAYED GAMES
+   - Games already played today are dimmed (50% opacity) with "Done ✓" badge
+   - Default sprint games exclude already-played games
+   - Users can still select played games if they want (not blocked, just visual)
+
+FILES MODIFIED:
+--------------
+- index.html: Sprint detection, duplicate handling, game selector filter, v1.9.7
+- sw.js: CACHE_VERSION updated to v1.9.7
+
+---
+
 Game Shelf PWA v1.9.6 Release Notes
 =====================================
 

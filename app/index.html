@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.9.6">
+    <meta name="version" content="1.9.7">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -6593,6 +6593,20 @@
             color: white;
         }
         
+        /* v1.9.7: Already-played-today indicator in sprint game selector */
+        .game-select-item.played-today {
+            opacity: 0.5;
+            position: relative;
+        }
+        
+        .game-select-item.played-today .game-select-played {
+            font-size: 0.65rem;
+            color: #22c55e;
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+        }
+        
         .game-selector-footer {
             padding: 16px 20px;
             border-top: 1px solid var(--border);
@@ -11292,7 +11306,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.6</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.7</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -11608,7 +11622,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.9.6</div>
+            <div class="settings-version">Game Shelf PWA v1.9.7</div>
         </div>
     </div>
     
@@ -21823,9 +21837,14 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.9.6';
+        const APP_VERSION = '1.9.7';
         
         const RELEASE_NOTES = {
+            '1.9.7': [
+                { icon: '🎯', title: 'Any Order: Smart Game Detection', desc: 'Sprint now tracks which game you actually launched — "Record Result" shows the right game when you return' },
+                { icon: '✅', title: 'Already-Played Sprint Credit', desc: 'Games played earlier today now properly credit to your sprint instead of showing "Already recorded"' },
+                { icon: '🚫', title: 'Played Games Filtered', desc: 'Sprint game selector dims already-played games and removes them from defaults' }
+            ],
             '1.9.6': [
                 { icon: '🔄', title: 'Sprint Flow Fix', desc: 'Sprint modal now automatically returns after recording a game — no more getting dropped to the home screen' },
                 { icon: '🔀', title: 'Any Order: Tap to Play', desc: 'In "Any Order" sprints, tap any game in the list to play it. Skipped games can be played later!' },
@@ -24462,8 +24481,9 @@
         const SPRINT_MAX_GAMES = 8;
         
         function showCreateSprint() {
-            // Reset sprint configuration
-            sprintSelectedGames = [...SPRINT_DEFAULT_GAMES];
+            // v1.9.7: Filter out already-played games from defaults
+            const todayHistory = getTodayHistory();
+            sprintSelectedGames = SPRINT_DEFAULT_GAMES.filter(id => !todayHistory[id]);
             sprintConfig = {
                 durationMinutes: 20,
                 gameOrder: 'any',
@@ -24838,6 +24858,9 @@
             const body = document.getElementById('sprint-game-selector-body');
             if (!body) return;
             
+            // v1.9.7: Get today's history to mark already-played games
+            const todayHistory = getTodayHistory();
+            
             let html = '';
             
             for (const [category, gameIds] of Object.entries(BATTLE_GAME_CATEGORIES)) {
@@ -24851,13 +24874,15 @@
                 for (const gameId of validGames) {
                     const game = GAMES[gameId];
                     const isSelected = sprintSelectedGames.includes(gameId);
+                    const isPlayedToday = !!todayHistory[gameId];
                     const orderNum = isSelected ? sprintSelectedGames.indexOf(gameId) + 1 : '';
                     html += `
-                        <div class="game-select-item ${isSelected ? 'selected' : ''}" 
+                        <div class="game-select-item ${isSelected ? 'selected' : ''} ${isPlayedToday ? 'played-today' : ''}" 
                              data-game="${gameId}" 
                              onclick="toggleSprintGame(this, '${gameId}')">
                             <span class="game-select-icon">${game.icon}</span>
                             <span class="game-select-name">${game.name}</span>
+                            ${isPlayedToday ? '<span class="game-select-played">Done ✓</span>' : ''}
                             <span class="game-select-check">${isSelected && sprintConfig.gameOrder === 'fixed' ? orderNum : '✓'}</span>
                         </div>
                     `;
@@ -26324,6 +26349,21 @@
             let currentGameIndex = -1;
             const isAnyOrder = sprint.gameOrder !== 'fixed';
             
+            // v1.9.7: Check if any game was launched but not yet recorded (user just came back)
+            let launchedGameId = null;
+            if (sprint.gameLaunches) {
+                let latestLaunch = 0;
+                for (const [gId, data] of Object.entries(sprint.gameLaunches)) {
+                    if (data.launchedAt && !data.recordedAt && data.launchedAt > latestLaunch) {
+                        // Verify this game is still in the sprint and not completed
+                        if (games.includes(gId) && !completedGames.some(g => g.gameId === gId)) {
+                            latestLaunch = data.launchedAt;
+                            launchedGameId = gId;
+                        }
+                    }
+                }
+            }
+            
             games.forEach((gameId, index) => {
                 const game = GAMES[gameId];
                 const isCompleted = completedGames.some(g => g.gameId === gameId);
@@ -26336,11 +26376,17 @@
                 if (isCompleted) {
                     status = 'completed';
                     statusIcon = '✅';
+                } else if (gameId === launchedGameId) {
+                    // v1.9.7: This game was launched and user came back - it's the current game
+                    status = 'current';
+                    statusIcon = '→';
+                    currentGameId = gameId;
+                    currentGameIndex = index;
                 } else if (isSkipped) {
                     status = 'skipped';
                     statusIcon = '⏭️';
-                } else if (currentGameId === null) {
-                    // First non-completed, non-skipped game is current
+                } else if (currentGameId === null && !launchedGameId) {
+                    // First non-completed, non-skipped game is current (only if no launched game)
                     status = 'current';
                     statusIcon = '→';
                     currentGameId = gameId;
@@ -26355,7 +26401,7 @@
                 // v1.9.6: In Any Order mode, pending and skipped games are tappable
                 const isPlayable = isAnyOrder && !isCompleted && !isLocked;
                 
-                // v1.9.5: Check if current game was already launched
+                // v1.9.7: Check if current game was already launched (works for any game, not just first pending)
                 const rowLaunchData = (status === 'current') ? sprint.gameLaunches?.[gameId] : null;
                 const rowWasLaunched = rowLaunchData?.launchedAt && !rowLaunchData?.recordedAt;
                 
@@ -36010,7 +36056,19 @@ Hint levels:
                 
                 if (existing) {
                     if (existing.score === result.score) {
-                        outcomes.push({ gameId: result.gameId, action: 'skip', reason: 'duplicate' });
+                        // v1.9.7: If in active sprint, still credit the sprint even if already logged today
+                        if (isGameInActiveSprint(result.gameId)) {
+                            const alreadyCredited = (appData.activeSprint.completedGames || []).some(g => g.gameId === result.gameId);
+                            if (!alreadyCredited) {
+                                recordSprintGame(result.gameId, result);
+                                updateSprintModalUI();
+                                outcomes.push({ gameId: result.gameId, action: 'sprint-credited', score: result.score, icon: gameInfo?.icon || '🎮', name: gameInfo?.name || result.gameId });
+                            } else {
+                                outcomes.push({ gameId: result.gameId, action: 'skip', reason: 'duplicate' });
+                            }
+                        } else {
+                            outcomes.push({ gameId: result.gameId, action: 'skip', reason: 'duplicate' });
+                        }
                     } else {
                         outcomes.push({ 
                             gameId: result.gameId, 
@@ -36042,6 +36100,7 @@ Hint levels:
             
             // Show summary
             const logged = outcomes.filter(o => o.action === 'logged');
+            const sprintCredited = outcomes.filter(o => o.action === 'sprint-credited');
             const skipped = outcomes.filter(o => o.action === 'skip');
             
             if (logged.length === 1) {
@@ -36051,6 +36110,17 @@ Hint levels:
             } else if (logged.length > 1) {
                 showToast(`✓ ${logged.length} games logged`, 'success');
                 renderAll();
+            } else if (sprintCredited.length > 0) {
+                // v1.9.7: Game was already logged today but now credited to sprint
+                const g = sprintCredited[0];
+                showToast(`✓ ${g.icon} ${g.name} credited to sprint`, 'success');
+                // Re-show sprint modal after brief delay
+                if (appData.activeSprint) {
+                    setTimeout(() => {
+                        updateSprintModalUI();
+                        document.getElementById('active-sprint-modal').classList.add('active');
+                    }, 800);
+                }
             } else if (skipped.length > 0) {
                 showToast('✓ Already recorded', 'info');
             } else {
@@ -41562,7 +41632,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.9.6 initialized');
+            console.log('🧩 Game Shelf PWA v1.9.7 initialized');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
