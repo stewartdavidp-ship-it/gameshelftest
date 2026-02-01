@@ -1,3 +1,136 @@
+Game Shelf PWA v1.9.2 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+HELP & DOCUMENTATION UPDATE:
+----------------------------
+
+1. FAQ EXPANSION (v2.0 → v2.5)
+   - Added 36 new questions (136 → 172 total)
+   - Added 3 new categories: Time Rush, Scheduled Rush, Group Rush
+   - 14 Time Rush questions covering timer, pause, personal bests, stats
+   - 8 Scheduled Rush questions covering setup, reminders, "Use My Schedule"
+   - 12 Group Rush questions covering creation, invite codes, scoring, results
+
+2. TERMINOLOGY UPDATES
+   - "Record Game" renamed to "Paste Activity" throughout FAQ
+   - Friend adding updated to reflect direct link flow (no more codes)
+   - Navigation FAQ updated to include Rushes subtab in Stats
+
+3. NEW FAQ ENTRIES
+   - "What is the lightbulb icon?" (Daily Insights)
+   - "What is Morning Review?" (personalized greetings)
+
+4. AI HELP IMPROVEMENTS (v2.0 → v3.0)
+   - AI Help now understands all Rush features
+   - New navigation actions: showCreateRush, showJoinRush
+   - Updated examples for Rush-related questions
+   - Stats subtab navigation includes Rushes
+
+FILES MODIFIED:
+--------------
+- index.html: FAQ data expanded (18 categories, 172 questions)
+- Firebase Functions: AI Help system prompt v3.0
+
+---
+
+Game Shelf PWA v1.9.1 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+BUG FIXES & IMPROVEMENTS (Group Rush):
+--------------------------------------
+
+1. INVITE CODE UNIQUENESS (Fix #1)
+   - Invite codes now verified unique before use
+   - Retries up to 5 times if collision detected
+   - Prevents two rushes having same invite code
+
+2. PAUSE DISABLED FOR GROUP RUSH (Fix #9)
+   - Removed pause functionality in group rush mode
+   - No fair way to coordinate pause in competitive mode
+   - Pause button hidden during group rush
+
+3. GRACE PERIOD JOIN FIX (Fix #3)
+   - Users can now join during 5-minute grace period
+   - Previously blocked if start time had passed
+   - Now checks status='pending' instead of time
+
+4. NULL SAFETY (Fix #4 & #5)
+   - Added null checks in beginGroupRushPlay()
+   - Added null check for myEntry in leaderboard
+   - Prevents crashes on corrupted/incomplete data
+
+5. INVITE CODE CLEANUP (Fix #6)
+   - Invite codes now cleaned up when rush completes
+   - Creator cleans up after all participants done
+   - Prevents orphan codes accumulating in Firebase
+
+6. SHARE TEXT FIX (Fix #8)
+   - Fixed newlines in share text (was showing literal \n)
+   - Share results now display correctly formatted
+
+---
+
+Game Shelf PWA v1.9.0 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+NEW FEATURE - GROUP RUSH (Phase 4):
+-----------------------------------
+
+1. GROUP RUSH CREATION (Part A)
+   - New "Group" mode toggle in Create Rush sheet
+   - Start time picker for scheduling group rush
+   - Friend selection with checkboxes
+   - Invite code generation (R-XXXXX pattern)
+   - Share/copy invite buttons
+   - Waiting Room modal with real-time countdown
+   - Real-time participant list updates
+   - Leave/cancel rush functionality
+
+2. JOIN GROUP RUSH (Part B)
+   - "Join Rush" option in battle creation menu
+   - Code input with validation
+   - ?rush=CODE URL parameter handling
+   - Rush preview showing host, duration, games, start time
+   - Auto-join after sign-in if pending code
+   - Auto-cancel if only creator after 5-minute grace period
+   - Transition from pending → active at start time
+
+3. GROUP RUSH GAMEPLAY & RESULTS (Part C)
+   - Group rush plays like solo rush after start
+   - Completion syncs to Firebase with scoring
+   - Scoring formula: (gamesCompleted × 60) + (successRate × 40)
+   - Group Results modal with leaderboard
+   - Real-time leaderboard updates as players finish
+   - Winner celebration with confetti for 1st place
+   - Tie-breaker: faster completion wins
+   - Abandoned players ranked last
+   - Share group rush results
+
+DATA MODEL:
+-----------
+Group rushes stored at: group-rushes/{rushId}
+Invite codes indexed at: rush-codes/{code}
+
+Participant data includes:
+- status: pending | active | completed | abandoned
+- finalScore: calculated score for ranking
+- gamesCompleted, successRate, completedAt
+
+TECHNICAL DETAILS:
+------------------
+- Real-time Firebase listeners for participant updates
+- Leaderboard auto-updates as players complete
+- Grace period handling for late joiners
+- Proper cleanup of listeners on modal close
+
+---
+
 Game Shelf PWA v1.8.0 Release Notes
 =====================================
 

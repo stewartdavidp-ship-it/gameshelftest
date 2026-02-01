@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.9.1">
+    <meta name="version" content="1.9.2">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -11217,7 +11217,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.1</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.2</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -11533,7 +11533,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.9.1</div>
+            <div class="settings-version">Game Shelf PWA v1.9.2</div>
         </div>
     </div>
     
@@ -21723,7 +21723,7 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.9.1';
+        const APP_VERSION = '1.9.2';
         
         const RELEASE_NOTES = {
             '1.9.0': [
@@ -22801,6 +22801,8 @@
                 
                 // Sheets/Modals
                 'showCreateBattle': () => showCreateBattle(),
+                'showCreateRush': () => showCreateBattle(), // Same entry point, user selects Time Rush
+                'showJoinRush': () => { if (typeof showJoinRush === 'function') showJoinRush(); else showCreateBattle(); },
                 'showAccountSheet': () => showAccountSheet(),
                 'showHelpSheet': () => showHelpSheet(),
                 'showWalletSheet': () => showWalletSheet(),
@@ -41286,7 +41288,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.9.1 initialized');
+            console.log('🧩 Game Shelf PWA v1.9.2 initialized');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
@@ -41297,9 +41299,9 @@ Hint levels:
     <!-- FAQ Data -->
     <script id="faq-data" type="application/json">
 {
-  "version": "2.0",
-  "appVersion": "1.3.35",
-  "lastUpdated": "2026-01-29",
+  "version": "2.5",
+  "appVersion": "1.9.2",
+  "lastUpdated": "2026-01-31",
   "categories": [
     {
       "id": "getting-started",
@@ -41316,7 +41318,7 @@ Hint levels:
         {
           "id": "how-to-start",
           "q": "How do I get started?",
-          "a": "Three simple steps:\n\n1. **Add games** to your shelf from the Games tab\n2. **Play your games** normally on their websites\n3. **Record results** by copying share text and tapping Record Game\n\nThat's it! Game Shelf handles the rest.",
+          "a": "Three simple steps:\n\n1. **Add games** to your shelf from the Games tab\n2. **Play your games** normally on their websites\n3. **Record results** by copying share text and tapping Paste Activity\n\nThat's it! Game Shelf handles the rest.",
           "keywords": ["start", "begin", "setup", "first", "new", "quick"]
         },
         {
@@ -41384,8 +41386,8 @@ Hint levels:
         {
           "id": "nav-subtabs",
           "q": "What are subtabs?",
-          "a": "Some tabs have **subtabs** at the top that let you switch between different views:\n\n| Tab | Subtabs |\n|-----|----------|\n| **Games** | 📚 Shelf (your games) · 🔍 Discover (browse all) |\n| **Stats** | 📊 Overview (summary) · 🎮 By Game (detailed) |\n| **Battles** | ⚔️ Battles · 👥 Friends · 📰 Activity |\n| **Share** | 📅 Today · ✏️ Compose · 📜 History |\n\n**Home** has no subtabs—it's a single dashboard view.",
-          "keywords": ["subtabs", "sub tabs", "shelf", "discover", "overview", "by game", "friends", "activity", "today", "compose", "history"]
+          "a": "Some tabs have **subtabs** at the top that let you switch between different views:\n\n| Tab | Subtabs |\n|-----|----------|\n| **Games** | 📚 Shelf (your games) · 🔍 Discover (browse all) |\n| **Stats** | 📊 Overview (summary) · 🎮 By Game (detailed) · ⚡ Rushes (timed challenges) |\n| **Battles** | ⚔️ Battles · 👥 Friends · 📰 Activity |\n| **Share** | 📅 Today · ✏️ Compose · 📜 History |\n\n**Home** has no subtabs—it's a single dashboard view.",
+          "keywords": ["subtabs", "sub tabs", "shelf", "discover", "overview", "by game", "friends", "activity", "today", "compose", "history", "rushes"]
         },
         {
           "id": "nav-menu",
@@ -41432,7 +41434,7 @@ Hint levels:
         {
           "id": "nav-home",
           "q": "How do I get back to the home screen?",
-          "a": "Tap the **🏠 Home tab** in the bottom navigation bar. It's the leftmost tab.\n\nHome shows your dashboard with:\n- Quick game buttons\n- Tap to Log card\n- Daily progress\n- Unrecorded game reminders\n- Record Game button",
+          "a": "Tap the **🏠 Home tab** in the bottom navigation bar. It's the leftmost tab.\n\nHome shows your dashboard with:\n- Quick game buttons\n- Tap to Log card\n- Daily progress\n- Unrecorded game reminders\n- Paste Activity button",
           "keywords": ["home", "back", "main", "dashboard", "return", "start", "beginning"]
         }
       ]
@@ -41446,19 +41448,19 @@ Hint levels:
         {
           "id": "home-overview",
           "q": "What's on the Home screen?",
-          "a": "Home is your **dashboard** showing everything at a glance:\n\n- **Your Games** – Cards for each game on your shelf\n- **Record Game** button – Log results from clipboard\n- **Quick Games** – Emoji shortcuts to launch games fast\n- **Today's Progress** – Progress bar toward your daily goal\n- **Friends Widget** – See which friends played today\n- **Battle Widget** – Shows your active battle (if any)\n\nEverything you need to play and track is one tap away.",
+          "a": "Home is your **dashboard** showing everything at a glance:\n\n- **Your Games** – Cards for each game on your shelf\n- **Paste Activity** button – Log results from clipboard\n- **Quick Games** – Emoji shortcuts to launch games fast\n- **Today's Progress** – Progress bar toward your daily goal\n- **Friends Widget** – See which friends played today\n- **Battle Widget** – Shows your active battle (if any)\n\nEverything you need to play and track is one tap away.",
           "keywords": ["home", "dashboard", "main", "screen", "overview", "what", "shows"]
         },
         {
           "id": "home-record-button",
-          "q": "What does the Record Game button do?",
-          "a": "The big **📋 Record Game** button logs your puzzle results:\n\n**Tap** – Reads your clipboard and logs any game result it finds\n\n**Long-press (hold)** – Opens manual entry where you can select a game and enter your score by hand\n\nAfter playing a game, copy your share text, return to Game Shelf, and tap Record Game. That's it!",
-          "keywords": ["record", "game", "button", "log", "clipboard", "paste", "how", "tap", "hold", "long press", "manual"]
+          "q": "What does the Paste Activity button do?",
+          "a": "The big **📋 Paste Activity** button logs your puzzle results:\n\n**Tap** – Reads your clipboard and logs any game result it finds\n\n**Long-press (hold)** – Opens manual entry where you can select a game and enter your score by hand\n\nAfter playing a game, copy your share text, return to Game Shelf, and tap Paste Activity. That's it!",
+          "keywords": ["record", "game", "button", "log", "clipboard", "paste", "activity", "how", "tap", "hold", "long press", "manual"]
         },
         {
           "id": "home-quick-games",
           "q": "What are the Quick Games emoji buttons?",
-          "a": "The row of **emoji buttons** below Record Game are shortcuts to launch your favorite games instantly.\n\n**How they work:**\n- Each emoji represents a game (🟩 = Wordle, 🟪 = Connections, etc.)\n- Tap an emoji to open that game's website\n- After playing, copy your result and tap Record Game\n\nQuick Games show your most-played games automatically.",
+          "a": "The row of **emoji buttons** below Paste Activity are shortcuts to launch your favorite games instantly.\n\n**How they work:**\n- Each emoji represents a game (🟩 = Wordle, 🟪 = Connections, etc.)\n- Tap an emoji to open that game's website\n- After playing, copy your result and tap Paste Activity\n\nQuick Games show your most-played games automatically.",
           "keywords": ["quick", "games", "emoji", "buttons", "shortcuts", "launch", "play", "icons", "row"]
         },
         {
@@ -41490,6 +41492,18 @@ Hint levels:
           "q": "What can I do with game cards on Home?",
           "a": "Each game card shows the game name, your streak, and today's status.\n\n**Tap** the card to:\n- **Play** – Opens the game\n- **Hint** – Get an AI hint (💡 button)\n- See quick stats\n\n**Long-press** (hold) the card for more options:\n- **Stats** – Detailed history\n- **Share** – Share this game's result\n- **Remove** – Take off your shelf",
           "keywords": ["game", "card", "cards", "tap", "long press", "hold", "options", "play", "hint", "stats", "share", "remove"]
+        },
+        {
+          "id": "home-daily-insight",
+          "q": "What is the lightbulb icon on game cards?",
+          "a": "The **💡 lightbulb** indicates a **Daily Insight** is available for that game.\n\n**What are Daily Insights?**\nAI-powered post-puzzle analysis that breaks down the day's puzzle:\n- Difficulty rating (1-5 🔥)\n- Sneakiness level (Low/Medium/High)\n- Category breakdown with traps and red herrings\n- Verdict: Was it fair?\n\n**How to view:**\n1. Play and log a supported game (currently Connections)\n2. Tap the game card\n3. Tap **\"View Today's Insight\"**\n\n**Community reactions:**\nRate the puzzle: 🎯 Fair / 🙄 BS / 🤯 Brutal — and see how others voted!",
+          "keywords": ["lightbulb", "insight", "daily insight", "analysis", "difficulty", "fair", "brutal", "icon", "connections"]
+        },
+        {
+          "id": "home-morning-review",
+          "q": "What is Morning Review?",
+          "a": "**Morning Review** is a daily preview that shows what puzzles are waiting for you.\n\n**What it includes:**\n- Today's date and greeting\n- **Personalized message** based on your stats (streaks, recent scores, milestones)\n- List of your games with quick-play buttons\n- Spoiler-free — no answers revealed!\n\n**Personalized greetings examples:**\n- \"47-day Wordle streak and counting. Locked in.\"\n- \"Wordle in 2 yesterday? Show-off. Let's see an encore.\"\n- \"Connections hasn't seen you in 12 days. Just saying.\"\n\n**Settings:**\nEnable/disable in Menu → Settings → Morning Review. When enabled, it shows automatically when you open Game Shelf in the morning.",
+          "keywords": ["morning", "review", "daily", "greeting", "personalized", "preview", "streak", "message"]
         }
       ]
     },
@@ -41502,13 +41516,13 @@ Hint levels:
         {
           "id": "how-record",
           "q": "How do I record a game result?",
-          "a": "After finishing a puzzle:\n\n1. Tap the game's **Share button** to copy your result\n2. Return to Game Shelf\n3. Tap **📋 Record Game**\n\nGame Shelf reads your clipboard and logs automatically. You'll see a preview of what was detected before confirming.\n\n**Tip:** On iPhone, you'll need to tap **Allow** when asked to paste.",
+          "a": "After finishing a puzzle:\n\n1. Tap the game's **Share button** to copy your result\n2. Return to Game Shelf\n3. Tap **📋 Paste Activity**\n\nGame Shelf reads your clipboard and logs automatically. You'll see a preview of what was detected before confirming.\n\n**Tip:** On iPhone, you'll need to tap **Allow** when asked to paste.",
           "keywords": ["record", "log", "save", "add", "paste", "clipboard", "how", "result"]
         },
         {
           "id": "manual-entry",
           "q": "How do I manually enter a game result?",
-          "a": "If clipboard recording doesn't work, use manual entry:\n\n1. **Long-press** (hold) the Record Game button, OR\n2. Tap Record Game → tap **✏️ Manual** tab\n\nYou'll see buttons for each game on your shelf. Tap a game, then select your score (e.g., \"Solved in 3\" or \"Failed\").",
+          "a": "If clipboard recording doesn't work, use manual entry:\n\n1. **Long-press** (hold) the Paste Activity button, OR\n2. Tap Paste Activity → tap **✏️ Manual** tab\n\nYou'll see buttons for each game on your shelf. Tap a game, then select your score (e.g., \"Solved in 3\" or \"Failed\").",
           "keywords": ["manual", "enter", "type", "hold", "long press", "doesnt work", "by hand", "without paste"]
         },
         {
@@ -41538,7 +41552,7 @@ Hint levels:
         {
           "id": "clipboard-detection",
           "q": "How does clipboard detection work?",
-          "a": "When you return to Game Shelf after playing a puzzle:\n\n1. Game Shelf checks if your clipboard contains a game result\n2. If found, it shows a **Tap to Log** card or auto-fills the Record Game sheet\n3. Tap to confirm and log\n\n**On Android/Desktop:** This happens automatically in the background.\n\n**On iPhone/iPad:** iOS requires you to tap something first (for privacy), then asks permission to read clipboard.",
+          "a": "When you return to Game Shelf after playing a puzzle:\n\n1. Game Shelf checks if your clipboard contains a game result\n2. If found, it shows a **Tap to Log** card or auto-fills the Paste Activity sheet\n3. Tap to confirm and log\n\n**On Android/Desktop:** This happens automatically in the background.\n\n**On iPhone/iPad:** iOS requires you to tap something first (for privacy), then asks permission to read clipboard.",
           "keywords": ["clipboard", "detection", "automatic", "detect", "how", "works", "read", "paste"]
         },
         {
@@ -41698,10 +41712,238 @@ Hint levels:
       ]
     },
     {
+      "id": "time-rush",
+      "name": "Time Rush",
+      "icon": "⚡",
+      "order": 7,
+      "questions": [
+        {
+          "id": "what-time-rush",
+          "q": "What is Time Rush?",
+          "a": "Time Rush is a **timed challenge mode** where you race against the clock to complete puzzles.\n\n**How it works:**\n- Choose a duration (10, 20, or 30 minutes)\n- Select up to 8 games\n- Start the timer and play!\n- Complete as many games as possible before time runs out\n\n**Why try it:**\n- Adds excitement to your daily routine\n- Track personal bests for each duration\n- Build a rush streak for consecutive days\n- Challenge yourself to improve!",
+          "keywords": ["time rush", "rush", "timed", "challenge", "timer", "what", "clock", "race", "speed"]
+        },
+        {
+          "id": "start-rush",
+          "q": "How do I start a Time Rush?",
+          "a": "1. Go to **Battles tab**\n2. Tap **\"⚔️ Create\"**\n3. Select **\"⚡ Time Rush\"** (not Multi-Day Battle)\n4. Choose your settings:\n   - **Duration:** 10, 20, or 30 minutes\n   - **Games:** Select 1-8 games\n   - **Order:** Fixed sequence or Any order\n5. Tap **\"Start Rush\"**\n\nThe timer begins immediately! A modal shows your games and countdown.",
+          "keywords": ["start", "begin", "create", "new", "how", "setup", "launch"]
+        },
+        {
+          "id": "rush-durations",
+          "q": "What rush durations are available?",
+          "a": "Three duration options:\n\n| Duration | Best for |\n|----------|----------|\n| **10 min** | Quick challenge, 2-4 games |\n| **20 min** | Balanced challenge (recommended) |\n| **30 min** | Extended session, 5-8 games |\n\n**20 minutes is highlighted as the primary duration** for personal best tracking. It's long enough to play several games but short enough to stay focused.\n\nPersonal bests are tracked separately for each duration.",
+          "keywords": ["duration", "time", "minutes", "10", "20", "30", "how long", "length", "options"]
+        },
+        {
+          "id": "rush-timer",
+          "q": "How does the rush timer work?",
+          "a": "**During your rush:**\n- A countdown shows remaining time (mm:ss format)\n- Timer continues even if you switch apps or background Game Shelf\n- At **3 minutes left:** Timer turns yellow ⚠️\n- At **1 minute left:** Timer turns red 🔴\n- Warning sounds play at 3-min and 1-min marks\n\n**Minimize option:**\n- Tap the minimize button to shrink the modal to a floating timer badge\n- Tap the badge to restore the full modal\n- The timer keeps running either way",
+          "keywords": ["timer", "countdown", "clock", "remaining", "warning", "yellow", "red", "minimize", "badge"]
+        },
+        {
+          "id": "rush-pause",
+          "q": "Can I pause during a rush?",
+          "a": "**Yes, but only once!**\n\n**Pause rules:**\n- You get **one pause** per rush\n- Maximum pause duration: **5 minutes**\n- Pause extends your deadline by the actual pause time\n- If you stay paused for 5 minutes, it auto-resumes\n\n**To pause:**\n1. In the active rush modal, tap **\"⏸️ Pause\"**\n2. The timer freezes\n3. Tap **\"▶️ Resume\"** when ready\n\nOnce used, the pause button disappears—no second chances!\n\n**Note:** Pause is disabled in Group Rush mode (no fair way to coordinate).",
+          "keywords": ["pause", "stop", "break", "resume", "once", "limit", "freeze", "timeout"]
+        },
+        {
+          "id": "rush-time-up",
+          "q": "What happens when time runs out?",
+          "a": "**When the timer hits zero:**\n- A sound plays (if sounds enabled)\n- The Rush Complete modal appears showing your results\n- Any game you were playing can still be recorded within a **30-second grace period**\n\n**If you return after time expired:**\n- A \"Time's Up\" modal appears\n- It shows how long ago the rush ended\n- You can choose:\n  - **\"Record Anyway\"** – saves the game to history but doesn't count toward rush score\n  - **\"Discard\"** – throws away the late result\n\nGames recorded after time don't count toward your rush total.",
+          "keywords": ["time up", "expires", "expired", "ends", "over", "finished", "deadline", "late", "grace"]
+        },
+        {
+          "id": "rush-recording",
+          "q": "How do I record games during a rush?",
+          "a": "Recording works the same as normal, but from the rush modal:\n\n1. Tap **\"Play [Game]\"** to launch the current game\n2. Play the puzzle on its website\n3. Copy your share text when done\n4. Return to Game Shelf\n5. The rush modal appears with your clipboard detected\n6. Tap to record—the game gets a ✅ and moves to the next\n\n**Automatic features:**\n- Rush modal reappears automatically after recording\n- Your completion time is tracked\n- Progress bar updates in real-time",
+          "keywords": ["record", "log", "save", "during", "playing", "clipboard", "how", "complete"]
+        },
+        {
+          "id": "rush-personal-best",
+          "q": "What are personal bests?",
+          "a": "Personal bests track your **best rush performance** for each duration.\n\n**How it works:**\n- Game Shelf tracks the most games you've completed in 10/20/30 min rushes\n- When you beat your record, you get a **🏆 Personal Best!** celebration\n- Confetti animation plays\n- Trophy icon bounces\n- The new record is saved\n\n**Example:**\nIf your best 20-min rush was 5 games and you complete 6, that's a new PB!\n\n**View your records:** Stats tab → ⚡ Rushes subtab → Personal Best Records section",
+          "keywords": ["personal best", "pb", "record", "best", "trophy", "confetti", "celebration", "beat"]
+        },
+        {
+          "id": "rush-history",
+          "q": "Where can I see my rush history?",
+          "a": "**To view past rushes:**\n1. Go to **Stats tab** (bottom bar)\n2. Tap the **⚡ Rushes** subtab\n3. Scroll to **Recent Rushes** section\n\n**Each entry shows:**\n- Date and time\n- Duration (10/20/30 min)\n- Games completed\n- \"Perfect\" badge if you finished all selected games\n\nThe last 15 completed rushes are displayed. Abandoned rushes are tracked but shown separately.",
+          "keywords": ["history", "past", "previous", "recent", "view", "see", "completed", "list"]
+        },
+        {
+          "id": "rush-stats",
+          "q": "Where are rush stats shown?",
+          "a": "All rush statistics are in **Stats tab → ⚡ Rushes subtab**:\n\n**Personal Best Records:**\n- Best games completed for 10/20/30 min\n- Total rushes attempted\n- Total rushes completed\n\n**Rush Streak:**\n- Current streak (consecutive days with a completed rush)\n- Longest streak ever\n- Today's rush status\n\n**Recent Rushes:**\n- History of your last 15 rushes\n- Date, duration, and results for each\n\nRush stats sync to the cloud and are available on all your devices.",
+          "keywords": ["stats", "statistics", "subtab", "where", "find", "view", "streak", "totals"]
+        },
+        {
+          "id": "rush-skip",
+          "q": "Can I skip a game during a rush?",
+          "a": "**Yes!** If you're stuck or want to move on:\n\n1. In the active rush modal, find the current game\n2. Tap **\"Skip this game →\"** below it\n3. The game is marked as ⏭️ skipped\n4. You move to the next game immediately\n\n**Skipped games:**\n- Don't count toward your completed total\n- Can't be un-skipped later\n- Show as ⏭️ in your results\n\n**When to skip:**\n- You're stuck and wasting time\n- You accidentally selected a game you don't know\n- Time is running low and you want to try easier games",
+          "keywords": ["skip", "pass", "next", "stuck", "move on", "skipped"]
+        },
+        {
+          "id": "rush-finish-early",
+          "q": "What if I finish all games early?",
+          "a": "**Great job!** If you complete all selected games before time runs out:\n\n1. A **\"Finish Rush\"** button appears\n2. Tap it to end the rush early\n3. Confirm your choice\n4. Rush Complete modal shows your results\n\n**Your stats reflect:**\n- All games completed (100% success!)\n- Actual time taken (not full duration)\n- Potential personal best\n\nFinishing early is the goal—it means you crushed it! 🎉",
+          "keywords": ["finish", "early", "done", "complete", "all games", "before time", "end"]
+        },
+        {
+          "id": "rush-abandon",
+          "q": "Can I abandon a rush?",
+          "a": "**Yes, but it affects your stats.**\n\n**To abandon:**\n1. In the active rush modal, tap **\"✕ Abandon Rush\"**\n2. Confirm your choice\n\n**What happens:**\n- Rush status is set to 'abandoned'\n- No games count toward stats\n- Rush streak may be affected\n- The rush appears in your history as abandoned\n\n**When you might abandon:**\n- Something urgent came up\n- You selected wrong games\n- You want to start fresh\n\n**Better option:** Just let time run out if possible—partial completion is better than abandonment!",
+          "keywords": ["abandon", "quit", "cancel", "stop", "give up", "exit"]
+        },
+        {
+          "id": "rush-game-order",
+          "q": "What does \"Fixed\" vs \"Any\" game order mean?",
+          "a": "When creating a rush, you choose how games are played:\n\n| Order | How it works |\n|-------|-------------|\n| **Fixed** | Must play games in the exact order shown |\n| **Any** | Play games in whatever order you want |\n\n**Fixed order:**\n- Good for a structured challenge\n- Forces you through harder games\n- Can't skip ahead to easy ones\n\n**Any order:**\n- More flexibility\n- Tackle your strongest games first\n- Save difficult ones for if you have time\n\n**Tip:** \"Any\" order is usually easier since you control the flow.",
+          "keywords": ["order", "fixed", "any", "sequence", "flexible", "choose", "arrangement"]
+        }
+      ]
+    },
+    {
+      "id": "scheduled-rush",
+      "name": "Scheduled Rush",
+      "icon": "📅",
+      "order": 8,
+      "questions": [
+        {
+          "id": "what-scheduled-rush",
+          "q": "What is Scheduled Rush?",
+          "a": "Scheduled Rush is a **daily reminder system** that prompts you to start a Time Rush at your preferred time.\n\n**How it works:**\n- Set a time (e.g., 7:00 AM)\n- Choose which days of the week\n- Configure your rush settings (duration, games)\n- Game Shelf prompts you automatically!\n\n**Why use it:**\n- Build a consistent rush habit\n- Never forget your daily challenge\n- One-tap start with your saved settings",
+          "keywords": ["scheduled", "schedule", "daily", "reminder", "automatic", "routine", "habit", "what"]
+        },
+        {
+          "id": "setup-schedule",
+          "q": "How do I set up a daily rush schedule?",
+          "a": "1. Tap **Menu** (☰)\n2. Scroll to **Settings**\n3. Find **📅 Scheduled Rush**\n4. Tap **Configure Schedule**\n5. Set your preferences:\n   - **Time:** When to be reminded\n   - **Duration:** 10, 20, or 30 minutes\n   - **Days:** Which days of the week\n   - **Games:** Select 1-8 games\n   - **Order:** Fixed or Any\n6. Toggle **Enable Scheduled Rush** on\n\nYour schedule syncs across all your devices.",
+          "keywords": ["setup", "set up", "configure", "create", "how", "settings", "enable"]
+        },
+        {
+          "id": "schedule-time-options",
+          "q": "What time options are available?",
+          "a": "You can set **any time of day** for your scheduled rush.\n\n**How it works:**\n- Use the time picker to choose your preferred time\n- Time is stored in 24-hour format but displayed in 12-hour\n- The reminder appears within a **±30 minute window** of your set time\n\n**Examples:**\n- Set 7:00 AM → Prompt appears between 6:30-7:30 AM\n- Set 12:00 PM → Prompt appears between 11:30 AM-12:30 PM\n\nThis window flexibility ensures you see the prompt even if you open the app slightly before or after your exact time.",
+          "keywords": ["time", "when", "options", "picker", "window", "flexible", "morning", "evening"]
+        },
+        {
+          "id": "schedule-days",
+          "q": "Which days can I schedule?",
+          "a": "You can select **any combination of days**:\n\n- Sunday through Saturday\n- Tap each day button to toggle on/off\n- Select all 7 for daily reminders\n- Or choose specific days (e.g., weekdays only)\n\n**Common setups:**\n| Pattern | Days |\n|---------|------|\n| **Daily** | All 7 days |\n| **Weekdays** | Mon-Fri |\n| **Weekends** | Sat-Sun |\n| **Custom** | Any mix you want |",
+          "keywords": ["days", "week", "weekday", "weekend", "daily", "which", "select", "monday", "sunday"]
+        },
+        {
+          "id": "schedule-reminder",
+          "q": "How does the reminder work?",
+          "a": "When you open Game Shelf within your scheduled time window:\n\n1. A **prompt modal** appears with a purple header\n2. It shows your configured games as chips\n3. You have three options:\n   - **\"Start Rush\"** – Begin immediately with your saved settings\n   - **\"Not Now\"** – Dismiss until tomorrow\n   - **\"Edit Schedule\"** – Adjust your settings\n\n**Important notes:**\n- The prompt only appears **once per day**\n- If you dismiss it, you won't see it again that day\n- A sound plays when the prompt appears (if sounds enabled)\n- You must **open Game Shelf** to see the reminder—it's not a push notification",
+          "keywords": ["reminder", "prompt", "notification", "alert", "how", "works", "modal", "appear"]
+        },
+        {
+          "id": "use-my-schedule",
+          "q": "What is \"Use My Schedule\"?",
+          "a": "**\"Use My Schedule\"** is a shortcut button in the Create Rush screen.\n\n**Where to find it:**\n1. Go to Battles tab\n2. Tap Create\n3. Select Time Rush\n4. Look for **\"Use My Schedule\"** button\n\n**What it does:**\n- Instantly loads your saved schedule settings\n- Pre-fills duration, games, and order\n- One more tap and you're playing!\n\n**When it appears:**\n- Only shows if you have a schedule configured with games\n- Saves you from re-selecting games every time",
+          "keywords": ["use my schedule", "shortcut", "quick", "button", "preset", "saved", "load"]
+        },
+        {
+          "id": "change-schedule",
+          "q": "How do I change or disable my schedule?",
+          "a": "**To modify your schedule:**\n1. Menu → Settings → Scheduled Rush\n2. Tap **Configure Schedule**\n3. Change any settings\n4. Changes save automatically\n\n**To disable temporarily:**\n- Toggle **Scheduled Rush** off in Settings\n- Your settings are preserved for later\n\n**To disable permanently:**\n- Toggle off and optionally clear your game selections\n\nSchedule changes sync across all your devices.",
+          "keywords": ["change", "modify", "edit", "disable", "turn off", "stop", "cancel", "update"]
+        },
+        {
+          "id": "missed-schedule",
+          "q": "What if I miss my scheduled time?",
+          "a": "**If you open Game Shelf outside your time window:**\n- No prompt appears\n- You can still start a rush manually\n- Use **\"Use My Schedule\"** to quickly load your saved settings\n\n**If you dismiss the prompt:**\n- It won't appear again that day\n- Tomorrow you'll get prompted again (if enabled)\n\n**If you don't open Game Shelf at all:**\n- Nothing happens—the prompt only shows when you open the app\n- Game Shelf doesn't send push notifications for schedules\n\n**Pro tip:** Set a phone alarm as a backup reminder to open Game Shelf!",
+          "keywords": ["miss", "missed", "late", "forgot", "outside", "window", "skip", "tomorrow"]
+        }
+      ]
+    },
+    {
+      "id": "group-rush",
+      "name": "Group Rush",
+      "icon": "👥",
+      "order": 9,
+      "questions": [
+        {
+          "id": "what-group-rush",
+          "q": "What is Group Rush?",
+          "a": "Group Rush is a **multiplayer Time Rush** where you compete against friends in real-time.\n\n**How it works:**\n- One person creates a Group Rush and sets a start time\n- Friends join using an invite code\n- Everyone starts at the same time\n- Race to complete puzzles before time runs out\n- Scores are compared on a live leaderboard\n\n**Key differences from Solo Rush:**\n- Scheduled start time (not immediate)\n- Compete against real people\n- Live leaderboard updates\n- No pause allowed (to keep it fair)",
+          "keywords": ["group rush", "multiplayer", "compete", "friends", "together", "versus", "what"]
+        },
+        {
+          "id": "create-group-rush",
+          "q": "How do I create a Group Rush?",
+          "a": "1. Go to **Battles tab**\n2. Tap **\"⚔️ Create\"**\n3. Select **\"⚡ Time Rush\"**\n4. Toggle **\"Group\"** mode (instead of Solo)\n5. Configure your rush:\n   - **Start time:** 5 minutes to 7 days in the future\n   - **Duration:** 10, 20, or 30 minutes\n   - **Games:** Select 1-8 games\n   - **Order:** Fixed or Any\n6. Optionally select friends to invite\n7. Tap **\"Create Group Rush\"**\n\nYou'll get an **invite code** (like R-ABCDE) to share with others.",
+          "keywords": ["create", "start", "make", "host", "new", "group", "how"]
+        },
+        {
+          "id": "invite-codes",
+          "q": "What are invite codes?",
+          "a": "Invite codes are **5-character codes** (like R-ABCDE) used to join Group Rushes.\n\n**How they work:**\n- Automatically generated when you create a Group Rush\n- Share the code with friends via text, social media, etc.\n- Friends enter the code to join your rush\n- Codes also work as links: `gameshelf.co/app?rush=R-ABCDE`\n\n**Important:**\n- Each code is unique to one rush\n- Codes expire when the rush completes\n- Anyone with the code can join (if rush hasn't started)",
+          "keywords": ["invite", "code", "share", "link", "R-", "join code", "how"]
+        },
+        {
+          "id": "invite-friends",
+          "q": "How do I invite friends to my rush?",
+          "a": "**Two ways to invite:**\n\n**1. During creation:**\n- Your friends list appears with checkboxes\n- Check the friends you want to invite\n- They'll receive a notification (if in-app)\n\n**2. Share the invite code:**\n- After creating, you'll see your invite code\n- Tap **\"Share\"** to send via any app\n- Or tap **\"Copy\"** to copy the code/link\n- Send to friends however you like!\n\n**The invite link format:**\n`gameshelf.co/app?rush=R-XXXXX`\n\nFriends tap the link → Game Shelf opens → Join flow begins automatically.",
+          "keywords": ["invite", "friends", "share", "send", "notify", "how"]
+        },
+        {
+          "id": "join-group-rush",
+          "q": "How do I join someone else's Group Rush?",
+          "a": "**Method 1: Tap an invite link**\n- Friend sends you a link like `gameshelf.co/app?rush=R-ABCDE`\n- Tap it → Game Shelf opens → Join preview appears\n- Review the details and tap **\"Join Rush\"**\n\n**Method 2: Enter code manually**\n1. Go to **Battles tab**\n2. Tap **\"⚔️ Create\"**\n3. Tap **\"Join Rush\"** (or look for join option)\n4. Enter the invite code (e.g., R-ABCDE)\n5. Review the rush details\n6. Tap **\"Join Rush\"**\n\n**After joining:**\nYou'll enter the **Waiting Room** until the rush starts.",
+          "keywords": ["join", "enter", "code", "link", "participate", "how"]
+        },
+        {
+          "id": "waiting-room",
+          "q": "What is the Waiting Room?",
+          "a": "The Waiting Room is where participants gather **before** a Group Rush starts.\n\n**What you'll see:**\n- **Countdown timer** to start time\n- **Participant list** (updates in real-time as people join)\n- **Rush details** (duration, games, host)\n- **Invite code** (to share with more friends)\n\n**What you can do:**\n- **Leave** – Exit before it starts (tap \"Leave Rush\")\n- **Share** – Invite more friends\n- **Wait** – The rush auto-starts when countdown hits zero\n\n**Creator options:**\n- **Cancel Rush** – Cancels for everyone",
+          "keywords": ["waiting", "room", "lobby", "before", "countdown", "participants"]
+        },
+        {
+          "id": "group-rush-start",
+          "q": "When does a Group Rush start?",
+          "a": "Group Rushes start at the **exact scheduled time** set by the creator.\n\n**What happens at start time:**\n- Countdown hits zero\n- All participants automatically transition to \"active\"\n- The rush modal appears for everyone\n- Timer begins!\n\n**Grace period:**\n- There's a **5-minute grace period** after the start time\n- Late joiners can still join during this window\n- If only the creator is present after 5 minutes, the rush auto-cancels\n\n**Important:** You must have Game Shelf open to start. If you're not in the app, you'll miss the start!",
+          "keywords": ["start", "when", "begin", "time", "countdown", "automatic"]
+        },
+        {
+          "id": "group-rush-scoring",
+          "q": "How does Group Rush scoring work?",
+          "a": "**Scoring formula:**\n```\nScore = (Games Completed × 60) + (Success Rate × 40)\n```\n\n**Breakdown:**\n- **Games Completed:** Each game finished = 60 points\n- **Success Rate:** Percentage of selected games completed × 40\n\n**Example:**\n- 4 of 5 games completed = (4 × 60) + (80% × 40) = 240 + 32 = **272 points**\n\n**Tie-breaker:**\nIf scores are equal, **faster completion time wins**.\n\n**Abandoned players:**\nIf you abandon or don't finish, you're ranked last.",
+          "keywords": ["score", "scoring", "points", "calculate", "formula", "how", "ranking"]
+        },
+        {
+          "id": "group-rush-late",
+          "q": "What happens if someone doesn't finish?",
+          "a": "**If time runs out:**\n- Your score is calculated based on games completed\n- You're ranked on the leaderboard with your partial score\n- You can still see the final results\n\n**If you abandon:**\n- Your status changes to \"abandoned\"\n- You're ranked **last** on the leaderboard\n- Other players see you dropped out\n\n**If you never start:**\n- If you joined but weren't in the app at start time\n- You're marked as \"abandoned\" after the grace period\n- Ranked last with zero points",
+          "keywords": ["late", "abandon", "quit", "didn't finish", "timeout", "incomplete"]
+        },
+        {
+          "id": "group-rush-pause",
+          "q": "Can I pause during a Group Rush?",
+          "a": "**No.** Pause is **disabled** in Group Rush mode.\n\n**Why?**\n- There's no fair way to coordinate pauses in a competitive race\n- It would give unfair advantages\n- Everyone needs to play under the same conditions\n\n**What to do instead:**\n- Plan ahead—make sure you have uninterrupted time\n- If something urgent comes up, you may need to abandon\n- Your partial progress still counts toward your score\n\n**Note:** Solo rushes still allow one pause.",
+          "keywords": ["pause", "stop", "break", "disabled", "no", "why", "can't"]
+        },
+        {
+          "id": "group-rush-results",
+          "q": "How do I see Group Rush results?",
+          "a": "**When the rush ends:**\nA **Group Results modal** appears showing:\n\n- **Leaderboard** with all participants ranked\n- **Your position** highlighted\n- **Scores** for each player\n- **Winner celebration** (confetti for 1st place!)\n\n**Leaderboard updates in real-time:**\n- As each player finishes, their score appears\n- You can watch others complete while waiting\n- Final rankings lock when everyone finishes or time expires\n\n**After results:**\n- Tap **\"Share Results\"** to brag about your finish\n- Results are saved to your rush history",
+          "keywords": ["results", "leaderboard", "winner", "ranking", "standings", "see", "view"]
+        },
+        {
+          "id": "group-rush-grace",
+          "q": "What is the grace period?",
+          "a": "The grace period is a **5-minute window** after the scheduled start time.\n\n**Two purposes:**\n\n**1. Late joiners:**\n- Friends can still join during the first 5 minutes\n- Helpful if someone is running slightly late\n- They'll start with less time but can still participate\n\n**2. Auto-cancel protection:**\n- If only the creator is present after 5 minutes, the rush cancels\n- Prevents empty rushes from running\n- Everyone is notified if this happens\n\n**After grace period:**\n- No more joining allowed\n- Rush continues normally for active participants",
+          "keywords": ["grace", "period", "5 minutes", "late", "join", "cancel", "auto"]
+        }
+      ]
+    },
+    {
       "id": "hints",
       "name": "AI Hints",
       "icon": "💡",
-      "order": 7,
+      "order": 10,
       "questions": [
         {
           "id": "what-hints",
@@ -41769,7 +42011,7 @@ Hint levels:
       "id": "ai-help",
       "name": "AI Help",
       "icon": "🤖",
-      "order": 8,
+      "order": 11,
       "questions": [
         {
           "id": "what-ai-help",
@@ -41819,7 +42061,7 @@ Hint levels:
       "id": "battles",
       "name": "Battles",
       "icon": "⚔️",
-      "order": 9,
+      "order": 12,
       "questions": [
         {
           "id": "what-battles",
@@ -41893,19 +42135,19 @@ Hint levels:
       "id": "friends",
       "name": "Friends & Social",
       "icon": "👥",
-      "order": 10,
+      "order": 13,
       "questions": [
         {
           "id": "add-friends",
           "q": "How do I add friends?",
-          "a": "**Three ways:**\n\n| Method | How |\n|--------|-----|\n| **Share your link** | Battles → Friends → Invite Friends → Copy link |\n| **Enter their code** | Battles → Friends → + Add Friend → Enter code |\n| **Accept an invite** | Tap a friend's invite link → Sign in |\n\n**After adding:**\n- See each other's daily activity\n- Challenge each other to battles\n- Send friendly nudges\n- Compare on leaderboards",
-          "keywords": ["add", "friend", "connect", "invite", "how"]
+          "a": "**The easiest way - share your link:**\n\n1. Go to **Battles tab → 👥 Friends**\n2. Tap **Invite Friends**\n3. Tap **Share Link** or **Copy Link**\n4. Send to your friend via text, email, etc.\n5. When they tap the link, you're instantly connected!\n\n**After adding:**\n- See each other's daily activity\n- Challenge each other to battles\n- Send friendly nudges\n- Compare on leaderboards\n\n**Note:** Both people need Game Shelf accounts to connect.",
+          "keywords": ["add", "friend", "connect", "invite", "how", "link"]
         },
         {
           "id": "friend-code",
-          "q": "What's my friend code and where do I find it?",
-          "a": "Your friend code is a **unique identifier** others can use to add you.\n\n**To find it:**\n1. Go to **Battles tab → 👥 Friends**\n2. Tap **Invite Friends**\n3. Your code displays there (also in your invite link)\n\n**Share it** via text, email, or social media. When someone enters your code, you're automatically connected.",
-          "keywords": ["code", "my code", "friend code", "share", "find", "where"]
+          "q": "How do friend links work?",
+          "a": "Friend links are the **easiest way to connect** with others.\n\n**To get your link:**\n1. Go to **Battles tab → 👥 Friends**\n2. Tap **Invite Friends**\n3. Your personal link is shown (like `gameshelf.co/app?friend=abc123`)\n\n**How it works:**\n- Share the link with anyone\n- When they tap it, Game Shelf opens\n- If signed in, you're instantly connected\n- If not signed in, they sign in first, then connected\n\n**No codes to type!** The link does all the work.",
+          "keywords": ["code", "my code", "friend code", "share", "find", "where", "link", "how"]
         },
         {
           "id": "friends-see",
@@ -41949,7 +42191,7 @@ Hint levels:
       "id": "share-tab",
       "name": "Share Tab",
       "icon": "📤",
-      "order": 11,
+      "order": 14,
       "questions": [
         {
           "id": "what-share-tab",
@@ -41999,7 +42241,7 @@ Hint levels:
       "id": "economy",
       "name": "Tokens & Coins",
       "icon": "💰",
-      "order": 12,
+      "order": 15,
       "questions": [
         {
           "id": "tokens-vs-coins",
@@ -42067,7 +42309,7 @@ Hint levels:
       "id": "account",
       "name": "Account & Sync",
       "icon": "☁️",
-      "order": 13,
+      "order": 16,
       "questions": [
         {
           "id": "why-sign-in",
@@ -42123,12 +42365,12 @@ Hint levels:
       "id": "troubleshooting",
       "name": "Troubleshooting",
       "icon": "🔧",
-      "order": 14,
+      "order": 17,
       "questions": [
         {
           "id": "game-not-recognized",
           "q": "Why isn't my game result being recognized?",
-          "a": "**Common causes:**\n\n| Problem | Solution |\n|---------|----------|\n| Game not supported | Check if it's in Games → Discover |\n| Modified share text | Use original format only |\n| Extra text added | Remove emojis/words you added |\n| Clipboard empty | Copy the share text again |\n\n**Fix:** Go back to game, tap Share, return to Game Shelf immediately, tap Record Game.",
+          "a": "**Common causes:**\n\n| Problem | Solution |\n|---------|----------|\n| Game not supported | Check if it's in Games → Discover |\n| Modified share text | Use original format only |\n| Extra text added | Remove emojis/words you added |\n| Clipboard empty | Copy the share text again |\n\n**Fix:** Go back to game, tap Share, return to Game Shelf immediately, tap Paste Activity.",
           "keywords": ["not recognized", "cant record", "wont work", "error", "detect"]
         },
         {
@@ -42203,7 +42445,7 @@ Hint levels:
       "id": "privacy",
       "name": "Privacy & Data",
       "icon": "🔒",
-      "order": 15,
+      "order": 18,
       "questions": [
         {
           "id": "what-data-collected",
