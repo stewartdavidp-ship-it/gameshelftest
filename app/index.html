@@ -10064,12 +10064,11 @@
         .tutorial-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: transparent;
             z-index: 2000;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
-            isolation: isolate; /* Required for mix-blend-mode cutout */
         }
         
         .tutorial-overlay.active {
@@ -10077,64 +10076,50 @@
             pointer-events: auto;
         }
         
-        /* Spotlight creates a "hole" by being transparent and using mix-blend-mode */
         .tutorial-spotlight {
             position: absolute;
             border-radius: 12px;
-            background: white;
-            mix-blend-mode: destination-out;
-            transition: all 0.4s ease;
-            pointer-events: none;
-            z-index: 1;
-        }
-        
-        /* Visual highlight ring (separate from the cutout, positioned fixed to viewport) */
-        .tutorial-spotlight-ring {
-            position: fixed;
-            border-radius: 12px;
             background: transparent;
-            border: 3px solid var(--accent-purple);
-            box-shadow: 0 0 30px 8px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85);
             transition: all 0.4s ease;
             pointer-events: none;
-            z-index: 2002;
-        }
-        
-        .tutorial-spotlight-ring.pulse {
-            animation: tutorialRingPulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes tutorialRingPulse {
-            0%, 100% {
-                box-shadow: 0 0 30px 8px rgba(102, 126, 234, 0.5);
-                border-color: var(--accent-purple);
-            }
-            50% {
-                box-shadow: 0 0 50px 15px rgba(102, 126, 234, 0.7);
-                border-color: #8b9cf4;
-            }
+            /* Strong visible border */
+            border: 3px solid var(--accent-purple);
+            /* Outer glow */
+            box-shadow: 
+                0 0 0 9999px rgba(0, 0, 0, 0.85),
+                0 0 30px 8px rgba(102, 126, 234, 0.5);
         }
         
         /* Class applied to the actual element being highlighted */
-        /* Must use transform to create new stacking context that escapes parent */
         .tutorial-highlighted {
-            position: relative !important;
+            position: relative;
             z-index: 2001 !important;
-            transform: translateZ(0) !important; /* Forces GPU layer, escapes stacking context */
-            isolation: isolate !important; /* Creates new stacking context */
-            filter: brightness(1.3) !important;
-            box-shadow: 
-                0 0 0 4px var(--accent-purple),
-                0 0 30px 10px rgba(102, 126, 234, 0.6),
-                0 4px 20px rgba(0, 0, 0, 0.4) !important;
+            filter: brightness(1.4) !important;
+            box-shadow: 0 0 20px 5px rgba(102, 126, 234, 0.4) !important;
+            background: rgba(102, 126, 234, 0.25) !important;
             border-radius: 12px !important;
-            outline: none !important;
         }
         
-        /* Class added to body during tutorial to allow elements to escape stacking */
-        body.tutorial-active .main-content,
-        body.tutorial-active .screen.active {
-            overflow: visible !important;
+        .tutorial-spotlight.pulse {
+            animation: tutorialPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes tutorialPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 0 9999px rgba(0, 0, 0, 0.85),
+                    inset 0 0 20px 5px rgba(102, 126, 234, 0.25),
+                    0 0 30px 8px rgba(102, 126, 234, 0.5); 
+                border-color: var(--accent-purple);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 0 9999px rgba(0, 0, 0, 0.85),
+                    inset 0 0 30px 10px rgba(102, 126, 234, 0.35),
+                    0 0 50px 15px rgba(102, 126, 234, 0.7); 
+                border-color: #8b9cf4;
+            }
         }
         
         .tutorial-card {
@@ -11594,10 +11579,8 @@
             </div>
         </div>
         
-        <!-- Tutorial Spotlight (creates transparent cutout) -->
-        <div class="tutorial-spotlight" id="tutorial-spotlight" style="display: none;"></div>
-        <!-- Tutorial Spotlight Ring (visual highlight border) -->
-        <div class="tutorial-spotlight-ring pulse" id="tutorial-spotlight-ring" style="display: none;"></div>
+        <!-- Tutorial Spotlight (moves around) -->
+        <div class="tutorial-spotlight pulse" id="tutorial-spotlight" style="display: none;"></div>
         
         <!-- Tutorial Card (positioned dynamically) -->
         <div class="tutorial-card" id="tutorial-card" style="display: none;">
@@ -21744,8 +21727,7 @@
         
         const RELEASE_NOTES = {
             '1.9.3': [
-                { icon: '🎯', title: 'Tutorial Spotlight Fix', desc: 'Fixed tutorial highlighting - target elements now properly visible during the walkthrough' },
-                { icon: '📊', title: 'Tutorial Updated', desc: 'Added Stats tab and Time Rush steps to the tutorial (14 steps total)' }
+                { icon: '📊', title: 'Tutorial Updated', desc: 'Added Stats tab and Time Rush steps to the tutorial walkthrough (14 steps total)' }
             ],
             '1.9.0': [
                 { icon: '👥', title: 'Group Rush', desc: 'Challenge friends to race together! Create a rush, share the invite code, and compete at the same time.' },
@@ -40887,9 +40869,6 @@ Hint levels:
             const card = document.getElementById('tutorial-card');
             const spotlight = document.getElementById('tutorial-spotlight');
             
-            // Add class to body to enable overflow escape for highlighted elements
-            document.body.classList.add('tutorial-active');
-            
             // Show overlay and welcome screen, hide spotlight and card
             overlay.classList.add('active');
             welcome.style.display = 'block';
@@ -40903,9 +40882,6 @@ Hint levels:
         function skipTutorial() {
             const overlay = document.getElementById('tutorial-overlay');
             overlay.classList.remove('active');
-            
-            // Remove tutorial-active class from body
-            document.body.classList.remove('tutorial-active');
             
             // Remove highlight from any highlighted element
             document.querySelectorAll('.tutorial-highlighted').forEach(el => {
@@ -40922,12 +40898,10 @@ Hint levels:
             const welcome = document.getElementById('tutorial-welcome');
             const card = document.getElementById('tutorial-card');
             const spotlight = document.getElementById('tutorial-spotlight');
-            const ring = document.getElementById('tutorial-spotlight-ring');
             
-            // Hide welcome, show spotlight, ring, and card
+            // Hide welcome, show spotlight and card
             welcome.style.display = 'none';
             spotlight.style.display = 'block';
-            ring.style.display = 'block';
             card.style.display = 'block';
             
             // Initialize spotlight to center of screen as fallback
@@ -40936,13 +40910,6 @@ Hint levels:
             spotlight.style.width = '100px';
             spotlight.style.height = '100px';
             spotlight.style.transform = 'translate(-50%, -50%)';
-            
-            // Same for ring
-            ring.style.left = '50%';
-            ring.style.top = '50%';
-            ring.style.width = '100px';
-            ring.style.height = '100px';
-            ring.style.transform = 'translate(-50%, -50%)';
             
             tutorialCurrentStep = 0;
             showTutorialStep(0);
@@ -40969,7 +40936,6 @@ Hint levels:
         
         function positionTutorialElements(step, stepIndex) {
             const spotlight = document.getElementById('tutorial-spotlight');
-            const ring = document.getElementById('tutorial-spotlight-ring');
             const card = document.getElementById('tutorial-card');
             const arrow = document.getElementById('tutorial-arrow');
             const title = document.getElementById('tutorial-title');
@@ -41007,19 +40973,12 @@ Hint levels:
                 offsetY = bodyRect.top;
             }
             
-            // Position spotlight cutout (adjusted for desktop offset)
+            // Position spotlight (adjusted for desktop offset)
             spotlight.style.transform = 'none'; // Clear any initial centering
             spotlight.style.left = (rect.left - padding - offsetX) + 'px';
             spotlight.style.top = (rect.top - padding - offsetY) + 'px';
             spotlight.style.width = (rect.width + padding * 2) + 'px';
             spotlight.style.height = (rect.height + padding * 2) + 'px';
-            
-            // Position ring (same as spotlight but uses viewport coordinates for fixed positioning)
-            ring.style.transform = 'none';
-            ring.style.left = (rect.left - padding) + 'px';
-            ring.style.top = (rect.top - padding) + 'px';
-            ring.style.width = (rect.width + padding * 2) + 'px';
-            ring.style.height = (rect.height + padding * 2) + 'px';
             
             // Build step indicators
             let indicatorHtml = '';
@@ -41108,9 +41067,6 @@ Hint levels:
         function finishTutorial() {
             const overlay = document.getElementById('tutorial-overlay');
             overlay.classList.remove('active');
-            
-            // Remove tutorial-active class from body
-            document.body.classList.remove('tutorial-active');
             
             // Remove highlight from any highlighted element
             document.querySelectorAll('.tutorial-highlighted').forEach(el => {

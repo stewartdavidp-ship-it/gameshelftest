@@ -3,30 +3,21 @@ Game Shelf PWA v1.9.3 Release Notes
 
 Release Date: January 31, 2026
 
-TUTORIAL SPOTLIGHT FIX:
------------------------
+TUTORIAL CONTENT UPDATES:
+-------------------------
 
-1. SPOTLIGHT VISIBILITY FIX
-   - Fixed tutorial highlight not showing target elements
-   - Replaced box-shadow cutout technique with mix-blend-mode approach
-   - Added separate spotlight ring element for visual highlight border
-   - Target elements now properly visible above the dark overlay
-
-2. TUTORIAL CONTENT UPDATES
-   - Added Stats tab step (step 7)
-   - Added Time Rush step (step 8) highlighting Rushes subtab
+1. NEW TUTORIAL STEPS
+   - Added Stats tab step (step 7) - explains game statistics and trends
+   - Added Time Rush step (step 8) - highlights the Rushes subtab
    - Now 14 steps total (was 12)
    - Updated time estimate to "90 seconds" (was "1 minute")
 
-3. TECHNICAL CHANGES
-   - Tutorial overlay now uses background + mix-blend-mode: destination-out
-   - New .tutorial-spotlight-ring element with fixed positioning
-   - Added body.tutorial-active class for overflow management
-   - Improved CSS for highlighted elements with transform/isolation
+2. VERSION ALIGNMENT
+   - Fixed all version labels to consistently show 1.9.3
 
 FILES MODIFIED:
 --------------
-- index.html: Tutorial CSS and JS updated, TUTORIAL_STEPS expanded, v1.9.3
+- index.html: TUTORIAL_STEPS expanded with Stats/Rush steps, version labels fixed
 - sw.js: CACHE_VERSION updated to v1.9.3
 
 ---
