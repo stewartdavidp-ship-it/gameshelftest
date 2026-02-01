@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.9.5">
+    <meta name="version" content="1.9.6">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -11267,7 +11267,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.5</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.6</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -11583,7 +11583,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.9.5</div>
+            <div class="settings-version">Game Shelf PWA v1.9.6</div>
         </div>
     </div>
     
@@ -19765,12 +19765,17 @@
             updateBattleScore(result.gameId, result.numericScore || 1, result);
             
             // v1.6.0: Update sprint UI if game was part of active sprint
+            // v1.9.6: Always re-show sprint modal after recording a sprint game
+            // Previously gated by !sprintModalMinimized, but playSprintGame() minimizes
+            // before launching, so the modal never came back after recording
             if (inActiveSprint) {
                 updateSprintModalUI();
-                // Show sprint modal again to continue
-                if (!sprintModalMinimized) {
-                    showActiveSprintModal();
-                }
+                // Short delay to let toast show, then bring sprint modal back
+                setTimeout(() => {
+                    if (appData.activeSprint && appData.activeSprint.sprintId && !appData.activeSprint.isExpired) {
+                        showActiveSprintModal();
+                    }
+                }, 800);
             }
             
             saveData();
@@ -21793,9 +21798,13 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.9.5';
+        const APP_VERSION = '1.9.6';
         
         const RELEASE_NOTES = {
+            '1.9.6': [
+                { icon: '🔄', title: 'Sprint Flow Fix', desc: 'Sprint modal now automatically returns after recording a game — no more getting dropped to the home screen' },
+                { icon: '⚡', title: 'Banner Polish', desc: 'Sprint banner hides immediately when all games are completed or skipped' }
+            ],
             '1.9.5': [
                 { icon: '🐛', title: 'Sprint Return Fix', desc: 'Sprint modal now reliably reappears after returning from playing a game on iOS' },
                 { icon: '📋', title: 'Record Result Button', desc: 'Sprint modal shows "Record Result" instead of "Play" when returning from a game you already launched' },
@@ -26045,6 +26054,15 @@
                 return;
             }
             
+            // v1.9.6: Hide if all games are resolved (completed or skipped)
+            const completed = (sprint.completedGames || []).length;
+            const skipped = (sprint.skippedGames || []).length;
+            const total = (sprint.games || []).length;
+            if (total > 0 && (completed + skipped) >= total) {
+                banner.style.display = 'none';
+                return;
+            }
+            
             // Show the banner (visible even when modal is minimized or dismissed)
             banner.style.display = 'block';
             
@@ -26062,8 +26080,6 @@
             }
             
             if (detailEl) {
-                const completed = (sprint.completedGames || []).length;
-                const total = (sprint.games || []).length;
                 detailEl.textContent = `${completed}/${total} games • Tap to return`;
             }
         }
@@ -26355,8 +26371,8 @@
                         playBtnText.textContent = `📋 Record ${currentGame?.name || currentGameId} Result`;
                         playBtn.disabled = false;
                         playBtn.onclick = () => {
-                            // Minimize sprint modal, then trigger clipboard paste
-                            minimizeActiveSprint();
+                            // v1.9.6: Hide modal temporarily (not minimize) so clipboard prompt isn't blocked
+                            document.getElementById('active-sprint-modal').classList.remove('active');
                             handleRecordGame();
                         };
                     } else {
@@ -41475,7 +41491,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.9.5 initialized');
+            console.log('🧩 Game Shelf PWA v1.9.6 initialized');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
