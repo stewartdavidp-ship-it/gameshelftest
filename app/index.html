@@ -21736,28 +21736,51 @@
             showConfirmModal({
                 icon: '🗑️',
                 title: 'Reset All Data?',
-                message: 'This will delete all your games, stats, history, and settings. This cannot be undone.',
-                confirmText: 'Reset Everything',
+                message: currentUser 
+                    ? 'Choose: reset local data only, or reset everything including cloud data.' 
+                    : 'This will delete all your games, stats, history, and settings. This cannot be undone.',
+                confirmText: currentUser ? 'Local Only' : 'Reset Everything',
                 confirmStyle: 'danger',
                 onConfirm: () => {
-                    localStorage.removeItem('gameshelf-pwa-data');
-                    localStorage.removeItem('installBannerDismissed');
-                    localStorage.removeItem('gameshelf_setup_complete');
-                    localStorage.removeItem('gameshelf_games');
-                    appData = {
-                        games: [...DEFAULT_SHELF.map(id => ({ id, addedAt: Date.now() }))],
-                        stats: {},
-                        history: {},
-                        wallet: { tokens: 0, coins: 0 },
-                        achievements: [],
-                        dailyGoal: 5,
-                        friends: [],
-                        settings: {}
-                    };
-                    renderAll();
-                    showToast('Data cleared', 'success');
-                }
+                    performLocalReset();
+                    showToast('Local data cleared', 'success');
+                },
+                // v1.9.8: Add cloud reset option when signed in
+                altText: currentUser ? '☁️ Reset All + Cloud' : null,
+                altStyle: currentUser ? 'danger' : null,
+                onAlt: currentUser ? async () => {
+                    try {
+                        showToast('🔄 Clearing cloud data...');
+                        // Clear user data from Firebase
+                        await db.ref(`users/${currentUser.uid}`).remove();
+                        await db.ref(`sprints/${currentUser.uid}`).remove();
+                        console.log('☁️ Cloud data cleared for', currentUser.uid);
+                    } catch (err) {
+                        console.error('Failed to clear cloud data:', err);
+                    }
+                    performLocalReset();
+                    showToast('All data cleared (local + cloud)', 'success');
+                } : null
             });
+        }
+        
+        // v1.9.8: Extracted local reset logic for reuse
+        function performLocalReset() {
+            localStorage.removeItem('gameshelf-pwa-data');
+            localStorage.removeItem('installBannerDismissed');
+            localStorage.removeItem('gameshelf_setup_complete');
+            localStorage.removeItem('gameshelf_games');
+            appData = {
+                games: [...DEFAULT_SHELF.map(id => ({ id, addedAt: Date.now() }))],
+                stats: {},
+                history: {},
+                wallet: { tokens: 0, coins: 0 },
+                achievements: [],
+                dailyGoal: 5,
+                friends: [],
+                settings: {}
+            };
+            renderAll();
         }
         
         async function resetPurchaseLimits() {
