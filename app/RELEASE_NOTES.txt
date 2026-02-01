@@ -1,3 +1,56 @@
+Game Shelf PWA v1.9.9 Release Notes
+=====================================
+
+Release Date: February 1, 2026
+
+BUG FIXES & POLISH:
+--------------------
+
+1. BATTLE: NO PRE-SELECTED GAMES (Medium)
+   - Game selector in battle creation now starts empty
+   - User chooses all games instead of starting with Wordle + Connections
+
+2. BATTLE: GAME SHELF ORIGINALS MOVED UP (Medium)
+   - Game Shelf Originals (Quotle, Slate, Rungs, Word Boxing) now appear
+     as 2nd category after NYT Games, instead of last
+
+3. SPRINT: "CHALLENGE" → "SPRINT" TERMINOLOGY (Low)
+   - Ready page, completion subtitles, toasts, tips, share text, and
+     empty states all now consistently say "sprint" instead of "challenge"
+
+4. SPRINT COMPLETION: ACTUAL PLAY TIME (Medium)
+   - Total Time now shows the sum of individual game times (actual play time)
+     instead of the configured sprint duration (e.g. 10:00)
+   - Added totalPlayTime field to calculateSprintStats
+
+5. SPRINT SHARE TEXT: RICHER DETAIL (Medium)
+   - Share text now includes: Any Order/Fixed Order mode,
+     per-game scores and times, total play time, avg per game, PB flag
+   - Group sprint share text also updated
+
+6. SIGN-OUT AFTER SPRINT COMPLETION (Critical)
+   - completeSprint now wraps saveSprintStats in try/catch so a Firebase
+     write failure cannot cascade into an auth error or sign-out
+   - saveSprintStats Firebase sync is now best-effort with non-fatal error
+     handling (local save always succeeds)
+
+7. SOLO SPRINT ACCESS WITHOUT SIGN-IN (Critical)
+   - showCreateBattle no longer gates on currentUser
+   - Auth check moved to selectChallengeType — only required for Battle type
+   - Solo sprints can now be created without signing in
+
+8. ABANDON SPRINT CONFIRM MODAL VISIBLE (Critical)
+   - .confirm-modal-overlay z-index raised from 1100 to 99999
+   - Confirm modal now appears above the active sprint modal (z-index 9999)
+   - Fixes Abandon Sprint and all other confirmations during sprint play
+
+FILES MODIFIED:
+--------------
+- index.html: All 8 bug fixes, v1.9.8 → v1.9.9
+- sw.js: CACHE_VERSION updated to v1.9.9
+
+---
+
 Game Shelf PWA v1.9.8 Release Notes
 =====================================
 

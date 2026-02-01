@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.9.8">
+    <meta name="version" content="1.9.9">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -4907,7 +4907,7 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.8);
-            z-index: 1100;
+            z-index: 99999;
             display: none;
             align-items: center;
             justify-content: center;
@@ -11307,7 +11307,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.8</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.9</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -11623,7 +11623,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.9.8</div>
+            <div class="settings-version">Game Shelf PWA v1.9.9</div>
         </div>
     </div>
     
@@ -14265,7 +14265,7 @@
             <!-- Tip -->
             <div class="sprint-tip">
                 <span class="sprint-tip-icon">💡</span>
-                <span>Tip: Set a phone timer for an audio alert when your challenge ends!</span>
+                <span>Tip: Set a phone timer for an audio alert when your sprint ends!</span>
             </div>
             
             <button id="start-sprint-btn" class="share-close-btn btn-disabled" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; margin-top: 16px; opacity: 0.5; pointer-events: none; cursor: not-allowed;" onclick="createAndStartSprint()">
@@ -14303,7 +14303,7 @@
             <div style="font-size: 4rem; margin: 20px 0;">⚡</div>
             <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px;">Ready?</div>
             <div style="color: var(--text-secondary); margin-bottom: 24px;">
-                Your <span id="sprint-confirm-duration" style="font-weight: 700; color: var(--accent-purple);">20-minute</span> challenge starts now!
+                Your <span id="sprint-confirm-duration" style="font-weight: 700; color: var(--accent-purple);">20-minute</span> sprint starts now!
             </div>
             
             <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: left;">
@@ -14520,7 +14520,7 @@
             <div class="sprint-complete-header">
                 <div class="sprint-complete-icon" id="sprint-complete-icon">🏁</div>
                 <div class="sprint-complete-title" id="sprint-complete-title">Sprint Complete!</div>
-                <div class="sprint-complete-subtitle" id="sprint-complete-subtitle">20-minute challenge finished</div>
+                <div class="sprint-complete-subtitle" id="sprint-complete-subtitle">20-minute sprint finished</div>
             </div>
             <div class="sprint-complete-body">
                 <div class="sprint-complete-summary">
@@ -14564,7 +14564,7 @@
             <div class="group-sprint-results-header" id="group-sprint-results-header">
                 <div class="group-sprint-results-icon" id="group-sprint-results-icon">🏁</div>
                 <div class="group-sprint-results-title" id="group-sprint-results-title">Sprint Complete!</div>
-                <div class="group-sprint-results-subtitle" id="group-sprint-results-subtitle">20-minute group challenge</div>
+                <div class="group-sprint-results-subtitle" id="group-sprint-results-subtitle">20-minute group sprint</div>
             </div>
             
             <div class="group-sprint-results-body">
@@ -14632,7 +14632,7 @@
             <div class="scheduled-sprint-prompt-header">
                 <div class="scheduled-sprint-prompt-icon">⚡</div>
                 <div class="scheduled-sprint-prompt-title">Daily Sprint Time!</div>
-                <div class="scheduled-sprint-prompt-subtitle" id="scheduled-sprint-prompt-subtitle">Your 20-minute challenge awaits</div>
+                <div class="scheduled-sprint-prompt-subtitle" id="scheduled-sprint-prompt-subtitle">Your 20-minute sprint awaits</div>
             </div>
             <div class="scheduled-sprint-prompt-games" id="scheduled-sprint-prompt-games">
                 <!-- Games list populated by JS -->
@@ -21861,9 +21861,17 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.9.8';
+        const APP_VERSION = '1.9.9';
         
         const RELEASE_NOTES = {
+            '1.9.9': [
+                { icon: '🔓', title: 'Solo Sprint Access', desc: 'You no longer need to sign in to create solo sprints — sign-in only required for battles' },
+                { icon: '🔧', title: 'Abandon Sprint Fixed', desc: 'Abandon Sprint confirmation dialog now properly appears above the sprint modal' },
+                { icon: '⏱️', title: 'Accurate Play Time', desc: 'Sprint completion now shows your actual total play time instead of the configured duration' },
+                { icon: '📊', title: 'Richer Share Text', desc: 'Sprint share results now include per-game scores and times, sprint mode, and total play time' },
+                { icon: '⚡', title: 'Sprint Terminology', desc: 'Consistent "sprint" wording throughout — no more mixed "challenge" references' },
+                { icon: '🎮', title: 'Battle Game Selector', desc: 'Game Shelf Originals now appear as the 2nd category, and games start unselected so you choose everything' }
+            ],
             '1.9.8': [
                 { icon: '🔄', title: 'Sprint: Game Switching', desc: 'Launching a new game properly clears stale launches — no more stuck "Record" buttons for games you abandoned' },
                 { icon: '👆', title: 'Sprint: All Rows Tappable', desc: 'In Any Order mode, every game row is tappable including the current game — tap any row to play or switch' },
@@ -21894,7 +21902,7 @@
                 { icon: '⏰', title: 'Scheduled Start', desc: 'Set a start time up to 7 days ahead. Everyone joins the waiting room and starts together.' }
             ],
             '1.8.0': [
-                { icon: '📅', title: 'Scheduled Sprint', desc: 'Set a daily sprint time and get prompted to start your challenge automatically!' },
+                { icon: '📅', title: 'Scheduled Sprint', desc: 'Set a daily sprint time and get prompted to start your sprint automatically!' },
                 { icon: '⏰', title: 'Flexible Schedule', desc: 'Pick your preferred time, days of the week, duration, and games' },
                 { icon: '🔔', title: 'Smart Prompts', desc: 'Get reminded within a ±30 minute window of your scheduled time' }
             ],
@@ -24212,11 +24220,8 @@
         }
         
         function showCreateBattle() {
-            if (!currentUser) {
-                showToast('Sign in to create battles', 'error');
-                return;
-            }
-            // v1.6.0: Show challenge type selector instead of going directly to battle creation
+            // v1.9.9: Don't gate here — let user reach challenge type selector
+            // Auth is only required for Battle type, not Sprint
             showChallengeTypeSelector();
         }
         
@@ -24232,6 +24237,11 @@
         function selectChallengeType(type) {
             closeChallengeTypeSelector();
             if (type === 'battle') {
+                // v1.9.9: Auth required for battles only
+                if (!currentUser) {
+                    showToast('Sign in to create battles', 'error');
+                    return;
+                }
                 showCreateBattleSheet();
             } else if (type === 'sprint') {
                 showCreateSprint();
@@ -24252,8 +24262,8 @@
                 updateVisibilityDisplay(false);
             }
             
-            // Reset selected games to defaults
-            battleSelectedGames = ['wordle', 'connections'];
+            // v1.9.9: Start with no games pre-selected — let user choose all
+            battleSelectedGames = [];
             updateSelectedGamesPreview();
             
             // Reset battle type to total-score
@@ -24932,7 +24942,7 @@
                 el.classList.remove('selected');
             } else {
                 if (sprintSelectedGames.length >= SPRINT_MAX_GAMES) {
-                    showToast(`Maximum ${SPRINT_MAX_GAMES} games for timed challenge`, 'error');
+                    showToast(`Maximum ${SPRINT_MAX_GAMES} games for timed sprint`, 'error');
                     return;
                 }
                 sprintSelectedGames.push(gameId);
@@ -25927,7 +25937,7 @@
         
         async function confirmStartSprint() {
             if (!currentUser) {
-                showToast('Sign in to start a challenge', 'error');
+                showToast('Sign in to start a group sprint', 'error');
                 return;
             }
             
@@ -26014,7 +26024,7 @@
             saveData();
             
             // Show success and notify user
-            showToast(`⚡ ${sprintConfig.durationMinutes}-min challenge started!`, 'success');
+            showToast(`⚡ ${sprintConfig.durationMinutes}-min sprint started!`, 'success');
             
             // Session 3: Show the active sprint modal
             console.log('⚡ Sprint started:', appData.activeSprint);
@@ -26940,7 +26950,12 @@
             }
             
             // Save sprint stats to user profile (both solo and group)
-            await saveSprintStats(sprint, sprintStats, isPersonalBest);
+            try {
+                await saveSprintStats(sprint, sprintStats, isPersonalBest);
+            } catch (statsErr) {
+                console.error('Failed to save sprint stats (non-fatal):', statsErr);
+                // Don't let stats save failure block completion flow
+            }
             
             // Close the active sprint modal
             closeActiveSprintModal();
@@ -26982,6 +26997,7 @@
                 gamesAttempted: gamesAttempted,
                 totalGames: allGames.length,
                 avgGameTime: avgGameTime,
+                totalPlayTime: totalDurationSeconds,
                 totalTime: sprint.durationMinutes * 60,
                 completedGames: completedGames,
                 skippedGames: skippedGames,
@@ -27069,7 +27085,8 @@
                     await db.ref(`users/${currentUser.uid}/sprintStats`).set(rs);
                     console.log('⚡ Sprint stats synced to cloud');
                 } catch (err) {
-                    console.error('Failed to sync sprint stats:', err);
+                    console.error('Failed to sync sprint stats (non-fatal, saved locally):', err);
+                    // v1.9.9: Don't rethrow — local save succeeded, cloud sync is best-effort
                 }
             }
         }
@@ -27218,7 +27235,7 @@
                         <div style="text-align: center; padding: 30px 20px; color: var(--text-muted);">
                             <div style="font-size: 2.5rem; margin-bottom: 12px;">⚡</div>
                             <div style="font-size: 1rem; margin-bottom: 6px;">No completed sprints yet</div>
-                            <div style="font-size: 0.85rem;">Finish a timed challenge to see your history!</div>
+                            <div style="font-size: 0.85rem;">Finish a timed sprint to see your history!</div>
                         </div>
                     `;
                     return;
@@ -27285,7 +27302,7 @@
             } else if (stats.gamesCompleted > 0) {
                 document.getElementById('sprint-complete-subtitle').textContent = `${stats.gamesCompleted} of ${stats.totalGames} games completed${hasSkips ? ` · ${stats.gamesSkipped} skipped` : ''}`;
             } else {
-                document.getElementById('sprint-complete-subtitle').textContent = `${sprint.durationMinutes}-minute challenge finished`;
+                document.getElementById('sprint-complete-subtitle').textContent = `${sprint.durationMinutes}-minute sprint finished`;
             }
             
             // Set games count
@@ -27369,8 +27386,9 @@
             gamesList.innerHTML = gamesHtml;
             
             // Set stats
+            // v1.9.9: Show actual total play time, not configured duration
             document.getElementById('sprint-complete-total-time').textContent = 
-                `${sprint.durationMinutes}:00`;
+                stats.totalPlayTime > 0 ? formatDuration(stats.totalPlayTime) : '—';
             document.getElementById('sprint-complete-avg-time').textContent = 
                 stats.gamesCompleted > 0 ? formatDuration(stats.avgGameTime) : '—';
             
@@ -27496,13 +27514,38 @@
             
             const { sprint, stats, isPersonalBest } = window.lastSprintResults;
             
-            // Build share text
+            // v1.9.9: Build rich share text
+            const orderMode = sprint.gameOrder === 'any' ? '🔀 Any Order' : '📋 Fixed Order';
             let shareText = `⚡ Game Shelf Sprint\n`;
-            shareText += `${sprint.durationMinutes}-min challenge\n\n`;
-            shareText += `✅ ${stats.gamesCompleted}/${stats.totalGames} games\n`;
+            shareText += `${orderMode} · ${sprint.durationMinutes} min\n\n`;
+            
+            // Per-game results
+            for (const game of stats.completedGames) {
+                const gameInfo = GAMES[game.gameId];
+                if (!gameInfo) continue;
+                const icon = gameInfo.icon || '🎮';
+                const resultStr = game.result || 'Done';
+                const timeStr = game.durationSeconds ? formatDuration(game.durationSeconds) : '';
+                if (game.countedInSprint) {
+                    shareText += `${icon} ${resultStr}${timeStr ? ' — ' + timeStr : ''}\n`;
+                }
+            }
+            
+            // Skipped games
+            for (const gameId of stats.skippedGames) {
+                const gameInfo = GAMES[gameId];
+                if (!gameInfo) continue;
+                shareText += `${gameInfo.icon || '🎮'} Skipped\n`;
+            }
+            
+            shareText += `\n✅ ${stats.gamesCompleted}/${stats.totalGames} games`;
+            if (stats.totalPlayTime > 0) {
+                shareText += ` · ⏱️ ${formatDuration(stats.totalPlayTime)} total`;
+            }
+            shareText += `\n`;
             
             if (stats.gamesCompleted > 0) {
-                shareText += `⏱️ Avg: ${formatDuration(stats.avgGameTime)}\n`;
+                shareText += `📊 Avg: ${formatDuration(stats.avgGameTime)} per game\n`;
             }
             
             if (isPersonalBest) {
@@ -27553,7 +27596,7 @@
             
             // Set subtitle
             document.getElementById('group-sprint-results-subtitle').textContent = 
-                `${sprint.durationMinutes}-minute group challenge`;
+                `${sprint.durationMinutes}-minute group sprint`;
             
             // Show modal immediately
             modal.classList.add('active');
@@ -27777,7 +27820,7 @@
             // Build share text
             // v1.9.1: Fixed newlines (was using escaped \\n instead of \n)
             let shareText = `⚡ Game Shelf Group Sprint\n`;
-            shareText += `${sprint.durationMinutes}-min challenge\n\n`;
+            shareText += `${sprint.durationMinutes}-min sprint\n\n`;
             shareText += `📊 Score: ${myScore}\n`;
             shareText += `✅ ${stats.gamesCompleted}/${stats.totalGames} games\n`;
             shareText += `🎯 ${Math.round((stats.successRate || 0) * 100)}% success rate\n`;
@@ -28290,7 +28333,7 @@
             // Update subtitle
             const subtitle = document.getElementById('scheduled-sprint-prompt-subtitle');
             if (subtitle) {
-                subtitle.textContent = `Your ${sched.durationMinutes}-minute challenge awaits`;
+                subtitle.textContent = `Your ${sched.durationMinutes}-minute sprint awaits`;
             }
             
             // Build games list
@@ -28449,15 +28492,15 @@
         }
         
         // ============ GAME SELECTOR FOR BATTLES ============
-        let battleSelectedGames = ['wordle', 'connections']; // Default selections
+        let battleSelectedGames = []; // v1.9.9: Start empty, user chooses all
         
         const BATTLE_GAME_CATEGORIES = {
             'NYT Games': ['wordle', 'connections', 'strands', 'mini', 'spelling-bee', 'letterboxed'],
+            'Game Shelf Originals': ['quotle', 'slate', 'rungs', 'wordboxing'],
             'LinkedIn': ['queens', 'tango', 'pinpoint', 'crossclimb', 'zip'],
             'Word Games': ['quordle', 'octordle', 'waffle', 'dordle', 'nerdle', 'semantle', 'contexto', 'redactle'],
             'Geography': ['worldle', 'globle', 'tradle', 'wheretaken', 'travle', 'foodguessr'],
             'Entertainment': ['framed', 'actorle', 'moviedle', 'heardle', 'bandle'],
-            'Game Shelf Originals': ['quotle', 'slate', 'rungs', 'wordboxing'],
             'Other': ['immaculate-grid', 'costcodle']
         };
         
@@ -41692,7 +41735,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.9.8 initialized');
+            console.log('🧩 Game Shelf PWA v1.9.9 initialized');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }
