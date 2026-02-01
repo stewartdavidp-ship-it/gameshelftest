@@ -1,3 +1,37 @@
+Game Shelf PWA v1.9.5 Release Notes
+=====================================
+
+Release Date: February 1, 2026
+
+BUG FIX - SPRINT RETURN ON iOS:
+--------------------------------
+
+1. SPRINT MODAL RECOVERY (Root Cause Fix)
+   - On iOS, closing the in-app browser (SFSafariViewController) after playing
+     a game did not reliably fire visibilitychange event
+   - Sprint modal would not reappear, leaving user stuck on home screen
+   - Added window focus and pageshow event listeners as backup triggers
+   - checkForActiveSprint() now fires on focus, pageshow, AND visibilitychange
+
+2. SPRINT HOME BANNER (New Recovery Path)
+   - New persistent "Sprint Active" banner on home screen above Paste Activity
+   - Shows countdown timer and games progress (e.g. "1/5 games")
+   - Pulsing purple banner is impossible to miss
+   - Tapping banner opens the full sprint modal
+   - Auto-hides when sprint completes or is abandoned
+
+3. LOG SHEET → SPRINT HANDOFF
+   - Closing the Paste Activity sheet during an active sprint now
+     automatically re-opens the sprint modal
+   - Prevents user from getting stranded on home screen after pasting
+
+FILES MODIFIED:
+--------------
+- index.html: Sprint recovery fixes, home banner, v1.9.5
+- sw.js: CACHE_VERSION updated to v1.9.5
+
+---
+
 Game Shelf PWA v1.9.4 Release Notes
 =====================================
 
