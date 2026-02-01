@@ -3,8 +3,8 @@ Game Shelf PWA v1.9.6 Release Notes
 
 Release Date: February 1, 2026
 
-BUG FIX - SPRINT FLOW AFTER RECORDING:
----------------------------------------
+SPRINT FLOW FIXES:
+------------------
 
 1. SPRINT MODAL RE-SHOW AFTER RECORDING (Critical Flow Fix)
    - After recording a game result, sprint modal now always re-appears
@@ -12,17 +12,33 @@ BUG FIX - SPRINT FLOW AFTER RECORDING:
      then logGame() checked sprintModalMinimized flag and skipped re-showing
    - Fix: logGame() now always re-shows sprint modal after recording a sprint
      game, with 800ms delay to let the success toast display first
-   - Record Result button no longer calls minimizeActiveSprint(), just
-     temporarily hides the modal so clipboard prompt isn't blocked
 
-2. SPRINT BANNER ALL-GAMES-RESOLVED CHECK
+2. ABANDON SPRINT BUTTON FIX (Critical)
+   - Abandon Sprint button was completely non-functional
+   - Root cause: called undefined function showConfirm() instead of
+     showConfirmModal() which uses callback pattern, not Promises
+   - Now uses showConfirmModal with proper callback and danger styling
+
+3. FINISH SPRINT EARLY FIX (Critical)
+   - Same showConfirm() bug as Abandon - confirmation never appeared
+   - Now uses showConfirmModal with proper callback
+
+4. ANY ORDER: TAPPABLE GAME ROWS (Feature Fix)
+   - In "Any Order" sprints, all pending and skipped game rows are now
+     tappable to launch that game directly
+   - Each playable row shows "Tap to play" hint and "Play ▶" badge
+   - Tapping a skipped game un-skips it and launches it
+   - Skip button text changes to "Skip for now" in Any Order mode
+   - Skipped games show "Skipped · tap to play" instead of just "Skipped"
+   - event.stopPropagation() prevents taps from minimizing the modal
+
+5. SPRINT BANNER ALL-GAMES-RESOLVED CHECK
    - Home screen sprint banner now hides immediately when all games are
      completed or skipped, even before completeSprint() finishes
-   - Previously would show briefly with stale data after giving up on all games
 
 FILES MODIFIED:
 --------------
-- index.html: Sprint flow fixes, banner polish, v1.9.6
+- index.html: Sprint flow fixes, Any Order tappable rows, confirm fixes, v1.9.6
 - sw.js: CACHE_VERSION updated to v1.9.6
 
 ---

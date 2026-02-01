@@ -7692,8 +7692,33 @@
             opacity: 0.5;
         }
         
-        .sprint-game-row.pending {
-            opacity: 0.6;
+        /* v1.9.6: Tappable game rows in Any Order mode */
+        .sprint-game-row.playable {
+            cursor: pointer;
+            opacity: 0.85;
+        }
+        
+        .sprint-game-row.playable:active {
+            transform: scale(0.98);
+            opacity: 1;
+        }
+        
+        .sprint-game-row.skipped.playable {
+            opacity: 0.65;
+            border: 1px dashed rgba(102, 126, 234, 0.4);
+        }
+        
+        .sprint-game-row.pending.playable {
+            border: 1px solid rgba(102, 126, 234, 0.25);
+        }
+        
+        .sprint-game-row .play-hint {
+            font-size: 0.75rem;
+            color: var(--accent-purple);
+            margin-left: auto;
+            padding: 2px 8px;
+            border-radius: 8px;
+            background: rgba(102, 126, 234, 0.15);
         }
         
         .sprint-game-status {
@@ -21803,6 +21828,8 @@
         const RELEASE_NOTES = {
             '1.9.6': [
                 { icon: '🔄', title: 'Sprint Flow Fix', desc: 'Sprint modal now automatically returns after recording a game — no more getting dropped to the home screen' },
+                { icon: '🔀', title: 'Any Order: Tap to Play', desc: 'In "Any Order" sprints, tap any game in the list to play it. Skipped games can be played later!' },
+                { icon: '🏳️', title: 'Abandon & Finish Fixed', desc: 'Abandon Sprint and Finish Sprint buttons now work correctly' },
                 { icon: '⚡', title: 'Banner Polish', desc: 'Sprint banner hides immediately when all games are completed or skipped' }
             ],
             '1.9.5': [
@@ -26295,6 +26322,7 @@
             let gamesHtml = '';
             let currentGameId = null;
             let currentGameIndex = -1;
+            const isAnyOrder = sprint.gameOrder !== 'fixed';
             
             games.forEach((gameId, index) => {
                 const game = GAMES[gameId];
@@ -26324,12 +26352,18 @@
                     completedGames.some(g => g.gameId === gId) || skippedGames.includes(gId)
                 );
                 
+                // v1.9.6: In Any Order mode, pending and skipped games are tappable
+                const isPlayable = isAnyOrder && !isCompleted && !isLocked;
+                
                 // v1.9.5: Check if current game was already launched
                 const rowLaunchData = (status === 'current') ? sprint.gameLaunches?.[gameId] : null;
                 const rowWasLaunched = rowLaunchData?.launchedAt && !rowLaunchData?.recordedAt;
                 
+                // v1.9.6: Build onclick for Any Order tappable rows
+                const rowOnclick = isPlayable && status !== 'current' ? ` onclick="event.stopPropagation(); playSprintGame('${gameId}')"` : '';
+                
                 gamesHtml += `
-                    <div class="sprint-game-row ${status} ${isLocked ? 'locked' : ''}">
+                    <div class="sprint-game-row ${status} ${isLocked ? 'locked' : ''} ${isPlayable && status !== 'current' ? 'playable' : ''}"${rowOnclick}>
                         <div class="sprint-game-status ${status}">${statusIcon}</div>
                         <div class="sprint-game-info">
                             <div class="sprint-game-title">
@@ -26338,14 +26372,20 @@
                             </div>
                             ${isCompleted && completedData ? `
                                 <div class="sprint-game-result">${completedData.result || 'Completed'}</div>
+                            ` : isSkipped && isAnyOrder ? `
+                                <div class="sprint-game-result">Skipped · tap to play</div>
                             ` : isSkipped ? `
                                 <div class="sprint-game-result">Skipped</div>
                             ` : status === 'current' ? `
                                 <div class="sprint-game-result">${rowWasLaunched ? '📋 Awaiting result' : 'Next up'}</div>
+                            ` : isPlayable ? `
+                                <div class="sprint-game-result">Tap to play</div>
                             ` : ''}
                         </div>
                         ${isCompleted && completedData?.durationSeconds ? `
                             <div class="sprint-game-time">${formatDuration(completedData.durationSeconds)}</div>
+                        ` : isPlayable && status !== 'current' ? `
+                            <span class="play-hint">Play ▶</span>
                         ` : ''}
                     </div>
                 `;
@@ -26380,13 +26420,31 @@
                         playBtn.disabled = false;
                         playBtn.onclick = () => playSprintGame(currentGameId);
                     }
-                    if (skipBtn) skipBtn.style.display = 'inline';
+                    if (skipBtn) {
+                        skipBtn.style.display = 'inline';
+                        // v1.9.6: In Any Order, clarify that skip is temporary
+                        skipBtn.textContent = isAnyOrder ? 'Skip for now' : 'Skip this game';
+                    }
                 } else {
-                    // All games completed or skipped - show finish button
-                    playBtnText.textContent = '🏁 Finish Sprint';
-                    playBtn.disabled = false;
-                    playBtn.onclick = () => finishSprintEarly();
-                    if (skipBtn) skipBtn.style.display = 'none';
+                    // v1.9.6: In Any Order mode, if only skipped games remain, show "Choose a game" 
+                    // instead of Finish (skipped games are recoverable)
+                    const hasRecoverableSkipped = isAnyOrder && skippedGames.length > 0 && 
+                        games.some(gId => skippedGames.includes(gId) && !completedGames.some(g => g.gameId === gId));
+                    
+                    if (hasRecoverableSkipped) {
+                        playBtnText.textContent = '🏁 Finish Sprint';
+                        playBtn.disabled = false;
+                        playBtn.onclick = () => finishSprintEarly();
+                        if (skipBtn) {
+                            skipBtn.style.display = 'none';
+                        }
+                    } else {
+                        // All games completed or skipped (fixed order) - show finish button
+                        playBtnText.textContent = '🏁 Finish Sprint';
+                        playBtn.disabled = false;
+                        playBtn.onclick = () => finishSprintEarly();
+                        if (skipBtn) skipBtn.style.display = 'none';
+                    }
                 }
             }
             
@@ -26404,6 +26462,15 @@
             
             const game = GAMES[gameId];
             if (!game) return;
+            
+            // v1.9.6: If this game was skipped (Any Order mode), un-skip it
+            if (appData.activeSprint.skippedGames) {
+                const skipIndex = appData.activeSprint.skippedGames.indexOf(gameId);
+                if (skipIndex !== -1) {
+                    appData.activeSprint.skippedGames.splice(skipIndex, 1);
+                    console.log(`⚡ Sprint: Un-skipped ${game.name} for play`);
+                }
+            }
             
             // Record launch timestamp for timing
             const launchTime = Date.now();
@@ -26576,65 +26643,69 @@
         async function abandonSprint() {
             if (!appData.activeSprint) return;
             
-            const confirmed = await showConfirm(
-                'Are you sure you want to abandon this sprint? Your progress will be lost.',
-                'Abandon Sprint?'
-            );
-            
-            if (!confirmed) return;
-            
-            const sprint = appData.activeSprint;
-            const isGroupSprint = sprint.mode === 'group';
-            
-            // Update Firebase status
-            if (currentUser && sprint.sprintId) {
-                try {
-                    if (isGroupSprint) {
-                        // v1.9.0 Part C: Update group sprint participant status
-                        const groupSprintId = sprint.groupSprintId || sprint.sprintId;
-                        await db.ref(`group-sprints/${groupSprintId}/participants/${currentUser.uid}`).update({
-                            status: 'abandoned',
-                            abandonedAt: Date.now(),
-                            finalScore: -1  // Ranked last
-                        });
-                        console.log('⚡ Group sprint participation abandoned');
-                    } else {
-                        await db.ref(`sprints/${currentUser.uid}/${sprint.sprintId}`).update({
-                            status: 'abandoned',
-                            'participants': {
-                                [currentUser.uid]: {
-                                    ...sprint,
-                                    status: 'abandoned'
-                                }
+            // v1.9.6: Use showConfirmModal with callback (showConfirm was undefined)
+            showConfirmModal({
+                icon: '🏳️',
+                title: 'Abandon Sprint?',
+                message: 'Are you sure you want to abandon this sprint? Your progress will be lost.',
+                confirmText: 'Abandon',
+                confirmStyle: 'danger',
+                onConfirm: async () => {
+                    const sprint = appData.activeSprint;
+                    if (!sprint) return;
+                    
+                    const isGroupSprint = sprint.mode === 'group';
+                    
+                    // Update Firebase status
+                    if (currentUser && sprint.sprintId) {
+                        try {
+                            if (isGroupSprint) {
+                                const groupSprintId = sprint.groupSprintId || sprint.sprintId;
+                                await db.ref(`group-sprints/${groupSprintId}/participants/${currentUser.uid}`).update({
+                                    status: 'abandoned',
+                                    abandonedAt: Date.now(),
+                                    finalScore: -1
+                                });
+                                console.log('⚡ Group sprint participation abandoned');
+                            } else {
+                                await db.ref(`sprints/${currentUser.uid}/${sprint.sprintId}`).update({
+                                    status: 'abandoned',
+                                    'participants': {
+                                        [currentUser.uid]: {
+                                            ...sprint,
+                                            status: 'abandoned'
+                                        }
+                                    }
+                                });
                             }
-                        });
+                        } catch (err) {
+                            console.error('Failed to update abandoned sprint:', err);
+                        }
                     }
-                } catch (err) {
-                    console.error('Failed to update abandoned sprint:', err);
+                    
+                    // Update abandoned count in stats
+                    if (!appData.sprintStats) {
+                        appData.sprintStats = { abandonedSprints: 0 };
+                    }
+                    appData.sprintStats.abandonedSprints = (appData.sprintStats.abandonedSprints || 0) + 1;
+                    
+                    // Clear local state
+                    appData.activeSprint = null;
+                    saveData();
+                    
+                    // Sync sprint stats to cloud
+                    if (currentUser) {
+                        try {
+                            await db.ref(`users/${currentUser.uid}/sprintStats`).set(appData.sprintStats);
+                        } catch (err) {
+                            console.error('Failed to sync abandoned sprint stats:', err);
+                        }
+                    }
+                    
+                    closeActiveSprintModal();
+                    showToast('Sprint abandoned');
                 }
-            }
-            
-            // Update abandoned count in stats
-            if (!appData.sprintStats) {
-                appData.sprintStats = { abandonedSprints: 0 };
-            }
-            appData.sprintStats.abandonedSprints = (appData.sprintStats.abandonedSprints || 0) + 1;
-            
-            // Clear local state
-            appData.activeSprint = null;
-            saveData();
-            
-            // Sync sprint stats to cloud
-            if (currentUser) {
-                try {
-                    await db.ref(`users/${currentUser.uid}/sprintStats`).set(appData.sprintStats);
-                } catch (err) {
-                    console.error('Failed to sync abandoned sprint stats:', err);
-                }
-            }
-            
-            closeActiveSprintModal();
-            showToast('Sprint abandoned');
+            });
         }
         
         // Finish sprint early (when all games are done)
@@ -26646,22 +26717,22 @@
             const skippedCount = (sprint.skippedGames || []).length;
             const totalGames = sprint.games?.length || 0;
             
-            // Confirm if not all games were completed
-            if (completedCount < totalGames && completedCount + skippedCount >= totalGames) {
-                // All games are either completed or skipped
+            // All games are either completed or skipped
+            if (completedCount + skippedCount >= totalGames) {
                 completeSprint('early');
-            } else if (completedCount < totalGames) {
-                const remaining = totalGames - completedCount - skippedCount;
-                const confirmed = await showConfirm(
-                    `You still have ${remaining} game${remaining > 1 ? 's' : ''} left. Finish sprint early?`,
-                    'Finish Early?'
-                );
-                if (confirmed) {
-                    completeSprint('early');
-                }
             } else {
-                // All games completed
-                completeSprint('complete');
+                // v1.9.6: Use showConfirmModal with callback (showConfirm was undefined)
+                const remaining = totalGames - completedCount - skippedCount;
+                showConfirmModal({
+                    icon: '🏁',
+                    title: 'Finish Early?',
+                    message: `You still have ${remaining} game${remaining > 1 ? 's' : ''} left. Finish sprint early?`,
+                    confirmText: 'Finish Sprint',
+                    confirmStyle: 'primary',
+                    onConfirm: () => {
+                        completeSprint('early');
+                    }
+                });
             }
         }
         
