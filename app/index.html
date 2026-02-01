@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.9.7">
+    <meta name="version" content="1.9.8">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -11306,7 +11306,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.7</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.9.8</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -11622,7 +11622,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.9.7</div>
+            <div class="settings-version">Game Shelf PWA v1.9.8</div>
         </div>
     </div>
     
@@ -21837,9 +21837,14 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.9.7';
+        const APP_VERSION = '1.9.8';
         
         const RELEASE_NOTES = {
+            '1.9.8': [
+                { icon: '🔄', title: 'Sprint: Game Switching', desc: 'Launching a new game properly clears stale launches — no more stuck "Record" buttons for games you abandoned' },
+                { icon: '👆', title: 'Sprint: All Rows Tappable', desc: 'In Any Order mode, every game row is tappable including the current game — tap any row to play or switch' },
+                { icon: '🏁', title: 'Sprint: Better Finish Messages', desc: 'Completion screen now shows "Perfect Sprint!" for all games done, with clear partial completion info' }
+            ],
             '1.9.7': [
                 { icon: '🎯', title: 'Any Order: Smart Game Detection', desc: 'Sprint now tracks which game you actually launched — "Record Result" shows the right game when you return' },
                 { icon: '✅', title: 'Already-Played Sprint Credit', desc: 'Games played earlier today now properly credit to your sprint instead of showing "Already recorded"' },
@@ -26349,16 +26354,22 @@
             let currentGameIndex = -1;
             const isAnyOrder = sprint.gameOrder !== 'fixed';
             
-            // v1.9.7: Check if any game was launched but not yet recorded (user just came back)
+            // v1.9.8: Check if any game was launched but not yet recorded
+            // Only consider launches that are recent (within last 30 min) to handle stale launches
             let launchedGameId = null;
             if (sprint.gameLaunches) {
                 let latestLaunch = 0;
+                const staleThreshold = 30 * 60 * 1000; // 30 minutes
+                const now = Date.now();
                 for (const [gId, data] of Object.entries(sprint.gameLaunches)) {
                     if (data.launchedAt && !data.recordedAt && data.launchedAt > latestLaunch) {
                         // Verify this game is still in the sprint and not completed
                         if (games.includes(gId) && !completedGames.some(g => g.gameId === gId)) {
-                            latestLaunch = data.launchedAt;
-                            launchedGameId = gId;
+                            // Only treat as "launched" if within time window
+                            if ((now - data.launchedAt) < staleThreshold) {
+                                latestLaunch = data.launchedAt;
+                                launchedGameId = gId;
+                            }
                         }
                     }
                 }
@@ -26399,17 +26410,19 @@
                 );
                 
                 // v1.9.6: In Any Order mode, pending and skipped games are tappable
+                // v1.9.8: Current game is also tappable (to re-launch or switch away from stale launch)
                 const isPlayable = isAnyOrder && !isCompleted && !isLocked;
                 
                 // v1.9.7: Check if current game was already launched (works for any game, not just first pending)
                 const rowLaunchData = (status === 'current') ? sprint.gameLaunches?.[gameId] : null;
                 const rowWasLaunched = rowLaunchData?.launchedAt && !rowLaunchData?.recordedAt;
                 
-                // v1.9.6: Build onclick for Any Order tappable rows
-                const rowOnclick = isPlayable && status !== 'current' ? ` onclick="event.stopPropagation(); playSprintGame('${gameId}')"` : '';
+                // v1.9.8: All playable rows are tappable in Any Order, including current
+                // Current game row launches (or re-launches), other rows launch their game
+                const rowOnclick = isPlayable ? ` onclick="event.stopPropagation(); playSprintGame('${gameId}')"` : '';
                 
                 gamesHtml += `
-                    <div class="sprint-game-row ${status} ${isLocked ? 'locked' : ''} ${isPlayable && status !== 'current' ? 'playable' : ''}"${rowOnclick}>
+                    <div class="sprint-game-row ${status} ${isLocked ? 'locked' : ''} ${isPlayable && !rowWasLaunched ? 'playable' : ''}"${rowOnclick}>
                         <div class="sprint-game-status ${status}">${statusIcon}</div>
                         <div class="sprint-game-info">
                             <div class="sprint-game-title">
@@ -26422,15 +26435,19 @@
                                 <div class="sprint-game-result">Skipped · tap to play</div>
                             ` : isSkipped ? `
                                 <div class="sprint-game-result">Skipped</div>
+                            ` : status === 'current' && rowWasLaunched ? `
+                                <div class="sprint-game-result">📋 Awaiting result</div>
+                            ` : status === 'current' && isAnyOrder ? `
+                                <div class="sprint-game-result">Tap to play</div>
                             ` : status === 'current' ? `
-                                <div class="sprint-game-result">${rowWasLaunched ? '📋 Awaiting result' : 'Next up'}</div>
+                                <div class="sprint-game-result">Next up</div>
                             ` : isPlayable ? `
                                 <div class="sprint-game-result">Tap to play</div>
                             ` : ''}
                         </div>
                         ${isCompleted && completedData?.durationSeconds ? `
                             <div class="sprint-game-time">${formatDuration(completedData.durationSeconds)}</div>
-                        ` : isPlayable && status !== 'current' ? `
+                        ` : isPlayable && !rowWasLaunched ? `
                             <span class="play-hint">Play ▶</span>
                         ` : ''}
                     </div>
@@ -26515,6 +26532,17 @@
                 if (skipIndex !== -1) {
                     appData.activeSprint.skippedGames.splice(skipIndex, 1);
                     console.log(`⚡ Sprint: Un-skipped ${game.name} for play`);
+                }
+            }
+            
+            // v1.9.8: Clear stale launches for OTHER games (user switched to a different game)
+            if (appData.activeSprint.gameLaunches) {
+                for (const [gId, data] of Object.entries(appData.activeSprint.gameLaunches)) {
+                    if (gId !== gameId && data.launchedAt && !data.recordedAt) {
+                        // Clear the stale launch - user chose a different game
+                        delete appData.activeSprint.gameLaunches[gId];
+                        console.log(`⚡ Sprint: Cleared stale launch for ${GAMES[gId]?.name || gId}`);
+                    }
                 }
             }
             
@@ -27224,9 +27252,17 @@
             
             // Set header info
             const allDone = stats.gamesCompleted === stats.totalGames;
+            const hasSkips = stats.gamesSkipped > 0;
             document.getElementById('sprint-complete-icon').textContent = allDone ? '🎉' : '🏁';
-            document.getElementById('sprint-complete-title').textContent = allDone ? 'Perfect Sprint!' : 'Sprint Complete!';
-            document.getElementById('sprint-complete-subtitle').textContent = `${sprint.durationMinutes}-minute challenge finished`;
+            document.getElementById('sprint-complete-title').textContent = allDone ? 'Perfect Sprint!' : 'Sprint Complete';
+            // v1.9.8: More descriptive subtitle based on completion quality
+            if (allDone) {
+                document.getElementById('sprint-complete-subtitle').textContent = `All ${stats.totalGames} games completed in ${sprint.durationMinutes} minutes!`;
+            } else if (stats.gamesCompleted > 0) {
+                document.getElementById('sprint-complete-subtitle').textContent = `${stats.gamesCompleted} of ${stats.totalGames} games completed${hasSkips ? ` · ${stats.gamesSkipped} skipped` : ''}`;
+            } else {
+                document.getElementById('sprint-complete-subtitle').textContent = `${sprint.durationMinutes}-minute challenge finished`;
+            }
             
             // Set games count
             document.getElementById('sprint-complete-games-count').textContent = 
@@ -41632,7 +41668,7 @@ Hint levels:
                 }
             }, 1000);
             
-            console.log('🧩 Game Shelf PWA v1.9.7 initialized');
+            console.log('🧩 Game Shelf PWA v1.9.8 initialized');
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
         }

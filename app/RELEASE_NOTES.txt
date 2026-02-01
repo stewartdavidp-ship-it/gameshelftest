@@ -1,3 +1,36 @@
+Game Shelf PWA v1.9.8 Release Notes
+=====================================
+
+Release Date: February 1, 2026
+
+SPRINT FIXES:
+-------------
+
+1. STALE LAUNCH CLEARING / GAME SWITCHING
+   - When user launches Game A then switches to Game B, Game A's launch data
+     is cleared so it doesn't stick as "current" forever
+   - playSprintGame() now deletes unrecorded launches for other games
+   - Also added 30-minute stale threshold — launches older than 30 min are
+     ignored by the current-game detection logic
+
+2. ALL GAME ROWS TAPPABLE IN ANY ORDER
+   - Previously the "current" game row was not tappable (only pending/skipped)
+   - Now ALL non-completed rows are tappable in Any Order mode
+   - Current game row shows "Tap to play" and Play hint (unless awaiting result)
+   - Makes it easy to re-launch a game or switch to any other game
+
+3. BETTER COMPLETION MESSAGING
+   - "Perfect Sprint!" with "All N games completed in X minutes!" for full completion
+   - "Sprint Complete" with "X of Y games completed · Z skipped" for partial
+   - Clearer distinction between full success and partial completion
+
+FILES MODIFIED:
+--------------
+- index.html: Stale launch fix, tappable rows, finish messaging, v1.9.8
+- sw.js: CACHE_VERSION updated to v1.9.8
+
+---
+
 Game Shelf PWA v1.9.7 Release Notes
 =====================================
 
