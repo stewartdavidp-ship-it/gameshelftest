@@ -26,7 +26,8 @@
     <!-- Dynamic Manifest & Icons based on repo detection -->
     <script>
         // Detect if running from test repo
-        const isTestBuild = window.location.pathname.toLowerCase().includes('gameshelftest');
+        const isTestBuild = window.location.hostname.includes('stewartdavidp-ship-it') || 
+                            window.location.pathname.toLowerCase().includes('gameshelftest');
         
         // Set theme color based on build
         const themeColor = isTestBuild ? '#ff9900' : '#667eea';
