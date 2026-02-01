@@ -1,23 +1,55 @@
+Game Shelf PWA v1.9.4 Release Notes
+=====================================
+
+Release Date: January 31, 2026
+
+REBRANDING: RUSH → SPRINT
+-------------------------
+
+1. TERMINOLOGY CHANGE
+   - "Time Rush" is now "Time Sprint"
+   - "Group Rush" is now "Group Sprint"
+   - "Scheduled Rush" is now "Scheduled Sprint"
+   - All UI text, buttons, modals, and messages updated
+   - Firebase paths remain unchanged for data compatibility
+
+2. WHY THE CHANGE
+   - "Sprint" feels less stressful and more playful
+   - Better conveys a focused burst of activity
+   - Familiar term from gaming and athletics
+
+FILES MODIFIED:
+--------------
+- index.html: All "Rush" references changed to "Sprint", v1.9.4
+- sw.js: CACHE_VERSION updated to v1.9.4
+
+---
+
 Game Shelf PWA v1.9.3 Release Notes
 =====================================
 
 Release Date: January 31, 2026
 
-TUTORIAL CONTENT UPDATES:
--------------------------
+TUTORIAL UPDATES:
+-----------------
 
 1. NEW TUTORIAL STEPS
    - Added Stats tab step (step 7) - explains game statistics and trends
-   - Added Time Rush step (step 8) - highlights the Rushes subtab
+   - Added Time Sprint step (step 8) - highlights the Sprints subtab
    - Now 14 steps total (was 12)
    - Updated time estimate to "90 seconds" (was "1 minute")
 
-2. VERSION ALIGNMENT
+2. SPOTLIGHT FIX
+   - Fixed "Daily Progress" and "Browse Games" steps not showing highlight
+   - Added scrollIntoView to ensure target elements are visible before highlighting
+   - Elements now smoothly scroll into center of screen
+
+3. VERSION ALIGNMENT
    - Fixed all version labels to consistently show 1.9.3
 
 FILES MODIFIED:
 --------------
-- index.html: TUTORIAL_STEPS expanded with Stats/Rush steps, version labels fixed
+- index.html: TUTORIAL_STEPS expanded, scrollIntoView fix, version labels fixed
 - sw.js: CACHE_VERSION updated to v1.9.3
 
 ---
@@ -32,25 +64,25 @@ HELP & DOCUMENTATION UPDATE:
 
 1. FAQ EXPANSION (v2.0 → v2.5)
    - Added 36 new questions (136 → 172 total)
-   - Added 3 new categories: Time Rush, Scheduled Rush, Group Rush
-   - 14 Time Rush questions covering timer, pause, personal bests, stats
-   - 8 Scheduled Rush questions covering setup, reminders, "Use My Schedule"
-   - 12 Group Rush questions covering creation, invite codes, scoring, results
+   - Added 3 new categories: Time Sprint, Scheduled Sprint, Group Sprint
+   - 14 Time Sprint questions covering timer, pause, personal bests, stats
+   - 8 Scheduled Sprint questions covering setup, reminders, "Use My Schedule"
+   - 12 Group Sprint questions covering creation, invite codes, scoring, results
 
 2. TERMINOLOGY UPDATES
    - "Record Game" renamed to "Paste Activity" throughout FAQ
    - Friend adding updated to reflect direct link flow (no more codes)
-   - Navigation FAQ updated to include Rushes subtab in Stats
+   - Navigation FAQ updated to include Sprints subtab in Stats
 
 3. NEW FAQ ENTRIES
    - "What is the lightbulb icon?" (Daily Insights)
    - "What is Morning Review?" (personalized greetings)
 
 4. AI HELP IMPROVEMENTS (v2.0 → v3.0)
-   - AI Help now understands all Rush features
-   - New navigation actions: showCreateRush, showJoinRush
-   - Updated examples for Rush-related questions
-   - Stats subtab navigation includes Rushes
+   - AI Help now understands all Sprint features
+   - New navigation actions: showCreateSprint, showJoinSprint
+   - Updated examples for Sprint-related questions
+   - Stats subtab navigation includes Sprints
 
 FILES MODIFIED:
 --------------
@@ -64,18 +96,18 @@ Game Shelf PWA v1.9.1 Release Notes
 
 Release Date: January 31, 2026
 
-BUG FIXES & IMPROVEMENTS (Group Rush):
+BUG FIXES & IMPROVEMENTS (Group Sprint):
 --------------------------------------
 
 1. INVITE CODE UNIQUENESS (Fix #1)
    - Invite codes now verified unique before use
    - Retries up to 5 times if collision detected
-   - Prevents two rushes having same invite code
+   - Prevents two sprints having same invite code
 
-2. PAUSE DISABLED FOR GROUP RUSH (Fix #9)
-   - Removed pause functionality in group rush mode
+2. PAUSE DISABLED FOR GROUP SPRINT (Fix #9)
+   - Removed pause functionality in group sprint mode
    - No fair way to coordinate pause in competitive mode
-   - Pause button hidden during group rush
+   - Pause button hidden during group sprint
 
 3. GRACE PERIOD JOIN FIX (Fix #3)
    - Users can now join during 5-minute grace period
@@ -83,12 +115,12 @@ BUG FIXES & IMPROVEMENTS (Group Rush):
    - Now checks status='pending' instead of time
 
 4. NULL SAFETY (Fix #4 & #5)
-   - Added null checks in beginGroupRushPlay()
+   - Added null checks in beginGroupSprintPlay()
    - Added null check for myEntry in leaderboard
    - Prevents crashes on corrupted/incomplete data
 
 5. INVITE CODE CLEANUP (Fix #6)
-   - Invite codes now cleaned up when rush completes
+   - Invite codes now cleaned up when sprint completes
    - Creator cleans up after all participants done
    - Prevents orphan codes accumulating in Firebase
 
@@ -103,30 +135,30 @@ Game Shelf PWA v1.9.0 Release Notes
 
 Release Date: January 31, 2026
 
-NEW FEATURE - GROUP RUSH (Phase 4):
+NEW FEATURE - GROUP SPRINT (Phase 4):
 -----------------------------------
 
-1. GROUP RUSH CREATION (Part A)
-   - New "Group" mode toggle in Create Rush sheet
-   - Start time picker for scheduling group rush
+1. GROUP SPRINT CREATION (Part A)
+   - New "Group" mode toggle in Create Sprint sheet
+   - Start time picker for scheduling group sprint
    - Friend selection with checkboxes
    - Invite code generation (R-XXXXX pattern)
    - Share/copy invite buttons
    - Waiting Room modal with real-time countdown
    - Real-time participant list updates
-   - Leave/cancel rush functionality
+   - Leave/cancel sprint functionality
 
-2. JOIN GROUP RUSH (Part B)
-   - "Join Rush" option in battle creation menu
+2. JOIN GROUP SPRINT (Part B)
+   - "Join Sprint" option in battle creation menu
    - Code input with validation
-   - ?rush=CODE URL parameter handling
-   - Rush preview showing host, duration, games, start time
+   - ?sprint=CODE URL parameter handling
+   - Sprint preview showing host, duration, games, start time
    - Auto-join after sign-in if pending code
    - Auto-cancel if only creator after 5-minute grace period
    - Transition from pending → active at start time
 
-3. GROUP RUSH GAMEPLAY & RESULTS (Part C)
-   - Group rush plays like solo rush after start
+3. GROUP SPRINT GAMEPLAY & RESULTS (Part C)
+   - Group sprint plays like solo sprint after start
    - Completion syncs to Firebase with scoring
    - Scoring formula: (gamesCompleted × 60) + (successRate × 40)
    - Group Results modal with leaderboard
@@ -134,12 +166,12 @@ NEW FEATURE - GROUP RUSH (Phase 4):
    - Winner celebration with confetti for 1st place
    - Tie-breaker: faster completion wins
    - Abandoned players ranked last
-   - Share group rush results
+   - Share group sprint results
 
 DATA MODEL:
 -----------
-Group rushes stored at: group-rushes/{rushId}
-Invite codes indexed at: rush-codes/{code}
+Group sprints stored at: group-sprints/{sprintId}
+Invite codes indexed at: sprint-codes/{code}
 
 Participant data includes:
 - status: pending | active | completed | abandoned
@@ -160,38 +192,38 @@ Game Shelf PWA v1.8.0 Release Notes
 
 Release Date: January 31, 2026
 
-NEW FEATURE - SCHEDULED RUSH (Phase 5):
+NEW FEATURE - SCHEDULED SPRINT (Phase 5):
 ---------------------------------------
 
-1. DAILY RUSH REMINDER
-   - Enable in Settings → Scheduled Rush
-   - Set your preferred time for daily rush prompt
+1. DAILY SPRINT REMINDER
+   - Enable in Settings → Scheduled Sprint
+   - Set your preferred time for daily sprint prompt
    - Get reminded within ±30 minute window of scheduled time
    - Configure which days of the week to be reminded
 
 2. SCHEDULE CONFIGURATION
-   - Time picker for rush time (24h format stored, 12h displayed)
+   - Time picker for sprint time (24h format stored, 12h displayed)
    - Duration selection: 10, 20, or 30 minutes
    - Days of week selector with visual buttons
    - Game selection using existing game selector UI
    - Game order: Any or Fixed
 
-3. SCHEDULED RUSH PROMPT MODAL
+3. SCHEDULED SPRINT PROMPT MODAL
    - Beautiful modal with purple gradient header
    - Shows configured games as chips
-   - "Start Rush" button for one-tap start
+   - "Start Sprint" button for one-tap start
    - "Not Now" dismisses until tomorrow
    - "Edit Schedule" link to adjust settings
-   - Rush start sound plays when prompt appears
+   - Sprint start sound plays when prompt appears
 
 4. QUICK START FROM SCHEDULE
-   - "Use My Schedule" button in Create Rush screen
+   - "Use My Schedule" button in Create Sprint screen
    - Only shows when schedule is enabled with games
-   - One tap to start rush with saved configuration
+   - One tap to start sprint with saved configuration
 
 DATA MODEL:
 -----------
-New: appData.rushSchedule
+New: appData.sprintSchedule
 {
   enabled: false,
   time: '07:00',           // 24h format, local time
@@ -206,10 +238,10 @@ New: appData.rushSchedule
 
 TECHNICAL DETAILS:
 ------------------
-- checkScheduledRush() runs 3 seconds after init
+- checkScheduledSprint() runs 3 seconds after init
 - Time window calculation handles midnight wraparound
 - lastPromptDate prevents re-prompt on same day
-- lastStartedDate tracks schedule use vs manual rush
+- lastStartedDate tracks schedule use vs manual sprint
 - Invalid games filtered before starting (handles removed games)
 - Cloud sync for schedule settings across devices
 
@@ -217,16 +249,16 @@ BUG FIXES FROM CODE WALKTHROUGH:
 --------------------------------
 1. Dismissing prompt now syncs to cloud (prevents re-prompt on other devices)
 2. Quick start properly updates lastStartedDate
-3. Invalid games filtered before rush start (in case games removed from GAMES object)
+3. Invalid games filtered before sprint start (in case games removed from GAMES object)
 
 CODE LOCATIONS:
 ---------------
 - Data model: line ~16943 (createDefaultData)
 - Settings UI: line ~10511 (settings-section)
-- Prompt modal: line ~13360 (scheduled-rush-prompt)
-- Config modal: line ~13390 (scheduled-rush-config-sheet)
-- Core functions: line ~25130 (toggleScheduledRush through startScheduledRush)
-- Cloud sync: line ~18980 (loadFromCloud rushSchedule merge)
+- Prompt modal: line ~13360 (scheduled-sprint-prompt)
+- Config modal: line ~13390 (scheduled-sprint-config-sheet)
+- Core functions: line ~25130 (toggleScheduledSprint through startScheduledSprint)
+- Cloud sync: line ~18980 (loadFromCloud sprintSchedule merge)
 
 ---
 
@@ -235,19 +267,19 @@ Game Shelf PWA v1.7.1 Release Notes
 
 Release Date: January 31, 2026
 
-BUG FIXES - RUSH CODE WALKTHROUGH:
+BUG FIXES - SPRINT CODE WALKTHROUGH:
 ----------------------------------
 
 1. FIXED: Race condition with Time's Up modal
    - Time's Up modal now cancels the auto-completion timeout
-   - Previously, the rush could complete while user was deciding
+   - Previously, the sprint could complete while user was deciding
    - Modal now stays visible until user chooses Record or Discard
-   - Added rushCompletionTimeout tracking variable
+   - Added sprintCompletionTimeout tracking variable
 
 2. FIXED: Firebase gamesCompleted count inaccurate
-   - Firebase now only counts games with countedInRush: true
+   - Firebase now only counts games with countedInSprint: true
    - Previously included late games that didn't actually count
-   - Rush history in Firebase now shows accurate scores
+   - Sprint history in Firebase now shows accurate scores
 
 3. FIXED: pauseUsed not set on auto-resume from background
    - When pause auto-expires during backgrounding, pauseUsed now set
@@ -255,25 +287,25 @@ BUG FIXES - RUSH CODE WALKTHROUGH:
    - More consistent pause behavior
 
 4. FIXED: No validation for empty game list
-   - Rush creation now validates at least one game is selected
+   - Sprint creation now validates at least one game is selected
    - Shows "Select at least one game" error toast
-   - Prevents creation of broken/empty rushes
+   - Prevents creation of broken/empty sprints
 
 TECHNICAL DETAILS:
 ------------------
-- rushCompletionTimeout variable tracks the 3-second completion delay
+- sprintCompletionTimeout variable tracks the 3-second completion delay
 - showTimesUpModal() now clears the timeout before displaying
-- recordRushGame() filters for countedInRush before counting
-- checkForActiveRush() sets pauseUsed = true on auto-resume
-- confirmStartRush() validates rushSelectedGames.length > 0
+- recordSprintGame() filters for countedInSprint before counting
+- checkForActiveSprint() sets pauseUsed = true on auto-resume
+- confirmStartSprint() validates sprintSelectedGames.length > 0
 
 CODE LOCATIONS:
 ---------------
-- Timeout tracking: line ~23315 (rushCompletionTimeout variable)
+- Timeout tracking: line ~23315 (sprintCompletionTimeout variable)
 - Timeout cancellation: line ~24562 (showTimesUpModal)
-- Firebase count fix: line ~23795 (recordRushGame)
-- Pause flag fix: line ~23337 (checkForActiveRush auto-resume)
-- Validation fix: line ~23212 (confirmStartRush)
+- Firebase count fix: line ~23795 (recordSprintGame)
+- Pause flag fix: line ~23337 (checkForActiveSprint auto-resume)
+- Validation fix: line ~23212 (confirmStartSprint)
 
 ---
 
@@ -282,7 +314,7 @@ Game Shelf PWA v1.7.0 Release Notes
 
 Release Date: January 31, 2026
 
-NEW FEATURES - PHASE 3: RUSH POLISH & STATS (Sessions 5-6)
+NEW FEATURES - PHASE 3: SPRINT POLISH & STATS (Sessions 5-6)
 ----------------------------------------------------------
 
 1. CONFETTI CELEBRATION FOR PERSONAL BESTS:
@@ -291,50 +323,50 @@ NEW FEATURES - PHASE 3: RUSH POLISH & STATS (Sessions 5-6)
    - PB card pulses to highlight achievement
    - Canvas-based animation with smooth 3.5-second duration
 
-2. RUSH SOUND EFFECTS:
-   - New rush-specific sounds added to SoundManager:
-     • rushStart: Energetic race-start fanfare when rush begins
-     • rushComplete: Quick satisfying ding when recording a game
-     • rushWarning: Tick-tock alert at 3 min and 1 min remaining
-     • rushTimeUp: Dramatic descending tone when rush expires
-     • rushPersonalBest: Triumphant fanfare with sparkle overlay
+2. SPRINT SOUND EFFECTS:
+   - New sprint-specific sounds added to SoundManager:
+     • sprintStart: Energetic race-start fanfare when sprint begins
+     • sprintComplete: Quick satisfying ding when recording a game
+     • sprintWarning: Tick-tock alert at 3 min and 1 min remaining
+     • sprintTimeUp: Dramatic descending tone when sprint expires
+     • sprintPersonalBest: Triumphant fanfare with sparkle overlay
    - Sounds play automatically at appropriate moments
 
-3. RUSHES SUBTAB IN STATS:
-   - New "⚡ Rushes" subtab added to Stats screen
+3. SPRINTES SUBTAB IN STATS:
+   - New "⚡ Sprints" subtab added to Stats screen
    - Personal Best Records section:
-     • Shows best games completed for 10/20/30 min rushes
+     • Shows best games completed for 10/20/30 min sprints
      • 20-min highlighted as primary/recommended duration
-     • Total rushes and completed count
-   - Rush Streak section:
+     • Total sprints and completed count
+   - Sprint Streak section:
      • Current streak with motivational status message
      • Longest streak ever achieved
-     • Today's rush status indicator
-   - Recent Rushes history:
-     • Last 15 completed rushes from Firebase
+     • Today's sprint status indicator
+   - Recent Sprints history:
+     • Last 15 completed sprints from Firebase
      • Shows date, time, duration, and games completed
-     • "Perfect" badge for rushes with all games completed
+     • "Perfect" badge for sprints with all games completed
 
 4. ENHANCED PERSONAL BEST TRACKING:
    - Warning flags prevent duplicate warning sounds
-   - rush._warned3min and rush._warned1min track sound triggers
+   - sprint._warned3min and sprint._warned1min track sound triggers
    - Celebration classes added to PB elements
 
 TECHNICAL DETAILS:
 ------------------
-- triggerRushConfetti() creates 150 particles with physics
-- Canvas element #rush-confetti-canvas positioned over modal
-- renderRushStatsTab() populates all three sections
-- renderRushHistory() loads from Firebase with pagination
+- triggerSprintConfetti() creates 150 particles with physics
+- Canvas element #sprint-confetti-canvas positioned over modal
+- renderSprintStatsTab() populates all three sections
+- renderSprintHistory() loads from Firebase with pagination
 - New CSS animations: pbPulse, trophyBounce
-- SoundManager.defaults extended with 5 new rush events
+- SoundManager.defaults extended with 5 new sprint events
 
 CODE LOCATIONS:
 ---------------
-- Confetti: triggerRushConfetti() after showRushComplete()
-- Sounds: SoundManager case statements for rush* sounds
-- Stats Tab: renderRushStatsTab(), renderRushHistory()
-- HTML: #stats-tab-rushes, #rush-confetti-canvas
+- Confetti: triggerSprintConfetti() after showSprintComplete()
+- Sounds: SoundManager case statements for sprint* sounds
+- Stats Tab: renderSprintStatsTab(), renderSprintHistory()
+- HTML: #stats-tab-sprints, #sprint-confetti-canvas
 
 ---
 
@@ -343,46 +375,46 @@ Game Shelf PWA v1.6.2 Release Notes
 
 Release Date: January 31, 2026
 
-BUG FIXES - RUSH COMPLETION (Session 4 Fixes):
+BUG FIXES - SPRINT COMPLETION (Session 4 Fixes):
 ----------------------------------------------
 
-1. FIXED: Rush not checking on app return
-   - Rush modal now properly appears when returning to the app
-   - Added checkForActiveRush() to visibilitychange handler
+1. FIXED: Sprint not checking on app return
+   - Sprint modal now properly appears when returning to the app
+   - Added checkForActiveSprint() to visibilitychange handler
 
 2. FIXED: Time's Up modal never appearing
-   - handleExpiredRushRecord() now integrated into logGame()
+   - handleExpiredSprintRecord() now integrated into logGame()
    - Late game recording properly intercepted and handled
 
 3. FIXED: Race condition with clipboard detection
-   - Delayed rush completion by 3 seconds on return
-   - Allows clipboard processing to happen before rush is cleared
+   - Delayed sprint completion by 3 seconds on return
+   - Allows clipboard processing to happen before sprint is cleared
    - Time's Up modal can now properly handle late games
 
 4. FIXED: Infinite loop in late game recording
-   - Added _recordingLateRushGame flag to prevent re-trigger
+   - Added _recordingLateSprintGame flag to prevent re-trigger
    - recordLateGame() now properly clears state before logging
 
-5. FIXED: Rush stats not syncing from cloud
-   - Added rushStats merge in loadFromCloud()
+5. FIXED: Sprint stats not syncing from cloud
+   - Added sprintStats merge in loadFromCloud()
    - Personal bests and streaks now sync across devices
 
 6. FIXED: currentUser.odometerId undefined
-   - Changed all rush code to use currentUser.uid
+   - Changed all sprint code to use currentUser.uid
    - Firebase paths now consistent with rest of app
 
 7. FIXED: saveToCloud() function didn't exist
    - Changed calls to correct syncToCloud() function
 
-8. FIXED: Abandoned rush stats not syncing
-   - abandonRush() now syncs rushStats to Firebase
+8. FIXED: Abandoned sprint stats not syncing
+   - abandonSprint() now syncs sprintStats to Firebase
 
 TECHNICAL DETAILS:
 ------------------
-- visibilitychange handler now calls checkForActiveRush()
-- 3-second delay before completing expired rush on return
-- window._recordingLateRushGame flag prevents Time's Up loop
-- rushStats merge in loadFromCloud() takes max of counts/bests
+- visibilitychange handler now calls checkForActiveSprint()
+- 3-second delay before completing expired sprint on return
+- window._recordingLateSprintGame flag prevents Time's Up loop
+- sprintStats merge in loadFromCloud() takes max of counts/bests
 - All Firebase paths use currentUser.uid consistently
 
 ---
@@ -392,10 +424,10 @@ Game Shelf PWA v1.6.1 Release Notes
 
 Release Date: January 31, 2026
 
-NEW FEATURE - RUSH COMPLETION (Session 4 Complete):
+NEW FEATURE - SPRINT COMPLETION (Session 4 Complete):
 ---------------------------------------------------
 
-1. RUSH COMPLETE MODAL:
+1. SPRINT COMPLETE MODAL:
    - Beautiful results display showing games completed
    - Per-game breakdown with times and results
    - Shows counted games (✅), missed games (❌), and skipped games (⏭️)
@@ -404,40 +436,40 @@ NEW FEATURE - RUSH COMPLETION (Session 4 Complete):
    - Share Results button for social sharing
 
 2. TIME'S UP MODAL:
-   - Appears when user returns after rush expired with a pending game
-   - Shows how long ago the rush ended
+   - Appears when user returns after sprint expired with a pending game
+   - Shows how long ago the sprint ended
    - Option to "Record Anyway" (saves to history but doesn't count)
    - Option to "Discard" the late result
    - Graceful handling of edge cases
 
-3. RUSH STATS TRACKING:
-   - New appData.rushStats object tracks rush performance
+3. SPRINT STATS TRACKING:
+   - New appData.sprintStats object tracks sprint performance
    - Personal bests tracked per duration (10/20/30 min)
-   - Streak tracking for consecutive rush days
+   - Streak tracking for consecutive sprint days
    - Stats sync to Firebase for cloud backup
 
 4. EARLY FINISH:
-   - "Finish Rush" button appears when all games done
-   - Can end rush early with confirmation
+   - "Finish Sprint" button appears when all games done
+   - Can end sprint early with confirmation
    - Stats calculated based on completed games
 
 5. IMPROVED ABANDON FLOW:
-   - Abandoned rushes now tracked in stats
+   - Abandoned sprints now tracked in stats
    - Firebase status properly updated to 'abandoned'
 
 WHAT'S NEXT:
 ------------
 - Session 5: Personal bests, celebration animations
-- Session 6: Rush history view, stats integration
-- Session 7: Group rushes with friends
+- Session 6: Sprint history view, stats integration
+- Session 7: Group sprints with friends
 
 TECHNICAL DETAILS:
 ------------------
-- completeRush() handles all completion scenarios (timer, return, early)
-- calculateRushStats() computes final game counts and times
-- saveRushStats() persists to local storage and Firebase
-- handleExpiredRushRecord() manages late game recording flow
-- showRushComplete() and showTimesUpModal() display results
+- completeSprint() handles all completion scenarios (timer, return, early)
+- calculateSprintStats() computes final game counts and times
+- saveSprintStats() persists to local storage and Firebase
+- handleExpiredSprintRecord() manages late game recording flow
+- showSprintComplete() and showTimesUpModal() display results
 - Share functionality uses native Share API with clipboard fallback
 
 ---
@@ -450,21 +482,21 @@ Release Date: January 31, 2026
 NEW FEATURE - TIMED CHALLENGES (Session 3 Complete):
 ----------------------------------------------------
 
-1. ACTIVE RUSH MODAL:
+1. ACTIVE SPRINT MODAL:
    - Beautiful gradient header with live countdown timer
    - Progress bar showing games completed vs total
    - Game list with status indicators (completed, current, pending)
    - Visual feedback: green checkmarks, purple highlight for current game
    - Timer changes color as time runs low (yellow at 3min, red at 1min)
 
-2. GAME FLOW DURING RUSH:
+2. GAME FLOW DURING SPRINT:
    - "Play [Game]" button launches the current game
    - Automatic tracking of game launch timestamps
    - Games record with full timing data (launch → record duration)
    - "Skip this game" option to move to next
-   - Rush modal reappears automatically after recording
+   - Sprint modal reappears automatically after recording
 
-3. RUSH TIMER SYSTEM:
+3. SPRINT TIMER SYSTEM:
    - Accurate countdown with mm:ss format
    - Timer continues when app is backgrounded (timestamp-based)
    - 30-second grace period after deadline
@@ -472,36 +504,36 @@ NEW FEATURE - TIMED CHALLENGES (Session 3 Complete):
    - Tap indicator to restore full modal
 
 4. PAUSE FUNCTIONALITY:
-   - One pause allowed per rush (max 5 minutes)
+   - One pause allowed per sprint (max 5 minutes)
    - Pause extends deadline by actual pause duration
    - Visual state shows when pause is used/available
    - Auto-resume after 5 minutes if still paused
 
 5. INTEGRATION WITH EXISTING SYSTEMS:
-   - Game history entries now include rush context (rushId, rushCounted)
-   - Timing data source marked as 'rush' for rush games
-   - Clipboard detection still works alongside rush modal
-   - Firebase sync for rush progress
+   - Game history entries now include sprint context (sprintId, sprintCounted)
+   - Timing data source marked as 'sprint' for sprint games
+   - Clipboard detection still works alongside sprint modal
+   - Firebase sync for sprint progress
 
 6. NEW UI COMPONENTS:
-   - .active-rush-modal - Full-screen rush control center
-   - .rush-indicator - Minimized floating timer badge
-   - .rush-game-row - Game progress list items
-   - .rush-play-btn - Primary action button
+   - .active-sprint-modal - Full-screen sprint control center
+   - .sprint-indicator - Minimized floating timer badge
+   - .sprint-game-row - Game progress list items
+   - .sprint-play-btn - Primary action button
    - Timer color states: normal, warning (yellow), critical (red)
 
 WHAT'S NEXT:
 ------------
-- Session 4: Rush completion modal, results display, stats saving
+- Session 4: Sprint completion modal, results display, stats saving
 - Session 5: Personal bests, celebration animations
-- Session 6: Rush history, stats integration
-- Session 7: Group rushes with friends
+- Session 6: Sprint history, stats integration
+- Session 7: Group sprints with friends
 
 TECHNICAL DETAILS:
 ------------------
 - Timer uses setInterval + timestamp calculation (not setTimeout)
 - Grace period: 30 seconds after deadline for late recordings
-- Rush context stored in game history for future analytics
+- Sprint context stored in game history for future analytics
 - Pause extends endsAt timestamp by actual pause duration
 - Modal minimizes to indicator, not closed, to preserve state
 
@@ -528,11 +560,11 @@ NEW FEATURE - TIMED CHALLENGES SETUP:
    - Summary card shows your configuration
    - Pro tip reminder to set a phone timer
 
-3. RUSH DATA MODEL:
-   - New Firebase schema at /rushes/{userId}/{rushId}
-   - Local state: appData.activeRush for quick access
+3. SPRINT DATA MODEL:
+   - New Firebase schema at /sprints/{userId}/{sprintId}
+   - Local state: appData.activeSprint for quick access
    - Tracks: config, participants, timing, status
-   - Ready for group rushes in future update
+   - Ready for group sprints in future update
 
 ---
 
@@ -571,7 +603,7 @@ TECHNICAL DETAILS:
 FUTURE USE:
 -----------
 This timing infrastructure is the foundation for upcoming features:
-- Timed puzzle challenges ("Time Rush" mode)
+- Timed puzzle challenges ("Time Sprint" mode)
 - Speed-based achievements
 - Competitive timing in battles
 
