@@ -14097,12 +14097,12 @@
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="bottom-sheet-handle"></div>
             <div class="bottom-sheet-header">
-                <span>⚔️ New Challenge</span>
+                <span>⚡ New Competition</span>
                 <button class="bottom-sheet-close" onclick="closeChallengeTypeSelector()">×</button>
             </div>
             
             <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
-                Choose your challenge type
+                Choose your competition type
             </p>
             
             <div class="challenge-type-option" onclick="selectChallengeType('battle')">
@@ -14117,7 +14117,7 @@
             <div class="challenge-type-option" onclick="selectChallengeType('sprint')">
                 <div class="challenge-type-icon">⚡</div>
                 <div class="challenge-type-info">
-                    <div class="challenge-type-name">Timed Challenge</div>
+                    <div class="challenge-type-name">Time Sprint</div>
                     <div class="challenge-type-desc">Race against the clock! Complete puzzles in a 10-30 minute sprint.</div>
                 </div>
                 <div class="challenge-type-arrow">›</div>
@@ -14139,7 +14139,7 @@
         <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height: 90vh; overflow-y: auto;">
             <div class="bottom-sheet-handle"></div>
             <div class="bottom-sheet-header">
-                <span>⚡ Timed Challenge</span>
+                <span>⚡ Time Sprint</span>
                 <button class="bottom-sheet-close" onclick="closeCreateSprint()">×</button>
             </div>
             
@@ -14247,7 +14247,7 @@
             
             <!-- Summary Card -->
             <div class="sprint-summary-card" id="sprint-summary-card">
-                <div class="sprint-summary-title">📋 Challenge Summary</div>
+                <div class="sprint-summary-title">📋 Sprint Summary</div>
                 <div class="sprint-summary-row">
                     <span class="sprint-summary-label">Duration</span>
                     <span class="sprint-summary-value" id="sprint-summary-duration">20 minutes</span>
@@ -14269,7 +14269,7 @@
             </div>
             
             <button id="start-sprint-btn" class="share-close-btn btn-disabled" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; margin-top: 16px; opacity: 0.5; pointer-events: none; cursor: not-allowed;" onclick="createAndStartSprint()">
-                ⚡ Start Challenge
+                ⚡ Start Sprint
             </button>
             <button class="share-close-btn" style="margin-top: 10px;" onclick="closeCreateSprint()">Cancel</button>
         </div>
@@ -14402,7 +14402,7 @@
             </div>
             
             <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px;">
-                Enter the invite code to join a friend's Time Sprint challenge.
+                Enter the invite code to join a friend's Time Sprint.
             </p>
             
             <!-- Code Input -->
@@ -14937,7 +14937,7 @@
             
             <!-- Rematch option -->
             <button style="width: 100%; margin-top: 10px; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: 10px; color: var(--text-secondary); font-size: 0.9rem; cursor: pointer;" onclick="startRematch()" id="battle-results-rematch">
-                🔄 Challenge to Rematch
+                🔄 Rematch
             </button>
         </div>
     </div>
@@ -21897,7 +21897,7 @@
                 { icon: '⚡', title: 'Rush → Sprint', desc: 'Rebranded "Time Rush" to "Time Sprint" - same great feature, friendlier name!' }
             ],
             '1.9.0': [
-                { icon: '👥', title: 'Group Sprint', desc: 'Challenge friends to race together! Create a sprint, share the invite code, and compete at the same time.' },
+                { icon: '👥', title: 'Group Sprint', desc: 'Invite friends to race together! Create a sprint, share the invite code, and compete at the same time.' },
                 { icon: '🔗', title: 'Sprint Invites', desc: 'Share invite codes or links to invite friends. Join with a code from the Create menu.' },
                 { icon: '⏰', title: 'Scheduled Start', desc: 'Set a start time up to 7 days ahead. Everyone joins the waiting room and starts together.' }
             ],
@@ -21916,9 +21916,9 @@
                 { icon: '🏆', title: 'Personal Best Tracking', desc: 'See your best games completed for 10, 20, and 30-minute sprints' }
             ],
             '1.6.0': [
-                '⚡ NEW: Timed Challenges! Race against the clock in 10-30 minute puzzle sprints',
+                '⚡ NEW: Time Sprint! Race against the clock in 10-30 minute puzzle sprints',
                 '🎯 Choose your games, set your duration, and see how many you can complete',
-                '📊 New challenge type selector when creating battles'
+                '📊 New competition type selector when creating battles or sprints'
             ],
             '1.5.0': [
                 { icon: '⏱️', title: 'Game Timing', desc: 'Track how long you take to solve puzzles - see your average, best, and recent times!' }
@@ -24507,7 +24507,7 @@
             document.getElementById('create-battle-sheet').classList.remove('active');
         }
         
-        // ============ SPRINT (TIMED CHALLENGE) SYSTEM v1.6.0 ============
+        // ============ SPRINT (TIME SPRINT) SYSTEM v1.6.0 ============
         let sprintSelectedGames = [];
         let sprintConfig = {
             durationMinutes: 20,
@@ -25033,7 +25033,7 @@
                 // Update button text for group mode
                 btn.innerHTML = '⚡ Create Group Sprint';
             } else {
-                btn.innerHTML = '⚡ Start Challenge';
+                btn.innerHTML = '⚡ Start Sprint';
             }
             
             if (canStart) {
@@ -27217,7 +27217,7 @@
                         <div style="text-align: center; padding: 30px 20px; color: var(--text-muted);">
                             <div style="font-size: 2.5rem; margin-bottom: 12px;">⚡</div>
                             <div style="font-size: 1rem; margin-bottom: 6px;">No sprints yet</div>
-                            <div style="font-size: 0.85rem;">Start a timed challenge from the Battles tab!</div>
+                            <div style="font-size: 0.85rem;">Start a sprint from the Battles tab!</div>
                         </div>
                     `;
                     return;
@@ -29146,7 +29146,7 @@
             
             if (isSoloChallenge) {
                 trophyEl.textContent = '✅';
-                titleEl.textContent = 'Challenge Complete!';
+                titleEl.textContent = 'Battle Complete!';
                 titleEl.className = 'battle-results-title participant';
             } else if (isWinner) {
                 trophyEl.textContent = '🏆';
@@ -41230,7 +41230,7 @@ Hint levels:
             {
                 id: 'time-sprint',
                 title: '⚡ Time Sprint',
-                content: 'Challenge yourself with <strong>timed puzzle sprints</strong>! Set a timer (10-30 min) and see how many games you can complete.',
+                content: 'Test yourself with <strong>timed puzzle sprints</strong>! Set a timer (10-30 min) and see how many games you can complete.',
                 target: '[data-stats-tab="sprints"]',
                 position: 'bottom',
                 action: () => { switchTab('stats'); },
@@ -41833,7 +41833,7 @@ Hint levels:
         {
           "id": "nav-subtabs",
           "q": "What are subtabs?",
-          "a": "Some tabs have **subtabs** at the top that let you switch between different views:\n\n| Tab | Subtabs |\n|-----|----------|\n| **Games** | 📚 Shelf (your games) · 🔍 Discover (browse all) |\n| **Stats** | 📊 Overview (summary) · 🎮 By Game (detailed) · ⚡ Sprints (timed challenges) |\n| **Battles** | ⚔️ Battles · 👥 Friends · 📰 Activity |\n| **Share** | 📅 Today · ✏️ Compose · 📜 History |\n\n**Home** has no subtabs—it's a single dashboard view.",
+          "a": "Some tabs have **subtabs** at the top that let you switch between different views:\n\n| Tab | Subtabs |\n|-----|----------|\n| **Games** | 📚 Shelf (your games) · 🔍 Discover (browse all) |\n| **Stats** | 📊 Overview (summary) · 🎮 By Game (detailed) · ⚡ Sprints (time sprints) |\n| **Battles** | ⚔️ Battles · 👥 Friends · 📰 Activity |\n| **Share** | 📅 Today · ✏️ Compose · 📜 History |\n\n**Home** has no subtabs—it's a single dashboard view.",
           "keywords": ["subtabs", "sub tabs", "shelf", "discover", "overview", "by game", "friends", "activity", "today", "compose", "history", "sprints"]
         },
         {
@@ -42167,7 +42167,7 @@ Hint levels:
         {
           "id": "what-time-sprint",
           "q": "What is Time Sprint?",
-          "a": "Time Sprint is a **timed challenge mode** where you race against the clock to complete puzzles.\n\n**How it works:**\n- Choose a duration (10, 20, or 30 minutes)\n- Select up to 8 games\n- Start the timer and play!\n- Complete as many games as possible before time runs out\n\n**Why try it:**\n- Adds excitement to your daily routine\n- Track personal bests for each duration\n- Build a sprint streak for consecutive days\n- Challenge yourself to improve!",
+          "a": "Time Sprint is a **timed sprint mode** where you race against the clock to complete puzzles.\n\n**How it works:**\n- Choose a duration (10, 20, or 30 minutes)\n- Select up to 8 games\n- Start the timer and play!\n- Complete as many games as possible before time runs out\n\n**Why try it:**\n- Adds excitement to your daily routine\n- Track personal bests for each duration\n- Build a sprint streak for consecutive days\n- Push yourself to improve!",
           "keywords": ["time sprint", "sprint", "timed", "challenge", "timer", "what", "clock", "race", "speed"]
         },
         {
@@ -42179,7 +42179,7 @@ Hint levels:
         {
           "id": "sprint-durations",
           "q": "What sprint durations are available?",
-          "a": "Three duration options:\n\n| Duration | Best for |\n|----------|----------|\n| **10 min** | Quick challenge, 2-4 games |\n| **20 min** | Balanced challenge (recommended) |\n| **30 min** | Extended session, 5-8 games |\n\n**20 minutes is highlighted as the primary duration** for personal best tracking. It's long enough to play several games but short enough to stay focused.\n\nPersonal bests are tracked separately for each duration.",
+          "a": "Three duration options:\n\n| Duration | Best for |\n|----------|----------|\n| **10 min** | Quick sprint, 2-4 games |\n| **20 min** | Balanced sprint (recommended) |\n| **30 min** | Extended session, 5-8 games |\n\n**20 minutes is highlighted as the primary duration** for personal best tracking. It's long enough to play several games but short enough to stay focused.\n\nPersonal bests are tracked separately for each duration.",
           "keywords": ["duration", "time", "minutes", "10", "20", "30", "how long", "length", "options"]
         },
         {
@@ -42245,7 +42245,7 @@ Hint levels:
         {
           "id": "sprint-game-order",
           "q": "What does \"Fixed\" vs \"Any\" game order mean?",
-          "a": "When creating a sprint, you choose how games are played:\n\n| Order | How it works |\n|-------|-------------|\n| **Fixed** | Must play games in the exact order shown |\n| **Any** | Play games in whatever order you want |\n\n**Fixed order:**\n- Good for a structured challenge\n- Forces you through harder games\n- Can't skip ahead to easy ones\n\n**Any order:**\n- More flexibility\n- Tackle your strongest games first\n- Save difficult ones for if you have time\n\n**Tip:** \"Any\" order is usually easier since you control the flow.",
+          "a": "When creating a sprint, you choose how games are played:\n\n| Order | How it works |\n|-------|-------------|\n| **Fixed** | Must play games in the exact order shown |\n| **Any** | Play games in whatever order you want |\n\n**Fixed order:**\n- Good for a structured sprint\n- Forces you through harder games\n- Can't skip ahead to easy ones\n\n**Any order:**\n- More flexibility\n- Tackle your strongest games first\n- Save difficult ones for if you have time\n\n**Tip:** \"Any\" order is usually easier since you control the flow.",
           "keywords": ["order", "fixed", "any", "sequence", "flexible", "choose", "arrangement"]
         }
       ]
@@ -42259,7 +42259,7 @@ Hint levels:
         {
           "id": "what-scheduled-sprint",
           "q": "What is Scheduled Sprint?",
-          "a": "Scheduled Sprint is a **daily reminder system** that prompts you to start a Time Sprint at your preferred time.\n\n**How it works:**\n- Set a time (e.g., 7:00 AM)\n- Choose which days of the week\n- Configure your sprint settings (duration, games)\n- Game Shelf prompts you automatically!\n\n**Why use it:**\n- Build a consistent sprint habit\n- Never forget your daily challenge\n- One-tap start with your saved settings",
+          "a": "Scheduled Sprint is a **daily reminder system** that prompts you to start a Time Sprint at your preferred time.\n\n**How it works:**\n- Set a time (e.g., 7:00 AM)\n- Choose which days of the week\n- Configure your sprint settings (duration, games)\n- Game Shelf prompts you automatically!\n\n**Why use it:**\n- Build a consistent sprint habit\n- Never forget your daily sprint\n- One-tap start with your saved settings",
           "keywords": ["scheduled", "schedule", "daily", "reminder", "automatic", "routine", "habit", "what"]
         },
         {
