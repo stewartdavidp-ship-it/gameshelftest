@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="version" content="1.0.12">
+    <meta name="version" content="1.0.17">
     <title>Rungs - Daily Puzzle</title>
     
     <!-- PWA Support -->
@@ -759,6 +759,40 @@
             z-index: 50;
         }
 
+        .back-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            z-index: 50;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: var(--accent-gold);
+        }
+
+        .back-btn .back-text {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 400px) {
+            .back-btn .back-text {
+                display: none;
+            }
+        }
+
         .hamburger-btn span {
             display: block;
             width: 22px;
@@ -1372,6 +1406,91 @@
         body.plain-mode #practice-mode-section {
             display: none;
         }
+        
+        /* More Games Component - Rungs purple/gold themed */
+        .more-games-prominent {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--accent-gold);
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .more-games-prominent h4 {
+            margin: 0 0 12px 0;
+            font-size: 1rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+        
+        .more-games-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .more-games-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            min-width: 85px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        
+        .more-games-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-gold);
+        }
+        
+        .more-games-card .icon {
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+        
+        .more-games-card .name {
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+        
+        .more-games-card .tagline {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            line-height: 1.2;
+        }
+        
+        .more-games-subtle {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .more-games-subtle a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .more-games-subtle a:hover {
+            text-decoration: underline;
+        }
+        
+        .more-games-subtle .separator {
+            opacity: 0.4;
+            margin: 0 6px;
+        }
     </style>
     
     <!-- Firebase SDK -->
@@ -1633,6 +1752,9 @@
 </head>
 <body>
     <div class="container" style="position: relative;">
+        <!-- Back to Game Shelf Button -->
+        <a href="https://gameshelf.co/app" class="back-btn" aria-label="Back to Game Shelf">← <span class="back-text">Game Shelf</span></a>
+        
         <!-- Menu Button -->
         <button class="hamburger-btn" onclick="openMenu()" aria-label="Menu">
             <span></span>
@@ -2156,7 +2278,7 @@
         // ============ GAME SHELF INTEGRATION MODULE v1.0.9 ============
         (function() {
             'use strict';
-            const GAMESHELF_VERSION = '1.0.12';
+            const GAMESHELF_VERSION = '1.0.17';
             if (window.GameShelfIntegration) return;
             
             window.GameShelfIntegration = {
@@ -2172,7 +2294,7 @@
                         name: config.name || gameId,
                         icon: config.icon || '🎮',
                         url: config.url || window.location.hostname,
-                        version: config.version || '1.0.12',
+                        version: config.version || '1.0.17',
                         type: config.type || 'daily',
                         ...config
                     };
@@ -2254,7 +2376,7 @@
         // ============ END GAME SHELF INTEGRATION ============
 
         // ============ CONFIGURATION ============
-        const VERSION = '1.0.12';
+        const VERSION = '1.0.17';
         const GAME_URL = 'https://rfrbrn.github.io/rungs/rungs.html'; // Update this when hosted
         const DEBUG_MODE = false; // Set to true to show test mode in menu
         
@@ -3653,6 +3775,11 @@
             setTimeout(() => {
                 playIncorrectSound();
                 soundEnabled = wasEnabled;
+                
+                // v1.0.17: Show mute reminder (browsers can't detect hardware mute)
+                setTimeout(() => {
+                    showMessage('🔇 No sound? Check if your device is muted', 'info');
+                }, 400);
             }, 600);
         }
 
@@ -4437,12 +4564,24 @@
             const result = getTodayResult();
             const stats = getStats();
             
-            if (!result) return;
-            
             gameOver = true;
             
             const modal = document.getElementById('result-modal');
             const content = document.getElementById('result-content');
+            
+            // v1.0.17: Handle case where we know user played but result is missing
+            if (!result) {
+                content.innerHTML = `
+                    <button class="modal-close-btn" onclick="closeResultModal()">&times;</button>
+                    <h2 class="success">✅ Already Played</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 15px;">You've already completed today's puzzle</p>
+                    <div class="final-result">🪜</div>
+                    ${stats.currentStreak > 1 ? `<p style="margin-top: 10px;">🔥 Current Streak: <strong>${stats.currentStreak}</strong></p>` : ''}
+                    <p style="margin-top: 20px; color: var(--text-muted);">⏰ Come back tomorrow for a new puzzle!</p>
+                `;
+                modal.classList.add('active');
+                return;
+            }
             
             const explanation = currentPuzzle ? currentPuzzle.explanation : '';
             
@@ -5082,6 +5221,61 @@
             showFinalResult(true, null, null);
         }
 
+        // ========================================
+        // MORE GAMES COMPONENT
+        // ========================================
+        const CURRENT_GAME_ID = 'rungs';
+        
+        const GS_ORIGINALS = {
+            quotle: { id: 'quotle', name: 'Quotle', icon: '💬', tagline: 'Guess the famous quote', url: 'https://gameshelf.co/quotle/' },
+            slate: { id: 'slate', name: 'Slate', icon: '🪨', tagline: 'Find 8 hidden words', url: 'https://gameshelf.co/slate/' },
+            rungs: { id: 'rungs', name: 'Rungs', icon: '🪜', tagline: 'Climb the word ladder', url: 'https://gameshelf.co/rungs/' },
+            wordboxing: { id: 'wordboxing', name: 'Word Boxing', icon: '🥊', tagline: 'Real-time word battles', url: 'https://gameshelf.co/wordboxing/' }
+        };
+        
+        function isFirstTimeMoreGames() {
+            return !localStorage.getItem(`${CURRENT_GAME_ID}_moreGamesShown`);
+        }
+        
+        function markMoreGamesShown() {
+            localStorage.setItem(`${CURRENT_GAME_ID}_moreGamesShown`, 'true');
+        }
+        
+        function getOtherGames() {
+            return Object.values(GS_ORIGINALS).filter(g => g.id !== CURRENT_GAME_ID);
+        }
+        
+        function renderMoreGames() {
+            const otherGames = getOtherGames();
+            const isFirstTime = isFirstTimeMoreGames();
+            
+            if (isFirstTime) {
+                markMoreGamesShown();
+                return `
+                    <div class="more-games-prominent">
+                        <h4>🎮 More from Game Shelf</h4>
+                        <div class="more-games-grid">
+                            ${otherGames.map(g => `
+                                <a href="${g.url}" class="more-games-card">
+                                    <span class="icon">${g.icon}</span>
+                                    <span class="name">${g.name}</span>
+                                    <span class="tagline">${g.tagline}</span>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="more-games-subtle">
+                        More games: ${otherGames.map(g => 
+                            `<a href="${g.url}">${g.icon} ${g.name}</a>`
+                        ).join('<span class="separator">•</span>')}
+                    </div>
+                `;
+            }
+        }
+
         function showFinalResult(won, results, bonusCorrect) {
             const modal = document.getElementById('result-modal');
             const content = document.getElementById('result-content');
@@ -5116,6 +5310,7 @@
                     ${tellMeMoreHTML}
                     <div class="share-text" id="share-text"></div>
                     <button class="btn btn-primary" onclick="copyShare()">Share Result</button>
+                    ${renderMoreGames()}
                 `;
                 
                 generateShareText(true, bonusCorrect);
@@ -5156,6 +5351,7 @@
                     ${tellMeMoreHTML}
                     <div class="share-text" id="share-text"></div>
                     <button class="btn btn-primary" onclick="copyShare()">Share Result</button>
+                    ${renderMoreGames()}
                 `;
                 
                 generateShareText(false, null);
@@ -5443,7 +5639,7 @@ rungs.game`;
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/gameshelftest/rungs/sw.js')
+                navigator.serviceWorker.register('/sw.js')
                     .then((reg) => {
                         console.log('[Rungs] SW registered');
                         setInterval(() => reg.update(), 3600000);
@@ -5458,24 +5654,6 @@ rungs.game`;
                     }).catch((e) => console.log('[Rungs] SW failed:', e));
             });
         }
-        let deferredInstallPrompt = null;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-            if (!window.matchMedia('(display-mode: standalone)').matches && !sessionStorage.getItem('rungs_prompted')) {
-                const b = document.createElement('div');
-                b.id = 'pwa-install-banner';
-                b.innerHTML = `<div style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#2d2535,#1a1520);color:#e8e0f0;padding:12px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;z-index:9999;max-width:90%;border:2px solid #ffd369;">
-                    <span style="font-size:1.5rem;">🪜</span>
-                    <div style="flex:1;"><div style="font-weight:600;">Install Rungs</div><div style="font-size:0.85rem;opacity:0.9;">Add to home screen</div></div>
-                    <button onclick="installPWA()" style="background:#ffd369;color:#1a1520;border:none;padding:8px 16px;border-radius:8px;font-weight:600;cursor:pointer;">Install</button>
-                    <button onclick="dismissInstall()" style="background:transparent;border:none;color:#e8e0f0;font-size:1.2rem;cursor:pointer;opacity:0.7;">✕</button>
-                </div>`;
-                document.body.appendChild(b);
-            }
-        });
-        function installPWA() { if (deferredInstallPrompt) { deferredInstallPrompt.prompt(); deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; dismissInstall(); }); } }
-        function dismissInstall() { const b = document.getElementById('pwa-install-banner'); if (b) b.remove(); sessionStorage.setItem('rungs_prompted', 'true'); }
     </script>
 </body>
 </html>
