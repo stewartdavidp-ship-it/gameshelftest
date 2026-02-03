@@ -1,6 +1,6 @@
 /**
  * Rungs PWA Service Worker
- * Version: 1.0.12
+ * Version: 1.0.17
  */
 const CACHE_VERSION = 'v1.0.17';
 const CACHE_NAME = `rungs-pwa-${CACHE_VERSION}`;

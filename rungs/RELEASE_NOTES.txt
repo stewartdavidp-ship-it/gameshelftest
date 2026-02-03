@@ -1,0 +1,93 @@
+Rungs v1.0.16
+=============
+Release Date: February 3, 2026
+
+NEW FEATURE
+-----------
+- Added "More from Game Shelf" cross-promotion on result modal
+  - Prominent card display for first-time players
+  - Subtle inline link display for returning players
+  - Links to Quotle, Slate, and Word Boxing
+  - Styled to match Rungs' purple/gold theme
+
+---
+
+Rungs v1.0.15
+=============
+Release Date: January 28, 2026
+
+PWA CHANGES
+-----------
+- Removed PWA install banner prompt
+  - PWA infrastructure retained for offline/caching
+  - Users can still install via browser menu if desired
+
+---
+
+Rungs v1.0.14
+=============
+Release Date: January 28, 2026
+
+UX IMPROVEMENTS
+---------------
+- Added mute reminder when testing sounds
+  - Shows "No sound? Check if your device is muted" after test
+  - Browsers cannot detect hardware mute state
+
+---
+
+Rungs v1.0.13
+=============
+Release Date: January 28, 2026
+
+BUG FIXES
+---------
+- Fixed state persistence when returning after completing a puzzle
+  - Previously, if todayResult was missing, showAlreadyPlayed() 
+    would silently return, leaving user with an unplayed game
+  - Now shows generic "Already Played" message even if detailed 
+    result is unavailable
+  - Ensures gameOver flag is always set when user has played today
+
+UI IMPROVEMENTS
+---------------
+- Added "← Game Shelf" back button in top-left corner
+  - Allows easy navigation back to Game Shelf portal
+  - On narrow screens, shows just "←" arrow
+
+---
+
+Rungs v1.0.12
+=============
+Release Date: January 27, 2026
+
+BUG FIX
+-------
+- Fixed rung movement direction (was reversed)
+  - Up arrow (▲) now correctly moves items visually up
+  - Down arrow (▼) now correctly moves items visually down
+  - Root cause: flex-direction: column-reverse in stack display
+
+---
+
+Rungs v1.0.11
+=============
+Release Date: January 25, 2026
+
+GAME SHELF HINT HELPER INTEGRATION
+----------------------------------
+- Added storeHintData() function
+- Automatically saves puzzle items to localStorage when game loads
+- Enables Game Shelf Hint Helper to auto-detect puzzle data
+- Exposes only the 8 items (NOT pairs, order, or theme)
+- Data stored as gameshelf_hint_data key
+
+---
+
+Rungs v1.0.17
+=============
+Release Date: February 3, 2026
+
+UX FIX
+------
+- "← Game Shelf" link now goes to /app (tracker) instead of landing page
