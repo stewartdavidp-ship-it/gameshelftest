@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <meta name="version" content="1.2.8">
+    <meta name="version" content="1.2.9">
     <title>Quotle - Daily Quote Puzzle</title>
     
     <!-- Early initialization: Set defaults and apply dark mode BEFORE any CSS renders -->
@@ -2911,7 +2911,7 @@
     <script>
     /**
      * RB Games Authentication & Cloud Sync Module
-     * Version: 1.2.8 - Realtime Database
+     * Version: 1.2.9 - Realtime Database
      */
     const GSAuth = (function() {
         'use strict';
@@ -3603,7 +3603,7 @@
                     <p><strong>Quote #:</strong> <span id="current-quote-number">Loading...</span></p>
                     <p><strong>Total Quotes:</strong> 365</p>
                     <p><strong>Days Live:</strong> <span id="days-since-launch">Loading...</span></p>
-                    <p><strong>Version:</strong> v1.2.8</p>
+                    <p><strong>Version:</strong> v1.2.9</p>
                 </div>
                 <p style="margin-top: 10px; font-size: 0.85rem; color: var(--slate); line-height: 1.5;">
                     A daily quote guessing game featuring wisdom from ancient philosophers to modern thinkers - spanning over 2,500 years of human thought.
@@ -3888,10 +3888,10 @@
 
     <!-- Game Shelf Integration Module -->
     <script>
-        // ============ GAME SHELF INTEGRATION MODULE v1.2.8 ============
+        // ============ GAME SHELF INTEGRATION MODULE v1.2.9 ============
         (function() {
             'use strict';
-            const GAMESHELF_VERSION = '1.2.8';
+            const GAMESHELF_VERSION = '1.2.9';
             if (window.GameShelfIntegration) return;
             
             window.GameShelfIntegration = {
@@ -3907,7 +3907,7 @@
                         name: config.name || gameId,
                         icon: config.icon || '🎮',
                         url: config.url || window.location.hostname,
-                        version: config.version || '1.2.8',
+                        version: config.version || '1.2.9',
                         type: config.type || 'daily',
                         ...config
                     };
@@ -8815,7 +8815,7 @@
                 playIncorrectSound();
                 soundEnabled = wasEnabled;
                 
-                // v1.2.8: Show mute reminder (browsers can't detect hardware mute)
+                // v1.2.9: Show mute reminder (browsers can't detect hardware mute)
                 setTimeout(() => {
                     showMessage('🔇 No sound? Check if your device is muted', 'info');
                 }, 400);
@@ -9008,7 +9008,7 @@
         }
         
         function checkFirstTimePlayer() {
-            // v1.2.8: Don't show tutorial if user has already played today
+            // v1.2.9: Don't show tutorial if user has already played today
             const todayResult = getTodayResult();
             if (todayResult && todayResult.date === getTodayString()) {
                 // User has played today - show already played screen instead
@@ -9627,7 +9627,7 @@
             
             // Reset game area
             document.getElementById('game-area').style.display = 'block';
-            document.getElementById('game-area').style.flex = '1'; // v1.2.8: Restore flex for new game
+            document.getElementById('game-area').style.flex = '1'; // v1.2.9: Restore flex for new game
             document.getElementById('game-over-screen').style.display = 'none';
             document.getElementById('game-over-screen').innerHTML = '';
             document.getElementById('feedback-list').innerHTML = '';
@@ -10346,7 +10346,7 @@
             document.getElementById('game-over-screen').style.display = 'none';
             document.getElementById('game-over-screen').innerHTML = '';
             document.getElementById('game-area').style.display = 'block';
-            document.getElementById('game-area').style.flex = '1'; // v1.2.8: Restore flex for new game
+            document.getElementById('game-area').style.flex = '1'; // v1.2.9: Restore flex for new game
             document.getElementById('submit-btn').disabled = false;
             
             // Show the guess section
@@ -10382,7 +10382,7 @@
             const todayResult = getTodayResult();
             const stats = getStats();
             
-            // v1.2.8: Handle case where we know user played but result is missing
+            // v1.2.9: Handle case where we know user played but result is missing
             if (!todayResult) {
                 gameOver = true;
                 document.getElementById('game-area').style.display = 'none';
@@ -11413,7 +11413,7 @@
                 locationHint.style.display = 'none';
             }
             
-            // v1.2.8: Collapse game-area flex so results aren't pushed down
+            // v1.2.9: Collapse game-area flex so results aren't pushed down
             const gameArea = document.getElementById('game-area');
             if (gameArea) {
                 gameArea.style.flex = 'none';
