@@ -1,0 +1,85 @@
+Slate v1.0.17
+=============
+Release Date: February 3, 2026
+
+NEW FEATURE
+-----------
+- Added "More from Game Shelf" cross-promotion on game over screen
+  - Prominent card display for first-time players
+  - Subtle inline link display for returning players
+  - Links to Quotle, Rungs, and Word Boxing
+  - Styled to match Slate's chalkboard green theme
+
+---
+
+Slate v1.0.16
+=============
+Release Date: January 28, 2026
+
+BUG FIX
+-------
+- Fixed wrong word clearing after game ends
+  - When a wrong guess pushes score over 50, game ends and fills in answers
+  - Previously, the 800ms "clear wrong word" timeout would run AFTER
+    game end, wiping out the revealed answer on the row being edited
+  - Now skips clearing if gameOver is already true
+
+---
+
+Slate v1.0.15
+=============
+Release Date: January 28, 2026
+
+PWA CHANGES
+-----------
+- Removed PWA install banner prompt
+  - PWA infrastructure retained for offline/caching
+  - Users can still install via browser menu if desired
+
+---
+
+Slate v1.0.14
+=============
+Release Date: January 28, 2026
+
+UX IMPROVEMENTS
+---------------
+- Added mute reminder when testing sounds
+  - Shows "No sound? Check if your device is muted" after test
+  - Browsers cannot detect hardware mute state
+
+---
+
+Slate v1.0.13
+=============
+Release Date: January 28, 2026
+
+UI IMPROVEMENTS
+---------------
+- Added "← Game Shelf" back button in header
+  - Allows easy navigation back to Game Shelf portal
+  - On narrow screens, shows just "←" arrow
+
+---
+
+Slate v1.0.12
+=============
+Release Date: January 25, 2026
+
+GAME SHELF HINT HELPER INTEGRATION
+----------------------------------
+- Added storeHintData() function
+- Automatically saves progress to localStorage when game loads
+- Enables Game Shelf Hint Helper to auto-detect puzzle data
+- Exposes puzzle #, words completed, current row (NOT the words)
+- Data stored as gameshelf_hint_data key
+
+---
+
+Slate v1.0.18
+=============
+Release Date: February 3, 2026
+
+UX FIX
+------
+- "← Game Shelf" link now goes to /app (tracker) instead of landing page
