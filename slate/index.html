@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="1.0.12">
+    <meta name="version" content="1.0.18">
     <title>Slate - Daily Word Challenge</title>
     
     <!-- PWA Support -->
@@ -80,6 +80,43 @@
             border-bottom: 3px solid rgba(255,255,255,0.1);
             padding-bottom: 20px;
             position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(90,125,90,0.3);
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #f4e4c1;
+            cursor: pointer;
+            padding: 8px 12px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .back-button:hover {
+            background: rgba(90,125,90,0.5);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .back-button .back-text {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        @media (max-width: 400px) {
+            .back-button .back-text {
+                display: none;
+            }
         }
 
         .menu-button {
@@ -1510,6 +1547,94 @@
         body.plain-mode #practice-mode-section {
             display: none;
         }
+        
+        /* More Games Component - Slate chalkboard themed */
+        .more-games-prominent {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(90,125,90,0.2);
+            border: 2px solid rgba(90,125,90,0.4);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .more-games-prominent h4 {
+            margin: 0 0 12px 0;
+            font-size: 1rem;
+            font-family: 'Permanent Marker', cursive;
+            color: #f4e4c1;
+            font-weight: normal;
+        }
+        
+        .more-games-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .more-games-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(244,228,193,0.2);
+            border-radius: 8px;
+            text-decoration: none;
+            color: #f4e4c1;
+            min-width: 85px;
+            transition: transform 0.2s, background 0.2s;
+        }
+        
+        .more-games-card:hover {
+            transform: translateY(-2px);
+            background: rgba(0,0,0,0.4);
+            border-color: rgba(244,228,193,0.4);
+        }
+        
+        .more-games-card .icon {
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+        
+        .more-games-card .name {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+        
+        .more-games-card .tagline {
+            font-size: 0.65rem;
+            opacity: 0.7;
+            line-height: 1.2;
+            color: #a8b896;
+        }
+        
+        .more-games-subtle {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: rgba(90,125,90,0.15);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #a8b896;
+        }
+        
+        .more-games-subtle a {
+            color: #a8d5a8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .more-games-subtle a:hover {
+            text-decoration: underline;
+        }
+        
+        .more-games-subtle .separator {
+            opacity: 0.4;
+            margin: 0 6px;
+        }
     </style>
     
     <!-- Firebase SDK -->
@@ -1799,6 +1924,7 @@
 <body>
     <div class="container">
         <div class="header">
+            <a href="https://gameshelf.co/app" class="back-button" aria-label="Back to Game Shelf">← <span class="back-text">Game Shelf</span></a>
             <button class="menu-button" onclick="openMenu()" aria-label="Menu">&#9776;</button>
             <div class="sync-indicator" id="sync-indicator" onclick="openMenu()" title="Cloud sync status">&#9729;</div>
             <h1>SLATE</h1>
@@ -2165,7 +2291,7 @@
             <!-- 7. GAME INFO -->
             <h3>ℹ️ Game Info</h3>
             <p><strong>Puzzle:</strong> <span id="puzzle-date">Daily</span></p>
-            <p><strong>Version:</strong> v1.0.12</p>
+            <p><strong>Version:</strong> v1.0.18</p>
             <p style="font-size: 0.85rem; color: #a8b896; margin-top: 8px;">A daily word puzzle game. New words every day at midnight!</p>
             
             <!-- 8. DATA -->
@@ -2270,10 +2396,10 @@
     </div>
 
     <script>
-        // ============ GAME SHELF INTEGRATION MODULE v1.0.12 ============
+        // ============ GAME SHELF INTEGRATION MODULE v1.0.18 ============
         (function() {
             'use strict';
-            const GAMESHELF_VERSION = '1.0.12';
+            const GAMESHELF_VERSION = '1.0.18';
             if (window.GameShelfIntegration) return;
             
             window.GameShelfIntegration = {
@@ -2289,7 +2415,7 @@
                         name: config.name || gameId,
                         icon: config.icon || '🎮',
                         url: config.url || window.location.hostname,
-                        version: config.version || '1.0.12',
+                        version: config.version || '1.0.18',
                         type: config.type || 'daily',
                         ...config
                     };
@@ -2753,6 +2879,11 @@
             setTimeout(() => {
                 playErrorSound();
                 soundEnabled = wasEnabled;
+                
+                // v1.0.14: Show mute reminder (browsers can't detect hardware mute)
+                setTimeout(() => {
+                    showMessage('🔇 No sound? Check if your device is muted', 'info');
+                }, 400);
             }, 500);
         }
         
@@ -3903,6 +4034,9 @@
                 }
                 
                 setTimeout(() => {
+                    // v1.0.18: Don't clear if game ended (letters already filled by checkPointLimit)
+                    if (gameOver) return;
+                    
                     for (let i = 0; i < 5; i++) {
                         const cell = document.querySelector(`[data-row="${rowIndex}"][data-col="${i}"]`);
                         cell.style.background = '';
@@ -4080,6 +4214,61 @@
             }, 2000);
         }
 
+        // ========================================
+        // MORE GAMES COMPONENT
+        // ========================================
+        const CURRENT_GAME_ID = 'slate';
+        
+        const GS_ORIGINALS = {
+            quotle: { id: 'quotle', name: 'Quotle', icon: '💬', tagline: 'Guess the famous quote', url: 'https://gameshelf.co/quotle/' },
+            slate: { id: 'slate', name: 'Slate', icon: '🪨', tagline: 'Find 8 hidden words', url: 'https://gameshelf.co/slate/' },
+            rungs: { id: 'rungs', name: 'Rungs', icon: '🪜', tagline: 'Climb the word ladder', url: 'https://gameshelf.co/rungs/' },
+            wordboxing: { id: 'wordboxing', name: 'Word Boxing', icon: '🥊', tagline: 'Real-time word battles', url: 'https://gameshelf.co/wordboxing/' }
+        };
+        
+        function isFirstTimeMoreGames() {
+            return !localStorage.getItem(`${CURRENT_GAME_ID}_moreGamesShown`);
+        }
+        
+        function markMoreGamesShown() {
+            localStorage.setItem(`${CURRENT_GAME_ID}_moreGamesShown`, 'true');
+        }
+        
+        function getOtherGames() {
+            return Object.values(GS_ORIGINALS).filter(g => g.id !== CURRENT_GAME_ID);
+        }
+        
+        function renderMoreGames() {
+            const otherGames = getOtherGames();
+            const isFirstTime = isFirstTimeMoreGames();
+            
+            if (isFirstTime) {
+                markMoreGamesShown();
+                return `
+                    <div class="more-games-prominent">
+                        <h4>🎮 More from Game Shelf</h4>
+                        <div class="more-games-grid">
+                            ${otherGames.map(g => `
+                                <a href="${g.url}" class="more-games-card">
+                                    <span class="icon">${g.icon}</span>
+                                    <span class="name">${g.name}</span>
+                                    <span class="tagline">${g.tagline}</span>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="more-games-subtle">
+                        More games: ${otherGames.map(g => 
+                            `<a href="${g.url}">${g.icon} ${g.name}</a>`
+                        ).join('<span class="separator">•</span>')}
+                    </div>
+                `;
+            }
+        }
+
         function endGame(won = true) {
             const gameOverEl = document.getElementById('game-over');
             gameOverEl.style.display = 'block';
@@ -4241,6 +4430,8 @@
                             33-40 = Competent | 41-48 = Developing | 49 = Completed
                         </div>
                     </div>
+                    
+                    ${renderMoreGames()}
                     
                     <div style="font-size: 0.95rem; color: #a8b896; margin-top: 25px; line-height: 1.6;">
                         ⏰ Come back tomorrow for a new puzzle!
@@ -4548,7 +4739,7 @@ slate.game`;
             name: 'Slate',
             icon: '🪨',
             url: 'slate.game',
-            version: '1.0.12',
+            version: '1.0.18',
             type: 'daily'
         });
 
@@ -4569,7 +4760,7 @@ slate.game`;
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/gameshelftest/slate/sw.js')
+                navigator.serviceWorker.register('/sw.js')
                     .then((registration) => {
                         console.log('[Slate] SW registered');
                         setInterval(() => registration.update(), 60 * 60 * 1000);
@@ -4588,35 +4779,6 @@ slate.game`;
             });
         }
         
-        // PWA Install Prompt
-        let deferredInstallPrompt = null;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-            if (!window.matchMedia('(display-mode: standalone)').matches && !sessionStorage.getItem('slate_install_prompted')) {
-                const banner = document.createElement('div');
-                banner.id = 'pwa-install-banner';
-                banner.innerHTML = `
-                    <div style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#2a4a3a,#1a3a2a);color:#e8e6e3;padding:12px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;z-index:9999;font-family:'Roboto Mono',monospace;max-width:90%;border:2px solid #6d5d45;">
-                        <span style="font-size:1.5rem;">📝</span>
-                        <div style="flex:1;"><div style="font-weight:600;">Install Slate</div><div style="font-size:0.85rem;opacity:0.9;">Add to home screen</div></div>
-                        <button onclick="installPWA()" style="background:#e8e6e3;color:#1a3a2a;border:none;padding:8px 16px;border-radius:8px;font-weight:600;cursor:pointer;">Install</button>
-                        <button onclick="dismissInstallBanner()" style="background:transparent;border:none;color:#e8e6e3;font-size:1.2rem;cursor:pointer;padding:4px;opacity:0.7;">✕</button>
-                    </div>`;
-                document.body.appendChild(banner);
-            }
-        });
-        function installPWA() {
-            if (deferredInstallPrompt) {
-                deferredInstallPrompt.prompt();
-                deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; dismissInstallBanner(); });
-            }
-        }
-        function dismissInstallBanner() {
-            const banner = document.getElementById('pwa-install-banner');
-            if (banner) banner.remove();
-            sessionStorage.setItem('slate_install_prompted', 'true');
-        }
     </script>
 </body>
 </html>
