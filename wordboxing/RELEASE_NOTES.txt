@@ -83,6 +83,20 @@ UX FIX
 
 ---
 
+Word Boxing v1.0.19
+==================
+Release Date: February 3, 2026
+
+REQUIRE SIGN-IN FOR ONLINE PLAY
+-------------------------------
+- Users must be signed in to create, join, or find online games
+- Shows error message "Please sign in to play online" if not authenticated
+- Fixes issue where games could be created but Firebase security rules
+  would block them from being found by other players
+- Pass & Play (local) mode still works without sign-in
+
+---
+
 Word Boxing v1.0.18
 ==================
 Release Date: February 3, 2026

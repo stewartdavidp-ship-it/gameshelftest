@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="1.0.18">
+    <meta name="version" content="1.0.19">
     <title>Word Boxing 🥊</title>
-    <!-- Version 1.0.18 -->
+    <!-- Version 1.0.19 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥊</text></svg>">
     
     <!-- PWA Support -->
@@ -3759,7 +3759,7 @@
 
             <!-- 6. GAME INFO -->
             <div class="settings-version">
-                Word Boxing v1.0.18<br>
+                Word Boxing v1.0.19<br>
                 <span style="font-size: 0.7rem;">© 2026 RB Games</span>
             </div>
         </div>
@@ -3862,7 +3862,7 @@
         </div>
     </div>
 
-    <div class="version">v1.0.18 &bull; Word Boxing</div>
+    <div class="version">v1.0.19 &bull; Word Boxing</div>
 
     <script>
         // ============ GAME SHELF INTEGRATION MODULE v1.0.13 ============
@@ -5362,6 +5362,12 @@
         // ============ ONLINE MULTIPLAYER ============
 
         function createGame() {
+            // v1.0.19: Require sign-in for online multiplayer
+            if (!currentUser) {
+                showMessage('Please sign in to play online', 'error');
+                return;
+            }
+            
             gameState.gameCode = generateGameCode();
             gameState.myRole = 'red';
             gameState.status = 'waiting';
@@ -5455,6 +5461,12 @@
         }
         
         function createPublicGame() {
+            // v1.0.19: Require sign-in for online multiplayer
+            if (!currentUser) {
+                showMessage('Please sign in to play online', 'error');
+                return;
+            }
+            
             gameState.gameCode = generateGameCode();
             gameState.myRole = 'red';
             gameState.status = 'waiting';
@@ -5831,6 +5843,12 @@
         }
 
         function joinGame() {
+            // v1.0.19: Require sign-in for online multiplayer
+            if (!currentUser) {
+                showMessage('Please sign in to play online', 'error');
+                return;
+            }
+            
             const code = getEnteredCode();
             gameState.gameCode = code;
             gameState.myRole = 'blue';
@@ -7789,7 +7807,7 @@
             // Build debug report (sanitized - no actual words)
             const report = {
                 timestamp: Date.now(),
-                version: '1.0.18',
+                version: '1.0.19',
                 gameCode: gameState.gameCode || null,
                 
                 // User info
@@ -9340,7 +9358,7 @@ wordboxing.com`;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Word Boxing v1.0.18 - Hide back-to-gs on desktop');
+            console.log('Word Boxing v1.0.19 - Require sign-in for online play');
             console.log('Device ID:', deviceId);
             console.log('Firebase ready:', isFirebaseReady);
 
@@ -9349,7 +9367,7 @@ wordboxing.com`;
                 name: 'Word Boxing',
                 icon: '🥊',
                 url: 'wordboxing.com',
-                version: '1.0.18',
+                version: '1.0.19',
                 type: 'multiplayer'
             });
 
