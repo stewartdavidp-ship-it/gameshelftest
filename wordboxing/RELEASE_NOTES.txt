@@ -83,6 +83,19 @@ UX FIX
 
 ---
 
+Word Boxing v1.0.20
+==================
+Release Date: February 3, 2026
+
+REMOVE BACK-TO-GAMESHELF LINK
+-----------------------------
+- Removed the "← Game Shelf" circle/link from the UI entirely
+- Word Boxing is a multiplayer game, not a daily puzzle
+- Users don't need quick access back to Game Shelf tracker
+- Simplifies the header area (now just: user info, Online status, menu)
+
+---
+
 Word Boxing v1.0.19
 ==================
 Release Date: February 3, 2026

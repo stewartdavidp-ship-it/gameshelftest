@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="1.0.19">
+    <meta name="version" content="1.0.20">
     <title>Word Boxing 🥊</title>
-    <!-- Version 1.0.19 -->
+    <!-- Version 1.0.20 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥊</text></svg>">
     
     <!-- PWA Support -->
@@ -2305,48 +2305,6 @@
             z-index: 100;
         }
 
-        .back-to-gs {
-            position: fixed;
-            top: calc(env(safe-area-inset-top, 0px) + 10px);
-            right: calc(env(safe-area-inset-right, 0px) + 60px);
-            padding: 6px 12px;
-            font-family: 'Oswald', sans-serif;
-            font-size: 0.75rem;
-            background: rgba(255,215,0,0.15);
-            color: var(--gold);
-            border: 1px solid var(--gold);
-            border-radius: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-            text-decoration: none;
-            z-index: 100;
-        }
-        
-        /* Hide back-to-gs on desktop - users can use browser back or menu */
-        @media (min-width: 600px) {
-            .back-to-gs {
-                display: none;
-            }
-        }
-
-        .back-to-gs:hover {
-            background: rgba(255,215,0,0.25);
-            transform: scale(1.05);
-        }
-
-        .back-to-gs .back-text {
-            font-size: 0.7rem;
-        }
-
-        @media (max-width: 400px) {
-            .back-to-gs .back-text {
-                display: none;
-            }
-        }
-
         .user-avatar {
             width: 36px;
             height: 36px;
@@ -3157,9 +3115,6 @@
         </div>
     </div>
 
-    <!-- Back to Game Shelf (Top Right) -->
-    <a href="https://gameshelf.co/app" class="back-to-gs" aria-label="Back to Game Shelf">← <span class="back-text">Game Shelf</span></a>
-
     <!-- Menu Button -->
     <button class="menu-btn" onclick="toggleSettingsMenu()" title="Menu">
         <svg viewBox="0 0 24 24" fill="none">
@@ -3759,7 +3714,7 @@
 
             <!-- 6. GAME INFO -->
             <div class="settings-version">
-                Word Boxing v1.0.19<br>
+                Word Boxing v1.0.20<br>
                 <span style="font-size: 0.7rem;">© 2026 RB Games</span>
             </div>
         </div>
@@ -3862,7 +3817,7 @@
         </div>
     </div>
 
-    <div class="version">v1.0.19 &bull; Word Boxing</div>
+    <div class="version">v1.0.20 &bull; Word Boxing</div>
 
     <script>
         // ============ GAME SHELF INTEGRATION MODULE v1.0.13 ============
@@ -5362,7 +5317,7 @@
         // ============ ONLINE MULTIPLAYER ============
 
         function createGame() {
-            // v1.0.19: Require sign-in for online multiplayer
+            // v1.0.20: Require sign-in for online multiplayer
             if (!currentUser) {
                 showMessage('Please sign in to play online', 'error');
                 return;
@@ -5461,7 +5416,7 @@
         }
         
         function createPublicGame() {
-            // v1.0.19: Require sign-in for online multiplayer
+            // v1.0.20: Require sign-in for online multiplayer
             if (!currentUser) {
                 showMessage('Please sign in to play online', 'error');
                 return;
@@ -5843,7 +5798,7 @@
         }
 
         function joinGame() {
-            // v1.0.19: Require sign-in for online multiplayer
+            // v1.0.20: Require sign-in for online multiplayer
             if (!currentUser) {
                 showMessage('Please sign in to play online', 'error');
                 return;
@@ -7807,7 +7762,7 @@
             // Build debug report (sanitized - no actual words)
             const report = {
                 timestamp: Date.now(),
-                version: '1.0.19',
+                version: '1.0.20',
                 gameCode: gameState.gameCode || null,
                 
                 // User info
@@ -9358,7 +9313,7 @@ wordboxing.com`;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Word Boxing v1.0.19 - Require sign-in for online play');
+            console.log('Word Boxing v1.0.20 - Remove back-to-GS link');
             console.log('Device ID:', deviceId);
             console.log('Firebase ready:', isFirebaseReady);
 
@@ -9367,7 +9322,7 @@ wordboxing.com`;
                 name: 'Word Boxing',
                 icon: '🥊',
                 url: 'wordboxing.com',
-                version: '1.0.19',
+                version: '1.0.20',
                 type: 'multiplayer'
             });
 
