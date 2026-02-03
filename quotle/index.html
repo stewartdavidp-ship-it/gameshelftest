@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <meta name="version" content="1.2.2">
+    <meta name="version" content="1.2.8">
     <title>Quotle - Daily Quote Puzzle</title>
     
     <!-- Early initialization: Set defaults and apply dark mode BEFORE any CSS renders -->
@@ -1300,7 +1300,52 @@
             right: 20px;
             display: flex;
             gap: 15px;
-            z-index: 10;
+            z-index: 100;
+        }
+        
+        .back-to-gs {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 18px;
+            background: var(--card-bg, white);
+            border: 2px solid var(--burgundy);
+            color: var(--burgundy);
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 3px 3px 0 var(--shadow-color, rgba(0,0,0,0.1));
+            touch-action: manipulation;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 100;
+        }
+        
+        .back-to-gs:hover {
+            background: var(--burgundy);
+            color: white;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 var(--shadow-color, rgba(0,0,0,0.15));
+        }
+        
+        .back-to-gs .back-text {
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .back-to-gs .back-text {
+                display: none;
+            }
+            .back-to-gs {
+                padding: 8px 10px;
+                font-size: 1.2rem;
+            }
         }
         
         .menu-btn {
@@ -1316,6 +1361,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             box-shadow: 3px 3px 0 var(--shadow-color, rgba(0,0,0,0.1));
+            touch-action: manipulation;
         }
         
         .menu-btn:hover {
@@ -1397,11 +1443,9 @@
         }
         
         .modal-close {
-            position: sticky;
+            position: absolute;
             top: 10px;
-            float: right;
-            margin-top: -30px;
-            margin-right: -10px;
+            right: 10px;
             background: var(--burgundy);
             border: none;
             border-radius: 50%;
@@ -1410,12 +1454,13 @@
             color: white;
             line-height: 1;
             padding: 0;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 10;
+            touch-action: manipulation;
         }
         
         .modal-close:hover {
@@ -1734,6 +1779,14 @@
                 position: fixed;
                 top: calc(env(safe-area-inset-top, 0px) + 10px);
                 right: calc(env(safe-area-inset-right, 0px) + 10px);
+                z-index: 100;
+            }
+            
+            .back-to-gs {
+                position: fixed;
+                top: calc(env(safe-area-inset-top, 0px) + 10px);
+                left: calc(env(safe-area-inset-left, 0px) + 10px);
+                z-index: 100;
             }
             
             /* Hide "Menu" text on mobile, show only icon */
@@ -2736,6 +2789,117 @@
         [data-theme="dark"] .step-dot.active {
             background: #c93a4e;
         }
+        
+        /* More Games Component - Quotle themed */
+        .more-games-prominent {
+            margin-top: 18px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(139,38,53,0.08) 0%, rgba(212,175,55,0.08) 100%);
+            border: 2px solid var(--burgundy);
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .more-games-prominent h4 {
+            margin: 0 0 12px 0;
+            font-size: 1rem;
+            font-family: 'Playfair Display', serif;
+            color: var(--burgundy);
+            font-weight: 600;
+        }
+        
+        .more-games-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .more-games-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--cream);
+            border: 2px solid var(--ink);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--ink);
+            min-width: 85px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .more-games-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139,38,53,0.2);
+        }
+        
+        .more-games-card .icon {
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+        
+        .more-games-card .name {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+        
+        .more-games-card .tagline {
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.65rem;
+            opacity: 0.7;
+            line-height: 1.2;
+        }
+        
+        .more-games-subtle {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: rgba(139,38,53,0.08);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-family: 'Source Serif 4', serif;
+        }
+        
+        .more-games-subtle a {
+            color: var(--burgundy);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .more-games-subtle a:hover {
+            text-decoration: underline;
+        }
+        
+        .more-games-subtle .separator {
+            opacity: 0.4;
+            margin: 0 6px;
+        }
+        
+        [data-theme="dark"] .more-games-prominent {
+            background: linear-gradient(135deg, rgba(212,98,122,0.12) 0%, rgba(255,211,105,0.08) 100%);
+            border-color: var(--burgundy);
+        }
+        
+        [data-theme="dark"] .more-games-prominent h4 {
+            color: var(--burgundy);
+        }
+        
+        [data-theme="dark"] .more-games-card {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.15);
+            color: var(--cream);
+        }
+        
+        [data-theme="dark"] .more-games-subtle {
+            background: rgba(212,98,122,0.15);
+        }
+        
+        [data-theme="dark"] .more-games-subtle a {
+            color: var(--burgundy);
+        }
     </style>
     
     <!-- Firebase SDK (required for cloud sync) -->
@@ -2747,7 +2911,7 @@
     <script>
     /**
      * RB Games Authentication & Cloud Sync Module
-     * Version: 1.2.2 - Realtime Database
+     * Version: 1.2.8 - Realtime Database
      */
     const GSAuth = (function() {
         'use strict';
@@ -3217,6 +3381,9 @@
         }
     </script>
     <div class="container">
+        <!-- Back to Game Shelf button (left side) -->
+        <a href="https://gameshelf.co/app" class="back-to-gs" aria-label="Back to Game Shelf">← <span class="back-text">Game Shelf</span></a>
+        
         <div class="menu-bar">
             <button class="menu-btn" type="button" onclick="openAchievementsModal()" aria-label="View Achievements">🏆<span class="menu-text"> Achievements</span></button>
             <div class="sync-indicator" id="sync-indicator" onclick="openDifficultyModal()" title="Cloud sync status" style="display: none;">
@@ -3436,7 +3603,7 @@
                     <p><strong>Quote #:</strong> <span id="current-quote-number">Loading...</span></p>
                     <p><strong>Total Quotes:</strong> 365</p>
                     <p><strong>Days Live:</strong> <span id="days-since-launch">Loading...</span></p>
-                    <p><strong>Version:</strong> v1.2.2</p>
+                    <p><strong>Version:</strong> v1.2.8</p>
                 </div>
                 <p style="margin-top: 10px; font-size: 0.85rem; color: var(--slate); line-height: 1.5;">
                     A daily quote guessing game featuring wisdom from ancient philosophers to modern thinkers - spanning over 2,500 years of human thought.
@@ -3721,10 +3888,10 @@
 
     <!-- Game Shelf Integration Module -->
     <script>
-        // ============ GAME SHELF INTEGRATION MODULE v1.2.2 ============
+        // ============ GAME SHELF INTEGRATION MODULE v1.2.8 ============
         (function() {
             'use strict';
-            const GAMESHELF_VERSION = '1.2.2';
+            const GAMESHELF_VERSION = '1.2.8';
             if (window.GameShelfIntegration) return;
             
             window.GameShelfIntegration = {
@@ -3740,7 +3907,7 @@
                         name: config.name || gameId,
                         icon: config.icon || '🎮',
                         url: config.url || window.location.hostname,
-                        version: config.version || '1.2.2',
+                        version: config.version || '1.2.8',
                         type: config.type || 'daily',
                         ...config
                     };
@@ -8647,6 +8814,11 @@
             setTimeout(() => {
                 playIncorrectSound();
                 soundEnabled = wasEnabled;
+                
+                // v1.2.8: Show mute reminder (browsers can't detect hardware mute)
+                setTimeout(() => {
+                    showMessage('🔇 No sound? Check if your device is muted', 'info');
+                }, 400);
             }, 600);
         }
         
@@ -8836,6 +9008,14 @@
         }
         
         function checkFirstTimePlayer() {
+            // v1.2.8: Don't show tutorial if user has already played today
+            const todayResult = getTodayResult();
+            if (todayResult && todayResult.date === getTodayString()) {
+                // User has played today - show already played screen instead
+                showAlreadyPlayed();
+                return;
+            }
+            
             // Show tutorial choice for first-time players
             if (!tutorialCompleted && showTutorialOnStart) {
                 showTutorialChoice();
@@ -9447,7 +9627,7 @@
             
             // Reset game area
             document.getElementById('game-area').style.display = 'block';
-            document.getElementById('game-area').style.flex = '1'; // v1.2.2: Restore flex for new game
+            document.getElementById('game-area').style.flex = '1'; // v1.2.8: Restore flex for new game
             document.getElementById('game-over-screen').style.display = 'none';
             document.getElementById('game-over-screen').innerHTML = '';
             document.getElementById('feedback-list').innerHTML = '';
@@ -10166,7 +10346,7 @@
             document.getElementById('game-over-screen').style.display = 'none';
             document.getElementById('game-over-screen').innerHTML = '';
             document.getElementById('game-area').style.display = 'block';
-            document.getElementById('game-area').style.flex = '1'; // v1.2.2: Restore flex for new game
+            document.getElementById('game-area').style.flex = '1'; // v1.2.8: Restore flex for new game
             document.getElementById('submit-btn').disabled = false;
             
             // Show the guess section
@@ -10201,6 +10381,26 @@
         function showAlreadyPlayed() {
             const todayResult = getTodayResult();
             const stats = getStats();
+            
+            // v1.2.8: Handle case where we know user played but result is missing
+            if (!todayResult) {
+                gameOver = true;
+                document.getElementById('game-area').style.display = 'none';
+                const gameOverScreen = document.getElementById('game-over-screen');
+                gameOverScreen.style.display = 'block';
+                gameOverScreen.innerHTML = `
+                    <div class="game-over">
+                        <h2>✅ Already Played</h2>
+                        <p style="margin-bottom: 20px;">You've already completed today's puzzle</p>
+                        ${stats.currentStreak > 1 ? `<p>🔥 Current Streak: <strong>${stats.currentStreak}</strong></p>` : ''}
+                        <div style="margin-top: 20px; padding: 15px; background: var(--cream); border: 2px solid var(--ink); border-radius: 8px;">
+                            <div style="font-size: 0.9rem; margin-bottom: 5px;">Next puzzle in:</div>
+                            <div style="font-size: 1.5rem; font-weight: bold; font-family: 'Playfair Display', serif;">${getTimeUntilMidnight()}</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
             
             // Set current quote for sharing
             currentQuote = todayResult.quote;
@@ -11124,6 +11324,61 @@
             feedbackList.insertBefore(feedbackItem, feedbackList.firstChild);
         }
         
+        // ========================================
+        // MORE GAMES COMPONENT
+        // ========================================
+        const CURRENT_GAME_ID = 'quotle';
+        
+        const GS_ORIGINALS = {
+            quotle: { id: 'quotle', name: 'Quotle', icon: '💬', tagline: 'Guess the famous quote', url: 'https://gameshelf.co/quotle/' },
+            slate: { id: 'slate', name: 'Slate', icon: '🪨', tagline: 'Find 8 hidden words', url: 'https://gameshelf.co/slate/' },
+            rungs: { id: 'rungs', name: 'Rungs', icon: '🪜', tagline: 'Climb the word ladder', url: 'https://gameshelf.co/rungs/' },
+            wordboxing: { id: 'wordboxing', name: 'Word Boxing', icon: '🥊', tagline: 'Real-time word battles', url: 'https://gameshelf.co/wordboxing/' }
+        };
+        
+        function isFirstTimeMoreGames() {
+            return !localStorage.getItem(`${CURRENT_GAME_ID}_moreGamesShown`);
+        }
+        
+        function markMoreGamesShown() {
+            localStorage.setItem(`${CURRENT_GAME_ID}_moreGamesShown`, 'true');
+        }
+        
+        function getOtherGames() {
+            return Object.values(GS_ORIGINALS).filter(g => g.id !== CURRENT_GAME_ID);
+        }
+        
+        function renderMoreGames() {
+            const otherGames = getOtherGames();
+            const isFirstTime = isFirstTimeMoreGames();
+            
+            if (isFirstTime) {
+                markMoreGamesShown();
+                return `
+                    <div class="more-games-prominent">
+                        <h4>🎮 More from Game Shelf</h4>
+                        <div class="more-games-grid">
+                            ${otherGames.map(g => `
+                                <a href="${g.url}" class="more-games-card">
+                                    <span class="icon">${g.icon}</span>
+                                    <span class="name">${g.name}</span>
+                                    <span class="tagline">${g.tagline}</span>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="more-games-subtle">
+                        More games: ${otherGames.map(g => 
+                            `<a href="${g.url}">${g.icon} ${g.name}</a>`
+                        ).join('<span class="separator">•</span>')}
+                    </div>
+                `;
+            }
+        }
+        
         function endGame(won, gaveUp = false) {
             gameOver = true;
             document.getElementById('submit-btn').disabled = true;
@@ -11158,7 +11413,7 @@
                 locationHint.style.display = 'none';
             }
             
-            // v1.2.2: Collapse game-area flex so results aren't pushed down
+            // v1.2.8: Collapse game-area flex so results aren't pushed down
             const gameArea = document.getElementById('game-area');
             if (gameArea) {
                 gameArea.style.flex = 'none';
@@ -11282,6 +11537,8 @@
                                 cursor: pointer;
                             ">🏠 Daily Puzzle</button>
                         </div>
+                        
+                        ${renderMoreGames()}
                     `;
                 } else {
                     return `
@@ -11294,6 +11551,8 @@
                             <div style="font-size: 0.8rem; margin-bottom: 3px; color: var(--slate);">Next puzzle in:</div>
                             <div style="font-size: 1.3rem; font-weight: bold; font-family: 'Playfair Display', serif;">${timeUntilMidnight}</div>
                         </div>
+                        
+                        ${renderMoreGames()}
                     `;
                 }
             }
@@ -11574,89 +11833,6 @@
                     console.log('[Quotle] SW updated to:', event.data.version);
                 }
             });
-        }
-        
-        // PWA Install Prompt
-        let deferredInstallPrompt = null;
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-            
-            // Show install button if not already installed
-            if (!window.matchMedia('(display-mode: standalone)').matches) {
-                showInstallButton();
-            }
-        });
-        
-        function showInstallButton() {
-            // Check if we already showed install prompt this session
-            if (sessionStorage.getItem('quotle_install_prompted')) return;
-            
-            // Create install banner
-            const banner = document.createElement('div');
-            banner.id = 'pwa-install-banner';
-            banner.innerHTML = `
-                <div style="
-                    position: fixed;
-                    bottom: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    background: linear-gradient(135deg, #8B2635, #6B1D29);
-                    color: white;
-                    padding: 12px 20px;
-                    border-radius: 12px;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    z-index: 9999;
-                    font-family: 'Source Serif 4', serif;
-                    max-width: 90%;
-                ">
-                    <span style="font-size: 1.5rem;">📖</span>
-                    <div style="flex: 1;">
-                        <div style="font-weight: 600;">Install Quotle</div>
-                        <div style="font-size: 0.85rem; opacity: 0.9;">Add to home screen for the best experience</div>
-                    </div>
-                    <button onclick="installPWA()" style="
-                        background: white;
-                        color: #8B2635;
-                        border: none;
-                        padding: 8px 16px;
-                        border-radius: 8px;
-                        font-weight: 600;
-                        cursor: pointer;
-                    ">Install</button>
-                    <button onclick="dismissInstallBanner()" style="
-                        background: transparent;
-                        border: none;
-                        color: white;
-                        font-size: 1.2rem;
-                        cursor: pointer;
-                        padding: 4px;
-                        opacity: 0.7;
-                    ">✕</button>
-                </div>
-            `;
-            document.body.appendChild(banner);
-        }
-        
-        function installPWA() {
-            if (!deferredInstallPrompt) return;
-            
-            deferredInstallPrompt.prompt();
-            deferredInstallPrompt.userChoice.then((choice) => {
-                console.log('[Quotle] Install choice:', choice.outcome);
-                deferredInstallPrompt = null;
-                dismissInstallBanner();
-            });
-        }
-        
-        function dismissInstallBanner() {
-            const banner = document.getElementById('pwa-install-banner');
-            if (banner) banner.remove();
-            sessionStorage.setItem('quotle_install_prompted', 'true');
         }
         
         // Check if running as installed PWA

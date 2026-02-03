@@ -1,6 +1,3 @@
-// Consolidated PWA - Scope: /gameshelftest/quotle/
-// App: quotle | Env: test
-
 /**
  * Quotle PWA Service Worker
  * Version: 1.2.2
@@ -10,8 +7,8 @@
  * 1. The version in index.html <meta name="version">
  * 2. CACHE_VERSION below
  */
-const CACHE_VERSION = 'v1.2.2';
-const CACHE_NAME = 'quotle-consolidated-pwa-${CACHE_VERSION}';
+const CACHE_VERSION = 'v1.2.8';
+const CACHE_NAME = `quotle-pwa-${CACHE_VERSION}`;
 
 // Files to cache for offline use
 const CACHE_FILES = [
