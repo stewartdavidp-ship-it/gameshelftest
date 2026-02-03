@@ -1,12 +1,9 @@
-// Consolidated PWA - Scope: /gameshelftest/rungs/
-// App: rungs | Env: test
-
 /**
  * Rungs PWA Service Worker
  * Version: 1.0.12
  */
-const CACHE_VERSION = 'v1.0.12';
-const CACHE_NAME = 'rungs-consolidated-pwa-${CACHE_VERSION}';
+const CACHE_VERSION = 'v1.0.17';
+const CACHE_NAME = `rungs-pwa-${CACHE_VERSION}`;
 
 const CACHE_FILES = ['./', './index.html', './manifest.json'];
 
