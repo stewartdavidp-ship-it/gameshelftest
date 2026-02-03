@@ -1,12 +1,9 @@
-// Consolidated PWA - Scope: /gameshelftest/wordboxing/
-// App: wordboxing | Env: test
-
 /**
  * Word Boxing PWA Service Worker
- * Version: 1.0.2
+ * Version: 1.0.18
  */
-const CACHE_VERSION = 'v1.0.7';
-const CACHE_NAME = 'wordboxing-consolidated-pwa-${CACHE_VERSION}';
+const CACHE_VERSION = 'v1.0.18';
+const CACHE_NAME = `wordboxing-pwa-${CACHE_VERSION}`;
 
 const CACHE_FILES = ['./', './index.html', './manifest.json'];
 

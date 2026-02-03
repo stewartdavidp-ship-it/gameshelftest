@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="1.0.7">
+    <meta name="version" content="1.0.18">
     <title>Word Boxing 🥊</title>
-    <!-- Version 1.0.7 -->
+    <!-- Version 1.0.18 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥊</text></svg>">
     
     <!-- PWA Support -->
@@ -73,17 +73,112 @@
             --light: #1a1a2e;
         }
 
+        html {
+            height: 100%;
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            min-height: 100vh;
+            min-height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 10px;
             padding-top: calc(env(safe-area-inset-top, 0px) + 45px);
             transition: background 0.3s, color 0.3s;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Desktop containment - PWA-first layout centered on wider screens */
+        @media (min-width: 600px) {
+            html {
+                background: var(--desktop-bg, #0d0d14);
+            }
+            
+            body {
+                left: 50%;
+                right: auto;
+                width: 100%;
+                max-width: 480px;
+                transform: translateX(-50%);
+                box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+                border-left: 1px solid var(--border-color);
+                border-right: 1px solid var(--border-color);
+            }
+        }
+
+        /* Desktop banner - hidden on mobile */
+        .desktop-banner {
+            display: none;
+        }
+
+        @media (min-width: 600px) {
+            .desktop-banner {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                padding: 8px 16px;
+                background: linear-gradient(135deg, rgba(196, 30, 58, 0.2), rgba(30, 78, 196, 0.2));
+                border-bottom: 1px solid var(--border-color);
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+                flex-shrink: 0;
+                position: fixed;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                max-width: 480px;
+                z-index: 1001;
+                box-sizing: border-box;
+            }
+            
+            .desktop-banner.dismissed {
+                display: none;
+            }
+            
+            .desktop-banner-text {
+                font-size: 0.75rem;
+                line-height: 1.3;
+            }
+            
+            .desktop-banner-dismiss {
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                color: var(--text-secondary);
+                cursor: pointer;
+                padding: 4px 10px;
+                font-size: 0.7rem;
+                transition: all 0.2s;
+                flex-shrink: 0;
+            }
+            
+            .desktop-banner-dismiss:hover {
+                background: var(--gold);
+                color: #000;
+                border-color: var(--gold);
+            }
+            
+            /* When banner is shown, body gets this class via JS */
+            body.desktop-banner-visible {
+                padding-top: calc(env(safe-area-inset-top, 0px) + 80px);
+            }
+            
+            body.desktop-banner-visible .user-bar,
+            body.desktop-banner-visible .menu-btn,
+            body.desktop-banner-visible .connection-status {
+                top: calc(env(safe-area-inset-top, 0px) + 45px);
+            }
         }
 
         /* Theme Toggle */
@@ -2210,6 +2305,48 @@
             z-index: 100;
         }
 
+        .back-to-gs {
+            position: fixed;
+            top: calc(env(safe-area-inset-top, 0px) + 10px);
+            right: calc(env(safe-area-inset-right, 0px) + 60px);
+            padding: 6px 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.75rem;
+            background: rgba(255,215,0,0.15);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+            z-index: 100;
+        }
+        
+        /* Hide back-to-gs on desktop - users can use browser back or menu */
+        @media (min-width: 600px) {
+            .back-to-gs {
+                display: none;
+            }
+        }
+
+        .back-to-gs:hover {
+            background: rgba(255,215,0,0.25);
+            transform: scale(1.05);
+        }
+
+        .back-to-gs .back-text {
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 400px) {
+            .back-to-gs .back-text {
+                display: none;
+            }
+        }
+
         .user-avatar {
             width: 36px;
             height: 36px;
@@ -2740,6 +2877,95 @@
             background: linear-gradient(135deg, #e53935, #c62828);
             transform: translateY(-1px);
         }
+
+        /* Stuck Button (v1.0.15) - floating debug helper */
+        .stuck-btn {
+            position: fixed;
+            bottom: calc(env(safe-area-inset-bottom, 0px) + 15px);
+            left: calc(env(safe-area-inset-left, 0px) + 15px);
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #666;
+            font-size: 0.75rem;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.2s;
+            display: none;
+        }
+
+        .stuck-btn.visible {
+            display: block;
+        }
+
+        .stuck-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Stuck Modal */
+        .stuck-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1002;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stuck-modal.active {
+            display: flex;
+        }
+
+        .stuck-content {
+            background: var(--dark);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            border: 2px solid var(--gold);
+        }
+
+        .stuck-content h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.4rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .stuck-content p {
+            color: #ccc;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .stuck-info {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        .stuck-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stuck-buttons .btn {
+            flex: 1;
+        }
         
         /* Plain Mode Styles */
         body.plain-mode .profile-link-section,
@@ -2774,9 +3000,100 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+        
+        /* More Games Component - Word Boxing red/blue/gold themed */
+        .more-games-prominent {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--bg-card);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .more-games-prominent h4 {
+            margin: 0 0 12px 0;
+            font-size: 1rem;
+            color: var(--gold);
+            font-weight: 600;
+        }
+        
+        .more-games-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .more-games-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            min-width: 85px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        
+        .more-games-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--gold);
+        }
+        
+        .more-games-card .icon {
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+        
+        .more-games-card .name {
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+        
+        .more-games-card .tagline {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            line-height: 1.2;
+        }
+        
+        .more-games-subtle {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .more-games-subtle a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .more-games-subtle a:hover {
+            text-decoration: underline;
+        }
+        
+        .more-games-subtle .separator {
+            opacity: 0.4;
+            margin: 0 6px;
+        }
     </style>
 </head>
 <body>
+    <!-- Desktop Banner -->
+    <div class="desktop-banner" id="desktop-banner">
+        <span class="desktop-banner-text">📱 Best on mobile</span>
+        <button class="desktop-banner-dismiss" onclick="dismissDesktopBanner()">✕</button>
+    </div>
+
     <!-- Tutorial Prompt Modal (v1.0.0) -->
     <div class="tutorial-prompt-overlay" id="tutorial-prompt-overlay">
         <div class="tutorial-prompt-modal">
@@ -2839,6 +3156,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Back to Game Shelf (Top Right) -->
+    <a href="https://gameshelf.co/app" class="back-to-gs" aria-label="Back to Game Shelf">← <span class="back-text">Game Shelf</span></a>
 
     <!-- Menu Button -->
     <button class="menu-btn" onclick="toggleSettingsMenu()" title="Menu">
@@ -3221,6 +3541,7 @@
                     </button>
                     <button class="btn btn-primary" id="rematch-btn" onclick="requestRematch()" style="margin-top: 10px;">Rematch</button>
                     <button class="btn btn-secondary" id="exit-btn" onclick="exitToLobby()" style="margin-top: 10px;">Exit to Lobby</button>
+                    <div id="more-games-container"></div>
                 </div>
                 <div id="match-result-waiting" style="display: none;">
                     <div class="waiting-text" id="rematch-waiting-text">Waiting for opponent...</div>
@@ -3316,6 +3637,27 @@
         </div>
     </div>
 
+    <!-- Stuck Button (v1.0.15) - floating debug helper -->
+    <button class="stuck-btn" id="stuck-btn" onclick="showStuckModal()">Stuck?</button>
+
+    <!-- Stuck Modal -->
+    <div class="stuck-modal" id="stuck-modal" onclick="closeStuckModal(event)">
+        <div class="stuck-content" onclick="event.stopPropagation()">
+            <h3>🔧 Report Issue & Reset</h3>
+            <p>Is your game frozen or stuck? This will:</p>
+            <div class="stuck-info">
+                <div>✓ Save game state for debugging</div>
+                <div>✓ Send report to developers</div>
+                <div>✓ Return you to the lobby</div>
+            </div>
+            <p style="color: #ff9800; font-size: 0.9rem;">⚠️ Your current game progress will be lost.</p>
+            <div class="stuck-buttons">
+                <button class="btn btn-secondary" onclick="closeStuck()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitStuckReport()">Submit & Reset</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Settings Menu Modal -->
     <div class="settings-modal" id="settings-modal" onclick="closeSettingsModal(event)">
         <div class="settings-content" onclick="event.stopPropagation()">
@@ -3368,6 +3710,11 @@
                            oninput="setSoundVolume(this.value)"
                            style="width: 100px; cursor: pointer;">
                 </div>
+                <div class="settings-item" style="cursor: pointer;" onclick="testSounds()">
+                    <div>
+                        <div class="settings-item-label">🔊 Test Sounds</div>
+                    </div>
+                </div>
             </div>
 
             <!-- 4. TUTORIAL -->
@@ -3412,7 +3759,7 @@
 
             <!-- 6. GAME INFO -->
             <div class="settings-version">
-                Word Boxing v1.0.7<br>
+                Word Boxing v1.0.18<br>
                 <span style="font-size: 0.7rem;">© 2026 RB Games</span>
             </div>
         </div>
@@ -3515,13 +3862,13 @@
         </div>
     </div>
 
-    <div class="version">v1.0.7 &bull; Word Boxing</div>
+    <div class="version">v1.0.18 &bull; Word Boxing</div>
 
     <script>
-        // ============ GAME SHELF INTEGRATION MODULE v1.0.7 ============
+        // ============ GAME SHELF INTEGRATION MODULE v1.0.13 ============
         (function() {
             'use strict';
-            const GAMESHELF_VERSION = '1.0.7';
+            const GAMESHELF_VERSION = '1.0.13';
             if (window.GameShelfIntegration) return;
             
             window.GameShelfIntegration = {
@@ -3537,7 +3884,7 @@
                         name: config.name || gameId,
                         icon: config.icon || '🎮',
                         url: config.url || window.location.hostname,
-                        version: config.version || '1.0.7',
+                        version: config.version || '1.0.13',
                         type: config.type || 'daily',
                         ...config
                     };
@@ -4485,6 +4832,14 @@
             if (phaseId === 'phase-create-waiting') {
                 updateShareButtonVisibility();
             }
+            
+            // Update More Games section when showing match result
+            if (phaseId === 'phase-match-result') {
+                updateMoreGamesSection();
+            }
+            
+            // Update Stuck button visibility (v1.0.15)
+            updateStuckButtonVisibility();
         }
 
         // Show message toast
@@ -5513,6 +5868,9 @@
                             }
 
                             gameRef.child('status').set('setup');
+
+                            // v1.0.13: Set local status so handleGameUpdate works correctly
+                            gameState.status = 'joining';
 
                             LoadingManager.hide('Joining Game...');
                             showPhase('phase-join-waiting');
@@ -7401,6 +7759,170 @@
             updateAddFriendButton();
         }
 
+        // Stuck Button Functions (v1.0.15)
+        function showStuckModal() {
+            document.getElementById('stuck-modal').classList.add('active');
+        }
+        
+        function closeStuckModal(event) {
+            if (event.target === event.currentTarget) {
+                closeStuck();
+            }
+        }
+        
+        function closeStuck() {
+            document.getElementById('stuck-modal').classList.remove('active');
+        }
+        
+        async function submitStuckReport() {
+            closeStuck();
+            showMessage('Submitting report...', 'info');
+            
+            // Gather current phase
+            let currentPhase = 'unknown';
+            document.querySelectorAll('.phase').forEach(phase => {
+                if (phase.classList.contains('active')) {
+                    currentPhase = phase.id;
+                }
+            });
+            
+            // Build debug report (sanitized - no actual words)
+            const report = {
+                timestamp: Date.now(),
+                version: '1.0.18',
+                gameCode: gameState.gameCode || null,
+                
+                // User info
+                userId: currentUser?.uid || 'guest',
+                deviceId: deviceId,
+                
+                // Game state
+                myRole: gameState.myRole,
+                status: gameState.status,
+                phase: currentPhase,
+                isMyTurn: gameState.isMyTurn,
+                round: gameState.round,
+                mode: gameState.mode,
+                passPlay: passPlayState.active,
+                
+                // Progress indicators (sanitized)
+                hasMyWord: !!gameState.myWord,
+                hasOpponentWord: !!gameState.opponentWord,
+                myGuessedCount: gameState.myGuessedLetters?.size || 0,
+                myRevealedCount: gameState.myRevealed?.filter(r => r).length || 0,
+                opponentRevealedCount: gameState.opponentRevealed?.filter(r => r).length || 0,
+                
+                // Connection state
+                opponentConnected: gameState.opponentConnected,
+                opponentWasDisconnected: gameState.opponentWasDisconnected,
+                
+                // Match info
+                redWins: gameState.redWins,
+                blueWins: gameState.blueWins,
+                isRatedGame: gameState.isRatedGame,
+                
+                // Browser/device info
+                userAgent: navigator.userAgent,
+                screenWidth: window.innerWidth,
+                screenHeight: window.innerHeight,
+                online: navigator.onLine
+            };
+            
+            // Try to submit to Firebase
+            if (isFirebaseReady && db) {
+                try {
+                    const reportId = `${Date.now()}_${gameState.gameCode || 'nogame'}_${deviceId.slice(0, 8)}`;
+                    await db.ref('debug-reports/' + reportId).set(report);
+                    console.log('Debug report submitted:', reportId);
+                } catch (error) {
+                    console.error('Failed to submit debug report:', error);
+                    // Continue with reset anyway
+                }
+            }
+            
+            // Clean up current game
+            if (gameRef) {
+                // Don't update Firebase game state - just leave the game locally
+                gameRef.off();
+                gameRef = null;
+            }
+            
+            // Reset local state
+            clearActiveGame();
+            stopDisconnectMonitoring();
+            
+            // Reset game state
+            gameState = {
+                gameCode: null,
+                myRole: null,
+                opponentRole: null,
+                status: 'lobby',
+                mode: null,
+                round: 1,
+                redWins: 0,
+                blueWins: 0,
+                myWord: '',
+                myPlannedWords: [],
+                opponentWord: '',
+                isMyTurn: false,
+                myGuessedLetters: new Set(),
+                opponentGuessedLetters: new Set(),
+                myRevealed: [false, false, false, false, false],
+                opponentRevealed: [false, false, false, false, false],
+                usedLetters: new Set(),
+                isRatedGame: false,
+                opponentUserId: null,
+                opponentDisplayName: 'Opponent',
+                opponentUserRating: 1200,
+                opponentConnected: true,
+                opponentWasDisconnected: false
+            };
+            
+            // Hide scoreboard
+            document.getElementById('scoreboard').style.display = 'none';
+            document.getElementById('mode-badge-container').style.display = 'none';
+            
+            // Hide stuck button
+            updateStuckButtonVisibility();
+            
+            showMessage('Report submitted. Returning to lobby.', 'success');
+            showPhase('phase-lobby');
+        }
+        
+        function updateStuckButtonVisibility() {
+            const stuckBtn = document.getElementById('stuck-btn');
+            if (!stuckBtn) return;
+            
+            // Show stuck button during active game phases (not lobby, not match result)
+            const activeGamePhases = [
+                'phase-create-waiting',
+                'phase-join-waiting',
+                'phase-mode-select',
+                'phase-word-planning',
+                'phase-waiting-plan',
+                'phase-word-input',
+                'phase-waiting-word',
+                'phase-battle',
+                'phase-waiting-turn',
+                'phase-round-result',
+                'phase-pass-red',
+                'phase-pass-blue'
+            ];
+            
+            let currentPhase = null;
+            document.querySelectorAll('.phase').forEach(phase => {
+                if (phase.classList.contains('active')) {
+                    currentPhase = phase.id;
+                }
+            });
+            
+            if (currentPhase && activeGamePhases.includes(currentPhase)) {
+                stuckBtn.classList.add('visible');
+            } else {
+                stuckBtn.classList.remove('visible');
+            }
+        }
+
         function updateBattleFromGame(game) {
             // Update turn
             const newTurn = game.currentTurn;
@@ -7599,6 +8121,68 @@
                 }
 
                 showMessage('Rematch cancelled', 'info');
+            }
+        }
+
+        // ========================================
+        // MORE GAMES COMPONENT
+        // ========================================
+        const CURRENT_GAME_ID = 'wordboxing';
+        
+        const GS_ORIGINALS = {
+            quotle: { id: 'quotle', name: 'Quotle', icon: '💬', tagline: 'Guess the famous quote', url: 'https://gameshelf.co/quotle/' },
+            slate: { id: 'slate', name: 'Slate', icon: '🪨', tagline: 'Find 8 hidden words', url: 'https://gameshelf.co/slate/' },
+            rungs: { id: 'rungs', name: 'Rungs', icon: '🪜', tagline: 'Climb the word ladder', url: 'https://gameshelf.co/rungs/' },
+            wordboxing: { id: 'wordboxing', name: 'Word Boxing', icon: '🥊', tagline: 'Real-time word battles', url: 'https://gameshelf.co/wordboxing/' }
+        };
+        
+        function isFirstTimeMoreGames() {
+            return !localStorage.getItem(`${CURRENT_GAME_ID}_moreGamesShown`);
+        }
+        
+        function markMoreGamesShown() {
+            localStorage.setItem(`${CURRENT_GAME_ID}_moreGamesShown`, 'true');
+        }
+        
+        function getOtherGames() {
+            return Object.values(GS_ORIGINALS).filter(g => g.id !== CURRENT_GAME_ID);
+        }
+        
+        function renderMoreGames() {
+            const otherGames = getOtherGames();
+            const isFirstTime = isFirstTimeMoreGames();
+            
+            if (isFirstTime) {
+                markMoreGamesShown();
+                return `
+                    <div class="more-games-prominent">
+                        <h4>🎮 More from Game Shelf</h4>
+                        <div class="more-games-grid">
+                            ${otherGames.map(g => `
+                                <a href="${g.url}" class="more-games-card">
+                                    <span class="icon">${g.icon}</span>
+                                    <span class="name">${g.name}</span>
+                                    <span class="tagline">${g.tagline}</span>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="more-games-subtle">
+                        More games: ${otherGames.map(g => 
+                            `<a href="${g.url}">${g.icon} ${g.name}</a>`
+                        ).join('<span class="separator">•</span>')}
+                    </div>
+                `;
+            }
+        }
+        
+        function updateMoreGamesSection() {
+            const container = document.getElementById('more-games-container');
+            if (container) {
+                container.innerHTML = renderMoreGames();
             }
         }
 
@@ -8269,6 +8853,9 @@ wordboxing.com`;
             } else {
                 document.body.setAttribute('data-theme', 'light');
             }
+            
+            // Update desktop background to match theme
+            updateDesktopBackground();
 
             // Apply sound settings
             SoundManager.setEnabled(appSettings.soundEnabled);
@@ -8315,6 +8902,28 @@ wordboxing.com`;
             appSettings.soundVolume = value / 100;
             SoundManager.setVolume(appSettings.soundVolume);
             saveSettings();
+        }
+        
+        // v1.0.13: Test sounds function with mute reminder
+        function testSounds() {
+            const wasEnabled = SoundManager.enabled;
+            SoundManager.setEnabled(true);
+            
+            // Play letter found sound
+            SoundManager.letterFound();
+            
+            setTimeout(() => {
+                // Play letter miss sound
+                SoundManager.letterMiss();
+                
+                setTimeout(() => {
+                    // Restore original state
+                    SoundManager.setEnabled(wasEnabled);
+                    
+                    // Show mute reminder (browsers can't detect hardware mute)
+                    showMessage('🔇 No sound? Check if your device is muted', 'info', 3000);
+                }, 400);
+            }, 400);
         }
         
         function toggleSettingsMenu() {
@@ -8384,6 +8993,47 @@ wordboxing.com`;
         
         function loadSavedTheme() {
             // Now handled by loadSettings
+        }
+        
+        // Desktop containment functions (v1.0.14)
+        function isDesktopScreen() {
+            return window.innerWidth >= 600;
+        }
+        
+        function initDesktopBanner() {
+            if (!isDesktopScreen()) return;
+            
+            const dismissed = localStorage.getItem('wb_desktop_banner_dismissed');
+            const banner = document.getElementById('desktop-banner');
+            if (banner && dismissed) {
+                banner.classList.add('dismissed');
+                document.body.classList.remove('desktop-banner-visible');
+            } else if (banner) {
+                // Banner is visible - add class to body
+                document.body.classList.add('desktop-banner-visible');
+            }
+            
+            // Set initial desktop background based on current theme
+            updateDesktopBackground();
+        }
+        
+        function dismissDesktopBanner() {
+            const banner = document.getElementById('desktop-banner');
+            if (banner) {
+                banner.classList.add('dismissed');
+                document.body.classList.remove('desktop-banner-visible');
+                localStorage.setItem('wb_desktop_banner_dismissed', 'true');
+            }
+        }
+        
+        function updateDesktopBackground() {
+            // Only relevant on desktop
+            if (window.innerWidth < 600) return;
+            
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            document.documentElement.style.setProperty('--desktop-bg', 
+                isLight ? '#c8c8d0' : '#0d0d14'
+            );
         }
         
         // About Modal
@@ -8690,7 +9340,7 @@ wordboxing.com`;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Word Boxing v1.0.7 - Boxing bell sounds');
+            console.log('Word Boxing v1.0.18 - Hide back-to-gs on desktop');
             console.log('Device ID:', deviceId);
             console.log('Firebase ready:', isFirebaseReady);
 
@@ -8699,7 +9349,7 @@ wordboxing.com`;
                 name: 'Word Boxing',
                 icon: '🥊',
                 url: 'wordboxing.com',
-                version: '1.0.7',
+                version: '1.0.18',
                 type: 'multiplayer'
             });
 
@@ -8709,6 +9359,9 @@ wordboxing.com`;
             // Initialize Plain Mode
             applyPlainMode();
             initPlainModeToggle();
+            
+            // Initialize desktop banner (v1.0.14)
+            initDesktopBanner();
 
             // Initialize connection monitor
             initConnectionMonitor();
@@ -8825,7 +9478,7 @@ wordboxing.com`;
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/gameshelftest/wordboxing/sw.js')
+                navigator.serviceWorker.register('/sw.js')
                     .then((reg) => {
                         console.log('[WordBoxing] SW registered');
                         setInterval(() => reg.update(), 3600000);
@@ -8840,24 +9493,6 @@ wordboxing.com`;
                     }).catch((e) => console.log('[WordBoxing] SW failed:', e));
             });
         }
-        let deferredInstallPrompt = null;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-            if (!window.matchMedia('(display-mode: standalone)').matches && !sessionStorage.getItem('wb_prompted')) {
-                const b = document.createElement('div');
-                b.id = 'pwa-install-banner';
-                b.innerHTML = `<div style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c41e3a,#8b1528);color:#eee;padding:12px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;z-index:9999;max-width:90%;border:2px solid #ffd700;font-family:'Oswald',sans-serif;">
-                    <span style="font-size:1.5rem;">🥊</span>
-                    <div style="flex:1;"><div style="font-weight:600;">Install Word Boxing</div><div style="font-size:0.85rem;opacity:0.9;">Add to home screen</div></div>
-                    <button onclick="installPWA()" style="background:#ffd700;color:#12121f;border:none;padding:8px 16px;border-radius:8px;font-weight:600;cursor:pointer;">Install</button>
-                    <button onclick="dismissInstall()" style="background:transparent;border:none;color:#eee;font-size:1.2rem;cursor:pointer;opacity:0.7;">✕</button>
-                </div>`;
-                document.body.appendChild(b);
-            }
-        });
-        function installPWA() { if (deferredInstallPrompt) { deferredInstallPrompt.prompt(); deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; dismissInstall(); }); } }
-        function dismissInstall() { const b = document.getElementById('pwa-install-banner'); if (b) b.remove(); sessionStorage.setItem('wb_prompted', 'true'); }
     </script>
 </body>
 </html>

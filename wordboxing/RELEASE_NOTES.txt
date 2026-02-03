@@ -1,0 +1,182 @@
+Word Boxing v1.0.11
+==================
+Release Date: February 3, 2026
+
+NEW FEATURE
+-----------
+- Added "More from Game Shelf" cross-promotion on match result screen
+  - Prominent card display for first-time players
+  - Subtle inline link display for returning players
+  - Links to Quotle, Slate, and Rungs
+  - Styled to match Word Boxing's red/blue/gold theme
+
+---
+
+Word Boxing v1.0.10
+==================
+Release Date: January 28, 2026
+
+PWA CHANGES
+-----------
+- Removed PWA install banner prompt
+  - PWA infrastructure retained for offline/caching
+  - Users can still install via browser menu if desired
+
+---
+
+Word Boxing v1.0.9
+==================
+Release Date: January 28, 2026
+
+NEW FEATURES
+------------
+- Added "Test Sounds" option in Settings menu
+  - Plays letter found and letter miss sounds
+  - Shows mute reminder after testing
+  - Helps users troubleshoot when device is muted
+
+---
+
+Word Boxing v1.0.8
+==================
+Release Date: January 28, 2026
+
+UI IMPROVEMENTS
+---------------
+- Added "← Game Shelf" back button in top-right corner
+  - Allows easy navigation back to Game Shelf portal
+  - On narrow screens, shows just "←" arrow
+  - Styled to match Word Boxing gold accent theme
+
+---
+
+Word Boxing v1.0.7
+==================
+Release Date: January 23, 2025
+
+MOBILE-FIRST UI REDESIGN
+------------------------
+Complete redesign of lobby screen for mobile PWA:
+
+- Removed standalone title - integrated into lobby
+- Compact "WordBoxing" header (no emoji clutter)
+- Reduced padding and spacing throughout
+- Smaller, tighter buttons
+- Simplified labels: "Pass & Play" instead of long text
+- Removed distracting emojis from buttons
+- Cleaner dividers: "online" / "local" 
+- Leaderboard button with outline style (less prominent)
+- Proper safe-area support for notch/Dynamic Island
+
+The layout now fits comfortably on mobile screens without
+excessive scrolling or wasted space.
+
+---
+
+Word Boxing v1.0.12
+==================
+Release Date: February 3, 2026
+
+UX FIX
+------
+- "← Game Shelf" link now goes to /app (tracker) instead of landing page
+
+---
+
+Word Boxing v1.0.18
+==================
+Release Date: February 3, 2026
+
+DESKTOP LAYOUT FIX - Hide Back Link
+-----------------------------------
+- Hidden "← Game Shelf" back link on desktop (600px+)
+- This was colliding with Online status badge and menu button
+- Desktop users can use browser back button or navigate via menu
+- Mobile layout unchanged - back link still shows on phones
+- Also moved back-to-gs position from right:10px to right:60px on mobile
+  to avoid menu button collision
+
+---
+
+Word Boxing v1.0.17
+==================
+Release Date: February 3, 2026
+
+DESKTOP BANNER FIX (Browser Compatibility)
+------------------------------------------
+- Replaced CSS :has() selector with JavaScript class-based approach
+- :has() not fully supported in all browsers, causing layout overlap
+- Now uses body.desktop-banner-visible class controlled by JS
+- initDesktopBanner() adds class when banner is visible
+- dismissDesktopBanner() removes class when dismissed
+- Same visual result, but works in all modern browsers
+
+---
+
+Word Boxing v1.0.16
+==================
+Release Date: February 3, 2026
+
+DESKTOP BANNER LAYOUT FIX
+-------------------------
+- Fixed desktop banner overlapping with Sign In, Online status, and menu button
+- Shortened banner text to "📱 Best on mobile" with simple ✕ dismiss button
+- When banner is visible, all fixed UI elements (user-bar, menu, connection status) 
+  shift down to avoid collision
+- Banner now has higher z-index (1001) to sit above other fixed elements
+- More compact styling with centered layout
+
+---
+
+Word Boxing v1.0.15
+==================
+Release Date: February 3, 2026
+
+DEBUG FEATURE - "Stuck?" Button
+-------------------------------
+- Added floating "Stuck?" button in bottom-left corner during active games
+- Button only appears during game phases (not in lobby or match results)
+- Tapping opens confirmation modal explaining what will happen
+- On confirm:
+  - Captures sanitized game state snapshot (no actual words/letters)
+  - Submits debug report to Firebase at `debug-reports/`
+  - Cleans up local game state and listeners
+  - Returns user to lobby with confirmation message
+
+Debug report includes:
+- Game code, phase, round, turn state
+- Connection status and player roles  
+- Progress indicators (counts only, not actual content)
+- Device info (user agent, screen size)
+- Timestamp and app version
+
+This helps diagnose multiplayer sync issues that are hard to reproduce.
+
+---
+
+Word Boxing v1.0.14
+==================
+Release Date: February 3, 2026
+
+DESKTOP CONTAINMENT (PWA-First Layout)
+--------------------------------------
+- Added desktop containment matching Game Shelf's approach
+- On screens 600px+, app displays as centered 480px "phone frame"
+- Dark outer background (#0d0d14) adapts to light mode (#c8c8d0)
+- Subtle box-shadow and borders frame the PWA view
+- Added dismissible desktop banner: "📱 Word Boxing is built for mobile..."
+- Banner dismiss state persists in localStorage
+- All fixed elements (menu, user bar, connection status) stay within frame
+- Mobile experience unchanged - this only affects desktop browsers
+
+---
+
+Word Boxing v1.0.13
+==================
+Release Date: February 3, 2026
+
+BUG FIX - Multiplayer Race Condition
+------------------------------------
+- Fixed bug where Blue player's local gameState.status was not set after joining
+- Blue's status was stuck at 'lobby' instead of 'joining', causing word entry phase to not trigger properly
+- This caused multiplayer games to get stuck with one player waiting indefinitely
