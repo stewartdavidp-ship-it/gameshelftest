@@ -83,6 +83,21 @@ UX FIX
 
 ---
 
+Word Boxing v1.0.21
+==================
+Release Date: February 3, 2026
+
+NETWORK-FIRST SERVICE WORKER FOR AUTO-UPDATES
+----------------------------------------------
+- Changed SW strategy for HTML from stale-while-revalidate to network-first
+- HTML requests now fetch from network first (with 2 second timeout)
+- Falls back to cache if network is slow or offline
+- This ensures users always get the latest version when online
+- No more needing to open the app twice to see updates
+- Other assets (images, fonts) still use stale-while-revalidate for speed
+
+---
+
 Word Boxing v1.0.20
 ==================
 Release Date: February 3, 2026
