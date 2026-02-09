@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="version" content="1.10.0">
+    <meta name="version" content="1.10.1">
     <meta name="gs-app-id" content="gameshelf">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="Track your daily puzzle games, build streaks, compete with friends!">
@@ -4504,6 +4504,87 @@
             margin-top: 4px;
         }
         
+        /* v1.10.0: Consolidated status section in morning review */
+        .morning-review-status {
+            margin: 16px 0;
+            padding: 0;
+        }
+        .morning-review-status-section {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+        }
+        .morning-review-status-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .morning-review-status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        .morning-review-status-item .status-icon {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            width: 24px;
+            text-align: center;
+        }
+        .morning-review-status-stats {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+        .morning-review-status-stat {
+            text-align: center;
+        }
+        .morning-review-status-stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+        .morning-review-status-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .morning-review-sprint-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-orange);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+        }
+        .morning-review-sprint-card:active {
+            opacity: 0.8;
+        }
+        .morning-review-sprint-icon {
+            font-size: 1.5rem;
+        }
+        .morning-review-sprint-info {
+            flex: 1;
+        }
+        .morning-review-sprint-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        .morning-review-sprint-detail {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
         .morning-review-outro {
             text-align: center;
             font-size: 1.1rem;
@@ -11307,7 +11388,7 @@
             </svg>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
                 <span>Game Shelf</span>
-                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.10.0</span>
+                <span id="header-version-badge" style="font-size: 0.55rem; color: var(--accent-orange); font-weight: 600;">v1.10.1</span>
             </div>
             <a href="https://gameshelf.co/beta/" class="beta-badge-link" target="_blank">BETA</a>
         </div>
@@ -11508,6 +11589,29 @@
                         </a>
                     </div>
                     
+                    <!-- v1.10.0: Timezone -->
+                    <div class="settings-section">
+                        <div class="settings-section-title">🌍 Timezone</div>
+                        <div style="padding: 8px 0 4px 36px;">
+                            <div style="font-size: 0.85rem; color: var(--text-primary);">
+                                <span style="color: var(--text-muted);">Home:</span> 
+                                <span id="settings-home-tz">—</span>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-primary); margin-top: 4px;">
+                                <span style="color: var(--text-muted);">Current:</span> 
+                                <span id="settings-device-tz">—</span>
+                            </div>
+                            <div id="settings-tz-travel" style="display: none; font-size: 0.8rem; color: var(--accent-orange); margin-top: 6px; font-weight: 600;">
+                                ✈️ Traveling — <span id="settings-tz-offset"></span>
+                            </div>
+                        </div>
+                        <a class="settings-link" onclick="changeHomeTimezone()" style="margin-top: 8px;">
+                            <span class="icon">🏠</span>
+                            Change Home Timezone
+                            <span class="menu-chevron">›</span>
+                        </a>
+                    </div>
+                    
                     <!-- Daily Goal -->
                     <div class="settings-section">
                         <div class="settings-section-title">🎯 Daily Goal</div>
@@ -11623,7 +11727,7 @@
             </div>
         </div>
         <div class="settings-footer">
-            <div class="settings-version">Game Shelf PWA v1.10.0</div>
+            <div class="settings-version">Game Shelf PWA v1.10.1</div>
         </div>
     </div>
     
@@ -13089,6 +13193,7 @@
                     <div class="hint-chip-category">Other</div>
                     <div class="hint-game-chip" onclick="selectHintGame('immaculate-grid')">⚾ Immaculate Grid</div>
                     <div class="hint-game-chip" onclick="selectHintGame('costcodle')">🛒 Costcodle</div>
+                    <div class="hint-game-chip" onclick="selectHintGame('cluesbysam')">🔍 Clues by Sam</div>
                     <!-- GS Originals -->
                     <div class="hint-chip-category">Game Shelf</div>
                     <div class="hint-game-chip" onclick="selectHintGame('quotle')">💬 Quotle</div>
@@ -13205,6 +13310,11 @@
                     <div class="morning-review-vibe-label">Today's Vibe</div>
                     <div class="morning-review-vibe-rating" id="morning-review-vibe-rating">🌶️🌶️🌶️</div>
                     <div class="morning-review-vibe-text" id="morning-review-vibe-text">Medium-Spicy</div>
+                </div>
+                
+                <!-- v1.10.0: Consolidated status section (streaks, activity, sprint, suggestions) -->
+                <div class="morning-review-status" id="morning-review-status" style="display: none;">
+                    <!-- Populated by JS -->
                 </div>
                 
                 <div class="morning-review-outro" id="morning-review-outro">
@@ -17023,6 +17133,7 @@
             // Sports & Misc (browser only)
             'immaculate-grid': { id: 'immaculate-grid', name: 'Immaculate Grid', icon: '⚾', url: 'https://www.immaculategrid.com', hasApp: false },
             costcodle: { id: 'costcodle', name: 'Costcodle', icon: '🛒', url: 'https://costcodle.com', hasApp: false },
+            cluesbysam: { id: 'cluesbysam', name: 'Clues by Sam', icon: '🔍', url: 'https://cluesbysam.com', hasApp: false },
             // Game Shelf Originals (browser only) - Production at gameshelf.co
             quotle: { id: 'quotle', name: 'Quotle', icon: '💬', url: 'https://gameshelf.co/quotle/', hasApp: false },
             slate: { id: 'slate', name: 'Slate', icon: '📝', url: 'https://gameshelf.co/slate/', hasApp: false },
@@ -17151,7 +17262,7 @@
                 id: 'sports', 
                 name: 'Sports & Misc', 
                 icon: '🏈',
-                games: ['immaculate-grid', 'costcodle']
+                games: ['immaculate-grid', 'costcodle', 'cluesbysam']
             }
         ];
         
@@ -17972,6 +18083,25 @@
                 }
             },
             {
+                id: 'cluesbysam',
+                // Matches: "Clues by Sam" followed by emoji grid and optional time
+                regex: /Clues\s+by\s+Sam[^\n]*\n([\s\S]*?(?:🟩|🟨|⬛|🟥)[\s\S]*?)(?:\n.*?(\d+)\s*(?:min|m)|$)/i,
+                extract: (match) => {
+                    const grid = match[1].trim();
+                    const greens = (grid.match(/🟩/g) || []).length;
+                    const yellows = (grid.match(/🟨/g) || []).length;
+                    const total = greens + yellows;
+                    const perfect = yellows === 0 && total === 20;
+                    return {
+                        gameId: 'cluesbysam',
+                        score: perfect ? '20/20 🎯' : `${greens}/${total}`,
+                        won: true,
+                        numericScore: perfect ? 30 : Math.min(25, greens + 5),
+                        meta: { greens, yellows, perfect }
+                    };
+                }
+            },
+            {
                 id: 'wheretaken',
                 // Matches: "WhereTaken #123 (date) 3/6"
                 regex: /WhereTaken\s*(?:USA|World)?\s*#?(\d+).*?([1-6X])\/6/i,
@@ -18624,6 +18754,7 @@
             bandle: ['heardle', 'moviedle', 'framed'],
             'immaculate-grid': ['costcodle', 'nerdle'],
             costcodle: ['immaculate-grid', 'foodguessr'],
+            cluesbysam: ['redactle', 'contexto', 'semantle'],
             quotle: ['semantle', 'contexto', 'redactle'],
             slate: ['wordle', 'waffle', 'strands'],
             rungs: ['wordle', 'dordle', 'quordle'],
@@ -19824,6 +19955,238 @@
             return true;
         }
         
+        // ============ DEVICE TIMEZONE TRACKING (v1.10.0) ============
+        // Tracks the device's current timezone for awareness of game reset times
+        // and travel detection. Uses Intl API (supported in all modern browsers).
+        
+        let _deviceTimezone = null;
+        let _homeTimezone = null;
+        
+        function initTimezone() {
+            try {
+                _deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            } catch (e) {
+                _deviceTimezone = 'unknown';
+            }
+            
+            // Home timezone: stored in appData, set on first use
+            if (appData.homeTimezone) {
+                _homeTimezone = appData.homeTimezone;
+            } else {
+                // First time — set home timezone to current device timezone
+                _homeTimezone = _deviceTimezone;
+                appData.homeTimezone = _homeTimezone;
+                saveData();
+            }
+            
+            console.log(`🌍 Timezone: device=${_deviceTimezone}, home=${_homeTimezone}`);
+            
+            if (_deviceTimezone !== _homeTimezone && _deviceTimezone !== 'unknown') {
+                console.log('🌍 Traveling! Device timezone differs from home timezone');
+            }
+            
+            // Update settings UI
+            updateTimezoneSettings();
+        }
+        
+        /**
+         * Check if device timezone changed (e.g. user traveled).
+         * Called on visibility/focus events.
+         */
+        function checkTimezoneChange() {
+            try {
+                const current = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                if (current !== _deviceTimezone) {
+                    const previous = _deviceTimezone;
+                    _deviceTimezone = current;
+                    console.log(`🌍 Timezone changed: ${previous} → ${current}`);
+                    
+                    // Update settings UI
+                    updateTimezoneSettings();
+                    
+                    // If traveling (different from home), log it
+                    if (current !== _homeTimezone) {
+                        console.log(`🌍 Away from home timezone (${_homeTimezone})`);
+                    } else {
+                        console.log('🌍 Back in home timezone');
+                    }
+                }
+            } catch (e) {
+                // Intl not available — ignore
+            }
+        }
+        
+        /**
+         * Get timezone offset difference between home and current device timezone in hours.
+         * Positive = device is ahead of home, negative = behind.
+         * Returns 0 if same timezone or unable to calculate.
+         */
+        function getTimezoneOffsetFromHome() {
+            if (!_homeTimezone || !_deviceTimezone || _homeTimezone === _deviceTimezone) return 0;
+            try {
+                const now = new Date();
+                const homeOffset = getTimezoneOffset(_homeTimezone, now);
+                const deviceOffset = getTimezoneOffset(_deviceTimezone, now);
+                return (deviceOffset - homeOffset) / 60; // Convert minutes to hours
+            } catch (e) {
+                return 0;
+            }
+        }
+        
+        /**
+         * Get UTC offset in minutes for a given timezone at a given time.
+         */
+        function getTimezoneOffset(timeZone, date) {
+            try {
+                // Format the date in the target timezone and in UTC, then compare
+                const utcStr = date.toLocaleString('en-US', { timeZone: 'UTC' });
+                const tzStr = date.toLocaleString('en-US', { timeZone: timeZone });
+                const utcDate = new Date(utcStr);
+                const tzDate = new Date(tzStr);
+                return (tzDate - utcDate) / (60 * 1000); // Difference in minutes
+            } catch (e) {
+                return 0;
+            }
+        }
+        
+        /**
+         * Check if the user is currently traveling (device timezone !== home timezone).
+         */
+        function isTraveling() {
+            return _deviceTimezone && _homeTimezone && _deviceTimezone !== _homeTimezone;
+        }
+        
+        /**
+         * Get a human-readable timezone summary.
+         */
+        function getTimezoneSummary() {
+            if (!isTraveling()) {
+                return { traveling: false, home: _homeTimezone, device: _deviceTimezone };
+            }
+            const offsetHours = getTimezoneOffsetFromHome();
+            const direction = offsetHours > 0 ? 'ahead of' : 'behind';
+            return {
+                traveling: true,
+                home: _homeTimezone,
+                device: _deviceTimezone,
+                offsetHours: Math.abs(offsetHours),
+                description: `${Math.abs(offsetHours)}h ${direction} home`
+            };
+        }
+        
+        /**
+         * Format a timezone ID for display (e.g. "America/New_York" → "America/New York (ET)")
+         */
+        function formatTimezoneDisplay(tz) {
+            if (!tz || tz === 'unknown') return 'Unknown';
+            try {
+                // Get the short timezone abbreviation
+                const abbr = new Date().toLocaleString('en-US', { 
+                    timeZone: tz, timeZoneName: 'short' 
+                }).split(' ').pop();
+                // Clean up the IANA name
+                const clean = tz.replace(/_/g, ' ').split('/').pop();
+                return `${clean} (${abbr})`;
+            } catch (e) {
+                return tz.replace(/_/g, ' ');
+            }
+        }
+        
+        /**
+         * Update the timezone display in Settings.
+         */
+        function updateTimezoneSettings() {
+            const homeEl = document.getElementById('settings-home-tz');
+            const deviceEl = document.getElementById('settings-device-tz');
+            const travelEl = document.getElementById('settings-tz-travel');
+            const offsetEl = document.getElementById('settings-tz-offset');
+            
+            if (homeEl) homeEl.textContent = formatTimezoneDisplay(_homeTimezone);
+            if (deviceEl) deviceEl.textContent = formatTimezoneDisplay(_deviceTimezone);
+            
+            if (travelEl && offsetEl) {
+                if (isTraveling()) {
+                    const summary = getTimezoneSummary();
+                    offsetEl.textContent = summary.description;
+                    travelEl.style.display = 'block';
+                } else {
+                    travelEl.style.display = 'none';
+                }
+            }
+        }
+        
+        /**
+         * Let the user change their home timezone.
+         * Uses the device's current timezone as default suggestion.
+         */
+        function changeHomeTimezone() {
+            toggleSettingsMenu();
+            
+            const currentHome = formatTimezoneDisplay(_homeTimezone);
+            const currentDevice = formatTimezoneDisplay(_deviceTimezone);
+            
+            let content = `
+                <div style="text-align: center; padding: 16px;">
+                    <div style="font-size: 2rem; margin-bottom: 12px;">🌍</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
+                        Your home timezone determines when your "day" resets and when morning review appears.
+                    </div>
+                    
+                    <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: left;">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Current Home Timezone</div>
+                        <div style="font-size: 1rem; font-weight: 600; color: var(--text-primary);">${currentHome}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">${_homeTimezone}</div>
+                    </div>
+                    
+                    <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: left;">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Device Timezone (detected)</div>
+                        <div style="font-size: 1rem; font-weight: 600; color: var(--text-primary);">${currentDevice}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">${_deviceTimezone}</div>
+                    </div>
+            `;
+            
+            // If device differs from home, offer to update
+            if (_deviceTimezone !== _homeTimezone) {
+                content += `
+                    <button onclick="setHomeTimezone('${_deviceTimezone}')" style="width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent-orange), #f59e0b); border: none; border-radius: 12px; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-bottom: 10px;">
+                        🏠 Set Home to ${currentDevice}
+                    </button>
+                `;
+            }
+            
+            content += `
+                    <button onclick="setHomeTimezone('${_deviceTimezone}')" style="width: 100%; padding: 12px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-primary); font-weight: 600; font-size: 0.9rem; cursor: pointer;">
+                        📍 Use Current Location
+                    </button>
+                    
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 12px;">
+                        Your home timezone is stored locally and synced with your account.
+                    </p>
+                </div>
+            `;
+            
+            showGenericSheet({
+                title: '🌍 Home Timezone',
+                content: content
+            });
+        }
+        
+        /**
+         * Set the home timezone to a new value.
+         */
+        function setHomeTimezone(newTz) {
+            const oldTz = _homeTimezone;
+            _homeTimezone = newTz;
+            appData.homeTimezone = newTz;
+            saveData();
+            syncToCloud();
+            
+            updateTimezoneSettings();
+            closeGenericSheet();
+            showToast(`🏠 Home timezone set to ${formatTimezoneDisplay(newTz)}`, 'success');
+            console.log(`🌍 Home timezone changed: ${oldTz} → ${newTz}`);
+        }
+        
         // ============ DAY-CHANGE DETECTION ENGINE (v1.10.0) ============
         // Detects when the calendar day rolls over and orchestrates the new-day transition.
         // Fires on: visibilitychange, focus, pageshow, and a 60s foreground interval.
@@ -20314,7 +20677,8 @@
         // v1.10.0: Also check for day change on every visibility return
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
-                // v1.10.0: Day-change check FIRST (may trigger full reset)
+                // v1.10.0: Timezone + day-change check FIRST
+                checkTimezoneChange();
                 checkDayChange();
                 // Start foreground interval
                 startDayCheckInterval();
@@ -20327,8 +20691,9 @@
         });
         
         // Also listen for focus events (PWA specific)
-        // v1.10.0: Also check for day change
+        // v1.10.0: Also check for timezone + day change
         window.addEventListener('focus', () => {
+            checkTimezoneChange();
             checkDayChange();
             startDayCheckInterval();
             setTimeout(syncGameShelfGames, 500);
@@ -22109,9 +22474,13 @@
         }
         
         // ============ WHAT'S NEW SYSTEM ============
-        const APP_VERSION = '1.10.0';
+        const APP_VERSION = '1.10.1';
         
         const RELEASE_NOTES = {
+            '1.10.1': [
+                { icon: '🔑', title: 'Subscriber Login Fix', desc: 'External games (NYT, LinkedIn, etc.) now open in Safari on iOS — your login and subscription are preserved' },
+                { icon: '🔄', title: 'Smoother Game Launch', desc: 'GS Originals still open in overlay, while all other games open in your default browser for the best experience' }
+            ],
             '1.10.0': [
                 { icon: '🌅', title: 'Smart Day Detection', desc: 'App now detects day changes seamlessly — played-today indicators, progress, and widgets reset automatically at midnight' },
                 { icon: '🌙', title: 'Midnight Toast', desc: 'A subtle notification lets you know when a new day starts without interrupting your session' },
@@ -26861,7 +27230,7 @@
             
             // Launch the game
             const launchUrl = getGameUrl(gameId) || game.url;
-            openGameUrl(launchUrl);
+            openGameUrl(launchUrl, gameId);
         }
         
         // Play the current sprint game (button click handler)
@@ -28755,7 +29124,7 @@
             'Word Games': ['quordle', 'octordle', 'waffle', 'dordle', 'nerdle', 'semantle', 'contexto', 'redactle'],
             'Geography': ['worldle', 'globle', 'tradle', 'wheretaken', 'travle', 'foodguessr'],
             'Entertainment': ['framed', 'actorle', 'moviedle', 'heardle', 'bandle'],
-            'Other': ['immaculate-grid', 'costcodle']
+            'Other': ['immaculate-grid', 'costcodle', 'cluesbysam']
         };
         
         function openGameSelector() {
@@ -32635,19 +33004,19 @@
                                  !isGSOriginal(gameId);
             
             if (showReminder) {
-                showPrelaunchReminder(game, launchUrl);
+                showPrelaunchReminder(game, launchUrl, gameId);
             } else {
                 // Open game directly
-                openGameUrl(launchUrl);
+                openGameUrl(launchUrl, gameId);
             }
         }
         
-        function showPrelaunchReminder(game, launchUrl) {
+        function showPrelaunchReminder(game, launchUrl, gameId) {
             const reminder = document.getElementById('prelaunch-reminder');
             
             // v1.2.7.6: Open URL IMMEDIATELY to preserve tap gesture for iOS
             // iOS blocks window.open if called after timeout
-            openGameUrl(launchUrl);
+            openGameUrl(launchUrl, gameId);
             
             // Show reminder briefly (but URL already opened)
             if (reminder) {
@@ -32661,17 +33030,33 @@
             }
         }
         
-        function openGameUrl(launchUrl) {
-            // v1.2.77: On iOS PWA, show first-time tip about returning from games
+        function openGameUrl(launchUrl, gameId) {
+            // v1.10.1: On iOS PWA, open external games in Safari (not in-app browser)
+            // so subscribers retain their login cookies/sessions for NYT, LinkedIn, etc.
+            // GS Originals stay with window.open since they're same-origin.
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+            const isExternal = !gameId || !isGSOriginal(gameId);
             
             if (isIOS && isStandalone && launchUrl.startsWith('http')) {
                 // Check if user has seen the return tip
                 const hasSeenReturnTip = localStorage.getItem('gs_seen_return_tip');
                 if (!hasSeenReturnTip) {
                     localStorage.setItem('gs_seen_return_tip', 'true');
-                    showToast('Tap ✕ or swipe down to return', 'info', 2500);
+                    // v1.10.1: Updated tip — external games open in Safari now
+                    if (isExternal) {
+                        showToast('Switch back to Game Shelf when done', 'info', 2500);
+                    } else {
+                        showToast('Tap ✕ or swipe down to return', 'info', 2500);
+                    }
+                }
+                
+                // v1.10.1: External games open in Safari via location.href
+                // This ensures the user's existing Safari cookies/login sessions
+                // are available (fixes NYT/LinkedIn subscriber login issues)
+                if (isExternal) {
+                    window.location.href = launchUrl;
+                    return;
                 }
             }
             
@@ -33893,6 +34278,26 @@ Hint levels:
 5-6: Narrower range. Example: "Around $100-$150"
 7-8: Very close. Example: "Within $20 of the answer"
 9-10: The exact price`
+            },
+            cluesbysam: {
+                id: 'cluesbysam', name: 'Clues by Sam', icon: '🔍',
+                startDate: '2024-01-01', needsInput: false,
+                searchQuery: (date) => `Clues by Sam ${date} solution walkthrough`,
+                hintDescs: { low: "Starting strategy", mid: "Key deductions", high: "Solution path" },
+                systemPrompt: `CRITICAL RULES - FOLLOW EXACTLY:
+1. Output ONLY the hint itself - nothing else
+2. FORBIDDEN: "I see", "I notice", "I found", "Let me", "Based on", "Looking at", "The search", "results show", "According to"
+3. NO explanations, NO meta-commentary about search results, NO preamble
+4. Start your response with the hint directly
+
+Clues by Sam: Daily logic puzzle - deduce who is criminal and who is innocent in a 4x5 grid.
+
+Hint levels:
+1-2: General strategy. Example: "Focus on clues about neighbors and rows"
+3-4: Starting point. Example: "Look at the person in row 2, column C"
+5-6: Key deduction. Example: "The accountant's clue eliminates two suspects"
+7-8: Specific chain. Example: "Start with Dana → leads to row 3 criminals"
+9-10: Full solution path`
             }
         };
         
@@ -34000,7 +34405,8 @@ Hint levels:
                 'redactle': 'redactle',
                 'semantle': 'semantle',
                 'immaculate-grid': 'immaculate-grid',
-                'costcodle': 'costcodle'
+                'costcodle': 'costcodle',
+                'cluesbysam': 'cluesbysam'
             };
             
             // Determine the hint game based on priority:
@@ -34539,6 +34945,9 @@ Hint levels:
                     yesterday.style.display = 'block';
                 }
                 
+                // v1.10.0: Populate consolidated status section (streaks, sprint, friends, activity)
+                populateMorningReviewStatus();
+                
                 // Show content
                 loading.style.display = 'none';
                 content.style.display = 'block';
@@ -34549,6 +34958,199 @@ Hint levels:
                 error.textContent = err.message || 'Couldn\'t load the morning review. Please try again later.';
                 error.style.display = 'block';
             }
+        }
+        
+        /**
+         * v1.10.0: Populate the consolidated status section in morning review.
+         * Folds in data from the old activity summary: streaks at risk, 
+         * upcoming milestones, scheduled sprint info, friend activity highlights.
+         */
+        function populateMorningReviewStatus() {
+            const container = document.getElementById('morning-review-status');
+            if (!container) return;
+            
+            let html = '';
+            let hasContent = false;
+            
+            // --- STREAKS & ALERTS ---
+            const alerts = [];
+            const today = getTodayString();
+            
+            // Streaks at risk (haven't played today, streak >= 3)
+            (appData.games || []).forEach(game => {
+                const stats = appData.stats?.[game.id];
+                if (stats?.currentStreak >= 3 && stats.lastPlayed !== today) {
+                    const gameInfo = GAMES[game.id];
+                    alerts.push({
+                        icon: '🔥',
+                        text: `${stats.currentStreak}-day ${gameInfo?.name || game.id} streak at risk!`,
+                        priority: 1
+                    });
+                }
+            });
+            
+            // Approaching milestones
+            (appData.games || []).forEach(game => {
+                const stats = appData.stats?.[game.id];
+                if (stats?.currentStreak) {
+                    const milestones = [7, 14, 30, 50, 100, 200, 365];
+                    const nextMilestone = milestones.find(m => m > stats.currentStreak);
+                    if (nextMilestone && (nextMilestone - stats.currentStreak) <= 3) {
+                        const gameInfo = GAMES[game.id];
+                        const daysAway = nextMilestone - stats.currentStreak;
+                        alerts.push({
+                            icon: '⭐',
+                            text: `${daysAway} day${daysAway > 1 ? 's' : ''} to ${nextMilestone}-day ${gameInfo?.name || game.id} streak!`,
+                            priority: 2
+                        });
+                    }
+                }
+            });
+            
+            // Sort: at-risk first, then milestones
+            alerts.sort((a, b) => a.priority - b.priority);
+            
+            if (alerts.length > 0) {
+                hasContent = true;
+                html += `<div class="morning-review-status-section">
+                    <div class="morning-review-status-title">🔥 Streaks</div>
+                    ${alerts.slice(0, 4).map(a => `
+                        <div class="morning-review-status-item">
+                            <span class="status-icon">${a.icon}</span>
+                            <span>${a.text}</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+            }
+            
+            // --- SCHEDULED SPRINT ---
+            if (appData.sprintSchedule?.enabled) {
+                const sched = appData.sprintSchedule;
+                const now = new Date();
+                const dayOfWeek = now.getDay();
+                
+                if (sched.daysOfWeek?.includes(dayOfWeek)) {
+                    hasContent = true;
+                    const [h, m] = sched.time.split(':').map(Number);
+                    const timeStr = new Date(2000, 0, 1, h, m).toLocaleTimeString('en-US', { 
+                        hour: 'numeric', minute: '2-digit', hour12: true 
+                    });
+                    const gameCount = sched.games?.length || 0;
+                    const duration = sched.duration || 10;
+                    
+                    html += `<div class="morning-review-status-section">
+                        <div class="morning-review-status-title">⚡ Today's Sprint</div>
+                        <div class="morning-review-sprint-card" onclick="closeMorningReview(); setTimeout(showCreateSprint, 300);">
+                            <div class="morning-review-sprint-icon">⚡</div>
+                            <div class="morning-review-sprint-info">
+                                <div class="morning-review-sprint-title">${duration} min • ${gameCount} game${gameCount !== 1 ? 's' : ''}</div>
+                                <div class="morning-review-sprint-detail">Scheduled for ${timeStr}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            }
+            
+            // --- FRIEND HIGHLIGHTS ---
+            // Show friends who've already played today (if we have shelf data)
+            try {
+                const friendsPlayed = [];
+                const friendsList = appData.friends || [];
+                
+                for (const friend of friendsList.slice(0, 10)) {
+                    const uid = friend.odataId || friend.uid;
+                    if (!uid) continue;
+                    
+                    // Check cached shelf data
+                    const shelfData = friend._shelfCache || {};
+                    const friendTodayCount = parseInt(shelfData.todayCount) || 0;
+                    
+                    if (friendTodayCount > 0) {
+                        friendsPlayed.push({
+                            name: friend.displayName || friend.name || 'Friend',
+                            count: friendTodayCount
+                        });
+                    }
+                }
+                
+                if (friendsPlayed.length > 0) {
+                    hasContent = true;
+                    html += `<div class="morning-review-status-section">
+                        <div class="morning-review-status-title">👥 Friends Already Playing</div>
+                        ${friendsPlayed.slice(0, 3).map(f => `
+                            <div class="morning-review-status-item">
+                                <span class="status-icon">✓</span>
+                                <span>${f.name} — ${f.count} game${f.count > 1 ? 's' : ''} today</span>
+                            </div>
+                        `).join('')}
+                    </div>`;
+                }
+            } catch (e) {
+                // Friends data might not be loaded yet — skip silently
+                console.log('🌅 Friend highlights skipped:', e.message);
+            }
+            
+            // --- RECENT ACTIVITY (only if returning after time away) ---
+            const lastVisit = Number(appData.lastVisit) || Date.now();
+            const hoursSinceVisit = (Date.now() - lastVisit) / (60 * 60 * 1000);
+            
+            if (hoursSinceVisit >= 4) {
+                const summary = generateActivitySummary();
+                
+                if (summary.gamesLogged > 0 || summary.newAchievements.length > 0 || summary.battleUpdates.length > 0) {
+                    hasContent = true;
+                    let activityHtml = `<div class="morning-review-status-section">
+                        <div class="morning-review-status-title">📊 Since Last Visit</div>`;
+                    
+                    if (summary.gamesLogged > 0) {
+                        activityHtml += `<div class="morning-review-status-stats">
+                            <div class="morning-review-status-stat">
+                                <div class="morning-review-status-stat-value">${summary.gamesLogged}</div>
+                                <div class="morning-review-status-stat-label">Games</div>
+                            </div>
+                            <div class="morning-review-status-stat">
+                                <div class="morning-review-status-stat-value">${summary.totalPoints}</div>
+                                <div class="morning-review-status-stat-label">Points</div>
+                            </div>
+                        </div>`;
+                    }
+                    
+                    // Highlights (perfect games, achievements, battles) — max 3
+                    const highlights = [
+                        ...summary.perfectGames.map(p => ({ icon: p.icon, text: `Perfect ${p.name}! ${p.score}` })),
+                        ...summary.newAchievements.map(a => ({ icon: '🏆', text: `New: ${a.name}` })),
+                        ...summary.battleUpdates.map(b => {
+                            if (b.type === 'battle-won') return { icon: '⚔️', text: `Won "${b.name}"!` };
+                            if (b.type === 'battle-joined') return { icon: '⚔️', text: `Joined "${b.name}"` };
+                            return { icon: '⚔️', text: b.name || 'Battle update' };
+                        })
+                    ].slice(0, 3);
+                    
+                    if (highlights.length > 0) {
+                        highlights.forEach(h => {
+                            activityHtml += `<div class="morning-review-status-item">
+                                <span class="status-icon">${h.icon}</span>
+                                <span>${h.text}</span>
+                            </div>`;
+                        });
+                    }
+                    
+                    activityHtml += `</div>`;
+                    html += activityHtml;
+                }
+            }
+            
+            // Show or hide the section
+            if (hasContent) {
+                container.innerHTML = html;
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+            
+            // Update lastVisit since we're showing this info
+            appData.lastVisit = Date.now();
+            saveData();
         }
         
         function closeMorningReview() {
@@ -36522,6 +37124,7 @@ Hint levels:
             'bandle': ['bandle'],
             'immaculate-grid': ['immaculate grid', 'immaculate'],
             'costcodle': ['costcodle'],
+            'cluesbysam': ['clues by sam', 'cluesbysam'],
             'quotle': ['quotle'],
             'slate': ['slate'],
             'rungs': ['rungs'],
@@ -40382,6 +40985,14 @@ Hint levels:
                     app: { direct: 'https://costcodle.com', hub: 'https://costcodle.com' }
                 }
             },
+            cluesbysam: { 
+                name: 'Clues by Sam', icon: '🔍', publisher: 'Other',
+                statsScreen: 'Completion time after solving',
+                urls: {
+                    browser: { direct: 'https://cluesbysam.com', hub: 'https://cluesbysam.com' },
+                    app: { direct: 'https://cluesbysam.com', hub: 'https://cluesbysam.com' }
+                }
+            },
             
             // ===== Game Shelf Originals (4) =====
             quotle: { 
@@ -41777,6 +42388,9 @@ Hint levels:
             
             loadData();
             
+            // v1.10.0: Initialize timezone tracking (needs appData loaded first)
+            initTimezone();
+            
             // v1.3.0: Validate streaks on startup (reset broken streaks)
             validateStreaksOnStartup();
             
@@ -42009,7 +42623,7 @@ Hint levels:
             // v1.10.0: Start day-change detection interval
             startDayCheckInterval();
             
-            console.log('🧩 Game Shelf PWA v1.10.0 initialized');
+            console.log('🧩 Game Shelf PWA v1.10.1 initialized');
             console.log('🌅 Day-change engine active. Current day:', _lastKnownDay);
             console.log('Setup complete:', isSetupComplete());
             console.log('Standalone:', isStandalone(), 'iOS:', isIOS());
